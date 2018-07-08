@@ -8,26 +8,20 @@
 
 import UIKit
 import SnapKit
+import Mapbox
 
 class ViewController: UIViewController {
-
-    let helloLabel = BoatLabel.build(text: "Hello, world!")
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-        view.addSubview(helloLabel)
-        helloLabel.textColor = .red
-        helloLabel.snp.makeConstraints { (make) in
-            make.leadingMargin.trailingMargin.centerX.centerY.equalToSuperview()
-        }
+        let url = URL(string: "mapbox://styles/malliina/cjgny1fjc008p2so90sbz8nbv")
+        let mapView = MGLMapView(frame: view.bounds, styleURL: url)
+        mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        mapView.setCenter(CLLocationCoordinate2D(latitude: 60.14, longitude: 24.9), zoomLevel: 10, animated: false)
+        view.addSubview(mapView)
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
-
 }
-

@@ -9,6 +9,14 @@
 /* Begin PBXBuildFile section */
 		25CA2F3892C1E213E1334678 /* Pods_BoatTrackerUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ECCBA3784EA480EBDC8608C3 /* Pods_BoatTrackerUITests.framework */; };
 		6199E0E920F2325100A4009A /* BoatLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6199E0E820F2325100A4009A /* BoatLabel.swift */; };
+		6199E0EC20F24DC700A4009A /* HttpClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6199E0EB20F24DC700A4009A /* HttpClient.swift */; };
+		6199E0EF20F24EC300A4009A /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6199E0EE20F24EC300A4009A /* Log.swift */; };
+		6199E0F120F24F1800A4009A /* HttpResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6199E0F020F24F1800A4009A /* HttpResponse.swift */; };
+		6199E0F320F24F8100A4009A /* Json.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6199E0F220F24F8100A4009A /* Json.swift */; };
+		6199E0F520F2501E00A4009A /* errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6199E0F420F2501E00A4009A /* errors.swift */; };
+		6199E0F720F254FB00A4009A /* SocketClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6199E0F620F254FB00A4009A /* SocketClient.swift */; };
+		6199E0F920F25EA100A4009A /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6199E0F820F25EA100A4009A /* Credentials.swift */; };
+		6199E0FB20F2656500A4009A /* Credentials.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6199E0FA20F2656500A4009A /* Credentials.plist */; };
 		61B07C6020F21DC300D8B7E0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61B07C5F20F21DC300D8B7E0 /* AppDelegate.swift */; };
 		61B07C6220F21DC300D8B7E0 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61B07C6120F21DC300D8B7E0 /* ViewController.swift */; };
 		61B07C6720F21DC400D8B7E0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 61B07C6620F21DC400D8B7E0 /* Assets.xcassets */; };
@@ -42,6 +50,14 @@
 		39042C4BC3843DC7B96921B7 /* Pods_BoatTracker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BoatTracker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4649148093F31848382B2F37 /* Pods-BoatTrackerUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BoatTrackerUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-BoatTrackerUITests/Pods-BoatTrackerUITests.release.xcconfig"; sourceTree = "<group>"; };
 		6199E0E820F2325100A4009A /* BoatLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatLabel.swift; sourceTree = "<group>"; };
+		6199E0EB20F24DC700A4009A /* HttpClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpClient.swift; sourceTree = "<group>"; };
+		6199E0EE20F24EC300A4009A /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
+		6199E0F020F24F1800A4009A /* HttpResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpResponse.swift; sourceTree = "<group>"; };
+		6199E0F220F24F8100A4009A /* Json.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Json.swift; sourceTree = "<group>"; };
+		6199E0F420F2501E00A4009A /* errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = errors.swift; sourceTree = "<group>"; };
+		6199E0F620F254FB00A4009A /* SocketClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocketClient.swift; sourceTree = "<group>"; };
+		6199E0F820F25EA100A4009A /* Credentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Credentials.swift; sourceTree = "<group>"; };
+		6199E0FA20F2656500A4009A /* Credentials.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Credentials.plist; sourceTree = "<group>"; };
 		61B07C5C20F21DC300D8B7E0 /* BoatTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BoatTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		61B07C5F20F21DC300D8B7E0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		61B07C6120F21DC300D8B7E0 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -128,6 +144,27 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		6199E0EA20F24DAE00A4009A /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				6199E0F420F2501E00A4009A /* errors.swift */,
+				6199E0EB20F24DC700A4009A /* HttpClient.swift */,
+				6199E0F020F24F1800A4009A /* HttpResponse.swift */,
+				6199E0F220F24F8100A4009A /* Json.swift */,
+				6199E0F620F254FB00A4009A /* SocketClient.swift */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
+		6199E0ED20F24EB800A4009A /* Util */ = {
+			isa = PBXGroup;
+			children = (
+				6199E0EE20F24EC300A4009A /* Log.swift */,
+				6199E0F820F25EA100A4009A /* Credentials.swift */,
+			);
+			path = Util;
+			sourceTree = "<group>";
+		};
 		61B07C5320F21DC300D8B7E0 = {
 			isa = PBXGroup;
 			children = (
@@ -153,12 +190,15 @@
 		61B07C5E20F21DC300D8B7E0 /* BoatTracker */ = {
 			isa = PBXGroup;
 			children = (
-				6199E0E720F2324400A4009A /* Views */,
-				6199E0E620F2319700A4009A /* ViewControllers */,
 				61B07C5F20F21DC300D8B7E0 /* AppDelegate.swift */,
 				61B07C6620F21DC400D8B7E0 /* Assets.xcassets */,
-				61B07C6820F21DC400D8B7E0 /* LaunchScreen.storyboard */,
+				6199E0FA20F2656500A4009A /* Credentials.plist */,
 				61B07C6B20F21DC400D8B7E0 /* Info.plist */,
+				61B07C6820F21DC400D8B7E0 /* LaunchScreen.storyboard */,
+				6199E0EA20F24DAE00A4009A /* Network */,
+				6199E0ED20F24EB800A4009A /* Util */,
+				6199E0E620F2319700A4009A /* ViewControllers */,
+				6199E0E720F2324400A4009A /* Views */,
 			);
 			path = BoatTracker;
 			sourceTree = "<group>";
@@ -289,6 +329,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6199E0FB20F2656500A4009A /* Credentials.plist in Resources */,
 				61B07C6A20F21DC400D8B7E0 /* LaunchScreen.storyboard in Resources */,
 				61B07C6720F21DC400D8B7E0 /* Assets.xcassets in Resources */,
 			);
@@ -354,6 +395,8 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-BoatTracker/Pods-BoatTracker-frameworks.sh",
+				"${PODS_ROOT}/Mapbox-iOS-SDK/dynamic/Mapbox.framework",
+				"${PODS_ROOT}/Mapbox-iOS-SDK/dynamic/Mapbox.framework.dSYM",
 				"${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework",
 				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework",
@@ -361,6 +404,8 @@
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Mapbox.framework",
+				"${DWARF_DSYM_FOLDER_PATH}/Mapbox.framework.dSYM",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCocoa.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SnapKit.framework",
@@ -396,8 +441,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6199E0F320F24F8100A4009A /* Json.swift in Sources */,
+				6199E0F120F24F1800A4009A /* HttpResponse.swift in Sources */,
+				6199E0F920F25EA100A4009A /* Credentials.swift in Sources */,
 				6199E0E920F2325100A4009A /* BoatLabel.swift in Sources */,
 				61B07C6220F21DC300D8B7E0 /* ViewController.swift in Sources */,
+				6199E0F520F2501E00A4009A /* errors.swift in Sources */,
+				6199E0F720F254FB00A4009A /* SocketClient.swift in Sources */,
+				6199E0EF20F24EC300A4009A /* Log.swift in Sources */,
+				6199E0EC20F24DC700A4009A /* HttpClient.swift in Sources */,
 				61B07C6020F21DC300D8B7E0 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

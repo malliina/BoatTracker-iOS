@@ -10,9 +10,11 @@ import UIKit
 import AppCenter
 import AppCenterAnalytics
 import AppCenterCrashes
+import Mapbox
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
+    let log = LoggerFactory.shared.system(AppDelegate.self)
 
     var window: UIWindow?
 
@@ -22,12 +24,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             MSAnalytics.self,
             MSCrashes.self
         ])
+        initToken()
         
         let w = UIWindow(frame: UIScreen.main.bounds)
         window = w
         w.makeKeyAndVisible()
         w.rootViewController = ViewController()
         return true
+    }
+    
+    func initToken(key: String = "MapboxAccessToken") {
+        do {
+            let token = try Credentials.read(key: key)
+            MGLAccountManager.accessToken = token
+        } catch let err as AppError {
+            log.error(err.describe)
+        } catch {
+            log.error("Unable to read \(key).")
+        }
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
