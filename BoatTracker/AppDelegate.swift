@@ -7,15 +7,26 @@
 //
 
 import UIKit
+import AppCenter
+import AppCenterAnalytics
+import AppCenterCrashes
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        MSAppCenter.start("adbb4491-3c8c-4893-bd16-cc8be65899a8", withServices: [
+            MSAnalytics.self,
+            MSCrashes.self
+        ])
+        
+        let w = UIWindow(frame: UIScreen.main.bounds)
+        window = w
+        w.makeKeyAndVisible()
+        w.rootViewController = ViewController()
         return true
     }
 

@@ -7,12 +7,20 @@
 //
 
 import UIKit
+import SnapKit
 
 class ViewController: UIViewController {
 
+    let helloLabel = BoatLabel.build(text: "Hello, world!")
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        view.addSubview(helloLabel)
+        helloLabel.textColor = .red
+        helloLabel.snp.makeConstraints { (make) in
+            make.leadingMargin.trailingMargin.centerX.centerY.equalToSuperview()
+        }
     }
 
     override func didReceiveMemoryWarning() {
