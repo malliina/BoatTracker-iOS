@@ -9,6 +9,10 @@
 import Foundation
 import SocketRocket
 
+protocol SocketDelegate {
+    func onMessage(json: JsObject)
+}
+
 // Web socket that supports reconnects
 class SocketClient: NSObject, SRWebSocketDelegate {
     private let log = LoggerFactory.shared.network(SocketClient.self)
@@ -19,6 +23,8 @@ class SocketClient: NSObject, SRWebSocketDelegate {
     
     var onOpenCallback: (() -> Void)? = nil
     var onOpenErrorCallback: ((Error) -> Void)? = nil
+    
+    var delegate: SocketDelegate? = nil
     
     init(baseURL: URL, headers: [String: String]) {
         self.baseURL = baseURL

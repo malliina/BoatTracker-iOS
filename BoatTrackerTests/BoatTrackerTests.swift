@@ -7,6 +7,8 @@
 //
 
 import XCTest
+import BoatTracker
+
 @testable import BoatTracker
 
 class BoatTrackerTests: XCTestCase {
@@ -21,9 +23,23 @@ class BoatTrackerTests: XCTestCase {
         super.tearDown()
     }
     
-    func testExample() {
+    func testExample() throws {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
+        let input = "{\"a\": 42, \"b\": {\"sub\": \"hello\"}}"
+        let obj = try JsObject.parse(string: input)
+        let actual = try obj.readInt("a")
+        XCTAssert(actual == 42)
+        let b = try obj.readObject("b")
+        let sub = try b.readString("sub")
+        XCTAssert(sub == "hello")
+        XCTAssertThrowsError(try obj.readString("nonexistent"), "Reading nonexistent key throws") { (error) in
+            if case JsonError.missing(_) = error {
+                
+            } else {
+                XCTAssert(false, "Wrong error type.")
+            }
+        }
     }
     
     func testPerformanceExample() {

@@ -12,6 +12,10 @@ class SingleError {
     let key: String
     let message: String
     
+    convenience init(message: String) {
+        self.init(key: "error", message: message)
+    }
+    
     init(key: String, message: String) {
         self.key = key
         self.message = message

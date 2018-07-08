@@ -9,9 +9,9 @@
 import Foundation
 
 open class Json {
-    static func asJsonDict(_ input: String) throws -> NSDictionary {
-        if let dict = Json.asJson(input) as? NSDictionary {
-            return dict
+    static func asJsonDict(_ input: String) throws -> JsObject {
+        if let dict = Json.asJson(input) as? [String: AnyObject] {
+            return JsObject(dict: dict)
         } else {
             throw JsonError.invalid("Not a JSON dictionary.", input)
         }
