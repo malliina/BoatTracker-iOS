@@ -1,0 +1,589 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		61B07C6020F21DC300D8B7E0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61B07C5F20F21DC300D8B7E0 /* AppDelegate.swift */; };
+		61B07C6220F21DC300D8B7E0 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61B07C6120F21DC300D8B7E0 /* ViewController.swift */; };
+		61B07C6520F21DC300D8B7E0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 61B07C6320F21DC300D8B7E0 /* Main.storyboard */; };
+		61B07C6720F21DC400D8B7E0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 61B07C6620F21DC400D8B7E0 /* Assets.xcassets */; };
+		61B07C6A20F21DC400D8B7E0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 61B07C6820F21DC400D8B7E0 /* LaunchScreen.storyboard */; };
+		61B07C7520F21DC400D8B7E0 /* BoatTrackerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61B07C7420F21DC400D8B7E0 /* BoatTrackerTests.swift */; };
+		61B07C8020F21DC500D8B7E0 /* BoatTrackerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61B07C7F20F21DC500D8B7E0 /* BoatTrackerUITests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		61B07C7120F21DC400D8B7E0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 61B07C5420F21DC300D8B7E0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 61B07C5B20F21DC300D8B7E0;
+			remoteInfo = BoatTracker;
+		};
+		61B07C7C20F21DC500D8B7E0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 61B07C5420F21DC300D8B7E0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 61B07C5B20F21DC300D8B7E0;
+			remoteInfo = BoatTracker;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		61B07C5C20F21DC300D8B7E0 /* BoatTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BoatTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		61B07C5F20F21DC300D8B7E0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		61B07C6120F21DC300D8B7E0 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		61B07C6420F21DC300D8B7E0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		61B07C6620F21DC400D8B7E0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		61B07C6920F21DC400D8B7E0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		61B07C6B20F21DC400D8B7E0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		61B07C7020F21DC400D8B7E0 /* BoatTrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BoatTrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		61B07C7420F21DC400D8B7E0 /* BoatTrackerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatTrackerTests.swift; sourceTree = "<group>"; };
+		61B07C7620F21DC400D8B7E0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		61B07C7B20F21DC500D8B7E0 /* BoatTrackerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BoatTrackerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		61B07C7F20F21DC500D8B7E0 /* BoatTrackerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatTrackerUITests.swift; sourceTree = "<group>"; };
+		61B07C8120F21DC500D8B7E0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		61B07C5920F21DC300D8B7E0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		61B07C6D20F21DC400D8B7E0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		61B07C7820F21DC400D8B7E0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		61B07C5320F21DC300D8B7E0 = {
+			isa = PBXGroup;
+			children = (
+				61B07C5E20F21DC300D8B7E0 /* BoatTracker */,
+				61B07C7320F21DC400D8B7E0 /* BoatTrackerTests */,
+				61B07C7E20F21DC500D8B7E0 /* BoatTrackerUITests */,
+				61B07C5D20F21DC300D8B7E0 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		61B07C5D20F21DC300D8B7E0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				61B07C5C20F21DC300D8B7E0 /* BoatTracker.app */,
+				61B07C7020F21DC400D8B7E0 /* BoatTrackerTests.xctest */,
+				61B07C7B20F21DC500D8B7E0 /* BoatTrackerUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		61B07C5E20F21DC300D8B7E0 /* BoatTracker */ = {
+			isa = PBXGroup;
+			children = (
+				61B07C5F20F21DC300D8B7E0 /* AppDelegate.swift */,
+				61B07C6120F21DC300D8B7E0 /* ViewController.swift */,
+				61B07C6320F21DC300D8B7E0 /* Main.storyboard */,
+				61B07C6620F21DC400D8B7E0 /* Assets.xcassets */,
+				61B07C6820F21DC400D8B7E0 /* LaunchScreen.storyboard */,
+				61B07C6B20F21DC400D8B7E0 /* Info.plist */,
+			);
+			path = BoatTracker;
+			sourceTree = "<group>";
+		};
+		61B07C7320F21DC400D8B7E0 /* BoatTrackerTests */ = {
+			isa = PBXGroup;
+			children = (
+				61B07C7420F21DC400D8B7E0 /* BoatTrackerTests.swift */,
+				61B07C7620F21DC400D8B7E0 /* Info.plist */,
+			);
+			path = BoatTrackerTests;
+			sourceTree = "<group>";
+		};
+		61B07C7E20F21DC500D8B7E0 /* BoatTrackerUITests */ = {
+			isa = PBXGroup;
+			children = (
+				61B07C7F20F21DC500D8B7E0 /* BoatTrackerUITests.swift */,
+				61B07C8120F21DC500D8B7E0 /* Info.plist */,
+			);
+			path = BoatTrackerUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		61B07C5B20F21DC300D8B7E0 /* BoatTracker */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 61B07C8420F21DC500D8B7E0 /* Build configuration list for PBXNativeTarget "BoatTracker" */;
+			buildPhases = (
+				61B07C5820F21DC300D8B7E0 /* Sources */,
+				61B07C5920F21DC300D8B7E0 /* Frameworks */,
+				61B07C5A20F21DC300D8B7E0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BoatTracker;
+			productName = BoatTracker;
+			productReference = 61B07C5C20F21DC300D8B7E0 /* BoatTracker.app */;
+			productType = "com.apple.product-type.application";
+		};
+		61B07C6F20F21DC400D8B7E0 /* BoatTrackerTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 61B07C8720F21DC500D8B7E0 /* Build configuration list for PBXNativeTarget "BoatTrackerTests" */;
+			buildPhases = (
+				61B07C6C20F21DC400D8B7E0 /* Sources */,
+				61B07C6D20F21DC400D8B7E0 /* Frameworks */,
+				61B07C6E20F21DC400D8B7E0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				61B07C7220F21DC400D8B7E0 /* PBXTargetDependency */,
+			);
+			name = BoatTrackerTests;
+			productName = BoatTrackerTests;
+			productReference = 61B07C7020F21DC400D8B7E0 /* BoatTrackerTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		61B07C7A20F21DC400D8B7E0 /* BoatTrackerUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 61B07C8A20F21DC500D8B7E0 /* Build configuration list for PBXNativeTarget "BoatTrackerUITests" */;
+			buildPhases = (
+				61B07C7720F21DC400D8B7E0 /* Sources */,
+				61B07C7820F21DC400D8B7E0 /* Frameworks */,
+				61B07C7920F21DC400D8B7E0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				61B07C7D20F21DC500D8B7E0 /* PBXTargetDependency */,
+			);
+			name = BoatTrackerUITests;
+			productName = BoatTrackerUITests;
+			productReference = 61B07C7B20F21DC500D8B7E0 /* BoatTrackerUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		61B07C5420F21DC300D8B7E0 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0930;
+				LastUpgradeCheck = 0930;
+				ORGANIZATIONNAME = "Michael Skogberg";
+				TargetAttributes = {
+					61B07C5B20F21DC300D8B7E0 = {
+						CreatedOnToolsVersion = 9.3;
+					};
+					61B07C6F20F21DC400D8B7E0 = {
+						CreatedOnToolsVersion = 9.3;
+						TestTargetID = 61B07C5B20F21DC300D8B7E0;
+					};
+					61B07C7A20F21DC400D8B7E0 = {
+						CreatedOnToolsVersion = 9.3;
+						TestTargetID = 61B07C5B20F21DC300D8B7E0;
+					};
+				};
+			};
+			buildConfigurationList = 61B07C5720F21DC300D8B7E0 /* Build configuration list for PBXProject "BoatTracker" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 61B07C5320F21DC300D8B7E0;
+			productRefGroup = 61B07C5D20F21DC300D8B7E0 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				61B07C5B20F21DC300D8B7E0 /* BoatTracker */,
+				61B07C6F20F21DC400D8B7E0 /* BoatTrackerTests */,
+				61B07C7A20F21DC400D8B7E0 /* BoatTrackerUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		61B07C5A20F21DC300D8B7E0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				61B07C6A20F21DC400D8B7E0 /* LaunchScreen.storyboard in Resources */,
+				61B07C6720F21DC400D8B7E0 /* Assets.xcassets in Resources */,
+				61B07C6520F21DC300D8B7E0 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		61B07C6E20F21DC400D8B7E0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		61B07C7920F21DC400D8B7E0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		61B07C5820F21DC300D8B7E0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				61B07C6220F21DC300D8B7E0 /* ViewController.swift in Sources */,
+				61B07C6020F21DC300D8B7E0 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		61B07C6C20F21DC400D8B7E0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				61B07C7520F21DC400D8B7E0 /* BoatTrackerTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		61B07C7720F21DC400D8B7E0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				61B07C8020F21DC500D8B7E0 /* BoatTrackerUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		61B07C7220F21DC400D8B7E0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 61B07C5B20F21DC300D8B7E0 /* BoatTracker */;
+			targetProxy = 61B07C7120F21DC400D8B7E0 /* PBXContainerItemProxy */;
+		};
+		61B07C7D20F21DC500D8B7E0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 61B07C5B20F21DC300D8B7E0 /* BoatTracker */;
+			targetProxy = 61B07C7C20F21DC500D8B7E0 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		61B07C6320F21DC300D8B7E0 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				61B07C6420F21DC300D8B7E0 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		61B07C6820F21DC400D8B7E0 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				61B07C6920F21DC400D8B7E0 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		61B07C8220F21DC500D8B7E0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		61B07C8320F21DC500D8B7E0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		61B07C8520F21DC500D8B7E0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = D2T2QC36Z9;
+				INFOPLIST_FILE = BoatTracker/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.malliina.BoatTracker;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		61B07C8620F21DC500D8B7E0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = D2T2QC36Z9;
+				INFOPLIST_FILE = BoatTracker/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.malliina.BoatTracker;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		61B07C8820F21DC500D8B7E0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = D2T2QC36Z9;
+				INFOPLIST_FILE = BoatTrackerTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.malliina.BoatTrackerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BoatTracker.app/BoatTracker";
+			};
+			name = Debug;
+		};
+		61B07C8920F21DC500D8B7E0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = D2T2QC36Z9;
+				INFOPLIST_FILE = BoatTrackerTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.malliina.BoatTrackerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BoatTracker.app/BoatTracker";
+			};
+			name = Release;
+		};
+		61B07C8B20F21DC500D8B7E0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = D2T2QC36Z9;
+				INFOPLIST_FILE = BoatTrackerUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.malliina.BoatTrackerUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = BoatTracker;
+			};
+			name = Debug;
+		};
+		61B07C8C20F21DC500D8B7E0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = D2T2QC36Z9;
+				INFOPLIST_FILE = BoatTrackerUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.malliina.BoatTrackerUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = BoatTracker;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		61B07C5720F21DC300D8B7E0 /* Build configuration list for PBXProject "BoatTracker" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				61B07C8220F21DC500D8B7E0 /* Debug */,
+				61B07C8320F21DC500D8B7E0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		61B07C8420F21DC500D8B7E0 /* Build configuration list for PBXNativeTarget "BoatTracker" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				61B07C8520F21DC500D8B7E0 /* Debug */,
+				61B07C8620F21DC500D8B7E0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		61B07C8720F21DC500D8B7E0 /* Build configuration list for PBXNativeTarget "BoatTrackerTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				61B07C8820F21DC500D8B7E0 /* Debug */,
+				61B07C8920F21DC500D8B7E0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		61B07C8A20F21DC500D8B7E0 /* Build configuration list for PBXNativeTarget "BoatTrackerUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				61B07C8B20F21DC500D8B7E0 /* Debug */,
+				61B07C8C20F21DC500D8B7E0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 61B07C5420F21DC300D8B7E0 /* Project object */;
+}
