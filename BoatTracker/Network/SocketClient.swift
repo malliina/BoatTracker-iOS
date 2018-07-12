@@ -60,10 +60,15 @@ class SocketClient: NSObject, SRWebSocketDelegate {
     }
     
     public func webSocket(_ webSocket: SRWebSocket!, didReceiveMessage message: Any!) {
-        if let message = message as? String {
-            log.info("Got message \(message)")
-        } else {
-            log.info("Got data \(message)")
+        do {
+            let obj = try JsObject.parse(any: message)
+            delegate?.onMessage(json: obj)
+        } catch {
+            if let message = message as? String {
+                log.info("Got message \(message)")
+            } else {
+                log.info("Got data \(message)")
+            }
         }
     }
     

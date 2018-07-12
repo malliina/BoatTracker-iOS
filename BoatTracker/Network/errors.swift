@@ -63,11 +63,11 @@ enum AppError: Error {
             let code = details.code
             switch code {
             case 400:
-                return "Bad request: \(details.resource)."
+                return "Bad request: \(details.url)."
             case 401:
                 return "Check your username/password."
             case 404:
-                return "Resource not found: \(details.resource)."
+                return "Resource not found: \(details.url)."
             case 406:
                 return "Please update this app to the latest version to continue. This version is no longer supported."
             default:

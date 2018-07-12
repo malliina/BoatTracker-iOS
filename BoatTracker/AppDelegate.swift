@@ -29,7 +29,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let w = UIWindow(frame: UIScreen.main.bounds)
         window = w
         w.makeKeyAndVisible()
-        w.rootViewController = ViewController()
+        w.rootViewController = MapVC()
         return true
     }
     

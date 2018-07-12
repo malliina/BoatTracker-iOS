@@ -8,16 +8,26 @@
 
 import Foundation
 
+protocol BoatSocketDelegate {
+    func onCoords(event: CoordsData)
+}
+
 class BoatSocket: SocketDelegate {
-    static let ProdBaseUrl = URL(string: "https://boat.malliina.com")!
-    static let ProdUrl = URL(string: "/ws/updates", relativeTo: ProdBaseUrl)!
+    static let SocketUrl = URL(string: "/ws/updates", relativeTo: EnvConf.BaseUrl)!
     
     private let log = LoggerFactory.shared.network(BoatSocket.self)
     
     let client: SocketClient
     
-    convenience init() {
-        self.init(client: SocketClient(baseURL: BoatSocket.ProdUrl, headers: [:]))
+    var delegate: BoatSocketDelegate? = nil
+    
+    convenience init(token: AccessToken?) {
+        var headers = [HttpClient.ACCEPT: BoatHttpClient.BoatVersion10]
+        if let token = token {
+            headers.updateValue("bearer \(token.token)", forKey: HttpClient.AUTHORIZATION)
+        }
+        self.init(client: SocketClient(baseURL: BoatSocket.SocketUrl, headers: headers))
+//        log.info("Using \(token)")
     }
     
     init(client: SocketClient) {
@@ -30,7 +40,31 @@ class BoatSocket: SocketDelegate {
     }
     
     func onMessage(json: JsObject) {
-        
+//        log.info("Got \(json.stringify())")
+        do {
+            let event = try json.readString("event")
+            switch event {
+            case "ping":
+                ()
+            case "coords":
+                let data = try CoordsData.parse(json: json)
+                if let delegate = delegate {
+                    delegate.onCoords(event: data)
+                } else {
+                    log.warn("No delegate for coords. This is probably an error.")
+                }
+            default:
+                log.info("Unknown event: '\(event)'.")
+            }
+        } catch {
+            if case JsonError.missing(let msg) = error {
+                log.error(msg)
+            } else if case JsonError.invalid(let msg, let value) = error{
+                log.error("\(msg) with value \(value)")
+            } else {
+                log.info("Unknown JSON: '\(json.stringify())'.")
+            }
+        }
     }
     
     func send(_ dict: [String: AnyObject]) -> SingleError? {

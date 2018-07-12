@@ -42,6 +42,19 @@ class BoatTrackerTests: XCTestCase {
         }
     }
     
+    func testKeychain() throws {
+        let kc = Keychain.shared
+        XCTAssertNil(try kc.findToken())
+        let initial = AccessToken(token: "abc")
+        try kc.use(token: initial)
+        XCTAssertEqual(try kc.readToken(), initial)
+        let updated = AccessToken(token: "def")
+        try kc.use(token: updated)
+        XCTAssertEqual(try kc.readToken(), updated)
+        try kc.delete()
+        XCTAssertNil(try kc.findToken())
+    }
+    
     func testPerformanceExample() {
         // This is an example of a performance test case.
         self.measure {

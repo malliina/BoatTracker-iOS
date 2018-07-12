@@ -41,12 +41,12 @@ class HttpResponse {
 }
 
 class ResponseDetails {
-    let resource: String
+    let url: URL
     let code: Int
     let message: String?
     
-    init(resource: String, code: Int, message: String?) {
-        self.resource = resource
+    init(url: URL, code: Int, message: String?) {
+        self.url = url
         self.code = code
         self.message = message
     }
