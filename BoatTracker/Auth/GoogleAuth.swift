@@ -11,8 +11,8 @@ import GoogleSignIn
 
 class GoogleAuth: NSObject, GIDSignInDelegate {
     static let shared = GoogleAuth()
-    
     static let logger = LoggerFactory.shared.system(GoogleAuth.self)
+    
     let log = GoogleAuth.logger
     
     var delegate: TokenDelegate? = nil
@@ -62,8 +62,8 @@ class GoogleAuth: NSObject, GIDSignInDelegate {
                 onToken(token: nil)
                 return
             }
-            let email = user.profile.email
-            log.info("Got email '\(email ?? "no email")' with token '\(idToken)'.")
+//            let email = user.profile.email
+//            log.info("Got email '\(email ?? "no email")' with token '\(idToken)'.")
             onToken(token: AccessToken(token: idToken))
         }
     }

@@ -1,0 +1,1 @@
+rsvg-convert -h 32 icon.svg > icon-32.png

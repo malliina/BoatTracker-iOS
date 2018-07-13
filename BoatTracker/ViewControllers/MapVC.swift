@@ -28,7 +28,18 @@ class MapVC: UIViewController, MGLMapViewDelegate, BoatSocketDelegate, UIGesture
     var mapView: MGLMapView?
     var style: MGLStyle?
     
-    var mapMode: MapMode = .fit
+    var mapMode: MapMode = .fit {
+        didSet {
+            switch mapMode {
+            case .fit:
+                followButton.alpha = MapButton.selectedAlpha
+            case .follow:
+                followButton.alpha = MapButton.deselectedAlpha
+            case .stay:
+                followButton.alpha = MapButton.selectedAlpha
+            }
+        }
+    }
     
     var latestToken: AccessToken? = nil
     
@@ -58,6 +69,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, BoatSocketDelegate, UIGesture
             make.leadingMargin.equalTo(profileButton.snp.leadingMargin)
             make.height.width.equalTo(buttonSize)
         }
+        followButton.isHidden = true
         followButton.alpha = mapMode == .follow ? MapButton.deselectedAlpha : MapButton.selectedAlpha
         followButton.addTarget(self, action: #selector(followClicked(_:)), for: .touchUpInside)
         
@@ -69,14 +81,12 @@ class MapVC: UIViewController, MGLMapViewDelegate, BoatSocketDelegate, UIGesture
         mapView.addGestureRecognizer(swipes)
         
         GoogleAuth.shared.delegate = self
-        // If the user is unauthenticated, this will call the delegate with a nil token.
-        // If the user is authenticated, this will eventually call the delegate with the Google id token.
         GoogleAuth.shared.signInSilently()
     }
     
     @objc func onSwipe(_ sender: UIPanGestureRecognizer) {
         if sender.state == .began {
-            unFollow()
+            mapMode = .stay
         }
     }
     
@@ -85,7 +95,6 @@ class MapVC: UIViewController, MGLMapViewDelegate, BoatSocketDelegate, UIGesture
     }
     
     @objc func userClicked(_ sender: UIButton) {
-        // WTF?
         if latestToken != nil {
             let dest = ProfileVC()
             dest.delegate = self
@@ -104,20 +113,10 @@ class MapVC: UIViewController, MGLMapViewDelegate, BoatSocketDelegate, UIGesture
                 current.centerCoordinate = last
                 mapView.fly(to: current, completionHandler: nil)
             }
-            follow()
+            mapMode = .follow
         } else {
-            unFollow()
+            mapMode = .stay
         }
-    }
-    
-    func follow() {
-        mapMode = .follow
-        followButton.alpha = MapButton.deselectedAlpha
-    }
-    
-    func unFollow() {
-        mapMode = .stay
-        followButton.alpha = MapButton.selectedAlpha
     }
     
     func displaySheet(dest: UIViewController) {
@@ -128,22 +127,24 @@ class MapVC: UIViewController, MGLMapViewDelegate, BoatSocketDelegate, UIGesture
     }
     
     func mapViewDidFinishLoadingMap(_ mapView: MGLMapView) {
-        log.info("didFinishLoading map")
-        mapView.bringSubview(toFront: profileButton)
     }
     
     func mapView(_ mapView: MGLMapView, didFinishLoading style: MGLStyle) {
-        log.info("didFinishLoading style")
         self.style = style
         // Add stuff to the map starting here
-//        socket.open()
     }
     
     func onCoords(event: CoordsData) {
+        onUiThread {
+            self.addCoords(event: event)
+        }
+    }
+    
+    private func addCoords(event: CoordsData) {
         guard let style = style else { return }
         let track = event.from.trackName
         let coords = event.coords
-        log.info("Got \(coords.count) coords")
+//        log.info("Got \(coords.count) coords")
         // updates boat trail
         let newTrail = (history[track] ?? []) + event.coords.map { $0.coord }
         history.updateValue(newTrail, forKey: track)
@@ -165,6 +166,9 @@ class MapVC: UIViewController, MGLMapViewDelegate, BoatSocketDelegate, UIGesture
             let bearing = Geo.shared.bearing(from: lastTwo[0], to: lastTwo[1])
             iconLayer.iconRotation = NSExpression(forConstantValue: bearing)
         }
+        if !trails.isEmpty && followButton.isHidden {
+            followButton.isHidden = false
+        }
         // updates map position
         guard let mapView = mapView else { return }
         switch mapMode {
@@ -184,7 +188,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, BoatSocketDelegate, UIGesture
     
     // https://www.mapbox.com/ios-sdk/examples/runtime-animate-line/
     func initEmptyLayers(track: TrackRef, to style: MGLStyle) -> MGLShapeSource {
-        let trailId = trailName(for: track)
+        let trailId = trailName(for: track.trackName)
         let trackSource = MGLShapeSource(identifier: trailId, shape: nil, options: nil)
         style.addSource(trackSource)
         trails.updateValue(trackSource, forKey: track.trackName)
@@ -201,7 +205,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, BoatSocketDelegate, UIGesture
         style.addLayer(layer)
         
         // Boat icon
-        let iconId = iconName(for: track)
+        let iconId = iconName(for: track.trackName)
         let iconSource = MGLShapeSource(identifier: iconId, shape: nil, options: nil)
         style.addSource(iconSource)
         let iconLayer = MGLSymbolStyleLayer(identifier: iconId, source: iconSource)
@@ -214,12 +218,12 @@ class MapVC: UIViewController, MGLMapViewDelegate, BoatSocketDelegate, UIGesture
         return trackSource
     }
     
-    func trailName(for track: TrackRef) -> String {
-        return "\(track.boatName)-\(track.trackName)-trail"
+    func trailName(for track: TrackName) -> String {
+        return "\(track)-trail"
     }
     
-    func iconName(for track: TrackRef) -> String {
-        return "\(track.boatName)-\(track.trackName)-icon"
+    func iconName(for track: TrackName) -> String {
+        return "\(track)-icon"
     }
 
     override func didReceiveMemoryWarning() {
@@ -227,15 +231,50 @@ class MapVC: UIViewController, MGLMapViewDelegate, BoatSocketDelegate, UIGesture
         // Dispose of any resources that can be recreated.
         log.info("Memory warning.")
     }
+    
+    func reload(token: AccessToken?) {
+        latestToken = token
+        socket?.delegate = nil
+        socket?.close()
+        onUiThread {
+            self.removeAllTrails()
+            self.mapMode = .fit
+        }
+        socket = BoatSocket(token: token)
+        socket?.delegate = self
+        socket?.open()
+    }
+    
+    func removeAllTrails() {
+        trails.forEach { (track, _) in
+            removeTrack(track: track)
+        }
+        trails = [:]
+        history = [:]
+        icons = [:]
+    }
+    
+    func removeTrack(track: TrackName) {
+        guard let style = style else { return }
+        let tName = trailName(for: track)
+        let iName = iconName(for: track)
+        if let trail = style.layer(withIdentifier: tName) {
+            style.removeLayer(trail)
+        }
+        if let trailSource = style.source(withIdentifier: tName) {
+            style.removeSource(trailSource)
+        }
+        if let icon = style.layer(withIdentifier: iName) {
+            style.removeLayer(icon)
+        }
+        if let iconSource = style.source(withIdentifier: iName) {
+            style.removeSource(iconSource)
+        }
+    }
 }
 
 extension MapVC: TokenDelegate {
     func onToken(token: AccessToken?) {
-        latestToken = token
-        socket?.delegate = nil
-        socket?.close()
-        socket = BoatSocket(token: token)
-        socket?.delegate = self
-        socket?.open()
+        reload(token: token)
     }
 }
