@@ -16,7 +16,7 @@ class Credentials {
     }
     
     static func readOrThrow(key: String, dict: [String: AnyObject]) throws -> String {
-        guard let value = dict[key] as? String else { throw AppError.simple("Missing or invalid \(key)") }
+        guard let value = dict[key] as? String else { throw AppError.simple("Missing or invalid key '\(key)'.") }
         return value
     }
 }

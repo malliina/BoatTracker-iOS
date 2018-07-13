@@ -9,6 +9,7 @@
 import UIKit
 import SnapKit
 import Mapbox
+import GoogleSignIn
 
 class MapVC: UIViewController, MGLMapViewDelegate, BoatSocketDelegate, UIGestureRecognizerDelegate {
     let log = LoggerFactory.shared.vc(MapVC.self)
@@ -16,10 +17,9 @@ class MapVC: UIViewController, MGLMapViewDelegate, BoatSocketDelegate, UIGesture
     let profileButton = BoatButton.map(icon: #imageLiteral(resourceName: "UserIcon"))
     let followButton = BoatButton.map(icon: #imageLiteral(resourceName: "LocationArrow"))
     
-    private var socket: BoatSocket = BoatSocket(token: (try? Keychain.shared.findToken()) ?? nil)
+    private var socket: BoatSocket? = nil
     
     // state of boat trails and icons
-    
     var trails: [TrackName: MGLShapeSource] = [:]
     // The history data is in the above trails also but it is difficult to read an MGLShapeSource. This is more suitable for our purposes.
     var history: [TrackName: [CLLocationCoordinate2D]] = [:]
@@ -30,10 +30,10 @@ class MapVC: UIViewController, MGLMapViewDelegate, BoatSocketDelegate, UIGesture
     
     var mapMode: MapMode = .fit
     
+    var latestToken: AccessToken? = nil
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        socket.delegate = self
         
         let url = URL(string: "mapbox://styles/malliina/cjgny1fjc008p2so90sbz8nbv")
         let mapView = MGLMapView(frame: view.bounds, styleURL: url)
@@ -67,6 +67,11 @@ class MapVC: UIViewController, MGLMapViewDelegate, BoatSocketDelegate, UIGesture
         swipes.maximumNumberOfTouches = 1
         swipes.delegate = self
         mapView.addGestureRecognizer(swipes)
+        
+        GoogleAuth.shared.delegate = self
+        // If the user is unauthenticated, this will call the delegate with a nil token.
+        // If the user is authenticated, this will eventually call the delegate with the Google id token.
+        GoogleAuth.shared.signInSilently()
     }
     
     @objc func onSwipe(_ sender: UIPanGestureRecognizer) {
@@ -81,7 +86,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, BoatSocketDelegate, UIGesture
     
     @objc func userClicked(_ sender: UIButton) {
         // WTF?
-        if case _?? = try? Keychain.shared.findToken() {
+        if latestToken != nil {
             let dest = ProfileVC()
             dest.delegate = self
             displaySheet(dest: dest)
@@ -97,7 +102,6 @@ class MapVC: UIViewController, MGLMapViewDelegate, BoatSocketDelegate, UIGesture
             if let mapView = mapView, let last = history.first?.value.last {
                 let current = mapView.camera
                 current.centerCoordinate = last
-//                mapView.setCenter(last, animated: true)
                 mapView.fly(to: current, completionHandler: nil)
             }
             follow()
@@ -132,7 +136,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, BoatSocketDelegate, UIGesture
         log.info("didFinishLoading style")
         self.style = style
         // Add stuff to the map starting here
-        socket.open()
+//        socket.open()
     }
     
     func onCoords(event: CoordsData) {
@@ -227,10 +231,11 @@ class MapVC: UIViewController, MGLMapViewDelegate, BoatSocketDelegate, UIGesture
 
 extension MapVC: TokenDelegate {
     func onToken(token: AccessToken?) {
-        socket.delegate = nil
-        socket.close()
+        latestToken = token
+        socket?.delegate = nil
+        socket?.close()
         socket = BoatSocket(token: token)
-        socket.delegate = self
-        socket.open()
+        socket?.delegate = self
+        socket?.open()
     }
 }

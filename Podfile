@@ -13,6 +13,7 @@ target 'BoatTracker' do
   pod 'RxSwift', '4.2.0'
   pod 'RxCocoa', '4.2.0'
   pod 'Mapbox-iOS-SDK', '4.1'
+  pod 'GoogleSignIn', '4.1.2'
 
   target 'BoatTrackerTests' do
     inherit! :search_paths

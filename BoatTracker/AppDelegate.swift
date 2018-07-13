@@ -11,12 +11,15 @@ import AppCenter
 import AppCenterAnalytics
 import AppCenterCrashes
 import Mapbox
+import GoogleSignIn
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     let log = LoggerFactory.shared.system(AppDelegate.self)
 
     var window: UIWindow?
+    
+    var google: GoogleAuth?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -24,7 +27,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             MSAnalytics.self,
             MSCrashes.self
         ])
-        initToken()
+        
+        initMapboxToken()
+        
+        google = GoogleAuth.shared
         
         let w = UIWindow(frame: UIScreen.main.bounds)
         window = w
@@ -33,7 +39,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
     
-    func initToken(key: String = "MapboxAccessToken") {
+    func initMapboxToken(key: String = "MapboxAccessToken") {
         do {
             let token = try Credentials.read(key: key)
             MGLAccountManager.accessToken = token
@@ -42,6 +48,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         } catch {
             log.error("Unable to read \(key).")
         }
+    }
+    
+    func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
+        return google?.open(url: url, options: options) ?? false
     }
 
     func applicationWillResignActive(_ application: UIApplication) {

@@ -20,6 +20,8 @@
 		612F46B720F646A0001A3003 /* Temperature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 612F46B620F646A0001A3003 /* Temperature.swift */; };
 		612F46B920F66854001A3003 /* Geo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 612F46B820F66854001A3003 /* Geo.swift */; };
 		619679EB20F78B5900432672 /* MapMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619679EA20F78B5900432672 /* MapMode.swift */; };
+		619679EE20F89F6D00432672 /* GoogleAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619679ED20F89F6D00432672 /* GoogleAuth.swift */; };
+		619679F020F8DA4800432672 /* Credentials-template.plist in Resources */ = {isa = PBXBuildFile; fileRef = 619679EF20F8DA4800432672 /* Credentials-template.plist */; };
 		6199E0E920F2325100A4009A /* BoatLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6199E0E820F2325100A4009A /* BoatLabel.swift */; };
 		6199E0EC20F24DC700A4009A /* HttpClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6199E0EB20F24DC700A4009A /* HttpClient.swift */; };
 		6199E0EF20F24EC300A4009A /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6199E0EE20F24EC300A4009A /* Log.swift */; };
@@ -80,6 +82,8 @@
 		612F46B620F646A0001A3003 /* Temperature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Temperature.swift; sourceTree = "<group>"; };
 		612F46B820F66854001A3003 /* Geo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Geo.swift; sourceTree = "<group>"; };
 		619679EA20F78B5900432672 /* MapMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapMode.swift; sourceTree = "<group>"; };
+		619679ED20F89F6D00432672 /* GoogleAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAuth.swift; sourceTree = "<group>"; };
+		619679EF20F8DA4800432672 /* Credentials-template.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Credentials-template.plist"; sourceTree = "<group>"; };
 		6199E0E820F2325100A4009A /* BoatLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatLabel.swift; sourceTree = "<group>"; };
 		6199E0EB20F24DC700A4009A /* HttpClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpClient.swift; sourceTree = "<group>"; };
 		6199E0EE20F24EC300A4009A /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
@@ -201,6 +205,14 @@
 			path = Maps;
 			sourceTree = "<group>";
 		};
+		619679EC20F89F6300432672 /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				619679ED20F89F6D00432672 /* GoogleAuth.swift */,
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
 		6199E0E620F2319700A4009A /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -272,7 +284,9 @@
 			children = (
 				61B07C5F20F21DC300D8B7E0 /* AppDelegate.swift */,
 				61B07C6620F21DC400D8B7E0 /* Assets.xcassets */,
+				619679EC20F89F6300432672 /* Auth */,
 				61DE7F3D20F29F5800C95B3F /* Backend */,
+				619679EF20F8DA4800432672 /* Credentials-template.plist */,
 				6199E0FA20F2656500A4009A /* Credentials.plist */,
 				61B07C6B20F21DC400D8B7E0 /* Info.plist */,
 				61B07C6820F21DC400D8B7E0 /* LaunchScreen.storyboard */,
@@ -330,6 +344,7 @@
 				61B07C5920F21DC300D8B7E0 /* Frameworks */,
 				61B07C5A20F21DC300D8B7E0 /* Resources */,
 				F2E2CD14295704AA33B5D94B /* [CP] Embed Pods Frameworks */,
+				FD8F011BF6F777A6BE0CCFC9 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -429,6 +444,7 @@
 				6199E0FB20F2656500A4009A /* Credentials.plist in Resources */,
 				61B07C6A20F21DC400D8B7E0 /* LaunchScreen.storyboard in Resources */,
 				61B07C6720F21DC400D8B7E0 /* Assets.xcassets in Resources */,
+				619679F020F8DA4800432672 /* Credentials-template.plist in Resources */,
 				612F46A920F518AD001A3003 /* user-solid.svg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -493,6 +509,9 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-BoatTracker/Pods-BoatTracker-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/GTMOAuth2/GTMOAuth2.framework",
+				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
+				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
 				"${PODS_ROOT}/Mapbox-iOS-SDK/dynamic/Mapbox.framework",
 				"${PODS_ROOT}/Mapbox-iOS-SDK/dynamic/Mapbox.framework.dSYM",
 				"${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework",
@@ -502,6 +521,9 @@
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMOAuth2.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Mapbox.framework",
 				"${DWARF_DSYM_FOLDER_PATH}/Mapbox.framework.dSYM",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCocoa.framework",
@@ -532,6 +554,24 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		FD8F011BF6F777A6BE0CCFC9 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-BoatTracker/Pods-BoatTracker-resources.sh",
+				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleSignIn.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BoatTracker/Pods-BoatTracker-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -550,6 +590,7 @@
 				6199E0E920F2325100A4009A /* BoatLabel.swift in Sources */,
 				61B07C6220F21DC300D8B7E0 /* MapVC.swift in Sources */,
 				61DE7F4B20F3ED3900C95B3F /* BoatButton.swift in Sources */,
+				619679EE20F89F6D00432672 /* GoogleAuth.swift in Sources */,
 				612F46A220F4A5CF001A3003 /* BoatHttpClient.swift in Sources */,
 				6199E0F520F2501E00A4009A /* errors.swift in Sources */,
 				6199E0F720F254FB00A4009A /* SocketClient.swift in Sources */,

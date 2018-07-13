@@ -7,6 +7,26 @@ PODS:
   - AppCenter/Core (1.7.1)
   - AppCenter/Crashes (1.7.1):
     - AppCenter/Core
+  - GoogleSignIn (4.1.2):
+    - "GoogleToolboxForMac/NSDictionary+URLArguments (~> 2.1)"
+    - "GoogleToolboxForMac/NSString+URLArguments (~> 2.1)"
+    - GTMOAuth2 (~> 1.0)
+    - GTMSessionFetcher/Core (~> 1.1)
+  - GoogleToolboxForMac/DebugUtils (2.1.4):
+    - GoogleToolboxForMac/Defines (= 2.1.4)
+  - GoogleToolboxForMac/Defines (2.1.4)
+  - "GoogleToolboxForMac/NSDictionary+URLArguments (2.1.4)":
+    - GoogleToolboxForMac/DebugUtils (= 2.1.4)
+    - GoogleToolboxForMac/Defines (= 2.1.4)
+    - "GoogleToolboxForMac/NSString+URLArguments (= 2.1.4)"
+  - "GoogleToolboxForMac/NSString+URLArguments (2.1.4)"
+  - GTMOAuth2 (1.1.6):
+    - GTMSessionFetcher (~> 1.1)
+  - GTMSessionFetcher (1.1.15):
+    - GTMSessionFetcher/Full (= 1.1.15)
+  - GTMSessionFetcher/Core (1.1.15)
+  - GTMSessionFetcher/Full (1.1.15):
+    - GTMSessionFetcher/Core (= 1.1.15)
   - Mapbox-iOS-SDK (4.1.0)
   - RxCocoa (4.2.0):
     - RxSwift (~> 4.0)
@@ -16,6 +36,7 @@ PODS:
 
 DEPENDENCIES:
   - AppCenter (= 1.7.1)
+  - GoogleSignIn
   - Mapbox-iOS-SDK (= 4.1)
   - RxCocoa (= 4.2.0)
   - RxSwift (= 4.2.0)
@@ -25,6 +46,10 @@ DEPENDENCIES:
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - AppCenter
+    - GoogleSignIn
+    - GoogleToolboxForMac
+    - GTMOAuth2
+    - GTMSessionFetcher
     - Mapbox-iOS-SDK
     - RxCocoa
     - RxSwift
@@ -33,12 +58,16 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   AppCenter: 53349f138e596f2514f7559bb50a7e6e55219f17
+  GoogleSignIn: d9ef55b10f0aa401a5de2747f59b725e4b9732ac
+  GoogleToolboxForMac: 91c824d21e85b31c2aae9bb011c5027c9b4e738f
+  GTMOAuth2: c77fe325e4acd453837e72d91e3b5f13116857b2
+  GTMSessionFetcher: 5fa5b80fd20e439ef5f545fb2cb3ca6c6714caa2
   Mapbox-iOS-SDK: f0a9813d5f08c096c1199eceb57ec6102b19cf54
   RxCocoa: 0b54909c902e1e581212a03e690bbd94032d8baa
   RxSwift: 99e10317ddfcc7fbe01356aafd118fde4a0be104
   SnapKit: a42d492c16e80209130a3379f73596c3454b7694
   SocketRocket: d57c7159b83c3c6655745cd15302aa24b6bae531
 
-PODFILE CHECKSUM: 4c9dae207e9e56518c69620db49a906361de4d40
+PODFILE CHECKSUM: 13d149a780b23f19f31244b7207fbddeb312b8e7
 
 COCOAPODS: 1.5.3

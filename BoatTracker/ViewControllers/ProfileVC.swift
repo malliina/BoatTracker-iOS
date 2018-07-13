@@ -37,7 +37,7 @@ class ProfileVC: UIViewController {
         view.addSubview(logoutButton)
         logoutButton.snp.makeConstraints { (make) in
             make.leadingMargin.trailingMargin.equalToSuperview()
-            make.topMargin.equalToSuperview().offset(24)
+            make.topMargin.equalToSuperview().offset(48)
         }
         logoutButton.addTarget(self, action: #selector(logoutClicked(_:)), for: .touchUpInside)
         view.addSubview(activityIndicator)
@@ -48,7 +48,7 @@ class ProfileVC: UIViewController {
     }
     
     @objc func logoutClicked(_ sender: UIButton) {
-        try? Keychain.shared.delete()
+        GoogleAuth.shared.signOut()
         delegate?.onToken(token: nil)
         goBack()
     }

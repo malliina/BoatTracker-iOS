@@ -15,10 +15,11 @@ class BoatButton {
     static func create(title: String) -> UIButton {
         let button = UIButton(type: .roundedRect)
         button.setTitle(title, for: .normal)
-        button.layer.borderColor = UIColor.blue.cgColor
+        button.layer.borderColor = UIColor.black.cgColor
         button.layer.borderWidth = 1
         button.layer.cornerRadius = 20
         button.titleLabel?.font = UIFont.systemFont(ofSize: 28)
+        button.setTitleColor(.black, for: .normal)
         return button
     }
     
