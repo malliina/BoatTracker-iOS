@@ -11,7 +11,6 @@
 		612F46A220F4A5CF001A3003 /* BoatHttpClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 612F46A120F4A5CF001A3003 /* BoatHttpClient.swift */; };
 		612F46A420F4A99E001A3003 /* EnvConf.swift in Sources */ = {isa = PBXBuildFile; fileRef = 612F46A320F4A99E001A3003 /* EnvConf.swift */; };
 		612F46A620F4AB70001A3003 /* Backend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 612F46A520F4AB70001A3003 /* Backend.swift */; };
-		612F46A920F518AD001A3003 /* user-solid.svg in Resources */ = {isa = PBXBuildFile; fileRef = 612F46A820F518AD001A3003 /* user-solid.svg */; };
 		612F46AC20F52776001A3003 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 612F46AB20F52776001A3003 /* Keychain.swift */; };
 		612F46AE20F551B1001A3003 /* ProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 612F46AD20F551B1001A3003 /* ProfileVC.swift */; };
 		612F46B020F551CB001A3003 /* extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 612F46AF20F551CB001A3003 /* extensions.swift */; };
@@ -21,7 +20,6 @@
 		612F46B920F66854001A3003 /* Geo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 612F46B820F66854001A3003 /* Geo.swift */; };
 		619679EB20F78B5900432672 /* MapMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619679EA20F78B5900432672 /* MapMode.swift */; };
 		619679EE20F89F6D00432672 /* GoogleAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619679ED20F89F6D00432672 /* GoogleAuth.swift */; };
-		619679F020F8DA4800432672 /* Credentials-template.plist in Resources */ = {isa = PBXBuildFile; fileRef = 619679EF20F8DA4800432672 /* Credentials-template.plist */; };
 		6199E0E920F2325100A4009A /* BoatLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6199E0E820F2325100A4009A /* BoatLabel.swift */; };
 		6199E0EC20F24DC700A4009A /* HttpClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6199E0EB20F24DC700A4009A /* HttpClient.swift */; };
 		6199E0EF20F24EC300A4009A /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6199E0EE20F24EC300A4009A /* Log.swift */; };
@@ -73,7 +71,6 @@
 		612F46A120F4A5CF001A3003 /* BoatHttpClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatHttpClient.swift; sourceTree = "<group>"; };
 		612F46A320F4A99E001A3003 /* EnvConf.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnvConf.swift; sourceTree = "<group>"; };
 		612F46A520F4AB70001A3003 /* Backend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Backend.swift; sourceTree = "<group>"; };
-		612F46A820F518AD001A3003 /* user-solid.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "user-solid.svg"; path = "../../../../Downloads/user-solid.svg"; sourceTree = "<group>"; };
 		612F46AB20F52776001A3003 /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
 		612F46AD20F551B1001A3003 /* ProfileVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileVC.swift; sourceTree = "<group>"; };
 		612F46AF20F551CB001A3003 /* extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = extensions.swift; sourceTree = "<group>"; };
@@ -83,7 +80,6 @@
 		612F46B820F66854001A3003 /* Geo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Geo.swift; sourceTree = "<group>"; };
 		619679EA20F78B5900432672 /* MapMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapMode.swift; sourceTree = "<group>"; };
 		619679ED20F89F6D00432672 /* GoogleAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAuth.swift; sourceTree = "<group>"; };
-		619679EF20F8DA4800432672 /* Credentials-template.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Credentials-template.plist"; sourceTree = "<group>"; };
 		6199E0E820F2325100A4009A /* BoatLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatLabel.swift; sourceTree = "<group>"; };
 		6199E0EB20F24DC700A4009A /* HttpClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpClient.swift; sourceTree = "<group>"; };
 		6199E0EE20F24EC300A4009A /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
@@ -173,7 +169,6 @@
 		612F46A720F5189B001A3003 /* SVGs */ = {
 			isa = PBXGroup;
 			children = (
-				612F46A820F518AD001A3003 /* user-solid.svg */,
 			);
 			path = SVGs;
 			sourceTree = "<group>";
@@ -286,7 +281,6 @@
 				61B07C6620F21DC400D8B7E0 /* Assets.xcassets */,
 				619679EC20F89F6300432672 /* Auth */,
 				61DE7F3D20F29F5800C95B3F /* Backend */,
-				619679EF20F8DA4800432672 /* Credentials-template.plist */,
 				6199E0FA20F2656500A4009A /* Credentials.plist */,
 				61B07C6B20F21DC400D8B7E0 /* Info.plist */,
 				61B07C6820F21DC400D8B7E0 /* LaunchScreen.storyboard */,
@@ -444,8 +438,6 @@
 				6199E0FB20F2656500A4009A /* Credentials.plist in Resources */,
 				61B07C6A20F21DC400D8B7E0 /* LaunchScreen.storyboard in Resources */,
 				61B07C6720F21DC400D8B7E0 /* Assets.xcassets in Resources */,
-				619679F020F8DA4800432672 /* Credentials-template.plist in Resources */,
-				612F46A920F518AD001A3003 /* user-solid.svg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
