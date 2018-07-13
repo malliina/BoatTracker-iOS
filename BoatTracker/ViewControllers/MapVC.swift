@@ -239,6 +239,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, BoatSocketDelegate, UIGesture
         onUiThread {
             self.removeAllTrails()
             self.mapMode = .fit
+            self.followButton.isHidden = true
         }
         socket = BoatSocket(token: token)
         socket?.delegate = self
