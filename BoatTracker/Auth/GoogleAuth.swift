@@ -12,7 +12,8 @@ import GoogleSignIn
 class GoogleAuth: NSObject, GIDSignInDelegate {
     static let shared = GoogleAuth()
     
-    let log = LoggerFactory.shared.system(GoogleAuth.self)
+    static let logger = LoggerFactory.shared.system(GoogleAuth.self)
+    let log = GoogleAuth.logger
     
     var delegate: TokenDelegate? = nil
     var uiDelegate: TokenDelegate? = nil
@@ -21,7 +22,11 @@ class GoogleAuth: NSObject, GIDSignInDelegate {
     
     override init() {
         super.init()
-        google.clientID = "497623115973-qut66ppubk4f9mpigckfkoqqoi060bge.apps.googleusercontent.com"
+        do {
+            google.clientID = try Credentials.read(key: "GoogleClientId")
+        } catch {
+            GoogleAuth.logger.error("Unable to read Google client ID. \(error)")
+        }
         google.delegate = self
     }
     

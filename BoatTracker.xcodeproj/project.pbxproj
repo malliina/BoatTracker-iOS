@@ -166,13 +166,6 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
-		612F46A720F5189B001A3003 /* SVGs */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = SVGs;
-			sourceTree = "<group>";
-		};
 		612F46AA20F5276C001A3003 /* Local */ = {
 			isa = PBXGroup;
 			children = (
@@ -288,7 +281,6 @@
 				619679E920F78B4800432672 /* Maps */,
 				612F46B120F64182001A3003 /* Measure */,
 				6199E0EA20F24DAE00A4009A /* Network */,
-				612F46A720F5189B001A3003 /* SVGs */,
 				6199E0ED20F24EB800A4009A /* Util */,
 				6199E0E620F2319700A4009A /* ViewControllers */,
 				6199E0E720F2324400A4009A /* Views */,
