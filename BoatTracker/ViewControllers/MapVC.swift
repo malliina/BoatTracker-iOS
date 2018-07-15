@@ -80,6 +80,8 @@ class MapVC: UIViewController, MGLMapViewDelegate, BoatSocketDelegate, UIGesture
         swipes.delegate = self
         mapView.addGestureRecognizer(swipes)
         
+        MapEvents.shared.delegate = self
+        
         GoogleAuth.shared.delegate = self
         GoogleAuth.shared.signInSilently()
     }
@@ -238,12 +240,18 @@ class MapVC: UIViewController, MGLMapViewDelegate, BoatSocketDelegate, UIGesture
         socket?.close()
         onUiThread {
             self.removeAllTrails()
-            self.mapMode = .fit
             self.followButton.isHidden = true
         }
         socket = BoatSocket(token: token)
         socket?.delegate = self
         socket?.open()
+    }
+    
+    func disconnect() {
+        socket?.delegate = nil
+        socket?.close()
+        removeAllTrails()
+        followButton.isHidden = true
     }
     
     func removeAllTrails() {
@@ -277,5 +285,11 @@ class MapVC: UIViewController, MGLMapViewDelegate, BoatSocketDelegate, UIGesture
 extension MapVC: TokenDelegate {
     func onToken(token: AccessToken?) {
         reload(token: token)
+    }
+}
+
+extension MapVC: MapDelegate {
+    func close() {
+        disconnect()
     }
 }

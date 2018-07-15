@@ -16,7 +16,7 @@ class BoatHttpClient {
     
     let client: HttpClient
     
-    let defaultHeaders: [String: String]
+    private var defaultHeaders: [String: String]
     
     convenience init(bearerToken: AccessToken) {
         self.init(bearerToken: bearerToken, client: HttpClient())
@@ -25,9 +25,21 @@ class BoatHttpClient {
     init(bearerToken: AccessToken, client: HttpClient) {
         self.client = client
         self.defaultHeaders = [
-            HttpClient.AUTHORIZATION: "bearer \(bearerToken.token)",
+            HttpClient.AUTHORIZATION: BoatHttpClient.authValue(for: bearerToken),
             HttpClient.ACCEPT: BoatHttpClient.BoatVersion10
         ]
+    }
+    
+    func updateToken(token: AccessToken?) {
+        if let token = token {
+            self.defaultHeaders.updateValue(BoatHttpClient.authValue(for: token), forKey: HttpClient.AUTHORIZATION)
+        } else {
+            self.defaultHeaders.removeValue(forKey: HttpClient.AUTHORIZATION)
+        }
+    }
+    
+    static func authValue(for token: AccessToken) -> String {
+        return "bearer \(token.token)"
     }
     
     func pingAuth() -> Observable<BackendInfo> {
@@ -80,5 +92,19 @@ class BackendInfo {
     init(name: String, version: String) {
         self.name = name
         self.version = version
+    }
+}
+
+class TrackSummary {
+    let track: TrackRef
+    let stats: TrackStats
+    
+    static func parse(json: JsObject) throws -> TrackSummary {
+        return TrackSummary(track: try json.readObj("track", parse: TrackRef.parse), stats: try json.readObj("stats", parse: TrackStats.parse))
+    }
+    
+    init(track: TrackRef, stats: TrackStats) {
+        self.track = track
+        self.stats = stats
     }
 }

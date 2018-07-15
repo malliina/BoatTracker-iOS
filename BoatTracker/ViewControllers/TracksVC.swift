@@ -7,3 +7,16 @@
 //
 
 import Foundation
+import UIKit
+
+class TracksVC: UITableViewController {
+    private var tracks: [TrackSummary] = []
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return tracks.count
+    }
+}

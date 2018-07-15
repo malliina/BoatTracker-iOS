@@ -8,11 +8,13 @@
 
 import Foundation
 
-public struct Speed: Comparable {
+public struct Speed: Comparable, CustomStringConvertible {
     static let knotInKmh: Double = 1.852
     static let zero = Speed(knots: 0)
     
     let knots: Double
+    
+    public var description: String { return "\(knots) kn" }
     
     public static func == (lhs: Speed, rhs: Speed) -> Bool {
         return lhs.knots == rhs.knots

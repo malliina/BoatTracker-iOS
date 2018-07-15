@@ -8,11 +8,15 @@
 
 import Foundation
 
-public struct Distance: Comparable {
+public struct Distance: Comparable, CustomStringConvertible {
     static let k = 1000
     static let zero = Distance(mm: 0)
     
     let mm: Int
+    
+    var kilometers: Double { return Double(mm) / 1000 / 1000 }
+    
+    public var description: String { return "\(kilometers) km" }
     
     public static func == (lhs: Distance, rhs: Distance) -> Bool {
         return lhs.mm == rhs.mm

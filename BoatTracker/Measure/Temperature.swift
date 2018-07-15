@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct Temperature: Comparable {
+public struct Temperature: Comparable, CustomStringConvertible {
     static func fahrenheitToCelsius(f: Double) -> Double {
         return (f - 32) * 5 / 9
     }
@@ -20,6 +20,8 @@ public struct Temperature: Comparable {
     static let zero = Temperature(celsius: 0)
     
     let celsius: Double
+    
+    public var description: String { return "\(celsius) ℃" }
     
     public static func == (lhs: Temperature, rhs: Temperature) -> Bool {
         return lhs.celsius == rhs.celsius

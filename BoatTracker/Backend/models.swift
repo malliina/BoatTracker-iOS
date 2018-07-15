@@ -56,18 +56,46 @@ class TrackRef {
     let boatName: BoatName
     let username: Username
     
+    let topSpeed: Speed
+    let avgSpeed: Speed
+    let distance: Distance
+    let duration: Duration
+    let avgWaterTemp: Temperature
+
     static func parse(json: JsObject) throws -> TrackRef {
         return TrackRef(
             trackName: TrackName(name: try json.readString("trackName")),
             boatName: BoatName(name: try json.readString("boatName")),
-            username: Username(name: try json.readString("username"))
+            username: Username(name: try json.readString("username")),
+            topSpeed: (try json.readDouble("topSpeed")).knots,
+            avgSpeed: (try json.readDouble("avgSpeed")).knots,
+            distance: (try json.readDouble("distance")).mm,
+            duration: (try json.readInt("distance")).seconds,
+            avgWaterTemp: (try json.readDouble("avgWaterTemp")).celsius
         )
     }
     
-    init(trackName: TrackName, boatName: BoatName, username: Username) {
+    init(trackName: TrackName, boatName: BoatName, username: Username, topSpeed: Speed, avgSpeed: Speed, distance: Distance, duration: Duration, avgWaterTemp: Temperature) {
         self.trackName = trackName
         self.boatName = boatName
         self.username = username
+        self.topSpeed = topSpeed
+        self.avgSpeed = avgSpeed
+        self.distance = distance
+        self.duration = duration
+        self.avgWaterTemp = avgWaterTemp
+    }
+}
+
+class TrackStats {
+    let points: Int
+    
+    static func parse(json: JsObject) throws -> TrackStats {
+        return TrackStats(points: try json.readInt("points"))
+    }
+    
+    init(points: Int) {
+        self.points = points
     }
 }
 

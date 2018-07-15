@@ -15,6 +15,6 @@ class Backend {
     
     init(_ baseUrl: URL) {
         self.baseUrl = baseUrl
-//        self.http = BoatHttpClient()
+//        self.http = BoatHttpClient(bearerToken: <#T##AccessToken#>)
     }
 }
