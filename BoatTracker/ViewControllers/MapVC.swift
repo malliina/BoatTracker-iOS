@@ -17,7 +17,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, BoatSocketDelegate, UIGesture
     let profileButton = BoatButton.map(icon: #imageLiteral(resourceName: "UserIcon"))
     let followButton = BoatButton.map(icon: #imageLiteral(resourceName: "LocationArrow"))
     
-    private var socket: BoatSocket? = nil
+    private var socket: BoatSocket { return Backend.shared.socket }
     
     // state of boat trails and icons
     var trails: [TrackName: MGLShapeSource] = [:]
@@ -236,20 +236,20 @@ class MapVC: UIViewController, MGLMapViewDelegate, BoatSocketDelegate, UIGesture
     
     func reload(token: AccessToken?) {
         latestToken = token
-        socket?.delegate = nil
-        socket?.close()
+        socket.delegate = nil
+        socket.close()
         onUiThread {
             self.removeAllTrails()
             self.followButton.isHidden = true
         }
-        socket = BoatSocket(token: token)
-        socket?.delegate = self
-        socket?.open()
+        Backend.shared.updateToken(new: token)
+        socket.delegate = self
+        socket.open()
     }
     
     func disconnect() {
-        socket?.delegate = nil
-        socket?.close()
+        socket.delegate = nil
+        socket.close()
         removeAllTrails()
         followButton.isHidden = true
     }

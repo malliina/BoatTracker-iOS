@@ -16,7 +16,7 @@ public struct Duration: Comparable, CustomStringConvertible {
     
     var seconds: Double { return Double(ms) / Double(Duration.k) }
     
-    public var description: String { return "\(seconds) s" }
+    public var description: String { return Formatting.shared.format(duration: self) }
     
     public static func == (lhs: Duration, rhs: Duration) -> Bool {
         return lhs.ms == rhs.ms

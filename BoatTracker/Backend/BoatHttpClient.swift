@@ -14,20 +14,28 @@ class BoatHttpClient {
     
     static let BoatVersion10 = "application/vnd.boat.v1+json"
     
+    let baseUrl: URL
     let client: HttpClient
     
     private var defaultHeaders: [String: String]
     
-    convenience init(bearerToken: AccessToken) {
-        self.init(bearerToken: bearerToken, client: HttpClient())
+    convenience init(bearerToken: AccessToken, baseUrl: URL) {
+        self.init(bearerToken: bearerToken, baseUrl: baseUrl, client: HttpClient())
     }
     
-    init(bearerToken: AccessToken, client: HttpClient) {
+    init(bearerToken: AccessToken?, baseUrl: URL, client: HttpClient) {
+        self.baseUrl = baseUrl
         self.client = client
-        self.defaultHeaders = [
-            HttpClient.AUTHORIZATION: BoatHttpClient.authValue(for: bearerToken),
-            HttpClient.ACCEPT: BoatHttpClient.BoatVersion10
-        ]
+        if let token = bearerToken {
+            self.defaultHeaders = [
+                HttpClient.AUTHORIZATION: BoatHttpClient.authValue(for: token),
+                HttpClient.ACCEPT: BoatHttpClient.BoatVersion10
+            ]
+        } else {
+            self.defaultHeaders = [
+                HttpClient.ACCEPT: BoatHttpClient.BoatVersion10
+            ]
+        }
     }
     
     func updateToken(token: AccessToken?) {
@@ -42,25 +50,32 @@ class BoatHttpClient {
         return "bearer \(token.token)"
     }
     
-    func pingAuth() -> Observable<BackendInfo> {
+    func pingAuth() -> Single<BackendInfo> {
         return getParsed("/pingAuth", parse: BackendInfo.parse)
     }
     
-    func getParsed<T>(_ uri: String, parse: @escaping (JsObject) throws -> T) -> Observable<T> {
-        let url = URL(string: uri, relativeTo: EnvConf.BaseUrl)!
+    func tracks() -> Single<[TrackSummary]> {
+        return getParsed("/tracks", parse: { (json) -> [TrackSummary] in
+            try json.readObjectArray("tracks", each: TrackSummary.parse)
+        })
+    }
+    
+    func getParsed<T>(_ uri: String, parse: @escaping (JsObject) throws -> T) -> Single<T> {
+        let url = URL(string: uri, relativeTo: baseUrl)!
         return client.get(url, headers: defaultHeaders).flatMap { (response) -> Observable<T> in
             return self.statusChecked(url, response: response).flatMap { (checkedResponse) -> Observable<T> in
                 return self.parseAs(response: checkedResponse, parse: parse)
             }
-        }
+        }.asSingle()
     }
     
     private func parseAs<T>(response: HttpResponse, parse: @escaping (JsObject) throws -> T) -> Observable<T> {
         do {
             let obj = try JsObject.parse(data: response.data)
+            print(obj.stringify())
             return Observable.just(try parse(obj))
         } catch let error as JsonError {
-            self.log.error("Parse error.")
+            self.log.error(error.describe)
             return Observable.error(AppError.parseError(error))
         } catch _ {
             return Observable.error(AppError.simple("Unknown parse error."))

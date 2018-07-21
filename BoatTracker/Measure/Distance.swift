@@ -16,7 +16,9 @@ public struct Distance: Comparable, CustomStringConvertible {
     
     var kilometers: Double { return Double(mm) / 1000 / 1000 }
     
-    public var description: String { return "\(kilometers) km" }
+    var rounded: String { return String(format: "%.2f", kilometers) }
+    
+    public var description: String { return "\(rounded) km" }
     
     public static func == (lhs: Distance, rhs: Distance) -> Bool {
         return lhs.mm == rhs.mm

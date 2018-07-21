@@ -39,6 +39,10 @@ class BoatSocket: SocketDelegate {
         client.openSilently()
     }
     
+    func updateToken(token: AccessToken?) {
+        client.updateAuthHeaderValue(newValue: token.map(BoatHttpClient.authValue))
+    }
+    
     func onMessage(json: JsObject) {
 //        log.info("Got \(json.stringify())")
         do {

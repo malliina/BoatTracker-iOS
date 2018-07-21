@@ -9,12 +9,22 @@
 import Foundation
 
 class Backend {
-    let shared = Backend(EnvConf.BaseUrl)
+    static let shared = Backend(EnvConf.BaseUrl)
+    
     let baseUrl: URL
-//    let http: BoatHttpClient
+    
+    var http: BoatHttpClient
+    var socket: BoatSocket
     
     init(_ baseUrl: URL) {
         self.baseUrl = baseUrl
-//        self.http = BoatHttpClient(bearerToken: <#T##AccessToken#>)
+        self.http = BoatHttpClient(bearerToken: nil, baseUrl: baseUrl, client: HttpClient())
+        self.socket = BoatSocket(token: nil)
+    }
+    
+    func updateToken(new token: AccessToken?) {
+        http.updateToken(token: token)
+        socket.close()
+        socket = BoatSocket(token: token)
     }
 }

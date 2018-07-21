@@ -68,16 +68,15 @@ open class JsObject {
     }
     
     func read<T>(_ key: String) throws -> T {
+        guard let t: T = try readOpt(T.self, key) else { throw JsonError.missing(key) }
+        return t
+    }
+    
+    func readOpt<T>(_ t: T.Type, _ key: String) throws -> T? {
         let raw = dict[key]
-        if let t = raw as? T {
-            return t
-        } else {
-            if let any = raw {
-                throw JsonError.invalid(key, any)
-            } else {
-                throw JsonError.missing(key)
-            }
-        }
+        guard let value = raw else { return nil }
+        guard let t = value as? T else { throw JsonError.invalid(key, value) }
+        return t
     }
     
     func stringify(pretty: Bool = true) -> String {

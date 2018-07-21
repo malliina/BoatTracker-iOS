@@ -20,8 +20,9 @@ extension String {
     }
 }
 
-class TrackStatsVC: UITableViewController {
+class TrackStatsVC: BaseTableVC {
     static let rowHeight: CGFloat = 60
+    
     static func testTrack() -> TrackRef {
         return TrackRef(trackName: TrackName(name: "Tname"), boatName: BoatName(name: "Bname"), username: Username(name: "Uname"), topSpeed: 1.knots, avgSpeed: 1.knots, distance: 10.kilometers, duration: 10.seconds, avgWaterTemp: 1.celsius)
     }
@@ -36,9 +37,9 @@ class TrackStatsVC: UITableViewController {
         self.data = [
             "Distance".withValue(track.distance),
             "Duration".withValue(track.duration),
-            "Top speed".withValue(track.topSpeed),
-            "Avg speed".withValue(track.avgSpeed),
-            "Water temp".withValue(track.avgWaterTemp)
+            "Top speed".withValue(track.topSpeed ?? "N/A"),
+            "Avg speed".withValue(track.avgSpeed ?? "N/A"),
+            "Water temp".withValue(track.avgWaterTemp ?? "N/A")
         ]
         super.init(style: .plain)
     }
@@ -52,15 +53,12 @@ class TrackStatsVC: UITableViewController {
         navigationItem.title = "Stats"
         tableView?.register(StatCell.self, forCellReuseIdentifier: cellKey)
         tableView.rowHeight = TrackStatsVC.rowHeight
-        // Removes separators when there are no more rows
         tableView.tableFooterView = UIView()
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellKey, for: indexPath) as! StatCell
-        let kv = data[indexPath.row]
-        cell.titleLabel.text = kv.label
-        cell.statLabel.text = kv.value
+        cell.fill(kv: data[indexPath.row])
         return cell
     }
     

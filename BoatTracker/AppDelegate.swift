@@ -37,6 +37,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         w.makeKeyAndVisible()
         w.rootViewController = MapVC()
 //        w.rootViewController = TrackStatsVC(track: TrackStatsVC.testTrack())
+//        w.rootViewController = TrackListVC()
         return true
     }
     

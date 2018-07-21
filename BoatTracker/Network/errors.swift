@@ -39,6 +39,17 @@ enum JsonError: Error {
     case notJson(Data)
     case missing(String)
     case invalid(String, Any)
+    
+    var describe: String {
+        switch self {
+        case .missing(let key):
+            return "Key not found: '\(key)'."
+        case .invalid(let key, let actual):
+            return "Invalid '\(key)' value: '\(actual)'."
+        case .notJson( _):
+            return "Invalid response format. Expected JSON."
+        }
+    }
 }
 
 enum AppError: Error {
@@ -51,14 +62,7 @@ enum AppError: Error {
     var describe: String {
         switch self {
         case .parseError(let json):
-            switch json {
-            case .missing(let key):
-                return "Key not found: '\(key)'."
-            case .invalid(let key, let actual):
-                return "Invalid '\(key)' value: '\(actual)'."
-            case .notJson( _):
-                return "Invalid response format. Expected JSON."
-            }
+            return json.describe
         case .responseFailure(let details):
             let code = details.code
             switch code {

@@ -28,4 +28,9 @@ class StatCell: BoatCell {
             make.leading.equalTo(titleLabel.snp.trailing).offset(12)
         }
     }
+    
+    func fill(kv: LabeledValue) {
+        titleLabel.text = kv.label
+        statLabel.text = kv.value
+    }
 }
