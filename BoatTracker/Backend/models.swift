@@ -11,12 +11,12 @@ import Mapbox
 
 class CoordsData {
     let coords: [CoordBody]
-    let from: TrackRef
+    let from: TrackMeta
     
     static func parse(json: JsObject) throws -> CoordsData {
         let body = try json.readObject("body")
-        let from = try body.readObj("from", parse: { (f) -> TrackRef in
-            try TrackRef.parse(json: f)
+        let from = try body.readObj("from", parse: { (f) -> TrackMeta in
+            try TrackMeta.parse(json: f)
         })
         let coords = try body.readObjectArray("coords", each: { (c) -> CoordBody in
             try CoordBody.parse(json: c)
@@ -24,7 +24,7 @@ class CoordsData {
         return CoordsData(coords: coords, from: from)
     }
     
-    init(coords: [CoordBody], from: TrackRef) {
+    init(coords: [CoordBody], from: TrackMeta) {
         self.coords = coords
         self.from = from
     }
@@ -48,6 +48,20 @@ class CoordBody {
         self.coord = coord
         self.boatTime = boatTime
         self.speed = speed
+    }
+}
+
+struct TrackMeta {
+    let trackName: TrackName
+    let boatName: BoatName
+    let username: Username
+    
+    static func parse(json: JsObject) throws -> TrackMeta {
+        return TrackMeta(
+            trackName: TrackName(name: try json.readString("trackName")),
+            boatName: BoatName(name: try json.readString("boatName")),
+            username: Username(name: try json.readString("username"))
+        )
     }
 }
 
@@ -75,7 +89,9 @@ class TrackRef {
         )
     }
     
-    init(trackName: TrackName, boatName: BoatName, username: Username, topSpeed: Speed?, avgSpeed: Speed?, distance: Distance, duration: Duration, avgWaterTemp: Temperature?) {
+    init(trackName: TrackName, boatName: BoatName, username: Username,
+         topSpeed: Speed?, avgSpeed: Speed?, distance: Distance,
+         duration: Duration, avgWaterTemp: Temperature?) {
         self.trackName = trackName
         self.boatName = boatName
         self.username = username

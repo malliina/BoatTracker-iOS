@@ -21,6 +21,7 @@ class TrackListVC: BaseTableVC, TokenDelegate {
         tableView?.register(TrackCell.self, forCellReuseIdentifier: cellKey)
         tableView.rowHeight = TrackStatsVC.rowHeight
         
+        // Dev time only
         GoogleAuth.shared.uiDelegate = self
         GoogleAuth.shared.signInSilently()
     }

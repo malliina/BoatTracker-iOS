@@ -61,8 +61,8 @@ class BoatSocket: SocketDelegate {
                 log.info("Unknown event: '\(event)'.")
             }
         } catch {
-            if case JsonError.missing(let msg) = error {
-                log.error(msg)
+            if case JsonError.missing(let key) = error {
+                log.error("Missing: \(key)")
             } else if case JsonError.invalid(let msg, let value) = error{
                 log.error("\(msg) with value \(value)")
             } else {

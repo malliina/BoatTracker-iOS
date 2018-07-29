@@ -16,6 +16,7 @@ class TrackCell: BoatCell {
     let avgWaterTemp = BoatLabel.build(text: "", alignment: .left, numberOfLines: 0)
     
     let spacing = 12
+    let fieldWidth = 80
     
     override func configureView() {
         contentView.addSubview(trackName)
@@ -28,25 +29,25 @@ class TrackCell: BoatCell {
         distance.snp.makeConstraints { (make) in
             make.top.equalTo(trackName.snp.bottom).offset(spacing)
             make.leading.equalTo(contentView.snp.leadingMargin)
-            make.width.equalTo(100)
+            make.width.equalTo(fieldWidth)
         }
         contentView.addSubview(duration)
         duration.snp.makeConstraints { (make) in
             make.top.equalTo(distance)
             make.leading.equalTo(distance.snp.trailing).offset(spacing)
-            make.width.equalTo(100)
+            make.width.equalTo(fieldWidth)
         }
         contentView.addSubview(topSpeed)
         topSpeed.snp.makeConstraints { (make) in
             make.top.equalTo(distance)
             make.leading.equalTo(duration.snp.trailing).offset(spacing)
-            make.width.equalTo(100)
+            make.width.equalTo(fieldWidth)
         }
         contentView.addSubview(avgWaterTemp)
         avgWaterTemp.snp.makeConstraints { (make) in
             make.top.equalTo(distance)
             make.leading.equalTo(topSpeed.snp.trailing).offset(spacing)
-            make.width.equalTo(100)
+            make.width.equalTo(fieldWidth)
         }
     }
     
