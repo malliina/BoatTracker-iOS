@@ -36,7 +36,7 @@ PODS:
 
 DEPENDENCIES:
   - AppCenter (= 1.7.1)
-  - GoogleSignIn
+  - GoogleSignIn (= 4.1.2)
   - Mapbox-iOS-SDK (= 4.1)
   - RxCocoa (= 4.2.0)
   - RxSwift (= 4.2.0)
@@ -68,6 +68,6 @@ SPEC CHECKSUMS:
   SnapKit: a42d492c16e80209130a3379f73596c3454b7694
   SocketRocket: d57c7159b83c3c6655745cd15302aa24b6bae531
 
-PODFILE CHECKSUM: 13d149a780b23f19f31244b7207fbddeb312b8e7
+PODFILE CHECKSUM: d5cc1e9bffd1b4d1a094d8ca0c383066cf45309f
 
 COCOAPODS: 1.5.3
