@@ -21,8 +21,6 @@ extension String {
 }
 
 class TrackStatsVC: BaseTableVC {
-    static let rowHeight: CGFloat = 60
-    
     static func testTrack() -> TrackRef {
         return TrackRef(trackName: TrackName(name: "Tname"), boatName: BoatName(name: "Bname"), username: Username(name: "Uname"), topSpeed: 1.knots, avgSpeed: 1.knots, distance: 10.kilometers, duration: 10.seconds, avgWaterTemp: 1.celsius)
     }
@@ -52,7 +50,7 @@ class TrackStatsVC: BaseTableVC {
         super.viewDidLoad()
         navigationItem.title = "Stats"
         tableView?.register(StatCell.self, forCellReuseIdentifier: cellKey)
-        tableView.rowHeight = TrackStatsVC.rowHeight
+        tableView.rowHeight = TrackCell.rowHeight
         tableView.tableFooterView = UIView()
     }
     

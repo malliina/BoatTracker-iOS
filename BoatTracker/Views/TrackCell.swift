@@ -7,8 +7,11 @@
 //
 
 import Foundation
+import UIKit
 
 class TrackCell: BoatCell {
+    static let rowHeight: CGFloat = 72
+    
     let trackName = BoatLabel.build(text: "", alignment: .left, numberOfLines: 0)
     let distance = BoatLabel.build(text: "", alignment: .left, numberOfLines: 0)
     let duration = BoatLabel.build(text: "", alignment: .left, numberOfLines: 0)
@@ -21,10 +24,9 @@ class TrackCell: BoatCell {
     override func configureView() {
         contentView.addSubview(trackName)
         trackName.snp.makeConstraints { (make) in
-            make.top.equalToSuperview()
+            make.top.equalToSuperview().offset(spacing)
             make.leading.equalTo(contentView.snp.leadingMargin)
         }
-        
         contentView.addSubview(distance)
         distance.snp.makeConstraints { (make) in
             make.top.equalTo(trackName.snp.bottom).offset(spacing)
@@ -35,20 +37,21 @@ class TrackCell: BoatCell {
         duration.snp.makeConstraints { (make) in
             make.top.equalTo(distance)
             make.leading.equalTo(distance.snp.trailing).offset(spacing)
-            make.width.equalTo(fieldWidth)
+            make.width.equalTo(distance)
         }
         contentView.addSubview(topSpeed)
         topSpeed.snp.makeConstraints { (make) in
             make.top.equalTo(distance)
             make.leading.equalTo(duration.snp.trailing).offset(spacing)
-            make.width.equalTo(fieldWidth)
+            make.width.equalTo(distance)
         }
-        contentView.addSubview(avgWaterTemp)
-        avgWaterTemp.snp.makeConstraints { (make) in
-            make.top.equalTo(distance)
-            make.leading.equalTo(topSpeed.snp.trailing).offset(spacing)
-            make.width.equalTo(fieldWidth)
-        }
+        //contentView.addSubview(avgWaterTemp)
+//        avgWaterTemp.snp.makeConstraints { (make) in
+//            make.top.equalTo(distance)
+//            make.leading.equalTo(topSpeed.snp.trailing).offset(spacing)
+//            make.width.equalTo(distance)
+//            //make.trailing.equalTo(contentView.snp.trailingMargin)
+//        }
     }
     
     func fill(summary: TrackSummary) {

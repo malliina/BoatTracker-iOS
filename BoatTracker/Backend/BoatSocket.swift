@@ -13,7 +13,7 @@ protocol BoatSocketDelegate {
 }
 
 class BoatSocket: SocketDelegate {
-    static let SocketUrl = URL(string: "/ws/updates", relativeTo: EnvConf.BaseUrl)!
+    //static let SocketUrl = URL(string: "/ws/updates", relativeTo: EnvConf.BaseUrl)!
     
     private let log = LoggerFactory.shared.network(BoatSocket.self)
     
@@ -21,12 +21,14 @@ class BoatSocket: SocketDelegate {
     
     var delegate: BoatSocketDelegate? = nil
     
-    convenience init(token: AccessToken?) {
+    convenience init(token: AccessToken?, track: TrackName?) {
         var headers = [HttpClient.ACCEPT: BoatHttpClient.BoatVersion10]
         if let token = token {
             headers.updateValue("bearer \(token.token)", forKey: HttpClient.AUTHORIZATION)
         }
-        self.init(client: SocketClient(baseURL: BoatSocket.SocketUrl, headers: headers))
+        let trackQuery = track.map { "?track=\($0.name)" } ?? ""
+        let url = URL(string: "/ws/updates\(trackQuery)", relativeTo: EnvConf.BaseUrl)!
+        self.init(client: SocketClient(baseURL: url, headers: headers))
 //        log.info("Using \(token)")
     }
     

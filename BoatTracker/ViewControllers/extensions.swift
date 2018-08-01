@@ -10,6 +10,13 @@ import Foundation
 import UIKit
 
 extension UIViewController {
+    func navigate(to: UIViewController, style: UIModalPresentationStyle = .formSheet) {
+        let nav = UINavigationController(rootViewController: to)
+        nav.modalPresentationStyle = style
+        nav.navigationBar.prefersLargeTitles = true
+        present(nav, animated: true, completion: nil)
+    }
+    
     func goBack() {
         dismiss(animated: true, completion: nil)
     }

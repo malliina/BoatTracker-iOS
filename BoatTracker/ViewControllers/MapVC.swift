@@ -11,7 +11,7 @@ import SnapKit
 import Mapbox
 import GoogleSignIn
 
-class MapVC: UIViewController, MGLMapViewDelegate, BoatSocketDelegate, UIGestureRecognizerDelegate {
+class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     let log = LoggerFactory.shared.vc(MapVC.self)
     
     let profileButton = BoatButton.map(icon: #imageLiteral(resourceName: "UserIcon"))
@@ -98,13 +98,13 @@ class MapVC: UIViewController, MGLMapViewDelegate, BoatSocketDelegate, UIGesture
     
     @objc func userClicked(_ sender: UIButton) {
         if latestToken != nil {
-            let dest = ProfileVC()
+            let dest = ProfileVC(tracksDelegate: self)
             dest.delegate = self
-            displaySheet(dest: dest)
+            navigate(to: dest)
         } else {
             let dest = AuthVC()
             dest.delegate = self
-            displaySheet(dest: dest)
+            navigate(to: dest)
         }
     }
     
@@ -121,25 +121,12 @@ class MapVC: UIViewController, MGLMapViewDelegate, BoatSocketDelegate, UIGesture
         }
     }
     
-    func displaySheet(dest: UIViewController) {
-        let nav = UINavigationController(rootViewController: dest)
-        nav.modalPresentationStyle = .formSheet
-        nav.navigationBar.prefersLargeTitles = true
-        present(nav, animated: true, completion: nil)
-    }
-    
     func mapViewDidFinishLoadingMap(_ mapView: MGLMapView) {
     }
     
     func mapView(_ mapView: MGLMapView, didFinishLoading style: MGLStyle) {
         self.style = style
         // Add stuff to the map starting here
-    }
-    
-    func onCoords(event: CoordsData) {
-        onUiThread {
-            self.addCoords(event: event)
-        }
     }
     
     private func addCoords(event: CoordsData) {
@@ -247,6 +234,11 @@ class MapVC: UIViewController, MGLMapViewDelegate, BoatSocketDelegate, UIGesture
         socket.open()
     }
     
+    func change(to track: TrackName) {
+        disconnect()
+        Backend.shared.open(track: track, delegate: self)
+    }
+    
     func disconnect() {
         socket.delegate = nil
         socket.close()
@@ -278,6 +270,20 @@ class MapVC: UIViewController, MGLMapViewDelegate, BoatSocketDelegate, UIGesture
         }
         if let iconSource = style.source(withIdentifier: iName) {
             style.removeSource(iconSource)
+        }
+    }
+}
+
+extension MapVC: TracksDelegate {
+    func onTrack(_ track: TrackName) {
+        change(to: track)
+    }
+}
+
+extension MapVC: BoatSocketDelegate {
+    func onCoords(event: CoordsData) {
+        onUiThread {
+            self.addCoords(event: event)
         }
     }
 }

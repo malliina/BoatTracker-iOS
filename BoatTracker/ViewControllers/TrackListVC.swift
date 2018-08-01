@@ -13,17 +13,34 @@ class TrackListVC: BaseTableVC, TokenDelegate {
     let log = LoggerFactory.shared.vc(TrackListVC.self)
     let cellKey = "TrackCell"
     
+    var login: Bool = false
+    
     private var tracks: [TrackSummary] = []
+    private var delegate: TracksDelegate? = nil
+    
+    init(delegate: TracksDelegate?, login: Bool = false) {
+        self.delegate = delegate
+        self.login = login
+        super.init(style: .plain)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = "Tracks"
         tableView?.register(TrackCell.self, forCellReuseIdentifier: cellKey)
-        tableView.rowHeight = TrackStatsVC.rowHeight
+        tableView.rowHeight = TrackCell.rowHeight
         
-        // Dev time only
-        GoogleAuth.shared.uiDelegate = self
-        GoogleAuth.shared.signInSilently()
+        if login {
+            // Dev time only
+            GoogleAuth.shared.uiDelegate = self
+            GoogleAuth.shared.signInSilently()
+        } else {
+            loadTracks()
+        }
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -34,6 +51,12 @@ class TrackListVC: BaseTableVC, TokenDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellKey, for: indexPath) as! TrackCell
         cell.fill(summary: tracks[indexPath.row])
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let selected = tracks[indexPath.row]
+        self.delegate?.onTrack(selected.track.trackName)
+        goBack()
     }
     
     func onToken(token: AccessToken?) {
