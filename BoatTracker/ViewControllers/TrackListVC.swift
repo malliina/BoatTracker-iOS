@@ -9,6 +9,10 @@
 import Foundation
 import UIKit
 
+protocol TracksDelegate {
+    func onTrack(_ track: TrackName)
+}
+
 class TrackListVC: BaseTableVC, TokenDelegate {
     let log = LoggerFactory.shared.vc(TrackListVC.self)
     let cellKey = "TrackCell"
