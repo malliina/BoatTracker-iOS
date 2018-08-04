@@ -16,7 +16,7 @@ public struct Speed: Comparable, CustomStringConvertible {
     
     var rounded: String { return String(format: "%.2f", knots) }
     
-    public var description: String { return " \(rounded) kn" }
+    public var description: String { return "\(rounded) kn" }
     
     public static func == (lhs: Speed, rhs: Speed) -> Bool {
         return lhs.knots == rhs.knots

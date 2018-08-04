@@ -65,41 +65,32 @@ struct TrackMeta {
     }
 }
 
-class TrackRef {
+struct TrackRef {
     let trackName: TrackName
     let boatName: BoatName
     let username: Username
     
+    let start: Date
     let topSpeed: Speed?
     let avgSpeed: Speed?
     let distance: Distance
     let duration: Duration
     let avgWaterTemp: Temperature?
+    
+    var startDate: String { get { return Formats.shared.format(date: start) } }
 
     static func parse(json: JsObject) throws -> TrackRef {
         return TrackRef(
             trackName: TrackName(name: try json.readString("trackName")),
             boatName: BoatName(name: try json.readString("boatName")),
             username: Username(name: try json.readString("username")),
+            start: Date(timeIntervalSince1970: try json.readDouble("startMillis") / 1000),
             topSpeed: (try json.readOpt(Double.self, "topSpeed")).map { $0.knots },
             avgSpeed: (try json.readOpt(Double.self, "avgSpeed")).map { $0.knots },
             distance: (try json.readDouble("distance")).mm,
             duration: (try json.readInt("duration")).seconds,
             avgWaterTemp: (try json.readOpt(Double.self, "avgWaterTemp")).map { $0.celsius }
         )
-    }
-    
-    init(trackName: TrackName, boatName: BoatName, username: Username,
-         topSpeed: Speed?, avgSpeed: Speed?, distance: Distance,
-         duration: Duration, avgWaterTemp: Temperature?) {
-        self.trackName = trackName
-        self.boatName = boatName
-        self.username = username
-        self.topSpeed = topSpeed
-        self.avgSpeed = avgSpeed
-        self.distance = distance
-        self.duration = duration
-        self.avgWaterTemp = avgWaterTemp
     }
 }
 

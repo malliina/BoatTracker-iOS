@@ -13,23 +13,31 @@ class TrackCell: BoatCell {
     static let rowHeight: CGFloat = 72
     
     let trackName = BoatLabel.build(text: "", alignment: .left, numberOfLines: 0)
-    let distance = BoatLabel.build(text: "", alignment: .left, numberOfLines: 0)
-    let duration = BoatLabel.build(text: "", alignment: .left, numberOfLines: 0)
-    let topSpeed = BoatLabel.build(text: "", alignment: .left, numberOfLines: 0)
-    let avgWaterTemp = BoatLabel.build(text: "", alignment: .left, numberOfLines: 0)
+    let dateTime = BoatLabel.build(text: "", alignment: .left, numberOfLines: 0)
+    let distance = BoatLabel.build(text: "", alignment: .left, numberOfLines: 0, fontSize: 14)
+    let duration = BoatLabel.build(text: "", alignment: .left, numberOfLines: 0, fontSize: 14)
+    let topSpeed = BoatLabel.build(text: "", alignment: .left, numberOfLines: 0, fontSize: 14)
+    let avgWaterTemp = BoatLabel.build(text: "", alignment: .left, numberOfLines: 0, fontSize: 14)
     
     let spacing = 12
     let fieldWidth = 80
     
     override func configureView() {
-        contentView.addSubview(trackName)
-        trackName.snp.makeConstraints { (make) in
+        contentView.addSubview(dateTime)
+        dateTime.snp.makeConstraints { (make) in
             make.top.equalToSuperview().offset(spacing)
             make.leading.equalTo(contentView.snp.leadingMargin)
         }
+        contentView.addSubview(trackName)
+        trackName.snp.makeConstraints { (make) in
+            make.top.equalToSuperview().offset(spacing)
+            make.trailing.equalTo(contentView.snp.trailingMargin)
+            make.leading.equalTo(dateTime.snp.trailing).offset(spacing)
+            make.width.equalTo(dateTime)
+        }
         contentView.addSubview(distance)
         distance.snp.makeConstraints { (make) in
-            make.top.equalTo(trackName.snp.bottom).offset(spacing)
+            make.top.equalTo(dateTime.snp.bottom).offset(spacing)
             make.leading.equalTo(contentView.snp.leadingMargin)
             make.width.equalTo(fieldWidth)
         }
@@ -56,7 +64,8 @@ class TrackCell: BoatCell {
     
     func fill(summary: TrackSummary) {
         let track = summary.track
-        trackName.text = track.trackName.description
+        dateTime.text = track.startDate
+        //trackName.text = track.trackName.description
         distance.text = track.distance.description
         duration.text = track.duration.description
         topSpeed.text = track.topSpeed?.description ?? "N/A"

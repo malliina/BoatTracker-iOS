@@ -12,14 +12,14 @@ import UIKit
 class BoatButton {
 //    static let blueish = PicsColors.buttonText
     
-    static func create(title: String) -> UIButton {
+    static func create(title: String, color: UIColor = UIColor.black, fontSize: CGFloat = 24) -> UIButton {
         let button = UIButton(type: .roundedRect)
         button.setTitle(title, for: .normal)
-        button.layer.borderColor = UIColor.black.cgColor
+        button.layer.borderColor = color.cgColor
         button.layer.borderWidth = 1
-        button.layer.cornerRadius = 20
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 28)
-        button.setTitleColor(.black, for: .normal)
+        button.layer.cornerRadius = 18
+        button.titleLabel?.font = UIFont.systemFont(ofSize: fontSize)
+        button.setTitleColor(color, for: .normal)
         return button
     }
     
@@ -27,8 +27,8 @@ class BoatButton {
         let button = UIButton()
         button.setTitle(title, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 20)
-        button.setTitleColor(UIColor.blue, for: .normal)
-        button.setTitleColor(UIColor.gray, for: .selected)
+        button.setTitleColor(.blue, for: .normal)
+        button.setTitleColor(.gray, for: .selected)
         return button
     }
     

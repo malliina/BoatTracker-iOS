@@ -75,8 +75,20 @@ class TrackListVC: BaseTableVC, TokenDelegate {
             case .success(let ts):
                 self.log.info("Got \(ts.count) tracks.")
                 self.onUiThread {
-                    self.tableView.backgroundView = nil
-                    self.tracks = ts
+                    if ts.isEmpty {
+                        let feedback = BoatLabel.build(text: "Hello! You have no saved tracks. To save tracks, you'll need to connect the BoatTracker agent software to the GPS chartplotter in your boat.", alignment: .center, numberOfLines: 0)
+                        let container = UIView()
+                        container.addSubview(feedback)
+                        feedback.snp.makeConstraints { (make) in
+                            make.leading.equalToSuperview().offset(16)
+                            make.trailing.equalToSuperview().inset(16)
+                            make.centerY.equalToSuperview()
+                        }
+                        self.tableView.backgroundView = container
+                    } else {
+                        self.tableView.backgroundView = nil
+                        self.tracks = ts
+                    }
                     self.tableView.reloadData()
                 }
             case .error(let err):
@@ -98,6 +110,10 @@ class TrackListVC: BaseTableVC, TokenDelegate {
             self.tracks = []
             self.tableView.reloadData()
         }
+    }
+    
+    @objc func cancelClicked(_ sender: UIBarButtonItem) {
+        goBack()
     }
 }
 

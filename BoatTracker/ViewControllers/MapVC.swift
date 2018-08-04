@@ -42,6 +42,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     }
     
     var latestToken: AccessToken? = nil
+    var latestTrack: TrackName? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -98,7 +99,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     
     @objc func userClicked(_ sender: UIButton) {
         if latestToken != nil {
-            let dest = ProfileVC(tracksDelegate: self)
+            let dest = ProfileVC(tracksDelegate: self, current: latestTrack)
             dest.delegate = self
             navigate(to: dest)
         } else {
@@ -132,6 +133,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     private func addCoords(event: CoordsData) {
         guard let style = style else { return }
         let track = event.from.trackName
+        latestTrack = track
         let coords = event.coords
 //        log.info("Got \(coords.count) coords")
         // updates boat trail
@@ -236,6 +238,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     
     func change(to track: TrackName) {
         disconnect()
+        latestTrack = track
         Backend.shared.open(track: track, delegate: self)
     }
     
@@ -253,6 +256,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         trails = [:]
         history = [:]
         icons = [:]
+        latestTrack = nil
     }
     
     func removeTrack(track: TrackName) {
