@@ -29,15 +29,14 @@ class ProfileVC: UIViewController {
     let topSpeed = StatBox("Top Speed")
     let avgSpeed = StatBox("Avg Speed")
     let avgWaterTemp = StatBox("Water Temp")
-    
-    let tracksButton = BoatButton.create(title: "More Tracks", color: .blue)
+    let tracksButton = BoatButton.nav(title: "Track History")
     let logoutButton = BoatButton.create(title: "Logout")
     let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .gray)
     
     var delegate: TokenDelegate? = nil
     var tracksDelegate: TracksDelegate? = nil
     var current: TrackName? = nil
-    var login: Bool = true
+    var login: Bool = false
     
     init(tracksDelegate: TracksDelegate, current: TrackName?) {
         self.tracksDelegate = tracksDelegate
@@ -57,16 +56,10 @@ class ProfileVC: UIViewController {
         let container = UIScrollView()
         view.addSubview(container)
         container.snp.makeConstraints { (make) in
-            make.edges.equalToSuperview()
+            make.left.right.top.equalToSuperview()
         }
-        //let content = UIView()
-        //container.addSubview(content)
-//        content.snp.makeConstraints { (make) in
-//            make.left.right.equalTo(view)
-//            make.top.equalToSuperview()
-//        }
 
-        view.backgroundColor = UIColor.white
+        view.backgroundColor = BoatColors.shared.backgroundColor
         
         let spacingBig: CGFloat = 36
         let verticalSpacing: CGFloat = 36
@@ -95,7 +88,7 @@ class ProfileVC: UIViewController {
         statsView.addSubview(avgSpeed)
         avgSpeed.snp.makeConstraints { (make) in
             make.top.width.equalTo(topSpeed)
-            make.leadingMargin.equalTo(topSpeed.snp.trailing).offset(spacingBig)
+            make.leading.equalTo(topSpeed.snp.trailing).offset(spacingBig)
             make.trailingMargin.equalToSuperview()
         }
         statsView.addSubview(avgWaterTemp)
@@ -115,15 +108,16 @@ class ProfileVC: UIViewController {
         tracksButton.snp.makeConstraints { (make) in
             make.leadingMargin.trailingMargin.equalTo(view)
             make.topMargin.equalTo(statsView.snp.bottom).offset(48)
+            make.bottom.lessThanOrEqualTo(container)
         }
         tracksButton.addTarget(self, action: #selector(tracksClicked(_:)), for: .touchUpInside)
         
-        container.addSubview(logoutButton)
+        view.addSubview(logoutButton)
+        logoutButton.backgroundColor = BoatColors.shared.logoutBackground
         logoutButton.snp.makeConstraints { (make) in
             make.leadingMargin.trailingMargin.equalTo(view)
-            make.top.greaterThanOrEqualTo(tracksButton.snp.bottom).offset(verticalSpacing)
-            make.bottom.equalTo(container).inset(spacingBig)
-            //make.bottom.lessThanOrEqualTo(view).priority(.low)
+            make.top.equalTo(container.snp.bottom).offset(verticalSpacing)
+            make.bottom.equalTo(view).inset(8)
         }
         logoutButton.addTarget(self, action: #selector(logoutClicked(_:)), for: .touchUpInside)
         

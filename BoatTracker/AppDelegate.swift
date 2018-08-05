@@ -36,7 +36,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = w
         w.makeKeyAndVisible()
         w.rootViewController = MapVC()
-//        let dest = ProfileVC(tracksDelegate: Dummy.shared, current: TrackName(name: "jojnxr"))
+//        let dest = ProfileVC(tracksDelegate: Dummy.shared, current: TrackName(name: ""))
 //        let nav = UINavigationController(rootViewController: dest)
 //        w.rootViewController = nav
 //        w.rootViewController = TrackStatsVC(track: TrackStatsVC.testTrack())
@@ -48,10 +48,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         do {
             let token = try Credentials.read(key: key)
             MGLAccountManager.accessToken = token
-        } catch let err as AppError {
+        } catch let err {
             log.error(err.describe)
-        } catch {
-            log.error("Unable to read \(key).")
         }
     }
     

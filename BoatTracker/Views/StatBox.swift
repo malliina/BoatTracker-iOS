@@ -9,6 +9,11 @@
 import Foundation
 import UIKit
 
+enum StatBoxStyle {
+    case small
+    case large
+}
+
 class StatBox: UIView {
     let label: UILabel
     let valueText: UILabel
@@ -16,6 +21,15 @@ class StatBox: UIView {
     var value: String {
         get { return valueText.text ?? "" }
         set { valueText.text = newValue }
+    }
+    
+    convenience init(_ title: String, style: StatBoxStyle) {
+        switch style {
+        case .small:
+            self.init(title, initialValue: "N/A", labelFontSize: 8, valueFontSize: 12, verticalSpace: 4)
+        case .large:
+            self.init(title, initialValue: "N/A", labelFontSize: 14, valueFontSize: 17, verticalSpace: 12)
+        }
     }
     
     init(_ title: String, initialValue: String = "N/A", labelFontSize: CGFloat = 14, valueFontSize: CGFloat = 17, verticalSpace: CGFloat = 12) {

@@ -257,6 +257,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         history = [:]
         icons = [:]
         latestTrack = nil
+        mapMode = .fit
     }
     
     func removeTrack(track: TrackName) {

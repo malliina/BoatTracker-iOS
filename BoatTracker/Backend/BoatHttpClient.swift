@@ -72,7 +72,7 @@ class BoatHttpClient {
     private func parseAs<T>(response: HttpResponse, parse: @escaping (JsObject) throws -> T) -> Observable<T> {
         do {
             let obj = try JsObject.parse(data: response.data)
-            print(obj.stringify())
+//            print(obj.stringify())
             return Observable.just(try parse(obj))
         } catch let error as JsonError {
             self.log.error(error.describe)
