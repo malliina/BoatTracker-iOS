@@ -10,13 +10,13 @@ import Foundation
 import UIKit
 
 class TrackCell: BoatCell {
-    static let rowHeight: CGFloat = 72
+    static let rowHeight: CGFloat = 80
     
     let trackName = BoatLabel.build(text: "", alignment: .left, numberOfLines: 0)
     let dateTime = BoatLabel.build(text: "", alignment: .left, numberOfLines: 0)
-    let distance = BoatLabel.build(text: "", alignment: .left, numberOfLines: 0, fontSize: 14)
-    let duration = BoatLabel.build(text: "", alignment: .left, numberOfLines: 0, fontSize: 14)
-    let topSpeed = BoatLabel.build(text: "", alignment: .left, numberOfLines: 0, fontSize: 14)
+    let distance = StatBox("Distance", initialValue: "N/A", labelFontSize: 8, valueFontSize: 12, verticalSpace: 4)
+    let duration = StatBox("Duration", initialValue: "N/A", labelFontSize: 8, valueFontSize: 12, verticalSpace: 4)
+    let topSpeed = StatBox("Top", initialValue: "N/A", labelFontSize: 8, valueFontSize: 12, verticalSpace: 4)
     let avgWaterTemp = BoatLabel.build(text: "", alignment: .left, numberOfLines: 0, fontSize: 14)
     
     let spacing = 12
@@ -52,23 +52,17 @@ class TrackCell: BoatCell {
             make.top.equalTo(distance)
             make.leading.equalTo(duration.snp.trailing).offset(spacing)
             make.width.equalTo(distance)
+            make.trailing.equalToSuperview()
         }
-        //contentView.addSubview(avgWaterTemp)
-//        avgWaterTemp.snp.makeConstraints { (make) in
-//            make.top.equalTo(distance)
-//            make.leading.equalTo(topSpeed.snp.trailing).offset(spacing)
-//            make.width.equalTo(distance)
-//            //make.trailing.equalTo(contentView.snp.trailingMargin)
-//        }
     }
     
     func fill(summary: TrackSummary) {
         let track = summary.track
         dateTime.text = track.startDate
         //trackName.text = track.trackName.description
-        distance.text = track.distance.description
-        duration.text = track.duration.description
-        topSpeed.text = track.topSpeed?.description ?? "N/A"
+        distance.value = track.distance.description
+        duration.value = track.duration.description
+        topSpeed.value = track.topSpeed?.description ?? "N/A"
         avgWaterTemp.text = track.avgWaterTemp?.description ?? "N/A"
     }
 }

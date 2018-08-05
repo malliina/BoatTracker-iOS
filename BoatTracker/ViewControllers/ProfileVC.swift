@@ -9,26 +9,35 @@
 import Foundation
 import UIKit
 
+extension ProfileVC: TokenDelegate {
+    func onToken(token: AccessToken?) {
+        Backend.shared.updateToken(new: token)
+        loadTracks()
+    }
+}
+
 class ProfileVC: UIViewController {
     let log = LoggerFactory.shared.vc(ProfileVC.self)
     
     let feedbackLabel = BoatLabel.build(text: "")
     
     let statsView = UIView()
-    let date = BoatLabel.build(text: "", alignment: .right)
-    let duration = BoatLabel.build(text: "", alignment: .right)
-    let distance = BoatLabel.build(text: "", alignment: .right)
-    let topSpeed = BoatLabel.build(text: "", alignment: .right)
-    let avgSpeed = BoatLabel.build(text: "", alignment: .right)
-    let avgWaterTemp = BoatLabel.build(text: "", alignment: .right)
+
+    let date = StatBox("Date")
+    let duration = StatBox("Duration")
+    let distance = StatBox("Distance")
+    let topSpeed = StatBox("Top Speed")
+    let avgSpeed = StatBox("Avg Speed")
+    let avgWaterTemp = StatBox("Water Temp")
     
-    let tracksButton = BoatButton.create(title: "Tracks", color: .blue)
+    let tracksButton = BoatButton.create(title: "More Tracks", color: .blue)
     let logoutButton = BoatButton.create(title: "Logout")
     let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .gray)
     
     var delegate: TokenDelegate? = nil
     var tracksDelegate: TracksDelegate? = nil
     var current: TrackName? = nil
+    var login: Bool = true
     
     init(tracksDelegate: TracksDelegate, current: TrackName?) {
         self.tracksDelegate = tracksDelegate
@@ -45,107 +54,91 @@ class ProfileVC: UIViewController {
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Map", style: .plain, target: self, action: #selector(cancelClicked(_:)))
         navigationItem.title = "BoatTracker"
         
+        let container = UIScrollView()
+        view.addSubview(container)
+        container.snp.makeConstraints { (make) in
+            make.edges.equalToSuperview()
+        }
+        //let content = UIView()
+        //container.addSubview(content)
+//        content.snp.makeConstraints { (make) in
+//            make.left.right.equalTo(view)
+//            make.top.equalToSuperview()
+//        }
+
         view.backgroundColor = UIColor.white
         
-        let spacing: CGFloat = 12
-        let labelWidth: CGFloat = 160
-        
+        let spacingBig: CGFloat = 36
+        let verticalSpacing: CGFloat = 36
+
         statsView.isHidden = true
-        view.addSubview(statsView)
+        container.addSubview(statsView)
         statsView.snp.makeConstraints { (make) in
-            make.topMargin.equalToSuperview().offset(24)
-            make.leadingMargin.trailingMargin.equalToSuperview()
-        }
-        let dateLabel = label(text: "Date")
-        statsView.addSubview(dateLabel)
-        dateLabel.snp.makeConstraints { (make) in
-            make.width.equalTo(labelWidth)
-            make.top.leadingMargin.equalToSuperview()
-        }
-        statsView.addSubview(date)
-        date.snp.makeConstraints { (make) in
-            make.leading.equalTo(dateLabel.snp.trailing).offset(spacing)
-            make.centerY.equalTo(dateLabel)
-        }
-        let durationLabel = label(text: "Duration")
-        statsView.addSubview(durationLabel)
-        durationLabel.snp.makeConstraints { (make) in
-            make.top.equalTo(dateLabel.snp.bottom).offset(spacing)
-            make.leadingMargin.width.equalTo(dateLabel)
+            make.top.equalToSuperview().offset(verticalSpacing)
+            make.leadingMargin.trailingMargin.equalTo(view)
         }
         statsView.addSubview(duration)
         duration.snp.makeConstraints { (make) in
-            make.leading.equalTo(durationLabel.snp.trailing).offset(spacing)
-            make.centerY.equalTo(durationLabel)
-        }
-        let distanceLabel = label(text: "Distance")
-        statsView.addSubview(distanceLabel)
-        distanceLabel.snp.makeConstraints { (make) in
-            make.top.equalTo(durationLabel.snp.bottom).offset(spacing)
-            make.leadingMargin.width.equalTo(dateLabel)
+            make.leadingMargin.topMargin.equalToSuperview()
         }
         statsView.addSubview(distance)
         distance.snp.makeConstraints { (make) in
-            make.leading.equalTo(distanceLabel.snp.trailing).offset(spacing)
-            make.centerY.equalTo(distanceLabel)
-        }
-        let topSpeedLabel = label(text: "Top Speed")
-        statsView.addSubview(topSpeedLabel)
-        topSpeedLabel.snp.makeConstraints { (make) in
-            make.top.equalTo(distanceLabel.snp.bottom).offset(spacing)
-            make.leadingMargin.width.equalTo(dateLabel)
+            make.top.width.equalTo(duration)
+            make.leading.equalTo(duration.snp.trailing).offset(spacingBig)
+            make.trailingMargin.equalToSuperview()
         }
         statsView.addSubview(topSpeed)
         topSpeed.snp.makeConstraints { (make) in
-            make.leading.equalTo(topSpeedLabel.snp.trailing).offset(spacing)
-            make.centerY.equalTo(topSpeedLabel)
-        }
-        let avgSpeedLabel = BoatLabel.build(text: "Avg Speed", alignment: .left)
-        statsView.addSubview(avgSpeedLabel)
-        avgSpeedLabel.snp.makeConstraints { (make) in
-            make.top.equalTo(topSpeedLabel.snp.bottom).offset(spacing)
-            make.leadingMargin.width.equalTo(dateLabel)
+            make.top.equalTo(duration.snp.bottom).offset(verticalSpacing)
+            make.leadingMargin.equalTo(duration)
         }
         statsView.addSubview(avgSpeed)
         avgSpeed.snp.makeConstraints { (make) in
-            make.leading.equalTo(avgSpeedLabel.snp.trailing).offset(spacing)
-            make.centerY.equalTo(avgSpeedLabel)
-            make.bottom.equalToSuperview()
-        }
-        let avgWaterLabel = BoatLabel.build(text: "Avg Water Temp", alignment: .left)
-        statsView.addSubview(avgWaterLabel)
-        avgWaterLabel.snp.makeConstraints { (make) in
-            make.top.equalTo(avgSpeedLabel.snp.bottom).offset(spacing)
-            make.leadingMargin.width.equalTo(dateLabel)
-            make.bottom.equalToSuperview()
+            make.top.width.equalTo(topSpeed)
+            make.leadingMargin.equalTo(topSpeed.snp.trailing).offset(spacingBig)
+            make.trailingMargin.equalToSuperview()
         }
         statsView.addSubview(avgWaterTemp)
         avgWaterTemp.snp.makeConstraints { (make) in
-            make.leading.equalTo(avgWaterLabel.snp.trailing).offset(spacing)
-            make.centerY.equalTo(avgWaterLabel)
+            make.top.equalTo(topSpeed.snp.bottom).offset(verticalSpacing)
+            make.leadingMargin.equalTo(duration)
+            make.width.equalTo(topSpeed)
             make.bottom.equalToSuperview()
         }
-        view.addSubview(tracksButton)
+        statsView.addSubview(date)
+        date.snp.makeConstraints { (make) in
+            make.top.width.equalTo(avgWaterTemp)
+            make.leading.equalTo(avgWaterTemp.snp.trailing).offset(spacingBig)
+            make.trailingMargin.equalToSuperview()
+        }
+        container.addSubview(tracksButton)
         tracksButton.snp.makeConstraints { (make) in
-            make.leadingMargin.trailingMargin.equalToSuperview()
-            make.topMargin.equalTo(statsView.snp.bottom).offset(36)
+            make.leadingMargin.trailingMargin.equalTo(view)
+            make.topMargin.equalTo(statsView.snp.bottom).offset(48)
         }
         tracksButton.addTarget(self, action: #selector(tracksClicked(_:)), for: .touchUpInside)
         
-        view.addSubview(logoutButton)
+        container.addSubview(logoutButton)
         logoutButton.snp.makeConstraints { (make) in
-            make.leadingMargin.trailingMargin.equalToSuperview()
-            make.top.greaterThanOrEqualTo(tracksButton.snp.bottom).offset(spacing)
-            make.bottom.equalToSuperview().inset(spacing)
+            make.leadingMargin.trailingMargin.equalTo(view)
+            make.top.greaterThanOrEqualTo(tracksButton.snp.bottom).offset(verticalSpacing)
+            make.bottom.equalTo(container).inset(spacingBig)
+            //make.bottom.lessThanOrEqualTo(view).priority(.low)
         }
         logoutButton.addTarget(self, action: #selector(logoutClicked(_:)), for: .touchUpInside)
         
-        view.addSubview(activityIndicator)
+        container.addSubview(activityIndicator)
         activityIndicator.hidesWhenStopped = true
         activityIndicator.snp.makeConstraints { (make) in
             make.centerX.centerY.equalTo(logoutButton)
         }
-        loadTracks()
+        if login {
+            // Dev time only
+            GoogleAuth.shared.uiDelegate = self
+            GoogleAuth.shared.signInSilently()
+        } else {
+            loadTracks()
+        }
     }
     
     private func label(text: String) -> UILabel {
@@ -176,12 +169,12 @@ class ProfileVC: UIViewController {
     
     func update(summary: TrackSummary) {
         let track = summary.track
-        date.text = track.startDate
-        duration.text = track.duration.description
-        distance.text = track.distance.description
-        topSpeed.text = track.topSpeed?.description ?? "N/A"
-        avgSpeed.text = track.avgSpeed?.description ?? "N/A"
-        avgWaterTemp.text = track.avgWaterTemp?.description ?? "N/A"
+        date.value = track.startDate
+        duration.value = track.duration.description
+        distance.value = track.distance.description
+        topSpeed.value = track.topSpeed?.description ?? "N/A"
+        avgSpeed.value = track.avgSpeed?.description ?? "N/A"
+        avgWaterTemp.value = track.avgWaterTemp?.description ?? "N/A"
         UIView.transition(with: statsView, duration: 0.6, options: .transitionCrossDissolve, animations: {
             self.statsView.isHidden = false
         }, completion: nil)
