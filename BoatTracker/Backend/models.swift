@@ -134,3 +134,81 @@ struct Username: Equatable, Hashable, CustomStringConvertible {
     
     static func == (lhs: Username, rhs: Username) -> Bool { return lhs.name == rhs.name }
 }
+
+class BackendInfo {
+    let name: String
+    let version: String
+    
+    static func parse(obj: JsObject) throws -> BackendInfo {
+        return BackendInfo(name: try obj.readString("name"), version: try obj.readString("version"))
+    }
+    
+    init(name: String, version: String) {
+        self.name = name
+        self.version = version
+    }
+}
+
+class TrackSummary {
+    let track: TrackRef
+    let stats: TrackStats
+    
+    static func parse(json: JsObject) throws -> TrackSummary {
+        return TrackSummary(track: try json.readObj("track", parse: TrackRef.parse), stats: try json.readObj("stats", parse: TrackStats.parse))
+    }
+    
+    init(track: TrackRef, stats: TrackStats) {
+        self.track = track
+        self.stats = stats
+    }
+}
+
+class Boat {
+    let id: Int
+    let name: String
+    let token: String
+    let addedMillis: UInt64
+    
+    static func parse(json: JsObject) throws -> Boat {
+        return Boat(id: try json.readInt("id"),
+                    name: try json.readString("name"),
+                    token: try json.readString("token"),
+                    addedMillis: try json.readUInt("addedMillis"))
+    }
+    
+    init(id: Int, name: String, token: String, addedMillis: UInt64) {
+        self.id = id
+        self.name = name
+        self.token = token
+        self.addedMillis = addedMillis
+    }
+}
+
+class UserProfile {
+    let id: Int
+    let username: Username
+    let email: String?
+    let boats: [Boat]
+    let addedMillis: UInt64
+    
+    static func parse(obj: JsObject) throws -> UserProfile {
+        return try parseUser(obj: try obj.readObject("user"))
+    }
+    
+    static func parseUser(obj: JsObject) throws -> UserProfile {
+        return UserProfile(id: try obj.readInt("id"),
+                           username: Username(name: try obj.readString("username")),
+                           email: try obj.readOpt(String.self, "email"),
+                           boats: try obj.readObjectArray("boats", each: Boat.parse),
+                           addedMillis: try obj.readUInt("addedMillis")
+        )
+    }
+    
+    init(id: Int, username: Username, email: String?, boats: [Boat], addedMillis: UInt64) {
+        self.id = id
+        self.username = username
+        self.email = email
+        self.boats = boats
+        self.addedMillis = addedMillis
+    }
+}

@@ -54,6 +54,7 @@
 		61DE7F4720F3E6D900C95B3F /* TracksVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DE7F4620F3E6D900C95B3F /* TracksVC.swift */; };
 		61DE7F4920F3EB0700C95B3F /* BoatTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DE7F4820F3EB0700C95B3F /* BoatTextField.swift */; };
 		61DE7F4B20F3ED3900C95B3F /* BoatButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DE7F4A20F3ED3900C95B3F /* BoatButton.swift */; };
+		61F4198F211F7CBB00B1ED7D /* BoatsTokensVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61F4198E211F7CBB00B1ED7D /* BoatsTokensVC.swift */; };
 		6647B5099C4C5E8F64D611EA /* Pods_BoatTracker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39042C4BC3843DC7B96921B7 /* Pods_BoatTracker.framework */; };
 		D1CC827F3199A404B2127EB7 /* Pods_BoatTrackerUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B5853E69E33C5D92F1E8092 /* Pods_BoatTrackerUITests.framework */; };
 		F3D2082E27BFEB51CB0FF565 /* Pods_BoatTrackerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 291C188E8DFD75437944D4D8 /* Pods_BoatTrackerTests.framework */; };
@@ -135,6 +136,7 @@
 		61DE7F4620F3E6D900C95B3F /* TracksVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TracksVC.swift; sourceTree = "<group>"; };
 		61DE7F4820F3EB0700C95B3F /* BoatTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatTextField.swift; sourceTree = "<group>"; };
 		61DE7F4A20F3ED3900C95B3F /* BoatButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatButton.swift; sourceTree = "<group>"; };
+		61F4198E211F7CBB00B1ED7D /* BoatsTokensVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatsTokensVC.swift; sourceTree = "<group>"; };
 		682050442727B4467E4B02A3 /* Pods-BoatTracker.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BoatTracker.release.xcconfig"; path = "Pods/Target Support Files/Pods-BoatTracker/Pods-BoatTracker.release.xcconfig"; sourceTree = "<group>"; };
 		6C4293DD11E6684622982210 /* Pods-BoatTrackerUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BoatTrackerUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BoatTrackerUITests/Pods-BoatTrackerUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		7B5853E69E33C5D92F1E8092 /* Pods_BoatTrackerUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BoatTrackerUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -243,6 +245,7 @@
 			children = (
 				61DE7F4420F3E6D100C95B3F /* AuthVC.swift */,
 				61967A012103C4EE00432672 /* BaseTableVC.swift */,
+				61F4198E211F7CBB00B1ED7D /* BoatsTokensVC.swift */,
 				612F46AF20F551CB001A3003 /* extensions.swift */,
 				61B07C6120F21DC300D8B7E0 /* MapVC.swift */,
 				612F46AD20F551B1001A3003 /* ProfileVC.swift */,
@@ -667,6 +670,7 @@
 				61B07C6020F21DC300D8B7E0 /* AppDelegate.swift in Sources */,
 				612F46B720F646A0001A3003 /* Temperature.swift in Sources */,
 				612F46B020F551CB001A3003 /* extensions.swift in Sources */,
+				61F4198F211F7CBB00B1ED7D /* BoatsTokensVC.swift in Sources */,
 				612F46AE20F551B1001A3003 /* ProfileVC.swift in Sources */,
 				612F46AC20F52776001A3003 /* Keychain.swift in Sources */,
 				619679F420FBA4C400432672 /* TrackStatsVC.swift in Sources */,

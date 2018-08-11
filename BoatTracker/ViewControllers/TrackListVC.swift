@@ -76,15 +76,7 @@ class TrackListVC: BaseTableVC, TokenDelegate {
                 self.log.info("Got \(ts.count) tracks.")
                 self.onUiThread {
                     if ts.isEmpty {
-                        let feedback = BoatLabel.build(text: "Hello! You have no saved tracks. To save tracks, you'll need to connect the BoatTracker agent software to the GPS chartplotter in your boat.", alignment: .center, numberOfLines: 0)
-                        let container = UIView()
-                        container.addSubview(feedback)
-                        feedback.snp.makeConstraints { (make) in
-                            make.leading.equalToSuperview().offset(16)
-                            make.trailing.equalToSuperview().inset(16)
-                            make.centerY.equalToSuperview()
-                        }
-                        self.tableView.backgroundView = container
+                        self.tableView.backgroundView = self.feedbackView(text: "Hello! You have no saved tracks. To save tracks, you'll need to connect the BoatTracker agent software to the GPS chartplotter in your boat.")
                     } else {
                         self.tableView.backgroundView = nil
                         self.tracks = ts

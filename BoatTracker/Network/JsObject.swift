@@ -46,6 +46,8 @@ open class JsObject {
     
     func readInt(_ key: String) throws -> Int { return try read(key) }
     
+    func readUInt(_ key: String) throws -> UInt64 { return try read(key) }
+    
     func readDouble(_ key: String) throws -> Double { return try read(key) }
     
     func readString(_ key: String) throws -> String { return try read(key) }

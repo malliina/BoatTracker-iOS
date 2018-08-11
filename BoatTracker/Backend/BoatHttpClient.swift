@@ -54,6 +54,10 @@ class BoatHttpClient {
         return getParsed("/pingAuth", parse: BackendInfo.parse)
     }
     
+    func profile() -> Single<UserProfile> {
+        return getParsed("/users/me", parse: UserProfile.parse)
+    }
+    
     func tracks() -> Single<[TrackSummary]> {
         return getParsed("/tracks", parse: { (json) -> [TrackSummary] in
             try json.readObjectArray("tracks", each: TrackSummary.parse)
@@ -93,33 +97,5 @@ class BoatHttpClient {
             }
             return Observable.error(AppError.responseFailure(ResponseDetails(url: url, code: response.statusCode, message: errorMessage)))
         }
-    }
-}
-
-class BackendInfo {
-    let name: String
-    let version: String
-    
-    static func parse(obj: JsObject) throws -> BackendInfo {
-        return BackendInfo(name: try obj.readString("name"), version: try obj.readString("version"))
-    }
-    
-    init(name: String, version: String) {
-        self.name = name
-        self.version = version
-    }
-}
-
-class TrackSummary {
-    let track: TrackRef
-    let stats: TrackStats
-    
-    static func parse(json: JsObject) throws -> TrackSummary {
-        return TrackSummary(track: try json.readObj("track", parse: TrackRef.parse), stats: try json.readObj("stats", parse: TrackStats.parse))
-    }
-    
-    init(track: TrackRef, stats: TrackStats) {
-        self.track = track
-        self.stats = stats
     }
 }

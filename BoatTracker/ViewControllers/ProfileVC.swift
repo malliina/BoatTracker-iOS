@@ -30,6 +30,7 @@ class ProfileVC: UIViewController {
     let avgSpeed = StatBox("Avg Speed")
     let avgWaterTemp = StatBox("Water Temp")
     let tracksButton = BoatButton.nav(title: "Track History")
+    let boatsButton = BoatButton.nav(title: "Boats")
     let logoutButton = BoatButton.create(title: "Logout")
     let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .gray)
     
@@ -108,9 +109,17 @@ class ProfileVC: UIViewController {
         tracksButton.snp.makeConstraints { (make) in
             make.leadingMargin.trailingMargin.equalTo(view)
             make.topMargin.equalTo(statsView.snp.bottom).offset(48)
-            make.bottom.lessThanOrEqualTo(container)
+            //make.bottom.lessThanOrEqualTo(container)
         }
         tracksButton.addTarget(self, action: #selector(tracksClicked(_:)), for: .touchUpInside)
+        
+        container.addSubview(boatsButton)
+        boatsButton.snp.makeConstraints { (make) in
+            make.leadingMargin.trailingMargin.equalTo(view)
+            make.topMargin.equalTo(tracksButton.snp.bottom).offset(verticalSpacing)
+            make.bottom.lessThanOrEqualTo(container)
+        }
+        boatsButton.addTarget(self, action: #selector(boatsClicked(_:)), for: .touchUpInside)
         
         view.addSubview(logoutButton)
         logoutButton.backgroundColor = BoatColors.shared.logoutBackground
@@ -176,6 +185,11 @@ class ProfileVC: UIViewController {
     
     @objc func tracksClicked(_ sender: UIButton) {
         let dest = TrackListVC(delegate: tracksDelegate)
+        self.navigationController?.pushViewController(dest, animated: true)
+    }
+    
+    @objc func boatsClicked(_ sender: UIButton) {
+        let dest = BoatTokensVC()
         self.navigationController?.pushViewController(dest, animated: true)
     }
     

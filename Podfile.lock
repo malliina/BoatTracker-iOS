@@ -27,7 +27,7 @@ PODS:
   - GTMSessionFetcher/Core (1.1.15)
   - GTMSessionFetcher/Full (1.1.15):
     - GTMSessionFetcher/Core (= 1.1.15)
-  - Mapbox-iOS-SDK (4.1.0)
+  - Mapbox-iOS-SDK (4.2.0)
   - RxCocoa (4.2.0):
     - RxSwift (~> 4.0)
   - RxSwift (4.2.0)
@@ -37,7 +37,7 @@ PODS:
 DEPENDENCIES:
   - AppCenter (= 1.7.1)
   - GoogleSignIn (= 4.1.2)
-  - Mapbox-iOS-SDK (= 4.1)
+  - Mapbox-iOS-SDK (= 4.2)
   - RxCocoa (= 4.2.0)
   - RxSwift (= 4.2.0)
   - SnapKit (= 4.0.0)
@@ -62,12 +62,12 @@ SPEC CHECKSUMS:
   GoogleToolboxForMac: 91c824d21e85b31c2aae9bb011c5027c9b4e738f
   GTMOAuth2: c77fe325e4acd453837e72d91e3b5f13116857b2
   GTMSessionFetcher: 5fa5b80fd20e439ef5f545fb2cb3ca6c6714caa2
-  Mapbox-iOS-SDK: f0a9813d5f08c096c1199eceb57ec6102b19cf54
+  Mapbox-iOS-SDK: 706d52e3ad095e16944d9643f37d5a97627f6c19
   RxCocoa: 0b54909c902e1e581212a03e690bbd94032d8baa
   RxSwift: 99e10317ddfcc7fbe01356aafd118fde4a0be104
   SnapKit: a42d492c16e80209130a3379f73596c3454b7694
   SocketRocket: d57c7159b83c3c6655745cd15302aa24b6bae531
 
-PODFILE CHECKSUM: d5cc1e9bffd1b4d1a094d8ca0c383066cf45309f
+PODFILE CHECKSUM: 68daddd976e548cebce1b94eb870986b27a91e45
 
 COCOAPODS: 1.5.3
