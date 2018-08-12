@@ -13,6 +13,7 @@ class ProfileTableVC: BaseTableVC {
     let log = LoggerFactory.shared.vc(ProfileTableVC.self)
     
     let basicCellIdentifier = "BasicCell"
+    let logoutIdentifier = "LogoutCell"
     
     var delegate: TokenDelegate? = nil
     var tracksDelegate: TracksDelegate? = nil
@@ -36,6 +37,7 @@ class ProfileTableVC: BaseTableVC {
         navigationItem.title = "BoatTracker"
         tableView?.register(TrackSummaryCell.self, forCellReuseIdentifier: TrackSummaryCell.identifier)
         tableView?.register(UITableViewCell.self, forCellReuseIdentifier: basicCellIdentifier)
+        tableView?.register(UITableViewCell.self, forCellReuseIdentifier: logoutIdentifier)
         loadTracks()
     }
     
@@ -139,10 +141,15 @@ class ProfileTableVC: BaseTableVC {
         if showAll {
             switch indexPath.section {
             case 0: return TrackSummaryCell.identifier
+            case 3: return logoutIdentifier
             default: return basicCellIdentifier
             }
         } else {
-            return basicCellIdentifier
+            switch indexPath.section {
+            case 0: return basicCellIdentifier
+            case 1: return logoutIdentifier
+            default: return basicCellIdentifier
+            }
         }
     }
     
