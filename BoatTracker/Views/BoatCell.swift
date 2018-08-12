@@ -10,6 +10,8 @@ import Foundation
 import UIKit
 
 class BoatCell: UITableViewCell {
+    let spacing = 12
+    
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         configureView()

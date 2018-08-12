@@ -14,7 +14,7 @@ import GoogleSignIn
 class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     let log = LoggerFactory.shared.vc(MapVC.self)
     
-    let profileButton = BoatButton.map(icon: #imageLiteral(resourceName: "UserIcon"))
+    let profileButton = BoatButton.map(icon: #imageLiteral(resourceName: "SettingsSlider"))
     let followButton = BoatButton.map(icon: #imageLiteral(resourceName: "LocationArrow"))
     
     private var socket: BoatSocket { return Backend.shared.socket }
@@ -99,7 +99,8 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     
     @objc func userClicked(_ sender: UIButton) {
         if latestToken != nil {
-            let dest = ProfileVC(tracksDelegate: self, current: latestTrack)
+//            let dest = ProfileVC(tracksDelegate: self, current: latestTrack)
+            let dest = ProfileTableVC(tracksDelegate: self, current: latestTrack)
             dest.delegate = self
             navigate(to: dest)
         } else {

@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 
 class TrackCell: BoatCell {
+    static let identifier = String(describing: TrackCell.self)
     static let rowHeight: CGFloat = 80
     
 //    let trackName = BoatLabel.build(text: "", alignment: .left, numberOfLines: 0)
@@ -18,8 +19,6 @@ class TrackCell: BoatCell {
     let duration = StatBox("Duration", style: .small)
     let topSpeed = StatBox("Top", style: .small)
 //    let avgWaterTemp = BoatLabel.build(text: "", alignment: .left, numberOfLines: 0, fontSize: 14)
-    
-    let spacing = 12
     
     override func configureView() {
         contentView.addSubview(dateTime)

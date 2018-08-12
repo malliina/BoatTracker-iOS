@@ -10,6 +10,8 @@ import Foundation
 import UIKit
 
 class StatCell: BoatCell {
+    static let identifier = String(describing: StatCell.self)
+    
     let titleLabel = BoatLabel.build(text: "", alignment: .left, numberOfLines: 0)
     let statLabel = BoatLabel.build(text: "", alignment: .left, numberOfLines: 0)
     

@@ -34,13 +34,23 @@ class BoatTokensVC: BaseTableVC {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellKey, for: indexPath)
+        cell.selectionStyle = .none
         if let boat = profile?.boats[indexPath.row] {
             cell.textLabel?.text = boat.token
         }
         return cell
     }
     
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        guard let boat = profile?.boats[section] else { return nil }
+        return boat.name
+    }
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
+    
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return profile?.boats.count ?? 0
     }
     
