@@ -63,7 +63,7 @@ class TrackListVC: BaseTableVC, TokenDelegate {
         goBack()
     }
     
-    func onToken(token: AccessToken?) {
+    func onToken(token: UserToken?) {
         Backend.shared.updateToken(new: token)
         loadTracks()
     }

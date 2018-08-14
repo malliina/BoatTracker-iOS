@@ -13,17 +13,21 @@ class ProfileTableVC: BaseTableVC {
     let log = LoggerFactory.shared.vc(ProfileTableVC.self)
     
     let basicCellIdentifier = "BasicCell"
+    let infoIdentifier = "InfoCell"
     let logoutIdentifier = "LogoutCell"
     
     var delegate: TokenDelegate? = nil
     var tracksDelegate: TracksDelegate? = nil
     var current: TrackName? = nil
+    let user: UserToken
+    
     var summary: TrackSummary? = nil
     var showAll: Bool = false
     
-    init(tracksDelegate: TracksDelegate, current: TrackName?) {
+    init(tracksDelegate: TracksDelegate, current: TrackName?, user: UserToken) {
         self.tracksDelegate = tracksDelegate
         self.current = current
+        self.user = user
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -37,6 +41,7 @@ class ProfileTableVC: BaseTableVC {
         navigationItem.title = "BoatTracker"
         tableView?.register(TrackSummaryCell.self, forCellReuseIdentifier: TrackSummaryCell.identifier)
         tableView?.register(UITableViewCell.self, forCellReuseIdentifier: basicCellIdentifier)
+        tableView?.register(UITableViewCell.self, forCellReuseIdentifier: infoIdentifier)
         tableView?.register(UITableViewCell.self, forCellReuseIdentifier: logoutIdentifier)
         loadTracks()
     }
@@ -60,8 +65,7 @@ class ProfileTableVC: BaseTableVC {
             case 2:
                 initAttributionsCell(cell: cell)
             case 3:
-                initLogoutCell(cell: cell)
-                
+                initLogoutCells(cell: cell, indexPath: indexPath)
             default:
                 ()
             }
@@ -69,7 +73,7 @@ class ProfileTableVC: BaseTableVC {
         } else {
             switch indexPath.section {
             case 0: initAttributionsCell(cell: cell)
-            case 1: initLogoutCell(cell: cell)
+            case 1: initLogoutCells(cell: cell, indexPath: indexPath)
             default: ()
             }
         }
@@ -81,7 +85,24 @@ class ProfileTableVC: BaseTableVC {
         cell.textLabel?.text = "Attributions"
     }
     
-    func initLogoutCell(cell: UITableViewCell) {
+    func initLogoutCells(cell: UITableViewCell, indexPath: IndexPath) {
+        switch indexPath.row {
+        case 0:
+            if let label = cell.textLabel {
+                label.text = "Signed in as \(user.email)"
+                label.textAlignment = .center
+                label.textColor = UIColor.lightGray
+            }
+            cell.accessoryType = .none
+            cell.selectionStyle = .none
+        case 1:
+            initLogout(cell: cell)
+        default:
+            ()
+        }
+    }
+    
+    func initLogout(cell: UITableViewCell) {
         if let label = cell.textLabel {
             label.text = "Logout"
             label.textColor = .red
@@ -113,16 +134,26 @@ class ProfileTableVC: BaseTableVC {
             case 1: nav(to: BoatTokensVC())
             default: ()
             }
-        case 2: nav(to: AttributionsVC())
-        case 3: logout()
+        case 2:
+            nav(to: AttributionsVC())
+        case 3:
+            switch indexPath.row {
+            case 1: logout()
+            default: ()
+            }
         default: ()
         }
     }
     
     func didSelectLimited(_ indexPath: IndexPath) {
         switch indexPath.section {
-        case 0: nav(to: AttributionsVC())
-        case 1: logout()
+        case 0:
+            nav(to: AttributionsVC())
+        case 1:
+            switch indexPath.row {
+            case 1: logout()
+            default: ()
+            }
         default: ()
         }
     }
@@ -140,15 +171,29 @@ class ProfileTableVC: BaseTableVC {
     func cellIdentifier(indexPath: IndexPath) -> String {
         if showAll {
             switch indexPath.section {
-            case 0: return TrackSummaryCell.identifier
-            case 3: return logoutIdentifier
-            default: return basicCellIdentifier
+            case 0:
+                return TrackSummaryCell.identifier
+            case 3:
+                switch indexPath.row {
+                case 0: return infoIdentifier
+                case 1: return logoutIdentifier
+                default: return basicCellIdentifier
+                }
+            default:
+                return basicCellIdentifier
             }
         } else {
             switch indexPath.section {
-            case 0: return basicCellIdentifier
-            case 1: return logoutIdentifier
-            default: return basicCellIdentifier
+            case 0:
+                return basicCellIdentifier
+            case 1:
+                switch indexPath.row {
+                case 0: return infoIdentifier
+                case 1: return logoutIdentifier
+                default: return basicCellIdentifier
+                }
+            default:
+                return basicCellIdentifier
             }
         }
     }
@@ -159,11 +204,15 @@ class ProfileTableVC: BaseTableVC {
             case 0: return 1
             case 1: return 2
             case 2: return 1
-            case 3: return 1
+            case 3: return 2
             default: return 0
             }
         } else {
-            return 1
+            switch section {
+            case 0: return 1
+            case 1: return 2
+            default: return 0
+            }
         }
     }
     override func numberOfSections(in tableView: UITableView) -> Int {

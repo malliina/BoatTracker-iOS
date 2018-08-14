@@ -57,18 +57,19 @@ class GoogleAuth: NSObject, GIDSignInDelegate {
 //            let fullName = user.profile.name
 //            let givenName = user.profile.givenName
 //            let familyName = user.profile.familyName
+//            let email = user.profile.email
             guard let idToken = user.authentication.idToken else {
                 log.error("No ID token in Google response.")
                 onToken(token: nil)
                 return
             }
-//            let email = user.profile.email
-//            log.info("Got email '\(email ?? "no email")' with token '\(idToken)'.")
-            onToken(token: AccessToken(token: idToken))
+            let email = user.profile.email ?? "unknown"
+            log.info("Got email '\(email)' with token '\(idToken)'.")
+            onToken(token: UserToken(email: email, token: AccessToken(token: idToken)))
         }
     }
     
-    func onToken(token: AccessToken?) {
+    func onToken(token: UserToken?) {
         uiDelegate?.onToken(token: token)
         delegate?.onToken(token: token)
     }

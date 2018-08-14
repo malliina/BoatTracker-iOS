@@ -41,7 +41,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         }
     }
     
-    var latestToken: AccessToken? = nil
+    var latestToken: UserToken? = nil
     var latestTrack: TrackName? = nil
     
     override func viewDidLoad() {
@@ -98,9 +98,9 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     }
     
     @objc func userClicked(_ sender: UIButton) {
-        if latestToken != nil {
-//            let dest = ProfileVC(tracksDelegate: self, current: latestTrack)
-            let dest = ProfileTableVC(tracksDelegate: self, current: latestTrack)
+        if let user = latestToken {
+            //            let dest = ProfileVC(tracksDelegate: self, current: latestTrack)
+            let dest = ProfileTableVC(tracksDelegate: self, current: latestTrack, user: user)
             dest.delegate = self
             navigate(to: dest)
         } else {
@@ -224,7 +224,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         log.info("Memory warning.")
     }
     
-    func reload(token: AccessToken?) {
+    func reload(token: UserToken?) {
         latestToken = token
         socket.delegate = nil
         socket.close()
@@ -295,7 +295,7 @@ extension MapVC: BoatSocketDelegate {
 }
 
 extension MapVC: TokenDelegate {
-    func onToken(token: AccessToken?) {
+    func onToken(token: UserToken?) {
         reload(token: token)
     }
 }

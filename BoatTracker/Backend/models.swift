@@ -184,6 +184,11 @@ class Boat {
     }
 }
 
+struct UserToken {
+    let email: String
+    let token: AccessToken
+}
+
 class UserProfile {
     let id: Int
     let username: Username

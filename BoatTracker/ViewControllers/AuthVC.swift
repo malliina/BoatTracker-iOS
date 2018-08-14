@@ -11,7 +11,7 @@ import UIKit
 import GoogleSignIn
 
 protocol TokenDelegate {
-    func onToken(token: AccessToken?)
+    func onToken(token: UserToken?)
 }
 
 class AuthVC: UIViewController, GIDSignInUIDelegate, TokenDelegate {
@@ -54,7 +54,7 @@ class AuthVC: UIViewController, GIDSignInUIDelegate, TokenDelegate {
         }
     }
     
-    func onToken(token: AccessToken?) {
+    func onToken(token: UserToken?) {
         goBack()
     }
     

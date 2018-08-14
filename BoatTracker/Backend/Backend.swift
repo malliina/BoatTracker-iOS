@@ -13,7 +13,7 @@ class Backend {
     static let shared = Backend(EnvConf.BaseUrl)
     
     let baseUrl: URL
-    private var latestToken: AccessToken? = nil
+    private var latestToken: UserToken? = nil
     //private var latestTrack: TrackName? = nil
     
     var http: BoatHttpClient
@@ -26,17 +26,17 @@ class Backend {
         self.socket = BoatSocket(token: nil, track: nil)
     }
     
-    func updateToken(new token: AccessToken?) {
+    func updateToken(new token: UserToken?) {
         latestToken = token
-        http.updateToken(token: token)
+        http.updateToken(token: token?.token)
         socket.close()
-        socket = BoatSocket(token: token, track: nil)
+        socket = BoatSocket(token: token?.token, track: nil)
     }
     
     func open(track: TrackName, delegate: BoatSocketDelegate) {
         socket.delegate = nil
         socket.close()
-        socket = BoatSocket(token: latestToken, track: track)
+        socket = BoatSocket(token: latestToken?.token, track: track)
         socket.delegate = delegate
         socket.open()
     }
