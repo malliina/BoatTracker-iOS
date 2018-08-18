@@ -11,7 +11,7 @@ import UIKit
 
 class TrackCell: BoatCell {
     static let identifier = String(describing: TrackCell.self)
-    static let rowHeight: CGFloat = 80
+//    static let rowHeight: CGFloat = 80
     
 //    let trackName = BoatLabel.build(text: "", alignment: .left, numberOfLines: 0)
     let dateTime = BoatLabel.build(text: "", alignment: .left, numberOfLines: 0)
@@ -51,6 +51,7 @@ class TrackCell: BoatCell {
             make.leading.equalTo(duration.snp.trailing).offset(spacing)
             make.width.equalTo(distance)
             make.trailing.equalTo(contentView.snp.trailingMargin)
+            make.bottom.equalToSuperview().inset(spacing)
         }
     }
     

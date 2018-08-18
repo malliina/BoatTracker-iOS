@@ -50,7 +50,7 @@ class TrackStatsVC: BaseTableVC {
         super.viewDidLoad()
         navigationItem.title = "Stats"
         tableView?.register(StatCell.self, forCellReuseIdentifier: cellKey)
-        tableView.rowHeight = TrackCell.rowHeight
+//        tableView.rowHeight = TrackCell.rowHeight
         tableView.tableFooterView = UIView()
     }
     

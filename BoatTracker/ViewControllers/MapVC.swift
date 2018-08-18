@@ -62,6 +62,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
             make.topMargin.leadingMargin.equalToSuperview().offset(12)
             make.height.width.equalTo(buttonSize)
         }
+        profileButton.contentEdgeInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
         profileButton.addTarget(self, action: #selector(userClicked(_:)), for: .touchUpInside)
         
         mapView.addSubview(followButton)
@@ -70,6 +71,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
             make.leadingMargin.equalTo(profileButton.snp.leadingMargin)
             make.height.width.equalTo(buttonSize)
         }
+        followButton.contentEdgeInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
         followButton.isHidden = true
         followButton.alpha = mapMode == .follow ? MapButton.deselectedAlpha : MapButton.selectedAlpha
         followButton.addTarget(self, action: #selector(followClicked(_:)), for: .touchUpInside)

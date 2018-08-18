@@ -26,7 +26,7 @@ class StatBox: UIView {
     convenience init(_ title: String, style: StatBoxStyle) {
         switch style {
         case .small:
-            self.init(title, initialValue: "N/A", labelFontSize: 8, valueFontSize: 12, verticalSpace: 4)
+            self.init(title, initialValue: "N/A", labelFontSize: 12, valueFontSize: 15, verticalSpace: 6)
         case .large:
             self.init(title, initialValue: "N/A", labelFontSize: 14, valueFontSize: 17, verticalSpace: 12)
         }

@@ -36,7 +36,7 @@ class TrackListVC: BaseTableVC, TokenDelegate {
         super.viewDidLoad()
         navigationItem.title = "Tracks"
         tableView?.register(TrackCell.self, forCellReuseIdentifier: cellKey)
-        tableView.rowHeight = TrackCell.rowHeight
+//        tableView.rowHeight = TrackCell.rowHeight
         
         if login {
             // Dev time only
