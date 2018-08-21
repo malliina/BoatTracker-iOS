@@ -16,6 +16,7 @@
 		612F46B520F644B7001A3003 /* Distance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 612F46B420F644B7001A3003 /* Distance.swift */; };
 		612F46B720F646A0001A3003 /* Temperature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 612F46B620F646A0001A3003 /* Temperature.swift */; };
 		612F46B920F66854001A3003 /* Geo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 612F46B820F66854001A3003 /* Geo.swift */; };
+		6171906B212CA06900337B0B /* BoatTokenCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6171906A212CA06900337B0B /* BoatTokenCell.swift */; };
 		619679EB20F78B5900432672 /* MapMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619679EA20F78B5900432672 /* MapMode.swift */; };
 		619679EE20F89F6D00432672 /* GoogleAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619679ED20F89F6D00432672 /* GoogleAuth.swift */; };
 		619679F220FB39CF00432672 /* MapEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619679F120FB39CF00432672 /* MapEvents.swift */; };
@@ -97,6 +98,7 @@
 		612F46B420F644B7001A3003 /* Distance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Distance.swift; sourceTree = "<group>"; };
 		612F46B620F646A0001A3003 /* Temperature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Temperature.swift; sourceTree = "<group>"; };
 		612F46B820F66854001A3003 /* Geo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Geo.swift; sourceTree = "<group>"; };
+		6171906A212CA06900337B0B /* BoatTokenCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatTokenCell.swift; sourceTree = "<group>"; };
 		619679EA20F78B5900432672 /* MapMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapMode.swift; sourceTree = "<group>"; };
 		619679ED20F89F6D00432672 /* GoogleAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAuth.swift; sourceTree = "<group>"; };
 		619679F120FB39CF00432672 /* MapEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapEvents.swift; sourceTree = "<group>"; };
@@ -280,6 +282,7 @@
 				619679FF2103BCCF00432672 /* TrackCell.swift */,
 				61F419962120745A00B1ED7D /* TrackSummaryBox.swift */,
 				61F4199C2120B39C00B1ED7D /* TrackSummaryCell.swift */,
+				6171906A212CA06900337B0B /* BoatTokenCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -679,6 +682,7 @@
 				6199E0F720F254FB00A4009A /* SocketClient.swift in Sources */,
 				619679FA20FBCDB100432672 /* TrackListVC.swift in Sources */,
 				6199E0EF20F24EC300A4009A /* Log.swift in Sources */,
+				6171906B212CA06900337B0B /* BoatTokenCell.swift in Sources */,
 				612F46B320F6418B001A3003 /* Speed.swift in Sources */,
 				612F46A420F4A99E001A3003 /* EnvConf.swift in Sources */,
 				6199E0EC20F24DC700A4009A /* HttpClient.swift in Sources */,

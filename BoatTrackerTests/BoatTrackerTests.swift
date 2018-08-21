@@ -42,6 +42,17 @@ class BoatTrackerTests: XCTestCase {
         }
     }
     
+    func testDictToJson() throws {
+        let dict = ["boatName": "abc" as AnyObject]
+        let data = try JSONSerialization.data(withJSONObject: dict, options: [])
+        if let json = Json.asJson(data) {
+            let str = Json.stringify(json)
+            XCTAssert(str != nil && !(str?.isEmpty ?? false))
+        } else {
+            XCTAssert(false, "Not JSON.")
+        }
+    }
+    
     func testKeychain() throws {
         let kc = Keychain.shared
         XCTAssertNil(try kc.findToken())

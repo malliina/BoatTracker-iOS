@@ -12,7 +12,7 @@ import RxCocoa
 
 class HttpClient {
     private let log = LoggerFactory.shared.network(HttpClient.self)
-    static let JSON = "application/json", CONTENT_TYPE = "Content-Type", ACCEPT = "Accept", DELETE = "DELETE", GET = "GET", POST = "POST", AUTHORIZATION = "Authorization", BASIC = "Basic"
+    static let JSON = "application/json", CONTENT_TYPE = "Content-Type", ACCEPT = "Accept", DELETE = "DELETE", GET = "GET", PATCH = "PATCH", POST = "POST", AUTHORIZATION = "Authorization", BASIC = "Basic"
     
     static func basicAuthValue(_ username: String, password: String) -> String {
         let encodable = "\(username):\(password)"
@@ -40,6 +40,12 @@ class HttpClient {
         return executeHttp(req)
     }
     
+    func patchJSON(_ url: URL, headers: [String: String] = [:], payload: [String: AnyObject]) -> Observable<HttpResponse> {
+        let json = try? JSONSerialization.data(withJSONObject: payload, options: [])
+        let req = buildRequest(url: url, httpMethod: HttpClient.PATCH, headers: headers, body: json)
+        return executeHttp(req)
+    }
+    
     func postJSON(_ url: URL, headers: [String: String] = [:], payload: [String: AnyObject]) -> Observable<HttpResponse> {
         return postData(url, headers: headers, payload: try? JSONSerialization.data(withJSONObject: payload, options: []))
     }
@@ -49,10 +55,10 @@ class HttpClient {
         return executeHttp(req)
     }
     
-    func postGeneric(_ url: URL, headers: [String: String] = [:], payload: Data?, completionHandler: @escaping ((Data?, URLResponse?, Error?) -> Void)) {
-        let req = buildRequest(url: url, httpMethod: HttpClient.POST, headers: headers, body: payload)
-        executeRequest(req, completionHandler: completionHandler)
-    }
+//    func postGeneric(_ url: URL, headers: [String: String] = [:], payload: Data?, completionHandler: @escaping ((Data?, URLResponse?, Error?) -> Void)) {
+//        let req = buildRequest(url: url, httpMethod: HttpClient.POST, headers: headers, body: payload)
+//        executeRequest(req, completionHandler: completionHandler)
+//    }
     
     func delete(_ url: URL, headers: [String: String] = [:]) -> Observable<HttpResponse> {
         let req = buildRequest(url: url, httpMethod: HttpClient.DELETE, headers: headers, body: nil)

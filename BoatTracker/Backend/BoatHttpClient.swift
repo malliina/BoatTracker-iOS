@@ -18,6 +18,9 @@ class BoatHttpClient {
     let client: HttpClient
     
     private var defaultHeaders: [String: String]
+    private let postSpecificHeaders: [String: String]
+    
+    var postHeaders: [String: String] { return defaultHeaders.merging(postSpecificHeaders)  { (current, _) in current } }
     
     convenience init(bearerToken: AccessToken, baseUrl: URL) {
         self.init(bearerToken: bearerToken, baseUrl: baseUrl, client: HttpClient())
@@ -36,6 +39,9 @@ class BoatHttpClient {
                 HttpClient.ACCEPT: BoatHttpClient.BoatVersion10
             ]
         }
+        self.postSpecificHeaders = [
+            HttpClient.CONTENT_TYPE: HttpClient.JSON
+        ]
     }
     
     func updateToken(token: AccessToken?) {
@@ -64,9 +70,23 @@ class BoatHttpClient {
         })
     }
     
+    func renameBoat(boat: Int, newName: BoatName) -> Single<Boat> {
+        return parsed("/boats/\(boat)", run: { (url) -> Observable<HttpResponse> in
+            client.patchJSON(url, headers: postHeaders, payload: ["boatName": newName.name as AnyObject])
+        }) { (obj) -> Boat in
+            try obj.readObj("boat", parse: Boat.parse)
+        }
+    }
+    
     func getParsed<T>(_ uri: String, parse: @escaping (JsObject) throws -> T) -> Single<T> {
+        return parsed(uri, run: { (url) -> Observable<HttpResponse> in
+            client.get(url, headers: defaultHeaders)
+        }, parse: parse)
+    }
+    
+    func parsed<T>(_ uri: String, run: (URL) -> Observable<HttpResponse>, parse: @escaping (JsObject) throws -> T) -> Single<T> {
         let url = URL(string: uri, relativeTo: baseUrl)!
-        return client.get(url, headers: defaultHeaders).flatMap { (response) -> Observable<T> in
+        return run(url).flatMap { (response) -> Observable<T> in
             return self.statusChecked(url, response: response).flatMap { (checkedResponse) -> Observable<T> in
                 return self.parseAs(response: checkedResponse, parse: parse)
             }

@@ -22,14 +22,14 @@ class AttributionsVC: BaseTableVC {
                      link2: Link(text: "Java Marine API",
                                  url: URL(string: "https://ktuukkan.github.io/marine-api/")!))
     let fontAwesome = Attribution(title: "Font Awesome", text: nil, link: Link(text: "https://fontawesome.com/license", url: URL(string: "https://fontawesome.com/license")!))
-    let poiju = Attribution(title: "POIJU.IO", text: nil, link: Link(text: "POIJU.IO", url: URL(string: "https://github.com/iaue/poiju.io")!))
+    let openIconic = Attribution(title: "Open Iconic", text: nil, link: Link(text: "https://github.com/iconic/open-iconic", url: URL(string: "https://github.com/iconic/open-iconic")!))
+    let poiju = Attribution(title: "Inspiration", text: nil, link: Link(text: "POIJU.IO", url: URL(string: "https://github.com/iaue/poiju.io")!))
     
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = "Attributions"
         tableView?.register(AttributionCell.self, forCellReuseIdentifier: attributionKey)
         tableView?.register(LinksAttributionCell.self, forCellReuseIdentifier: linksKey)
-//        tableView.rowHeight = AttributionCell.rowHeight
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -58,13 +58,14 @@ class AttributionsVC: BaseTableVC {
         switch indexPath.row {
         case 0: return maps
         case 2: return fontAwesome
-        case 3: return poiju
+        case 3: return openIconic
+        case 4: return poiju
         default: return nil
         }
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 4
+        return 5
     }
 }
 

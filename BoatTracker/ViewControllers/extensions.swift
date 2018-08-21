@@ -29,6 +29,10 @@ extension UIViewController {
         present(nav, animated: true, completion: nil)
     }
     
+    func nav(to: UIViewController) {
+        navigationController?.pushViewController(to, animated: true)
+    }
+    
     func goBack() {
         dismiss(animated: true, completion: nil)
     }

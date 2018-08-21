@@ -9,7 +9,7 @@
 import Foundation
 
 class EnvConf {
-    static let Server = "boat.malliina.com"
+    static let Server = "www.boat-tracker.com"
     static let DevBaseUrl = URL(string: "http://localhost:9000")!
     static let ProdBaseUrl = URL(string: "https://\(EnvConf.Server)")!
 //     static let BaseUrl = DevBaseUrl

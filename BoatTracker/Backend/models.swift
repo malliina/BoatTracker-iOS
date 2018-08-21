@@ -165,18 +165,18 @@ class TrackSummary {
 
 class Boat {
     let id: Int
-    let name: String
+    let name: BoatName
     let token: String
     let addedMillis: UInt64
     
     static func parse(json: JsObject) throws -> Boat {
         return Boat(id: try json.readInt("id"),
-                    name: try json.readString("name"),
+                    name: BoatName(name: try json.readString("name")),
                     token: try json.readString("token"),
                     addedMillis: try json.readUInt("addedMillis"))
     }
     
-    init(id: Int, name: String, token: String, addedMillis: UInt64) {
+    init(id: Int, name: BoatName, token: String, addedMillis: UInt64) {
         self.id = id
         self.name = name
         self.token = token

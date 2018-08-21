@@ -28,30 +28,45 @@ class BoatTokensVC: BaseTableVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = "Boats"
-        tableView?.register(UITableViewCell.self, forCellReuseIdentifier: cellKey)
+        tableView?.register(BoatTokenCell.self, forCellReuseIdentifier: BoatTokenCell.identifier)
         loadProfile()
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellKey, for: indexPath)
-        cell.selectionStyle = .none
-        if let boat = profile?.boats[indexPath.row] {
-            cell.textLabel?.text = boat.token
+        let cell = tableView.dequeueReusableCell(withIdentifier: BoatTokenCell.identifier, for: indexPath)
+//        cell.accessoryType = .detailDisclosureButton
+        if let boat = profile?.boats[indexPath.row], let cell = cell as? BoatTokenCell {
+            cell.fill(boat: boat.name, token: boat.token)
         }
         return cell
     }
     
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        guard let boat = profile?.boats[section] else { return nil }
-        return boat.name
-    }
-    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return profile?.boats.count ?? 0
     }
     
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return profile?.boats.count ?? 0
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        let popup = UIAlertController(title: "Rename Boat", message: "Provide a new name", preferredStyle: .alert)
+        popup.addTextField(configurationHandler: nil)
+        let okAction = UIAlertAction(title: "Rename", style: .default) { (a) in
+            guard let textField = (popup.textFields ?? []).headOption(),
+                let newName = textField.text, !newName.isEmpty,
+                let boat = self.profile?.boats[indexPath.row] else { return }
+            let _ = Backend.shared.http.renameBoat(boat: boat.id, newName: BoatName(name: newName)).subscribe{ (single) in
+                switch single {
+                case .success(let boat):
+                    self.loadProfile()
+                    self.log.info("Renamed to \(boat.name)")
+                case .error(let err):
+                    self.log.error("Unable to rename. \(err.describe)")
+                }
+            }
+            
+        }
+        popup.addAction(okAction)
+        popup.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        present(popup, animated: true, completion: nil)
     }
     
     func loadProfile() {

@@ -62,22 +62,26 @@ class ProfileTableVC: BaseTableVC {
                 case 1: cell.textLabel?.text = "Boats"
                 default: ()
                 }
-            case 2:
-                initAttributionsCell(cell: cell)
-            case 3:
-                initLogoutCells(cell: cell, indexPath: indexPath)
+            case 2: initAttributionsCell(cell: cell)
+            case 3: initLogoutCells(cell: cell, indexPath: indexPath)
             default:
                 ()
             }
             
         } else {
             switch indexPath.section {
-            case 0: initAttributionsCell(cell: cell)
-            case 1: initLogoutCells(cell: cell, indexPath: indexPath)
+            case 0: initBoatsCell(cell: cell)
+            case 1: initAttributionsCell(cell: cell)
+            case 2: initLogoutCells(cell: cell, indexPath: indexPath)
             default: ()
             }
         }
         return cell
+    }
+    
+    func initBoatsCell(cell: UITableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.textLabel?.text = "Boats"
     }
     
     func initAttributionsCell(cell: UITableViewCell) {
@@ -91,7 +95,7 @@ class ProfileTableVC: BaseTableVC {
             if let label = cell.textLabel {
                 label.text = "Signed in as \(user.email)"
                 label.textAlignment = .center
-                label.textColor = UIColor.lightGray
+                label.textColor = .lightGray
             }
             cell.accessoryType = .none
             cell.selectionStyle = .none
@@ -148,8 +152,10 @@ class ProfileTableVC: BaseTableVC {
     func didSelectLimited(_ indexPath: IndexPath) {
         switch indexPath.section {
         case 0:
-            nav(to: AttributionsVC())
+            nav(to: BoatTokensVC())
         case 1:
+            nav(to: AttributionsVC())
+        case 2:
             switch indexPath.row {
             case 1: logout()
             default: ()
@@ -162,10 +168,6 @@ class ProfileTableVC: BaseTableVC {
         GoogleAuth.shared.signOut()
         delegate?.onToken(token: nil)
         goBack()
-    }
-    
-    func nav(to: UIViewController) {
-        self.navigationController?.pushViewController(to, animated: true)
     }
     
     func cellIdentifier(indexPath: IndexPath) -> String {
@@ -187,6 +189,8 @@ class ProfileTableVC: BaseTableVC {
             case 0:
                 return basicCellIdentifier
             case 1:
+                return basicCellIdentifier
+            case 2:
                 switch indexPath.row {
                 case 0: return infoIdentifier
                 case 1: return logoutIdentifier
@@ -210,13 +214,14 @@ class ProfileTableVC: BaseTableVC {
         } else {
             switch section {
             case 0: return 1
-            case 1: return 2
+            case 1: return 1
+            case 2: return 2
             default: return 0
             }
         }
     }
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return showAll ? 4 : 2
+        return showAll ? 4 : 3
     }
     
     func loadTracks() {
