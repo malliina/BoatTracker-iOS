@@ -14,6 +14,10 @@ protocol TokenDelegate {
     func onToken(token: UserToken?)
 }
 
+protocol WelcomeDelegate {
+    func showWelcome(token: UserToken?)
+}
+
 class AuthVC: BaseTableVC, GIDSignInUIDelegate, TokenDelegate {
     let log = LoggerFactory.shared.vc(AuthVC.self)
     
@@ -21,13 +25,16 @@ class AuthVC: BaseTableVC, GIDSignInUIDelegate, TokenDelegate {
     let googleIdentifier = "GoogleIdentifier"
     let attributionsIdentifier = "AttributionsIdentifier"
     let basicIdentifier = "BasicIdentifier"
+    let linkIdentifier = "LinkIdentifier"
     let attributionsIndex = 6
     
     let chooseProvider = BoatLabel.build(text: "Choose Identity Provider", alignment: .center)
     
     var delegate: TokenDelegate? = nil
+    let welcomeDelegate: WelcomeDelegate
     
-    init() {
+    init(welcome: WelcomeDelegate) {
+        self.welcomeDelegate = welcome
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -41,6 +48,7 @@ class AuthVC: BaseTableVC, GIDSignInUIDelegate, TokenDelegate {
         tableView?.register(UITableViewCell.self, forCellReuseIdentifier: googleIdentifier)
         tableView?.register(UITableViewCell.self, forCellReuseIdentifier: attributionsIdentifier)
         tableView?.register(UITableViewCell.self, forCellReuseIdentifier: basicIdentifier)
+        tableView?.register(UITableViewCell.self, forCellReuseIdentifier: linkIdentifier)
         tableView?.separatorStyle = .none
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelClicked(_:)))
         navigationItem.title = "Sign In"
@@ -69,8 +77,30 @@ class AuthVC: BaseTableVC, GIDSignInUIDelegate, TokenDelegate {
                 make.trailing.equalTo(cell.contentView.snp.trailingMargin)
             }
         case 2:
-            cell.textLabel?.text = "When you sign in, you get a token you can add to the BoatTracker agent software running in your boat. Subsequently, tracks driven with your boat are saved to your account and can be viewed in this app."
+            cell.textLabel?.text = "Sign in to view past tracks driven with your boat."
             cell.textLabel?.numberOfLines = 0
+            cell.selectionStyle = .none
+        case 3:
+            cell.textLabel?.text = "How it works"
+            cell.textLabel?.textColor = .darkGray
+            cell.textLabel?.numberOfLines = 0
+            cell.selectionStyle = .none
+        case 4:
+            let textView = UITextView(frame: CGRect.zero)
+            textView.font = UIFont.systemFont(ofSize: 17)
+            textView.textContainer.lineFragmentPadding = 0
+            textView.contentInset = .zero
+            textView.isEditable = false
+            textView.dataDetectorTypes = .link
+            textView.isScrollEnabled = false
+            textView.textColor = .darkGray
+            textView.text = "Add the token provided after sign in to the BoatTracker agent software running in your boat. Subsequently, tracks driven with the boat are saved to your account and can be viewed in this app. For agent installation instructions, see https://www.boat-tracker.com/docs/agent."
+            cell.contentView.addSubview(textView)
+            textView.snp.makeConstraints { (make) in
+                make.top.bottom.equalToSuperview()
+                make.leading.equalTo(cell.contentView.snp.leadingMargin)
+                make.trailing.equalTo(cell.contentView.snp.trailingMargin)
+            }
             cell.selectionStyle = .none
         case attributionsIndex:
             cell.accessoryType = .disclosureIndicator
@@ -103,11 +133,12 @@ class AuthVC: BaseTableVC, GIDSignInUIDelegate, TokenDelegate {
     }
     
     func onToken(token: UserToken?) {
-        goBack()
+        dismiss(animated: true) {
+            self.welcomeDelegate.showWelcome(token: token)
+        }
     }
     
     @objc func cancelClicked(_ sender: UIBarButtonItem) {
         goBack()
     }
-
 }

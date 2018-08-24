@@ -101,12 +101,11 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     
     @objc func userClicked(_ sender: UIButton) {
         if let user = latestToken {
-            //            let dest = ProfileVC(tracksDelegate: self, current: latestTrack)
             let dest = ProfileTableVC(tracksDelegate: self, current: latestTrack, user: user)
             dest.delegate = self
             navigate(to: dest)
         } else {
-            let dest = AuthVC()
+            let dest = AuthVC(welcome: self)
             dest.delegate = self
             navigate(to: dest)
         }
@@ -299,6 +298,26 @@ extension MapVC: BoatSocketDelegate {
 extension MapVC: TokenDelegate {
     func onToken(token: UserToken?) {
         reload(token: token)
+    }
+}
+
+extension MapVC: WelcomeDelegate {
+    func showWelcome(token: UserToken?) {
+        BoatPrefs.shared.isWelcomeRead = true
+        let _ = Backend.shared.http.profile().subscribe { (event) in
+            switch event {
+            case .success(let profile):
+                if let boatToken = profile.boats.headOption()?.token {
+                    self.onUiThread {
+                        self.navigate(to: WelcomeSignedIn(boatToken: boatToken))
+                    }
+                } else {
+                    self.log.warn("Signed in but user has no boats.")
+                }
+            case .error(let err):
+                self.log.error(err.describe)
+            }
+        }
     }
 }
 

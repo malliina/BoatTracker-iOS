@@ -15,6 +15,7 @@ class ProfileTableVC: BaseTableVC {
     let basicCellIdentifier = "BasicCell"
     let infoIdentifier = "InfoCell"
     let logoutIdentifier = "LogoutCell"
+    let noTracksIdentifier = "NoTracksCell"
     
     var delegate: TokenDelegate? = nil
     var tracksDelegate: TracksDelegate? = nil
@@ -23,6 +24,7 @@ class ProfileTableVC: BaseTableVC {
     
     var summary: TrackSummary? = nil
     var showAll: Bool = false
+    var isInitial: Bool = false
     
     init(tracksDelegate: TracksDelegate, current: TrackName?, user: UserToken) {
         self.tracksDelegate = tracksDelegate
@@ -40,6 +42,7 @@ class ProfileTableVC: BaseTableVC {
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Map", style: .plain, target: self, action: #selector(cancelClicked(_:)))
         navigationItem.title = "BoatTracker"
         tableView?.register(TrackSummaryCell.self, forCellReuseIdentifier: TrackSummaryCell.identifier)
+        tableView?.register(UITableViewCell.self, forCellReuseIdentifier: noTracksIdentifier)
         tableView?.register(UITableViewCell.self, forCellReuseIdentifier: basicCellIdentifier)
         tableView?.register(UITableViewCell.self, forCellReuseIdentifier: infoIdentifier)
         tableView?.register(UITableViewCell.self, forCellReuseIdentifier: logoutIdentifier)
@@ -70,13 +73,25 @@ class ProfileTableVC: BaseTableVC {
             
         } else {
             switch indexPath.section {
-            case 0: initBoatsCell(cell: cell)
+            case 0:
+                switch indexPath.row {
+                case 0: initNoTracksCell(cell: cell)
+                case 1: initBoatsCell(cell: cell)
+                default: ()
+                }
             case 1: initAttributionsCell(cell: cell)
             case 2: initLogoutCells(cell: cell, indexPath: indexPath)
             default: ()
             }
         }
         return cell
+    }
+    
+    func initNoTracksCell(cell: UITableViewCell) {
+        cell.textLabel?.text = "No saved tracks"
+        cell.textLabel?.textColor = UIColor.darkGray
+        cell.textLabel?.textAlignment = .center
+        cell.selectionStyle = .none
     }
     
     func initBoatsCell(cell: UITableViewCell) {
@@ -152,7 +167,10 @@ class ProfileTableVC: BaseTableVC {
     func didSelectLimited(_ indexPath: IndexPath) {
         switch indexPath.section {
         case 0:
-            nav(to: BoatTokensVC())
+            switch indexPath.row {
+            case 1: nav(to: BoatTokensVC())
+            default: ()
+            }
         case 1:
             nav(to: AttributionsVC())
         case 2:
@@ -187,7 +205,10 @@ class ProfileTableVC: BaseTableVC {
         } else {
             switch indexPath.section {
             case 0:
-                return basicCellIdentifier
+                switch indexPath.row {
+                case 0: return noTracksIdentifier
+                default: return basicCellIdentifier
+                }
             case 1:
                 return basicCellIdentifier
             case 2:
@@ -213,7 +234,7 @@ class ProfileTableVC: BaseTableVC {
             }
         } else {
             switch section {
-            case 0: return 1
+            case 0: return 2
             case 1: return 1
             case 2: return 2
             default: return 0

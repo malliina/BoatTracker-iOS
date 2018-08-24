@@ -11,8 +11,8 @@ target 'BoatTracker' do
   pod 'AppCenter', '1.7.1'
   pod 'RxSwift', '4.2.0'
   pod 'RxCocoa', '4.2.0'
-  pod 'Mapbox-iOS-SDK', '4.2'
-  pod 'GoogleSignIn', '4.1.2'
+  pod 'Mapbox-iOS-SDK', '4.3'
+  pod 'GoogleSignIn', '4.2.0'
   
   target 'BoatTrackerTests' do
       inherit! :search_paths
@@ -22,6 +22,6 @@ target 'BoatTracker' do
   target 'BoatTrackerUITests' do
       inherit! :search_paths
       # Pods for testing
-      pod 'Mapbox-iOS-SDK', '4.2'
+      pod 'Mapbox-iOS-SDK', '4.3'
   end
 end

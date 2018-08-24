@@ -39,6 +39,8 @@
 		6199E0F920F25EA100A4009A /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6199E0F820F25EA100A4009A /* Credentials.swift */; };
 		6199E0FB20F2656500A4009A /* Credentials.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6199E0FA20F2656500A4009A /* Credentials.plist */; };
 		619F960621139EA1001F7B86 /* Formats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619F960521139EA1001F7B86 /* Formats.swift */; };
+		61ACE5C72130956A00925265 /* WelcomeSignedIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61ACE5C62130956A00925265 /* WelcomeSignedIn.swift */; };
+		61ACE5C921309E5E00925265 /* BoatPrefs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61ACE5C821309E5E00925265 /* BoatPrefs.swift */; };
 		61B07C6020F21DC300D8B7E0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61B07C5F20F21DC300D8B7E0 /* AppDelegate.swift */; };
 		61B07C6220F21DC300D8B7E0 /* MapVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61B07C6120F21DC300D8B7E0 /* MapVC.swift */; };
 		61B07C6720F21DC400D8B7E0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 61B07C6620F21DC400D8B7E0 /* Assets.xcassets */; };
@@ -121,6 +123,8 @@
 		6199E0F820F25EA100A4009A /* Credentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Credentials.swift; sourceTree = "<group>"; };
 		6199E0FA20F2656500A4009A /* Credentials.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Credentials.plist; sourceTree = "<group>"; };
 		619F960521139EA1001F7B86 /* Formats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Formats.swift; sourceTree = "<group>"; };
+		61ACE5C62130956A00925265 /* WelcomeSignedIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeSignedIn.swift; sourceTree = "<group>"; };
+		61ACE5C821309E5E00925265 /* BoatPrefs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatPrefs.swift; sourceTree = "<group>"; };
 		61B07C5C20F21DC300D8B7E0 /* BoatTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BoatTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		61B07C5F20F21DC300D8B7E0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		61B07C6120F21DC300D8B7E0 /* MapVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapVC.swift; sourceTree = "<group>"; };
@@ -210,6 +214,7 @@
 			isa = PBXGroup;
 			children = (
 				612F46AB20F52776001A3003 /* Keychain.swift */,
+				61ACE5C821309E5E00925265 /* BoatPrefs.swift */,
 			);
 			path = Local;
 			sourceTree = "<group>";
@@ -265,6 +270,7 @@
 				619679F920FBCDB100432672 /* TrackListVC.swift */,
 				619679F320FBA4C400432672 /* TrackStatsVC.swift */,
 				61DE7F4620F3E6D900C95B3F /* TracksVC.swift */,
+				61ACE5C62130956A00925265 /* WelcomeSignedIn.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -653,10 +659,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				61F4199121206A5600B1ED7D /* AttributionsVC.swift in Sources */,
+				61ACE5C72130956A00925265 /* WelcomeSignedIn.swift in Sources */,
 				61F4199B2120B2F700B1ED7D /* ProfileTableVC.swift in Sources */,
 				61DE7F3F20F29F6900C95B3F /* BoatSocket.swift in Sources */,
 				61DE7F4320F3AEFC00C95B3F /* models.swift in Sources */,
 				6199E0F320F24F8100A4009A /* Json.swift in Sources */,
+				61ACE5C921309E5E00925265 /* BoatPrefs.swift in Sources */,
 				61F419972120745A00B1ED7D /* TrackSummaryBox.swift in Sources */,
 				619679F220FB39CF00432672 /* MapEvents.swift in Sources */,
 				6199E0F120F24F1800A4009A /* HttpResponse.swift in Sources */,
