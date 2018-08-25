@@ -34,7 +34,6 @@ class BoatTokensVC: BaseTableVC {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: BoatTokenCell.identifier, for: indexPath)
-//        cell.accessoryType = .detailDisclosureButton
         if let boat = profile?.boats[indexPath.row], let cell = cell as? BoatTokenCell {
             cell.fill(boat: boat.name, token: boat.token)
         }
@@ -43,6 +42,12 @@ class BoatTokensVC: BaseTableVC {
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return profile?.boats.count ?? 0
+    }
+    
+    override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        let textView = BoatTextView(text: "Add the token to the BoatTracker agent software running in your boat. For more information, see https://www.boat-tracker.com/docs/agent.", font: UIFont.systemFont(ofSize: 16))
+        textView.textContainerInset = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+        return textView
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -62,7 +67,6 @@ class BoatTokensVC: BaseTableVC {
                     self.log.error("Unable to rename. \(err.describe)")
                 }
             }
-            
         }
         popup.addAction(okAction)
         popup.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
