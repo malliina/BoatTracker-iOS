@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 class WelcomeSignedIn: UIViewController {
-    let welcomeLabel = BoatLabel.build(text: "Add this token to the BoatTracker agent software in your boat to save tracks to this app:")
+    let welcomeLabel = BoatLabel.build(text: "Add this token to the Boat-Tracker agent software in your boat to save tracks to this app:")
     let tokenLabel: UILabel
     let laterLabel = BoatLabel.build(text: "You can later view this token in the Boats section of the app.")
     let spacing = 16

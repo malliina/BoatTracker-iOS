@@ -86,7 +86,7 @@ class AuthVC: BaseTableVC, GIDSignInUIDelegate, TokenDelegate {
             cell.textLabel?.numberOfLines = 0
             cell.selectionStyle = .none
         case 4:
-            let textView = BoatTextView(text: "Add the token provided after sign in to the BoatTracker agent software running in your boat. Subsequently, tracks driven with the boat are saved to your account and can be viewed in this app. For agent installation instructions, see https://www.boat-tracker.com/docs/agent.", font: UIFont.systemFont(ofSize: 17))
+            let textView = BoatTextView(text: "Add the token provided after sign in to the Boat-Tracker agent software running in your boat. Subsequently, tracks driven with the boat are saved to your account and can be viewed in this app. For agent installation instructions, see https://www.boat-tracker.com/docs/agent.", font: UIFont.systemFont(ofSize: 17))
             textView.textContainer.lineFragmentPadding = 0
             textView.contentInset = .zero
             cell.contentView.addSubview(textView)
