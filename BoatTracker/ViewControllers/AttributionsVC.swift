@@ -13,8 +13,8 @@ class AttributionsVC: BaseTableVC {
     let attributionKey = "AttributionCell"
     let linksKey = "LinkCell"
     
-    let maps = Attribution(title: "Merikartta-aineistot",
-                text: "Lähde: Liikennevirasto. Ei navigointikäyttöön. Ei täytä virallisen merikartan vaatimuksia.",
+    let maps = Attribution(title: "Maritime data",
+                text: "Source: Finnish Transport Agency. Not for navigational use. Does not meet the requirements for official nautical charts",
                 link: Link(text: "CC 4.0", url: URL(string: "https://creativecommons.org/licenses/by/4.0/")!))
     let marineApi = LinksAttribution(title: "Java Marine API",
                      link1: Link(text: "GNU LGPL",
