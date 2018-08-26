@@ -55,11 +55,6 @@ class HttpClient {
         return executeHttp(req)
     }
     
-//    func postGeneric(_ url: URL, headers: [String: String] = [:], payload: Data?, completionHandler: @escaping ((Data?, URLResponse?, Error?) -> Void)) {
-//        let req = buildRequest(url: url, httpMethod: HttpClient.POST, headers: headers, body: payload)
-//        executeRequest(req, completionHandler: completionHandler)
-//    }
-    
     func delete(_ url: URL, headers: [String: String] = [:]) -> Observable<HttpResponse> {
         let req = buildRequest(url: url, httpMethod: HttpClient.DELETE, headers: headers, body: nil)
         return executeHttp(req)
