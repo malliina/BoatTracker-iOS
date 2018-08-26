@@ -14,7 +14,6 @@ class Backend {
     
     let baseUrl: URL
     private var latestToken: UserToken? = nil
-    //private var latestTrack: TrackName? = nil
     
     var http: BoatHttpClient
     var socket: BoatSocket

@@ -18,6 +18,7 @@ class BoatColors {
     
     var buttonText: UIColor { return blue }
     let textColor = UIColor.black
+    let secondaryText = UIColor.darkGray
     let logoutBackground = UIColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 0.9)
     var feedback: UIColor { return textColor }
     var backgroundColor: UIColor { return .white }

@@ -10,6 +10,8 @@ import Foundation
 import UIKit
 
 extension UIViewController {
+    var colors: BoatColors { return BoatColors.shared }
+    
     func feedbackView(text: String) -> UIView {
         let feedback = BoatLabel.build(text: text, alignment: .center, numberOfLines: 0)
         let container = UIView()

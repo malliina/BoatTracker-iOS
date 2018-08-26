@@ -17,16 +17,17 @@ class ProfileTableVC: BaseTableVC {
     let logoutIdentifier = "LogoutCell"
     let noTracksIdentifier = "NoTracksCell"
     
-    var delegate: TokenDelegate? = nil
-    var tracksDelegate: TracksDelegate? = nil
-    var current: TrackName? = nil
+    let delegate: TokenDelegate
+    let tracksDelegate: TracksDelegate
     let user: UserToken
+    let current: TrackName?
     
     var summary: TrackSummary? = nil
     var showAll: Bool = false
     var isInitial: Bool = false
     
-    init(tracksDelegate: TracksDelegate, current: TrackName?, user: UserToken) {
+    init(tokenDelegate: TokenDelegate, tracksDelegate: TracksDelegate, current: TrackName?, user: UserToken) {
+        self.delegate = tokenDelegate
         self.tracksDelegate = tracksDelegate
         self.current = current
         self.user = user
@@ -89,7 +90,7 @@ class ProfileTableVC: BaseTableVC {
     
     func initNoTracksCell(cell: UITableViewCell) {
         cell.textLabel?.text = "No saved tracks"
-        cell.textLabel?.textColor = UIColor.darkGray
+        cell.textLabel?.textColor = colors.secondaryText
         cell.textLabel?.textAlignment = .center
         cell.selectionStyle = .none
     }
@@ -184,7 +185,7 @@ class ProfileTableVC: BaseTableVC {
     
     func logout() {
         GoogleAuth.shared.signOut()
-        delegate?.onToken(token: nil)
+        delegate.onToken(token: nil)
         goBack()
     }
     

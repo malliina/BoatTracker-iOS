@@ -21,10 +21,6 @@ extension String {
 }
 
 class TrackStatsVC: BaseTableVC {
-    static func testTrack() -> TrackRef {
-        return TrackRef(trackName: TrackName(name: "Tname"), boatName: BoatName(name: "Bname"), username: Username(name: "Uname"), start: Date(timeIntervalSinceReferenceDate: 1), topSpeed: 1.knots, avgSpeed: 1.knots, distance: 10.kilometers, duration: 10.seconds, avgWaterTemp: 1.celsius)
-    }
-    
     let cellKey = "StatCell"
     
     let track: TrackRef
@@ -50,7 +46,6 @@ class TrackStatsVC: BaseTableVC {
         super.viewDidLoad()
         navigationItem.title = "Stats"
         tableView?.register(StatCell.self, forCellReuseIdentifier: cellKey)
-//        tableView.rowHeight = TrackCell.rowHeight
         tableView.tableFooterView = UIView()
     }
     

@@ -36,12 +36,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = w
         w.makeKeyAndVisible()
         w.rootViewController = MapVC()
-//        w.rootViewController = AttributionsVC()
-//        let dest = ProfileVC(tracksDelegate: Dummy.shared, current: TrackName(name: ""))
-//        let nav = UINavigationController(rootViewController: dest)
-//        w.rootViewController = nav
-//        w.rootViewController = TrackStatsVC(track: TrackStatsVC.testTrack())
-//        w.rootViewController = TrackListVC(delegate: nil, login: true)
         return true
     }
     

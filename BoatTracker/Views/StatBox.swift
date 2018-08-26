@@ -33,7 +33,7 @@ class StatBox: UIView {
     }
     
     init(_ title: String, initialValue: String = "N/A", labelFontSize: CGFloat = 14, valueFontSize: CGFloat = 17, verticalSpace: CGFloat = 12) {
-        label = BoatLabel.build(text: "", fontSize: labelFontSize, textColor: .darkGray)
+        label = BoatLabel.build(text: "", fontSize: labelFontSize, textColor: BoatColors.shared.secondaryText)
         valueText = BoatLabel.build(text: "", fontSize: valueFontSize)
         super.init(frame: CGRect.zero)
         addSubview(label)

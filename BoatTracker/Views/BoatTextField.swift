@@ -12,7 +12,6 @@ import UIKit
 class BoatTextField: UITextField, UITextFieldDelegate {
     var placeholderText: String? {
         get { return placeholder }
-//        set(newPlaceholder) { attributedPlaceholder = NSAttributedString(string: newPlaceholder ?? "", attributes: [NSAttributedStringKey.foregroundColor: PicsColors.placeholder]) }
         set(newPlaceholder) { attributedPlaceholder = NSAttributedString(string: newPlaceholder ?? "") }
     }
     
@@ -36,8 +35,6 @@ class BoatTextField: UITextField, UITextFieldDelegate {
     
     fileprivate func initUI() {
         delegate = self
-//        backgroundColor = PicsColors.inputBackground
-//        textColor = PicsColors.inputText
         borderStyle = .roundedRect
         font = UIFont.systemFont(ofSize: 28)
         autocorrectionType = .no

@@ -17,7 +17,7 @@ class BoatTextView: UITextView {
         isScrollEnabled = false
         isEditable = false
         dataDetectorTypes = .link
-        textColor = .darkGray
+        textColor = colors.secondaryText
     }
     
     required init?(coder aDecoder: NSCoder) {

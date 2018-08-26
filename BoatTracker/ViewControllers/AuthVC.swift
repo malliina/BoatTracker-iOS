@@ -30,10 +30,11 @@ class AuthVC: BaseTableVC, GIDSignInUIDelegate, TokenDelegate {
     
     let chooseProvider = BoatLabel.build(text: "Choose Identity Provider", alignment: .center)
     
-    var delegate: TokenDelegate? = nil
+    let delegate: TokenDelegate
     let welcomeDelegate: WelcomeDelegate
     
-    init(welcome: WelcomeDelegate) {
+    init(tokenDelegate: TokenDelegate, welcome: WelcomeDelegate) {
+        self.delegate = tokenDelegate
         self.welcomeDelegate = welcome
         super.init(nibName: nil, bundle: nil)
     }
@@ -82,7 +83,7 @@ class AuthVC: BaseTableVC, GIDSignInUIDelegate, TokenDelegate {
             cell.selectionStyle = .none
         case 3:
             cell.textLabel?.text = "How it works"
-            cell.textLabel?.textColor = .darkGray
+            cell.textLabel?.textColor = colors.secondaryText
             cell.textLabel?.numberOfLines = 0
             cell.selectionStyle = .none
         case 4:

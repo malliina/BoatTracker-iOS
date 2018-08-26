@@ -16,7 +16,7 @@ class WelcomeSignedIn: UIViewController {
     let spacing = 16
     
     init(boatToken: String) {
-        tokenLabel = BoatLabel.build(text: boatToken)
+        tokenLabel = BoatLabel.build(text: boatToken, textColor: BoatColors.shared.secondaryText)
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -28,13 +28,12 @@ class WelcomeSignedIn: UIViewController {
         super.viewDidLoad()
         navigationItem.title = "Welcome"
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneClicked(_:)))
-        view.backgroundColor = .white
+        view.backgroundColor = colors.backgroundColor
         view.addSubview(welcomeLabel)
         welcomeLabel.snp.makeConstraints { (make) in
             make.leadingMargin.trailingMargin.centerX.centerY.equalToSuperview()
         }
         view.addSubview(tokenLabel)
-        tokenLabel.textColor = .darkGray
         tokenLabel.snp.makeConstraints { (make) in
             make.leadingMargin.trailingMargin.equalToSuperview()
             make.top.equalTo(welcomeLabel.snp.bottom).offset(spacing)

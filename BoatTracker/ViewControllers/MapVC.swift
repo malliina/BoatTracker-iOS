@@ -101,12 +101,10 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     
     @objc func userClicked(_ sender: UIButton) {
         if let user = latestToken {
-            let dest = ProfileTableVC(tracksDelegate: self, current: latestTrack, user: user)
-            dest.delegate = self
+            let dest = ProfileTableVC(tokenDelegate: self, tracksDelegate: self, current: latestTrack, user: user)
             navigate(to: dest)
         } else {
-            let dest = AuthVC(welcome: self)
-            dest.delegate = self
+            let dest = AuthVC(tokenDelegate: self, welcome: self)
             navigate(to: dest)
         }
     }
@@ -137,7 +135,6 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         let track = event.from.trackName
         latestTrack = track
         let coords = event.coords
-//        log.info("Got \(coords.count) coords")
         // updates boat trail
         let newTrail = (history[track] ?? []) + event.coords.map { $0.coord }
         history.updateValue(newTrail, forKey: track)
