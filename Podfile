@@ -9,7 +9,7 @@ target 'BoatTracker' do
   inhibit_all_warnings!
 
   pod 'SocketRocket', '0.5.1', :inhibit_warnings => true
-  pod 'SnapKit', '4.0.0'
+  pod 'SnapKit', '4.0.1'
   pod 'AppCenter', '1.7.1'
   pod 'RxSwift', '4.2.0'
   pod 'RxCocoa', '4.2.0', :inhibit_warnings => true
