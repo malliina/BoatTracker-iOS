@@ -11,12 +11,12 @@ import Mapbox
 
 class CoordsData {
     let coords: [CoordBody]
-    let from: TrackMeta
+    let from: TrackRef
     
     static func parse(json: JsObject) throws -> CoordsData {
         let body = try json.readObject("body")
-        let from = try body.readObj("from", parse: { (f) -> TrackMeta in
-            try TrackMeta.parse(json: f)
+        let from = try body.readObj("from", parse: { (f) -> TrackRef in
+            try TrackRef.parse(json: f)
         })
         let coords = try body.readObjectArray("coords", each: { (c) -> CoordBody in
             try CoordBody.parse(json: c)
@@ -24,7 +24,7 @@ class CoordsData {
         return CoordsData(coords: coords, from: from)
     }
     
-    init(coords: [CoordBody], from: TrackMeta) {
+    init(coords: [CoordBody], from: TrackRef) {
         self.coords = coords
         self.from = from
     }

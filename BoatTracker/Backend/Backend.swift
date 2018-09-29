@@ -10,7 +10,7 @@ import Foundation
 import RxCocoa
 
 class Backend {
-    static let shared = Backend(EnvConf.BaseUrl)
+    static let shared = Backend(EnvConf.shared.baseUrl)
     
     let baseUrl: URL
     private var latestToken: UserToken? = nil

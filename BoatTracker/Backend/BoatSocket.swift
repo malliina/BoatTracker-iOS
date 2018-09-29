@@ -20,6 +20,7 @@ class BoatSocket: SocketDelegate {
     let client: SocketClient
     
     var delegate: BoatSocketDelegate? = nil
+    var statsDelegate: BoatSocketDelegate? = nil
     
     convenience init(token: AccessToken?, track: TrackName?) {
         var headers = [HttpClient.ACCEPT: BoatHttpClient.BoatVersion10]
@@ -27,7 +28,7 @@ class BoatSocket: SocketDelegate {
             headers.updateValue("bearer \(token.token)", forKey: HttpClient.AUTHORIZATION)
         }
         let trackQuery = track.map { "?track=\($0.name)" } ?? ""
-        let url = URL(string: "/ws/updates\(trackQuery)", relativeTo: EnvConf.BaseUrl)!
+        let url = URL(string: "/ws/updates\(trackQuery)", relativeTo: EnvConf.shared.baseUrl)!
         self.init(client: SocketClient(baseURL: url, headers: headers))
 //        log.info("Using \(token)")
     }
@@ -58,6 +59,9 @@ class BoatSocket: SocketDelegate {
                     delegate.onCoords(event: data)
                 } else {
                     log.warn("No delegate for coords. This is probably an error.")
+                }
+                if let delegate = statsDelegate {
+                    delegate.onCoords(event: data)
                 }
             default:
                 log.info("Unknown event: '\(event)'.")

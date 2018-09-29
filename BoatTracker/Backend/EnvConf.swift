@@ -9,9 +9,11 @@
 import Foundation
 
 class EnvConf {
-    static let Server = "www.boat-tracker.com"
-    static let DevBaseUrl = URL(string: "http://localhost:9000")!
-    static let ProdBaseUrl = URL(string: "https://\(EnvConf.Server)")!
+    static let shared = EnvConf()
+    
+    var server: String { return "www.boat-tracker.com" }
+    private var devBaseUrl: URL { return URL(string: "http://localhost:9000")! }
+    private var prodBaseUrl: URL { return URL(string: "https://\(server)")! }
 //     static let BaseUrl = DevBaseUrl
-    static let BaseUrl = ProdBaseUrl
+    var baseUrl: URL { return prodBaseUrl }
 }

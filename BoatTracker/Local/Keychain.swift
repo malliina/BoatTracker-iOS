@@ -11,7 +11,7 @@ import Foundation
 open class Keychain {
     static let shared = Keychain()
     
-    let server = EnvConf.Server
+    let server = EnvConf.shared.server
     
     let query: [String: Any]
     

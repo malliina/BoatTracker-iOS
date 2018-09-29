@@ -41,10 +41,10 @@ class GoogleAuth: NSObject, GIDSignInDelegate {
         google.signOut()
     }
     
-    func open(url: URL, options: [UIApplicationOpenURLOptionsKey : Any]) -> Bool {
+    func open(url: URL, options: [UIApplication.OpenURLOptionsKey : Any]) -> Bool {
         return google.handle(url as URL?,
-                             sourceApplication: options[UIApplicationOpenURLOptionsKey.sourceApplication] as? String,
-                             annotation: options[UIApplicationOpenURLOptionsKey.annotation])
+                             sourceApplication: options[UIApplication.OpenURLOptionsKey.sourceApplication] as? String,
+                             annotation: options[UIApplication.OpenURLOptionsKey.annotation])
     }
     
     func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {

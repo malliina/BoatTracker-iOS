@@ -9,6 +9,14 @@
 import Foundation
 import UIKit
 
+extension ProfileTableVC: BoatSocketDelegate {
+    func onCoords(event: CoordsData) {
+        onUiThread {
+            self.update(stats: event.from)
+        }
+    }
+}
+
 class ProfileTableVC: BaseTableVC {
     let log = LoggerFactory.shared.vc(ProfileTableVC.self)
     
@@ -22,9 +30,20 @@ class ProfileTableVC: BaseTableVC {
     let user: UserToken
     let current: TrackName?
     
-    var summary: TrackSummary? = nil
+    var summary: TrackRef? = nil
     var showAll: Bool = false
     var isInitial: Bool = false
+    
+    private var socket: BoatSocket { return Backend.shared.socket }
+    
+    func update(stats: TrackRef) {
+        if let current = current, stats.trackName == current {
+            onUiThread {
+                self.summary = stats
+                self.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .none)
+            }
+        }
+    }
     
     init(tokenDelegate: TokenDelegate, tracksDelegate: TracksDelegate, current: TrackName?, user: UserToken) {
         self.delegate = tokenDelegate
@@ -48,6 +67,7 @@ class ProfileTableVC: BaseTableVC {
         tableView?.register(UITableViewCell.self, forCellReuseIdentifier: infoIdentifier)
         tableView?.register(UITableViewCell.self, forCellReuseIdentifier: logoutIdentifier)
         loadTracks()
+        socket.statsDelegate = self
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -57,7 +77,7 @@ class ProfileTableVC: BaseTableVC {
             case 0:
                 cell.selectionStyle = .none
                 if let summary = summary, let cell = cell as? TrackSummaryCell {
-                    cell.fill(track: summary.track)
+                    cell.fill(track: summary)
                 }
             case 1:
                 cell.accessoryType = .disclosureIndicator
@@ -252,7 +272,7 @@ class ProfileTableVC: BaseTableVC {
             case .success(let ts):
                 self.log.info("Got \(ts.count) tracks.")
                 self.onUiThread {
-                    self.onTracks(ts: ts)
+                    self.onTracks(ts: ts.map { $0.track })
                 }
             case .error(let err):
                 self.log.error("Unable to load tracks. \(err.describe)")
@@ -260,10 +280,10 @@ class ProfileTableVC: BaseTableVC {
         }
     }
     
-    func onTracks(ts: [TrackSummary]) {
+    func onTracks(ts: [TrackRef]) {
         showAll = !ts.isEmpty
-        summary = ts.first(where: { (summary) -> Bool in
-            summary.track.trackName == current
+        summary = ts.first(where: { (track) -> Bool in
+            track.trackName == current
         })
         tableView.reloadData()
     }

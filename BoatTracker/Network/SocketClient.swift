@@ -67,7 +67,7 @@ class SocketClient: NSObject, SRWebSocketDelegate {
             if let message = message as? String {
                 log.info("Got message \(message)")
             } else {
-                log.info("Got data \(message)")
+                log.info("Got data \(message ?? "")")
             }
         }
     }
@@ -92,7 +92,7 @@ class SocketClient: NSObject, SRWebSocketDelegate {
     
     func webSocket(_ webSocket: SRWebSocket!, didFailWithError error: Error!) {
         isConnected = false
-        log.info("Connection failed to \(baseURL.absoluteString). \(error)")
+        log.info("Connection failed to \(baseURL.absoluteString). \(error?.describe ?? "")")
         if let onError = onOpenErrorCallback {
             onError(error)
             onOpenCallback = nil
@@ -103,7 +103,7 @@ class SocketClient: NSObject, SRWebSocketDelegate {
     func close() {
         // disposes of any previous socket
         if let socket = socket {
-            socket.delegate = LoggingSRSocketDelegate(baseURL: self.baseURL)
+            socket.delegate = nil
             socket.close()
             self.socket = nil
         }
@@ -128,7 +128,8 @@ class LoggingSRSocketDelegate: NSObject, SRWebSocketDelegate {
     }
     
     public func webSocket(_ webSocket: SRWebSocket!, didReceiveMessage message: Any!) {
-        info("Got message from \(baseURL): \(message)")
+        let msg = String(describing: message)
+        info("Got message from \(baseURL): \(msg)")
     }
     
     func webSocketDidOpen(_ webSocket: SRWebSocket!) {

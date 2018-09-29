@@ -177,7 +177,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     }
     
     // https://www.mapbox.com/ios-sdk/examples/runtime-animate-line/
-    func initEmptyLayers(track: TrackMeta, to style: MGLStyle) -> MGLShapeSource {
+    func initEmptyLayers(track: TrackRef, to style: MGLStyle) -> MGLShapeSource {
         let trailId = trailName(for: track.trackName)
         let trackSource = MGLShapeSource(identifier: trailId, shape: nil, options: nil)
         style.addSource(trackSource)

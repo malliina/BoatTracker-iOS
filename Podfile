@@ -5,12 +5,14 @@ ENV['COCOAPODS_DISABLE_STATS'] = "true"
 target 'BoatTracker' do
   # Comment the next line if you're not using Swift and don't want to use dynamic frameworks
   use_frameworks!
+  # https://stackoverflow.com/a/13209057
+  inhibit_all_warnings!
 
   pod 'SocketRocket', '0.5.1', :inhibit_warnings => true
   pod 'SnapKit', '4.0.0'
   pod 'AppCenter', '1.7.1'
   pod 'RxSwift', '4.2.0'
-  pod 'RxCocoa', '4.2.0'
+  pod 'RxCocoa', '4.2.0', :inhibit_warnings => true
   pod 'Mapbox-iOS-SDK', '4.3'
   pod 'GoogleSignIn', '4.2.0'
   

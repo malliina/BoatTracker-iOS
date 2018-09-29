@@ -159,16 +159,6 @@ extension Dictionary {
         }
     }
     
-    func mapValues<OutValue>(_ transform: (Value) -> OutValue) -> [Key: OutValue] {
-        return self.map { (key, value) -> (Key, OutValue) in
-            (key, transform(value))
-        }
-    }
-    
-    func map<OutKey: Hashable, OutValue>(_ transform: (Element) -> (OutKey, OutValue)) -> [OutKey: OutValue] {
-        return self.map { (e) in (transform(e)) }
-    }
-    
     func filterKeys(_ includeElement: (Element) -> Bool) -> [Key: Value] {
         return self.filter(includeElement)
         //        return Dictionary<Key, Value>(pairs)
