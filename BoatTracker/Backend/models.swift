@@ -151,15 +151,13 @@ class BackendInfo {
 
 class TrackSummary {
     let track: TrackRef
-    let stats: TrackStats
-    
+ 
     static func parse(json: JsObject) throws -> TrackSummary {
-        return TrackSummary(track: try json.readObj("track", parse: TrackRef.parse), stats: try json.readObj("stats", parse: TrackStats.parse))
+        return TrackSummary(track: try json.readObj("track", parse: TrackRef.parse))
     }
     
-    init(track: TrackRef, stats: TrackStats) {
+    init(track: TrackRef) {
         self.track = track
-        self.stats = stats
     }
 }
 

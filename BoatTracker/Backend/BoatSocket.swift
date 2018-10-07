@@ -13,8 +13,6 @@ protocol BoatSocketDelegate {
 }
 
 class BoatSocket: SocketDelegate {
-    //static let SocketUrl = URL(string: "/ws/updates", relativeTo: EnvConf.BaseUrl)!
-    
     private let log = LoggerFactory.shared.network(BoatSocket.self)
     
     let client: SocketClient
