@@ -16,6 +16,10 @@
 		612F46B520F644B7001A3003 /* Distance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 612F46B420F644B7001A3003 /* Distance.swift */; };
 		612F46B720F646A0001A3003 /* Temperature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 612F46B620F646A0001A3003 /* Temperature.swift */; };
 		612F46B920F66854001A3003 /* Geo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 612F46B820F66854001A3003 /* Geo.swift */; };
+		613669B5216A98560043494A /* BoatSwitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613669B4216A98560043494A /* BoatSwitch.swift */; };
+		613669B7216FDAD10043494A /* BoatNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613669B6216FDAD10043494A /* BoatNotifications.swift */; };
+		613669BC216FDB3E0043494A /* PushToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613669BB216FDB3E0043494A /* PushToken.swift */; };
+		613669BE217117390043494A /* generalExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613669BD217117390043494A /* generalExtensions.swift */; };
 		6171906B212CA06900337B0B /* BoatTokenCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6171906A212CA06900337B0B /* BoatTokenCell.swift */; };
 		619679EB20F78B5900432672 /* MapMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619679EA20F78B5900432672 /* MapMode.swift */; };
 		619679EE20F89F6D00432672 /* GoogleAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619679ED20F89F6D00432672 /* GoogleAuth.swift */; };
@@ -101,6 +105,11 @@
 		612F46B420F644B7001A3003 /* Distance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Distance.swift; sourceTree = "<group>"; };
 		612F46B620F646A0001A3003 /* Temperature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Temperature.swift; sourceTree = "<group>"; };
 		612F46B820F66854001A3003 /* Geo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Geo.swift; sourceTree = "<group>"; };
+		613669B4216A98560043494A /* BoatSwitch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatSwitch.swift; sourceTree = "<group>"; };
+		613669B6216FDAD10043494A /* BoatNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatNotifications.swift; sourceTree = "<group>"; };
+		613669BB216FDB3E0043494A /* PushToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushToken.swift; sourceTree = "<group>"; };
+		613669BD217117390043494A /* generalExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = generalExtensions.swift; sourceTree = "<group>"; };
+		613669BF217124560043494A /* BoatTracker.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BoatTracker.entitlements; sourceTree = "<group>"; };
 		6171906A212CA06900337B0B /* BoatTokenCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatTokenCell.swift; sourceTree = "<group>"; };
 		619679EA20F78B5900432672 /* MapMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapMode.swift; sourceTree = "<group>"; };
 		619679ED20F89F6D00432672 /* GoogleAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAuth.swift; sourceTree = "<group>"; };
@@ -234,6 +243,15 @@
 			path = Measure;
 			sourceTree = "<group>";
 		};
+		613669BA216FDB320043494A /* Notifications */ = {
+			isa = PBXGroup;
+			children = (
+				613669B6216FDAD10043494A /* BoatNotifications.swift */,
+				613669BB216FDB3E0043494A /* PushToken.swift */,
+			);
+			path = Notifications;
+			sourceTree = "<group>";
+		};
 		619679E920F78B4800432672 /* Maps */ = {
 			isa = PBXGroup;
 			children = (
@@ -283,15 +301,16 @@
 				61DE7F4A20F3ED3900C95B3F /* BoatButton.swift */,
 				619679F520FBBA3A00432672 /* BoatCell.swift */,
 				6199E0E820F2325100A4009A /* BoatLabel.swift */,
+				613669B4216A98560043494A /* BoatSwitch.swift */,
 				61DE7F4820F3EB0700C95B3F /* BoatTextField.swift */,
 				61ACE5CA2131667600925265 /* BoatTextView.swift */,
 				6171906A212CA06900337B0B /* BoatTokenCell.swift */,
-				61AB2C7E2132A63C009774DC /* viewExt.swift */,
 				61CD40D021163E0E00F31AA5 /* StatBox.swift */,
 				619679F720FBBB4D00432672 /* StatCell.swift */,
 				619679FF2103BCCF00432672 /* TrackCell.swift */,
 				61F419962120745A00B1ED7D /* TrackSummaryBox.swift */,
 				61F4199C2120B39C00B1ED7D /* TrackSummaryCell.swift */,
+				61AB2C7E2132A63C009774DC /* viewExt.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -317,6 +336,7 @@
 				61CD40CE211635FD00F31AA5 /* Dummy.swift */,
 				619F960521139EA1001F7B86 /* Formats.swift */,
 				6199E0EE20F24EC300A4009A /* Log.swift */,
+				613669BD217117390043494A /* generalExtensions.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -346,6 +366,8 @@
 		61B07C5E20F21DC300D8B7E0 /* BoatTracker */ = {
 			isa = PBXGroup;
 			children = (
+				613669BF217124560043494A /* BoatTracker.entitlements */,
+				613669BA216FDB320043494A /* Notifications */,
 				61B07C5F20F21DC300D8B7E0 /* AppDelegate.swift */,
 				61B07C6620F21DC400D8B7E0 /* Assets.xcassets */,
 				619679EC20F89F6300432672 /* Auth */,
@@ -470,6 +492,11 @@
 					61B07C5B20F21DC300D8B7E0 = {
 						CreatedOnToolsVersion = 9.3;
 						LastSwiftMigration = 1000;
+						SystemCapabilities = {
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 					61B07C6F20F21DC400D8B7E0 = {
 						CreatedOnToolsVersion = 9.3;
@@ -673,6 +700,7 @@
 				61ACE5C921309E5E00925265 /* BoatPrefs.swift in Sources */,
 				61AB2C7F2132A63C009774DC /* viewExt.swift in Sources */,
 				61F419972120745A00B1ED7D /* TrackSummaryBox.swift in Sources */,
+				613669B5216A98560043494A /* BoatSwitch.swift in Sources */,
 				619679F220FB39CF00432672 /* MapEvents.swift in Sources */,
 				6199E0F120F24F1800A4009A /* HttpResponse.swift in Sources */,
 				61967A072103CAFD00432672 /* BoatColors.swift in Sources */,
@@ -687,16 +715,19 @@
 				61967A002103BCCF00432672 /* TrackCell.swift in Sources */,
 				61B07C6220F21DC300D8B7E0 /* MapVC.swift in Sources */,
 				61F4199521206F9200B1ED7D /* Arrays.swift in Sources */,
+				613669B7216FDAD10043494A /* BoatNotifications.swift in Sources */,
 				61DE7F4B20F3ED3900C95B3F /* BoatButton.swift in Sources */,
 				61F4199D2120B39C00B1ED7D /* TrackSummaryCell.swift in Sources */,
 				619679EE20F89F6D00432672 /* GoogleAuth.swift in Sources */,
 				612F46A220F4A5CF001A3003 /* BoatHttpClient.swift in Sources */,
 				619679F820FBBB4D00432672 /* StatCell.swift in Sources */,
+				613669BE217117390043494A /* generalExtensions.swift in Sources */,
 				6199E0F520F2501E00A4009A /* errors.swift in Sources */,
 				619F960621139EA1001F7B86 /* Formats.swift in Sources */,
 				6199E0F720F254FB00A4009A /* SocketClient.swift in Sources */,
 				619679FA20FBCDB100432672 /* TrackListVC.swift in Sources */,
 				6199E0EF20F24EC300A4009A /* Log.swift in Sources */,
+				613669BC216FDB3E0043494A /* PushToken.swift in Sources */,
 				6171906B212CA06900337B0B /* BoatTokenCell.swift in Sources */,
 				612F46B320F6418B001A3003 /* Speed.swift in Sources */,
 				612F46A420F4A99E001A3003 /* EnvConf.swift in Sources */,
@@ -881,6 +912,7 @@
 			baseConfigurationReference = A6F81608BCD147997F617B74 /* Pods-BoatTracker.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = BoatTracker/BoatTracker.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = D2T2QC36Z9;
 				INFOPLIST_FILE = BoatTracker/Info.plist;
@@ -900,6 +932,7 @@
 			baseConfigurationReference = 682050442727B4467E4B02A3 /* Pods-BoatTracker.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = BoatTracker/BoatTracker.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = D2T2QC36Z9;
 				INFOPLIST_FILE = BoatTracker/Info.plist;

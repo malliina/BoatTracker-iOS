@@ -70,6 +70,22 @@ class BoatHttpClient {
         })
     }
     
+    func enableNotifications(token: PushToken) -> Single<SimpleMessage> {
+        return parsed("/users/notifications", run: { (url) -> Observable<HttpResponse> in
+            return client.postJSON(url, headers: postHeaders, payload: ["token": token.token as AnyObject, "device": "iOS" as AnyObject])
+        }, parse: { (obj) -> SimpleMessage in
+            return try SimpleMessage.parse(obj: obj)
+        })
+    }
+    
+    func disableNotifications(token: PushToken) -> Single<SimpleMessage> {
+        return parsed("/users/notifications/disable", run: { (url) -> Observable<HttpResponse> in
+            return client.postJSON(url, headers: postHeaders, payload: ["token": token.token as AnyObject])
+        }, parse: { (obj) -> SimpleMessage in
+            return try SimpleMessage.parse(obj: obj)
+        })
+    }
+    
     func renameBoat(boat: Int, newName: BoatName) -> Single<Boat> {
         return parsed("/boats/\(boat)", run: { (url) -> Observable<HttpResponse> in
             client.patchJSON(url, headers: postHeaders, payload: ["boatName": newName.name as AnyObject])
@@ -85,12 +101,16 @@ class BoatHttpClient {
     }
     
     func parsed<T>(_ uri: String, run: (URL) -> Observable<HttpResponse>, parse: @escaping (JsObject) throws -> T) -> Single<T> {
-        let url = URL(string: uri, relativeTo: baseUrl)!
+        let url = fullUrl(to: uri)
         return run(url).flatMap { (response) -> Observable<T> in
             return self.statusChecked(url, response: response).flatMap { (checkedResponse) -> Observable<T> in
                 return self.parseAs(response: checkedResponse, parse: parse)
             }
         }.asSingle()
+    }
+    
+    func fullUrl(to: String) -> URL {
+        return URL(string: to, relativeTo: baseUrl)!
     }
     
     private func parseAs<T>(response: HttpResponse, parse: @escaping (JsObject) throws -> T) -> Observable<T> {

@@ -16,6 +16,7 @@ import GoogleSignIn
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     let log = LoggerFactory.shared.system(AppDelegate.self)
+    let notifications = BoatNotifications.shared
 
     var window: UIWindow?
     
@@ -74,6 +75,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    }
+    
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        notifications.didRegister(deviceToken)
+    }
+    
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        notifications.didFailToRegister(error)
+    }
+    
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) {
+        log.info("Received remote notification...")
+//        notification = userInfo
+        //        notifications.handleNotification(application, window: window, data: userInfo)
     }
 
     func connectSocket() {

@@ -187,6 +187,14 @@ struct UserToken {
     let token: AccessToken
 }
 
+struct SimpleMessage {
+    let message: String
+    
+    static func parse(obj: JsObject) throws -> SimpleMessage {
+        return SimpleMessage(message: try obj.readString("message"))
+    }
+}
+
 class UserProfile {
     let id: Int
     let username: Username

@@ -11,11 +11,68 @@ import UIKit
 import RxSwift
 import RxCocoa
 
+extension BoatTokensVC: NotificationPermissionDelegate {
+    func didRegister(_ token: PushToken) {
+        if let token = self.settings.pushToken {
+            log.info("Permission granted.")
+            registerWithToken(token: token)
+        } else {
+            log.info("Access granted, but no token available.")
+        }
+    }
+    
+    func didFailToRegister(_ error: Error) {
+        onUiThread {
+            self.onOff?.isOn = false
+        }
+        let error = AppError.simple("The user did not grant permission to send notifications")
+        log.error(error.describe)
+    }
+    
+    func registerNotifications() {
+        notifications.permissionDelegate = self
+        if let token = settings.pushToken {
+            log.info("Registering with previously saved push token...")
+            registerWithToken(token: token)
+        } else {
+            log.info("No saved push token. Asking for permission...")
+            notifications.initNotifications(UIApplication.shared)
+        }
+    }
+    
+    func disableNotifications() {
+        if let token = settings.pushToken {
+            http.disableNotifications(token: token).subscribe { (event) in
+                switch event {
+                case .success(_): self.log.info("Disabled notifications with backend.")
+                case .error(let err): self.log.error("Failed to disable notifications with backend. \(err.describe)")
+                }
+            }.disposed(by: bag)
+        }
+        notifications.disableNotifications()
+    }
+    
+    func registerWithToken(token: PushToken) {
+        http.enableNotifications(token: token).subscribe { (event) in
+            switch event {
+            case .success(_): self.log.info("Enabled notifications with backend.")
+            case .error(let err): self.log.error(err.describe)
+            }
+        }.disposed(by: bag)
+    }
+}
+
 class BoatTokensVC: BaseTableVC {
     let log = LoggerFactory.shared.vc(BoatTokensVC.self)
     let cellKey = "BoatCell"
-
+    let notificationsKey = "NotificationsCell"
+    let settings = BoatPrefs.shared
+    let http = Backend.shared.http
+    let notifications = BoatNotifications.shared
+    let bag = DisposeBag()
+    
     var profile: UserProfile? = nil
+    var onOff: UISwitch?
     
     init() {
         super.init(style: .plain)
@@ -25,29 +82,81 @@ class BoatTokensVC: BaseTableVC {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func didToggleNotifications(_ uiSwitch: UISwitch) {
+        if uiSwitch.isOn {
+            registerNotifications()
+        } else {
+            disableNotifications()
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = "Boats"
         tableView?.register(BoatTokenCell.self, forCellReuseIdentifier: BoatTokenCell.identifier)
+        tableView?.register(UITableViewCell.self, forCellReuseIdentifier: notificationsKey)
+        onOff = BoatSwitch { (uiSwitch) in
+            self.didToggleNotifications(uiSwitch)
+        }
+        onOff?.isOn = settings.pushToken != nil
         loadProfile()
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: BoatTokenCell.identifier, for: indexPath)
-        if let boat = profile?.boats[indexPath.row], let cell = cell as? BoatTokenCell {
-            cell.fill(boat: boat.name, token: boat.token)
+        switch indexPath.section {
+        case 0:
+            let cell = tableView.dequeueReusableCell(withIdentifier: notificationsKey, for: indexPath)
+            cell.textLabel?.text = "Notifications"
+            cell.accessoryView = onOff
+            return cell
+        default:
+            let cell = tableView.dequeueReusableCell(withIdentifier: BoatTokenCell.identifier, for: indexPath)
+            if let boat = profile?.boats[indexPath.row], let cell = cell as? BoatTokenCell {
+                cell.fill(boat: boat.name, token: boat.token)
+            }
+            return cell
         }
-        return cell
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return profile?.boats.count ?? 0
+        switch section {
+        case 0: return 1
+        case 1: return profile?.boats.count ?? 0
+        default: return 0
+        }
+    }
+    
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return 2
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        switch section {
+        case 0: return 8
+        default: return 0
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        switch section {
+        case 0: return UIView()
+        default: return nil
+        }
     }
     
     override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        let textView = BoatTextView(text: "Add the token to the BoatTracker agent software running in your boat. For more information, see https://www.boat-tracker.com/docs/agent.", font: UIFont.systemFont(ofSize: 16))
-        textView.textContainerInset = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
-        return textView
+        switch section {
+        case 0:
+            let textView = BoatTextView(text: "Turn on to receive notifications when your boat connects or disconnects from BoatTracker.", font: UIFont.systemFont(ofSize: 16))
+            textView.textContainerInset = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+            return textView
+        case 1:
+            let textView = BoatTextView(text: "Add the token to the BoatTracker agent software running in your boat. For more information, see https://www.boat-tracker.com/docs/agent.", font: UIFont.systemFont(ofSize: 16))
+            textView.textContainerInset = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+            return textView
+        default:
+            return nil
+        }
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

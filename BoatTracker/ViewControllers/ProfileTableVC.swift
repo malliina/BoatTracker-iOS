@@ -91,7 +91,6 @@ class ProfileTableVC: BaseTableVC {
             default:
                 ()
             }
-            
         } else {
             switch indexPath.section {
             case 0:
