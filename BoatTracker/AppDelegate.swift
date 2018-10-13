@@ -87,8 +87,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) {
         log.info("Received remote notification...")
-//        notification = userInfo
-        //        notifications.handleNotification(application, window: window, data: userInfo)
+        notifications.handleNotification(application, window: window, data: userInfo)
     }
 
     func connectSocket() {

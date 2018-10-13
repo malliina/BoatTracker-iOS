@@ -73,6 +73,7 @@ class BoatTokensVC: BaseTableVC {
     
     var profile: UserProfile? = nil
     var onOff: UISwitch?
+    var loadError: Error? = nil
     
     init() {
         super.init(style: .plain)
@@ -119,6 +120,7 @@ class BoatTokensVC: BaseTableVC {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        guard loadError == nil else { return 0 }
         switch section {
         case 0: return 1
         case 1: return profile?.boats.count ?? 0
@@ -146,17 +148,16 @@ class BoatTokensVC: BaseTableVC {
     
     override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         switch section {
-        case 0:
-            let textView = BoatTextView(text: "Turn on to receive notifications when your boat connects or disconnects from BoatTracker.", font: UIFont.systemFont(ofSize: 16))
-            textView.textContainerInset = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
-            return textView
-        case 1:
-            let textView = BoatTextView(text: "Add the token to the BoatTracker agent software running in your boat. For more information, see https://www.boat-tracker.com/docs/agent.", font: UIFont.systemFont(ofSize: 16))
-            textView.textContainerInset = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
-            return textView
-        default:
-            return nil
+        case 0: return footerView(text: "Turn on to receive notifications when your boat connects or disconnects from BoatTracker.")
+        case 1: return footerView(text: "Add the token to the BoatTracker agent software running in your boat. For more information, see https://www.boat-tracker.com/docs/agent.")
+        default: return nil
         }
+    }
+    
+    private func footerView(text: String) -> BoatTextView {
+        let textView = BoatTextView(text: text, font: UIFont.systemFont(ofSize: 16))
+        textView.textContainerInset = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+        return textView
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -171,7 +172,7 @@ class BoatTokensVC: BaseTableVC {
                 switch single {
                 case .success(let boat):
                     self.loadProfile()
-                    self.log.info("Renamed to \(boat.name)")
+                    self.log.info("Renamed to '\(boat.name)'.")
                 case .error(let err):
                     self.log.error("Unable to rename. \(err.describe)")
                 }
@@ -193,11 +194,14 @@ class BoatTokensVC: BaseTableVC {
     func onProfile(_ single: SingleEvent<UserProfile>) {
         switch single {
         case .success(let p):
+            loadError = nil
             profile = p
             log.info("Got profile for user \(p.username).")
+            tableView.backgroundView = nil
             tableView.reloadData()
         case .error(let err):
-            tableView.backgroundView = feedbackView(text: "Unable to load profile. \(err.describe)")
+            loadError = err
+            tableView.backgroundView = feedbackView(text: "Unable to load profile.")
             log.error("Unable to load profile. \(err.describe)")
         }
     }

@@ -76,6 +76,7 @@ struct TrackRef {
     let distance: Distance
     let duration: Duration
     let avgWaterTemp: Temperature?
+    let topPoint: CoordBody
     
     var startDate: String { get { return Formats.shared.format(date: start) } }
 
@@ -89,7 +90,8 @@ struct TrackRef {
             avgSpeed: (try json.readOpt(Double.self, "avgSpeed")).map { $0.knots },
             distance: (try json.readDouble("distance")).mm,
             duration: (try json.readInt("duration")).seconds,
-            avgWaterTemp: (try json.readOpt(Double.self, "avgWaterTemp")).map { $0.celsius }
+            avgWaterTemp: (try json.readOpt(Double.self, "avgWaterTemp")).map { $0.celsius },
+            topPoint: (try json.readObj("topPoint", parse: CoordBody.parse))
         )
     }
 }

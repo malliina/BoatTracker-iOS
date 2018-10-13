@@ -17,6 +17,13 @@ extension ProfileTableVC: BoatSocketDelegate {
     }
 }
 
+enum ViewState {
+    case empty
+    case content
+    case loading
+    case failed
+}
+
 class ProfileTableVC: BaseTableVC {
     let log = LoggerFactory.shared.vc(ProfileTableVC.self)
     
@@ -31,7 +38,7 @@ class ProfileTableVC: BaseTableVC {
     let current: TrackName?
     
     var summary: TrackRef? = nil
-    var showAll: Bool = false
+    var state: ViewState = .loading
     var isInitial: Bool = false
     
     private var socket: BoatSocket { return Backend.shared.socket }
@@ -72,7 +79,8 @@ class ProfileTableVC: BaseTableVC {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier(indexPath: indexPath), for: indexPath)
-        if showAll {
+        switch state {
+        case .content:
             switch indexPath.section {
             case 0:
                 cell.selectionStyle = .none
@@ -88,10 +96,9 @@ class ProfileTableVC: BaseTableVC {
                 }
             case 2: initAttributionsCell(cell: cell)
             case 3: initLogoutCells(cell: cell, indexPath: indexPath)
-            default:
-                ()
+            default: ()
             }
-        } else {
+        case .empty:
             switch indexPath.section {
             case 0:
                 switch indexPath.row {
@@ -103,6 +110,7 @@ class ProfileTableVC: BaseTableVC {
             case 2: initLogoutCells(cell: cell, indexPath: indexPath)
             default: ()
             }
+        default: ()
         }
         return cell
     }
@@ -158,10 +166,10 @@ class ProfileTableVC: BaseTableVC {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if showAll {
-            didSelectAsFull(indexPath)
-        } else {
-            didSelectLimited(indexPath)
+        switch state {
+        case .content: didSelectAsFull(indexPath)
+        case .empty: didSelectLimited(indexPath)
+        default: ()
         }
     }
     
@@ -209,7 +217,8 @@ class ProfileTableVC: BaseTableVC {
     }
     
     func cellIdentifier(indexPath: IndexPath) -> String {
-        if showAll {
+        switch state {
+        case .content:
             switch indexPath.section {
             case 0:
                 return TrackSummaryCell.identifier
@@ -222,7 +231,7 @@ class ProfileTableVC: BaseTableVC {
             default:
                 return basicCellIdentifier
             }
-        } else {
+        case .empty:
             switch indexPath.section {
             case 0:
                 switch indexPath.row {
@@ -240,11 +249,13 @@ class ProfileTableVC: BaseTableVC {
             default:
                 return basicCellIdentifier
             }
+        default: return basicCellIdentifier
         }
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if showAll {
+        switch state {
+        case .content:
             switch section {
             case 0: return 1
             case 1: return 2
@@ -252,35 +263,46 @@ class ProfileTableVC: BaseTableVC {
             case 3: return 2
             default: return 0
             }
-        } else {
+        case .empty:
             switch section {
             case 0: return 2
             case 1: return 1
             case 2: return 2
             default: return 0
             }
+        default:
+            return 0
         }
     }
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return showAll ? 4 : 3
+        switch state {
+        case .content: return 4
+        case .empty: return 3
+        default: return 0
+        }
     }
     
     func loadTracks() {
         let _ = Backend.shared.http.tracks().subscribe { (single) in
-            switch single {
-            case .success(let ts):
-                self.log.info("Got \(ts.count) tracks.")
-                self.onUiThread {
-                    self.onTracks(ts: ts.map { $0.track })
+            self.onUiThread {
+                switch single {
+                case .success(let ts):
+                    self.log.info("Got \(ts.count) tracks.")
+                    self.onUiThread {
+                        self.tableView.backgroundView = nil
+                        self.onTracks(ts: ts.map { $0.track })
+                    }
+                case .error(let err):
+                    self.state = .failed
+                    self.tableView.backgroundView = self.feedbackView(text: "Failed to load profile.")
+                    self.log.error("Unable to load tracks. \(err.describe)")
                 }
-            case .error(let err):
-                self.log.error("Unable to load tracks. \(err.describe)")
             }
         }
     }
     
     func onTracks(ts: [TrackRef]) {
-        showAll = !ts.isEmpty
+        state = ts.isEmpty ? .empty : .content
         summary = ts.first(where: { (track) -> Bool in
             track.trackName == current
         })

@@ -11,11 +11,17 @@ import SnapKit
 import Mapbox
 import GoogleSignIn
 
+struct ActiveMarker {
+    let annotation: MGLPointAnnotation
+    let coord: CoordBody
+}
+
 class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     let log = LoggerFactory.shared.vc(MapVC.self)
     
     let profileButton = BoatButton.map(icon: #imageLiteral(resourceName: "SettingsSlider"))
     let followButton = BoatButton.map(icon: #imageLiteral(resourceName: "LocationArrow"))
+    let defaultCenter = CLLocationCoordinate2D(latitude: 60.14, longitude: 24.9)
     
     private var socket: BoatSocket { return Backend.shared.socket }
     
@@ -24,6 +30,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     // The history data is in the above trails also but it is difficult to read an MGLShapeSource. This is more suitable for our purposes.
     var history: [TrackName: [CLLocationCoordinate2D]] = [:]
     var icons: [TrackName: MGLSymbolStyleLayer] = [:]
+    var topSpeedMarkers: [TrackName: ActiveMarker] = [:]
     
     var mapView: MGLMapView?
     var style: MGLStyle?
@@ -51,7 +58,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         let mapView = MGLMapView(frame: view.bounds, styleURL: url)
         self.mapView = mapView
         mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        mapView.setCenter(CLLocationCoordinate2D(latitude: 60.14, longitude: 24.9), zoomLevel: 10, animated: false)
+        mapView.setCenter(defaultCenter, zoomLevel: 10, animated: false)
         view.addSubview(mapView)
         
         mapView.delegate = self
@@ -87,6 +94,29 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         
         GoogleAuth.shared.delegate = self
         GoogleAuth.shared.signInSilently()
+    }
+    
+    func mapView(_ mapView: MGLMapView, viewFor annotation: MGLAnnotation) -> MGLAnnotationView? {
+        let id = "trophy"
+        if let view = mapView.dequeueReusableAnnotationView(withIdentifier: id) {
+            return view
+        } else {
+            let view = MGLAnnotationView(annotation: annotation, reuseIdentifier: id)
+            if let image = UIImage(icon: "fa-trophy", backgroundColor: .clear, iconColor: UIColor(r: 255, g: 215, b: 0, alpha: 1.0), fontSize: 14) {
+                let imageView = UIImageView(image: image)
+                view.frame = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
+                view.addSubview(imageView)
+            }
+            return view
+        }
+    }
+    
+    func mapView(_ mapView: MGLMapView, annotationCanShowCallout annotation: MGLAnnotation) -> Bool {
+        return true
+    }
+    
+    func mapView(_ mapView: MGLMapView, tapOnCalloutFor annotation: MGLAnnotation) {
+        mapView.deselectAnnotation(annotation, animated: true)
     }
     
     @objc func onSwipe(_ sender: UIPanGestureRecognizer) {
@@ -132,7 +162,8 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     
     private func addCoords(event: CoordsData) {
         guard let style = style else { return }
-        let track = event.from.trackName
+        let from = event.from
+        let track = from.trackName
         latestTrack = track
         let coords = event.coords
         // updates boat trail
@@ -158,6 +189,13 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         }
         if !trails.isEmpty && followButton.isHidden {
             followButton.isHidden = false
+        }
+        // updates trophy
+        let top = from.topPoint
+        if let old = topSpeedMarkers[from.trackName], old.coord.speed < top.speed {
+            let marker = old.annotation
+            fill(marker: marker, with: top)
+            topSpeedMarkers[from.trackName] = ActiveMarker(annotation: marker, coord: top)
         }
         // updates map position
         guard let mapView = mapView else { return }
@@ -205,7 +243,20 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         icons.updateValue(iconLayer, forKey: track.trackName)
         style.addLayer(iconLayer)
         
+        // Trophy icon
+        let top = track.topPoint
+        let marker = MGLPointAnnotation()
+        fill(marker: marker, with: top)
+        topSpeedMarkers[track.trackName] = ActiveMarker(annotation: marker, coord: top)
+        mapView?.addAnnotation(marker)
+        
         return trackSource
+    }
+    
+    func fill(marker: MGLPointAnnotation, with: CoordBody) {
+        marker.title = with.speed.description
+        marker.subtitle = with.boatTime
+        marker.coordinate = with.coord
     }
     
     func trailName(for track: TrackName) -> String {
@@ -255,6 +306,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         trails = [:]
         history = [:]
         icons = [:]
+        topSpeedMarkers = [:]
         latestTrack = nil
         mapMode = .fit
     }
@@ -274,6 +326,10 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         }
         if let iconSource = style.source(withIdentifier: iName) {
             style.removeSource(iconSource)
+        }
+        if let marker = topSpeedMarkers[track]?.annotation {
+            mapView?.deselectAnnotation(marker, animated: false)
+            mapView?.removeAnnotation(marker)
         }
     }
 }

@@ -62,7 +62,14 @@ open class BoatNotifications {
     }
     
     func handleNotification(_ app: UIApplication, window: UIWindow?, data: [AnyHashable: Any]) {
-//            let tag: String = try Json.readMapOrFail(data, "tag")
+        do {
+            guard let meta = data["meta"] else { return }
+            let obj = try JsObject.parse(obj: meta as AnyObject)
+            let notification = try BoatNotification.parse(obj: obj)
+            log.info("Got \(notification.state) notification for boat \(notification.boatName)")
+        } catch let err {
+            log.error("Failed to parse notification. \(err.describe)")
+        }
     }
     
     func onAlarmError(_ error: AppError) {

@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		610EE3E121724CE10040FBC6 /* NSString+FontAwesome.m in Sources */ = {isa = PBXBuildFile; fileRef = 610EE3DA21724CDF0040FBC6 /* NSString+FontAwesome.m */; };
+		610EE3E221724CE10040FBC6 /* UIFont+FontAwesome.m in Sources */ = {isa = PBXBuildFile; fileRef = 610EE3DB21724CDF0040FBC6 /* UIFont+FontAwesome.m */; };
+		610EE3E321724CE10040FBC6 /* String+FontAwesome.swift in Sources */ = {isa = PBXBuildFile; fileRef = 610EE3DC21724CE00040FBC6 /* String+FontAwesome.swift */; };
+		610EE3E421724CE10040FBC6 /* UIImage+FontAwesome.m in Sources */ = {isa = PBXBuildFile; fileRef = 610EE3DD21724CE00040FBC6 /* UIImage+FontAwesome.m */; };
+		610EE3E62172524C0040FBC6 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 610EE3E52172524C0040FBC6 /* FontAwesome.ttf */; };
 		612F46A220F4A5CF001A3003 /* BoatHttpClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 612F46A120F4A5CF001A3003 /* BoatHttpClient.swift */; };
 		612F46A420F4A99E001A3003 /* EnvConf.swift in Sources */ = {isa = PBXBuildFile; fileRef = 612F46A320F4A99E001A3003 /* EnvConf.swift */; };
 		612F46A620F4AB70001A3003 /* Backend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 612F46A520F4AB70001A3003 /* Backend.swift */; };
@@ -18,7 +23,7 @@
 		612F46B920F66854001A3003 /* Geo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 612F46B820F66854001A3003 /* Geo.swift */; };
 		613669B5216A98560043494A /* BoatSwitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613669B4216A98560043494A /* BoatSwitch.swift */; };
 		613669B7216FDAD10043494A /* BoatNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613669B6216FDAD10043494A /* BoatNotifications.swift */; };
-		613669BC216FDB3E0043494A /* PushToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613669BB216FDB3E0043494A /* PushToken.swift */; };
+		613669BC216FDB3E0043494A /* notificationModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613669BB216FDB3E0043494A /* notificationModels.swift */; };
 		613669BE217117390043494A /* generalExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613669BD217117390043494A /* generalExtensions.swift */; };
 		6171906B212CA06900337B0B /* BoatTokenCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6171906A212CA06900337B0B /* BoatTokenCell.swift */; };
 		619679EB20F78B5900432672 /* MapMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619679EA20F78B5900432672 /* MapMode.swift */; };
@@ -96,6 +101,15 @@
 		291C188E8DFD75437944D4D8 /* Pods_BoatTrackerTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BoatTrackerTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		39042C4BC3843DC7B96921B7 /* Pods_BoatTracker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BoatTracker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4649148093F31848382B2F37 /* Pods-BoatTrackerUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BoatTrackerUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-BoatTrackerUITests/Pods-BoatTrackerUITests.release.xcconfig"; sourceTree = "<group>"; };
+		610EE3D921724CDE0040FBC6 /* BoatTracker-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BoatTracker-Bridging-Header.h"; sourceTree = "<group>"; };
+		610EE3DA21724CDF0040FBC6 /* NSString+FontAwesome.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+FontAwesome.m"; sourceTree = "<group>"; };
+		610EE3DB21724CDF0040FBC6 /* UIFont+FontAwesome.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIFont+FontAwesome.m"; sourceTree = "<group>"; };
+		610EE3DC21724CE00040FBC6 /* String+FontAwesome.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+FontAwesome.swift"; sourceTree = "<group>"; };
+		610EE3DD21724CE00040FBC6 /* UIImage+FontAwesome.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+FontAwesome.m"; sourceTree = "<group>"; };
+		610EE3DE21724CE00040FBC6 /* UIFont+FontAwesome.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIFont+FontAwesome.h"; sourceTree = "<group>"; };
+		610EE3DF21724CE10040FBC6 /* NSString+FontAwesome.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+FontAwesome.h"; sourceTree = "<group>"; };
+		610EE3E021724CE10040FBC6 /* UIImage+FontAwesome.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+FontAwesome.h"; sourceTree = "<group>"; };
+		610EE3E52172524C0040FBC6 /* FontAwesome.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome.ttf; sourceTree = "<group>"; };
 		612F46A120F4A5CF001A3003 /* BoatHttpClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatHttpClient.swift; sourceTree = "<group>"; };
 		612F46A320F4A99E001A3003 /* EnvConf.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnvConf.swift; sourceTree = "<group>"; };
 		612F46A520F4AB70001A3003 /* Backend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Backend.swift; sourceTree = "<group>"; };
@@ -107,7 +121,7 @@
 		612F46B820F66854001A3003 /* Geo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Geo.swift; sourceTree = "<group>"; };
 		613669B4216A98560043494A /* BoatSwitch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatSwitch.swift; sourceTree = "<group>"; };
 		613669B6216FDAD10043494A /* BoatNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatNotifications.swift; sourceTree = "<group>"; };
-		613669BB216FDB3E0043494A /* PushToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushToken.swift; sourceTree = "<group>"; };
+		613669BB216FDB3E0043494A /* notificationModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = notificationModels.swift; sourceTree = "<group>"; };
 		613669BD217117390043494A /* generalExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = generalExtensions.swift; sourceTree = "<group>"; };
 		613669BF217124560043494A /* BoatTracker.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BoatTracker.entitlements; sourceTree = "<group>"; };
 		6171906A212CA06900337B0B /* BoatTokenCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatTokenCell.swift; sourceTree = "<group>"; };
@@ -221,6 +235,22 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		610EE3D821724C7C0040FBC6 /* FontAwesome */ = {
+			isa = PBXGroup;
+			children = (
+				610EE3E52172524C0040FBC6 /* FontAwesome.ttf */,
+				610EE3DF21724CE10040FBC6 /* NSString+FontAwesome.h */,
+				610EE3DA21724CDF0040FBC6 /* NSString+FontAwesome.m */,
+				610EE3DC21724CE00040FBC6 /* String+FontAwesome.swift */,
+				610EE3DE21724CE00040FBC6 /* UIFont+FontAwesome.h */,
+				610EE3DB21724CDF0040FBC6 /* UIFont+FontAwesome.m */,
+				610EE3E021724CE10040FBC6 /* UIImage+FontAwesome.h */,
+				610EE3DD21724CE00040FBC6 /* UIImage+FontAwesome.m */,
+				610EE3D921724CDE0040FBC6 /* BoatTracker-Bridging-Header.h */,
+			);
+			path = FontAwesome;
+			sourceTree = "<group>";
+		};
 		612F46AA20F5276C001A3003 /* Local */ = {
 			isa = PBXGroup;
 			children = (
@@ -247,7 +277,7 @@
 			isa = PBXGroup;
 			children = (
 				613669B6216FDAD10043494A /* BoatNotifications.swift */,
-				613669BB216FDB3E0043494A /* PushToken.swift */,
+				613669BB216FDB3E0043494A /* notificationModels.swift */,
 			);
 			path = Notifications;
 			sourceTree = "<group>";
@@ -366,12 +396,12 @@
 		61B07C5E20F21DC300D8B7E0 /* BoatTracker */ = {
 			isa = PBXGroup;
 			children = (
-				613669BF217124560043494A /* BoatTracker.entitlements */,
-				613669BA216FDB320043494A /* Notifications */,
+				610EE3D821724C7C0040FBC6 /* FontAwesome */,
 				61B07C5F20F21DC300D8B7E0 /* AppDelegate.swift */,
 				61B07C6620F21DC400D8B7E0 /* Assets.xcassets */,
 				619679EC20F89F6300432672 /* Auth */,
 				61DE7F3D20F29F5800C95B3F /* Backend */,
+				613669BF217124560043494A /* BoatTracker.entitlements */,
 				6199E0FA20F2656500A4009A /* Credentials.plist */,
 				61B07C6B20F21DC400D8B7E0 /* Info.plist */,
 				61B07C6820F21DC400D8B7E0 /* LaunchScreen.storyboard */,
@@ -379,6 +409,7 @@
 				619679E920F78B4800432672 /* Maps */,
 				612F46B120F64182001A3003 /* Measure */,
 				6199E0EA20F24DAE00A4009A /* Network */,
+				613669BA216FDB320043494A /* Notifications */,
 				61967A052103CAF200432672 /* Styles */,
 				6199E0ED20F24EB800A4009A /* Util */,
 				6199E0E620F2319700A4009A /* ViewControllers */,
@@ -538,6 +569,7 @@
 				6199E0FB20F2656500A4009A /* Credentials.plist in Resources */,
 				61B07C6A20F21DC400D8B7E0 /* LaunchScreen.storyboard in Resources */,
 				61B07C6720F21DC400D8B7E0 /* Assets.xcassets in Resources */,
+				610EE3E62172524C0040FBC6 /* FontAwesome.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -694,10 +726,12 @@
 				61F4199121206A5600B1ED7D /* AttributionsVC.swift in Sources */,
 				61ACE5C72130956A00925265 /* WelcomeSignedIn.swift in Sources */,
 				61F4199B2120B2F700B1ED7D /* ProfileTableVC.swift in Sources */,
+				610EE3E321724CE10040FBC6 /* String+FontAwesome.swift in Sources */,
 				61DE7F3F20F29F6900C95B3F /* BoatSocket.swift in Sources */,
 				61DE7F4320F3AEFC00C95B3F /* models.swift in Sources */,
 				6199E0F320F24F8100A4009A /* Json.swift in Sources */,
 				61ACE5C921309E5E00925265 /* BoatPrefs.swift in Sources */,
+				610EE3E421724CE10040FBC6 /* UIImage+FontAwesome.m in Sources */,
 				61AB2C7F2132A63C009774DC /* viewExt.swift in Sources */,
 				61F419972120745A00B1ED7D /* TrackSummaryBox.swift in Sources */,
 				613669B5216A98560043494A /* BoatSwitch.swift in Sources */,
@@ -720,6 +754,7 @@
 				61F4199D2120B39C00B1ED7D /* TrackSummaryCell.swift in Sources */,
 				619679EE20F89F6D00432672 /* GoogleAuth.swift in Sources */,
 				612F46A220F4A5CF001A3003 /* BoatHttpClient.swift in Sources */,
+				610EE3E121724CE10040FBC6 /* NSString+FontAwesome.m in Sources */,
 				619679F820FBBB4D00432672 /* StatCell.swift in Sources */,
 				613669BE217117390043494A /* generalExtensions.swift in Sources */,
 				6199E0F520F2501E00A4009A /* errors.swift in Sources */,
@@ -727,8 +762,9 @@
 				6199E0F720F254FB00A4009A /* SocketClient.swift in Sources */,
 				619679FA20FBCDB100432672 /* TrackListVC.swift in Sources */,
 				6199E0EF20F24EC300A4009A /* Log.swift in Sources */,
-				613669BC216FDB3E0043494A /* PushToken.swift in Sources */,
+				613669BC216FDB3E0043494A /* notificationModels.swift in Sources */,
 				6171906B212CA06900337B0B /* BoatTokenCell.swift in Sources */,
+				610EE3E221724CE10040FBC6 /* UIFont+FontAwesome.m in Sources */,
 				612F46B320F6418B001A3003 /* Speed.swift in Sources */,
 				612F46A420F4A99E001A3003 /* EnvConf.swift in Sources */,
 				6199E0EC20F24DC700A4009A /* HttpClient.swift in Sources */,
@@ -912,6 +948,7 @@
 			baseConfigurationReference = A6F81608BCD147997F617B74 /* Pods-BoatTracker.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = BoatTracker/BoatTracker.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = D2T2QC36Z9;
@@ -922,6 +959,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.malliina.BoatTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "BoatTracker/FontAwesome/BoatTracker-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -932,6 +971,7 @@
 			baseConfigurationReference = 682050442727B4467E4B02A3 /* Pods-BoatTracker.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = BoatTracker/BoatTracker.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = D2T2QC36Z9;
@@ -942,6 +982,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.malliina.BoatTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "BoatTracker/FontAwesome/BoatTracker-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
