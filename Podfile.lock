@@ -7,6 +7,9 @@ PODS:
   - AppCenter/Core (1.7.1)
   - AppCenter/Crashes (1.7.1):
     - AppCenter/Core
+  - Charts (3.2.1):
+    - Charts/Core (= 3.2.1)
+  - Charts/Core (3.2.1)
   - GoogleSignIn (4.2.0):
     - "GoogleToolboxForMac/NSDictionary+URLArguments (~> 2.1)"
     - "GoogleToolboxForMac/NSString+URLArguments (~> 2.1)"
@@ -27,30 +30,35 @@ PODS:
   - GTMSessionFetcher/Core (1.2.0)
   - GTMSessionFetcher/Full (1.2.0):
     - GTMSessionFetcher/Core (= 1.2.0)
-  - Mapbox-iOS-SDK (4.5.0)
-  - RxCocoa (4.2.0):
+  - Mapbox-iOS-SDK (4.6.0)
+  - RxAtomic (4.4.0)
+  - RxCocoa (4.4.0):
     - RxSwift (~> 4.0)
-  - RxSwift (4.2.0)
+  - RxSwift (4.4.0):
+    - RxAtomic (~> 4.4)
   - SnapKit (4.0.1)
   - SocketRocket (0.5.1)
 
 DEPENDENCIES:
   - AppCenter (= 1.7.1)
+  - Charts (= 3.2.1)
   - GoogleSignIn (= 4.2.0)
-  - Mapbox-iOS-SDK (= 4.5)
-  - RxCocoa (= 4.2.0)
-  - RxSwift (= 4.2.0)
+  - Mapbox-iOS-SDK (= 4.6)
+  - RxCocoa (= 4.4.0)
+  - RxSwift (= 4.4.0)
   - SnapKit (= 4.0.1)
   - SocketRocket (= 0.5.1)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - AppCenter
+    - Charts
     - GoogleSignIn
     - GoogleToolboxForMac
     - GTMOAuth2
     - GTMSessionFetcher
     - Mapbox-iOS-SDK
+    - RxAtomic
     - RxCocoa
     - RxSwift
     - SnapKit
@@ -58,16 +66,18 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   AppCenter: 53349f138e596f2514f7559bb50a7e6e55219f17
+  Charts: f122fb70b19847fa5817d018b77d6c5a2296ab25
   GoogleSignIn: 591e46382014e591269f862ba6e7bc0fbd793532
   GoogleToolboxForMac: 91c824d21e85b31c2aae9bb011c5027c9b4e738f
   GTMOAuth2: c77fe325e4acd453837e72d91e3b5f13116857b2
   GTMSessionFetcher: 0c4baf0a73acd0041bf9f71ea018deedab5ea84e
-  Mapbox-iOS-SDK: fb9dde66106a8f10d351f9697ac198049c8e5511
-  RxCocoa: 0b54909c902e1e581212a03e690bbd94032d8baa
-  RxSwift: 99e10317ddfcc7fbe01356aafd118fde4a0be104
+  Mapbox-iOS-SDK: 204c04713477cf2a88c52c5a8eed1790eb75a02a
+  RxAtomic: eacf60db868c96bfd63320e28619fe29c179656f
+  RxCocoa: df63ebf7b9a70d6b4eeea407ed5dd4efc8979749
+  RxSwift: 5976ecd04fc2fefd648827c23de5e11157faa973
   SnapKit: 0de968a9fec17499afa29683b05d0c775b6d1c29
   SocketRocket: d57c7159b83c3c6655745cd15302aa24b6bae531
 
-PODFILE CHECKSUM: 5949d1c1a94cb3710efa5c35feeb025fb44575fc
+PODFILE CHECKSUM: 32df75de45878369a94b3a192059bff23c79e950
 
 COCOAPODS: 1.5.3
