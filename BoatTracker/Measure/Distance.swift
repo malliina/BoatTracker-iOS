@@ -14,6 +14,8 @@ public struct Distance: Comparable, CustomStringConvertible {
     
     let mm: Int
     
+    var meters: Double { return Double(mm) / 1000 }
+    
     var kilometers: Double { return Double(mm) / 1000 / 1000 }
     
     var rounded: String { return String(format: "%.2f", kilometers) }

@@ -90,8 +90,9 @@ class ProfileTableVC: BaseTableVC {
             case 1:
                 cell.accessoryType = .disclosureIndicator
                 switch indexPath.row {
-                case 0: cell.textLabel?.text = "Track History"
-                case 1: cell.textLabel?.text = "Boats"
+                case 0: cell.textLabel?.text = "Graph"
+                case 1: cell.textLabel?.text = "Track History"
+                case 2: cell.textLabel?.text = "Boats"
                 default: ()
                 }
             case 2: initAttributionsCell(cell: cell)
@@ -177,8 +178,13 @@ class ProfileTableVC: BaseTableVC {
         switch indexPath.section {
         case 1:
             switch indexPath.row {
-            case 0: nav(to: TrackListVC(delegate: tracksDelegate))
-            case 1: nav(to: BoatTokensVC())
+            case 0:
+                guard let track = current else { return }
+                navigate(to: ChartsVC(track: track), style: .fullScreen, transition: .flipHorizontal)
+            case 1:
+                nav(to: TrackListVC(delegate: tracksDelegate))
+            case 2:
+                nav(to: BoatTokensVC())
             default: ()
             }
         case 2:
@@ -258,7 +264,7 @@ class ProfileTableVC: BaseTableVC {
         case .content:
             switch section {
             case 0: return 1
-            case 1: return 2
+            case 1: return 3
             case 2: return 1
             case 3: return 2
             default: return 0

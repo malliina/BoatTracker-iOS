@@ -24,9 +24,10 @@ extension UIViewController {
         return container
     }
     
-    func navigate(to: UIViewController, style: UIModalPresentationStyle = .formSheet) {
+    func navigate(to: UIViewController, style: UIModalPresentationStyle = .formSheet, transition: UIModalTransitionStyle = .coverVertical) {
         let nav = UINavigationController(rootViewController: to)
         nav.modalPresentationStyle = style
+        nav.modalTransitionStyle = transition
         nav.navigationBar.prefersLargeTitles = true
         present(nav, animated: true, completion: nil)
     }

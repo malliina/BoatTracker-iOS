@@ -33,21 +33,30 @@ class CoordsData {
 class CoordBody {
     let coord: CLLocationCoordinate2D
     let boatTime: String
+    let boatTimeMillis: UInt64
     let speed: Speed
+    let depth: Distance
+    let waterTemp: Temperature
     
     static func parse(json: JsObject) throws -> CoordBody {
         let c = try json.readObject("coord")
         return CoordBody(
             coord: CLLocationCoordinate2D(latitude: try c.readDouble("lat"), longitude: try c.readDouble("lng")),
             boatTime: try json.readString("boatTime"),
-            speed: Speed(knots: try json.readDouble("speed"))
+            boatTimeMillis: try json.readUInt("boatTimeMillis"),
+            speed: Speed(knots: try json.readDouble("speed")),
+            depth: (try json.readDouble("depth")).mm,
+            waterTemp: (try json.readDouble("waterTemp")).celsius
         )
     }
  
-    init(coord: CLLocationCoordinate2D, boatTime: String, speed: Speed) {
+    init(coord: CLLocationCoordinate2D, boatTime: String, boatTimeMillis: UInt64, speed: Speed, depth: Distance, waterTemp: Temperature) {
         self.coord = coord
         self.boatTime = boatTime
+        self.boatTimeMillis = boatTimeMillis
         self.speed = speed
+        self.depth = depth
+        self.waterTemp = waterTemp
     }
 }
 

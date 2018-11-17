@@ -10,7 +10,7 @@ target 'BoatTracker' do
 
   pod 'AppCenter', '1.7.1'
   pod 'Charts', '3.2.1'
-  pod 'GoogleSignIn', '4.2.0'
+  pod 'GoogleSignIn', '4.3.0'
   pod 'Mapbox-iOS-SDK', '4.6'
   pod 'RxCocoa', '4.4.0'
   pod 'RxSwift', '4.4.0'
