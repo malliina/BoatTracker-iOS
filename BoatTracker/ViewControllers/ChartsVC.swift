@@ -86,6 +86,12 @@ extension ChartsVC: BoatSocketDelegate {
     }
 }
 
+extension ChartsVC: ChartViewDelegate {
+    func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight) {
+        // TODO show details
+    }
+}
+
 class TimeFormatter: IAxisValueFormatter {
     let formatter: DateFormatter = DateFormatter()
 

@@ -61,6 +61,7 @@
 		61B07C8020F21DC500D8B7E0 /* BoatTrackerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61B07C7F20F21DC500D8B7E0 /* BoatTrackerUITests.swift */; };
 		61CD40CF211635FD00F31AA5 /* Dummy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61CD40CE211635FD00F31AA5 /* Dummy.swift */; };
 		61CD40D121163E0E00F31AA5 /* StatBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61CD40D021163E0E00F31AA5 /* StatBox.swift */; };
+		61DCDA3C21D02693009A75EB /* RxGoogleAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DCDA3B21D02693009A75EB /* RxGoogleAuth.swift */; };
 		61DE7F3F20F29F6900C95B3F /* BoatSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DE7F3E20F29F6900C95B3F /* BoatSocket.swift */; };
 		61DE7F4120F2A23100C95B3F /* JsObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DE7F4020F2A23100C95B3F /* JsObject.swift */; };
 		61DE7F4320F3AEFC00C95B3F /* models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DE7F4220F3AEFC00C95B3F /* models.swift */; };
@@ -167,6 +168,7 @@
 		61B07C8120F21DC500D8B7E0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		61CD40CE211635FD00F31AA5 /* Dummy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dummy.swift; sourceTree = "<group>"; };
 		61CD40D021163E0E00F31AA5 /* StatBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatBox.swift; sourceTree = "<group>"; };
+		61DCDA3B21D02693009A75EB /* RxGoogleAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxGoogleAuth.swift; sourceTree = "<group>"; };
 		61DE7F3E20F29F6900C95B3F /* BoatSocket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatSocket.swift; sourceTree = "<group>"; };
 		61DE7F4020F2A23100C95B3F /* JsObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JsObject.swift; sourceTree = "<group>"; };
 		61DE7F4220F3AEFC00C95B3F /* models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = models.swift; sourceTree = "<group>"; };
@@ -297,6 +299,7 @@
 			isa = PBXGroup;
 			children = (
 				619679ED20F89F6D00432672 /* GoogleAuth.swift */,
+				61DCDA3B21D02693009A75EB /* RxGoogleAuth.swift */,
 			);
 			path = Auth;
 			sourceTree = "<group>";
@@ -778,6 +781,7 @@
 				6199E0EC20F24DC700A4009A /* HttpClient.swift in Sources */,
 				61DE7F4920F3EB0700C95B3F /* BoatTextField.swift in Sources */,
 				612F46B520F644B7001A3003 /* Distance.swift in Sources */,
+				61DCDA3C21D02693009A75EB /* RxGoogleAuth.swift in Sources */,
 				619679FC20FBCF2F00432672 /* Duration.swift in Sources */,
 				61DE7F4120F2A23100C95B3F /* JsObject.swift in Sources */,
 				61967A092103CF3E00432672 /* Formatting.swift in Sources */,

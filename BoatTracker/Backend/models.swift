@@ -160,18 +160,6 @@ class BackendInfo {
     }
 }
 
-class TrackSummary {
-    let track: TrackRef
- 
-    static func parse(json: JsObject) throws -> TrackSummary {
-        return TrackSummary(track: try json.readObj("track", parse: TrackRef.parse))
-    }
-    
-    init(track: TrackRef) {
-        self.track = track
-    }
-}
-
 class Boat {
     let id: Int
     let name: BoatName
@@ -182,7 +170,8 @@ class Boat {
         return Boat(id: try json.readInt("id"),
                     name: BoatName(name: try json.readString("name")),
                     token: try json.readString("token"),
-                    addedMillis: try json.readUInt("addedMillis"))
+                    addedMillis: try json.readUInt("addedMillis")
+        )
     }
     
     init(id: Int, name: BoatName, token: String, addedMillis: UInt64) {

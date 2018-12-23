@@ -21,14 +21,14 @@ class BoatSocket: SocketDelegate {
     var statsDelegate: BoatSocketDelegate? = nil
     
     convenience init(token: AccessToken?, track: TrackName?) {
-        var headers = [HttpClient.ACCEPT: BoatHttpClient.BoatVersion10]
+        var headers = [HttpClient.ACCEPT: BoatHttpClient.BoatVersion]
         if let token = token {
             headers.updateValue("bearer \(token.token)", forKey: HttpClient.AUTHORIZATION)
         }
         let trackQuery = track.map { "?track=\($0.name)" } ?? ""
         let url = URL(string: "/ws/updates\(trackQuery)", relativeTo: EnvConf.shared.baseUrl)!
         self.init(client: SocketClient(baseURL: url, headers: headers))
-//        log.info("Using \(token)")
+//        log.info("Opening socket with \(track?.name ?? "no track") and token \(token)")
     }
     
     init(client: SocketClient) {

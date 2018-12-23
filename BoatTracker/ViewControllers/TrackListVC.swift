@@ -19,7 +19,7 @@ class TrackListVC: BaseTableVC, TokenDelegate {
     
     var login: Bool = false
     
-    private var tracks: [TrackSummary] = []
+    private var tracks: [TrackRef] = []
     private var delegate: TracksDelegate? = nil
     
     init(delegate: TracksDelegate?, login: Bool = false) {
@@ -53,13 +53,13 @@ class TrackListVC: BaseTableVC, TokenDelegate {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellKey, for: indexPath) as! TrackCell
-        cell.fill(summary: tracks[indexPath.row])
+        cell.fill(track: tracks[indexPath.row])
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selected = tracks[indexPath.row]
-        self.delegate?.onTrack(selected.track.trackName)
+        self.delegate?.onTrack(selected.trackName)
         goBack()
     }
     

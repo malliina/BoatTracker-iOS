@@ -45,8 +45,7 @@ class TrackCell: BoatCell {
         }
     }
     
-    func fill(summary: TrackSummary) {
-        let track = summary.track
+    func fill(track: TrackRef) {
         dateTime.text = track.startDate
         distance.value = track.distance.description
         duration.value = track.duration.description

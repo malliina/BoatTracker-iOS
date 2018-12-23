@@ -47,7 +47,7 @@ class ProfileTableVC: BaseTableVC {
         if let current = current, stats.trackName == current {
             onUiThread {
                 self.summary = stats
-                self.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .none)
+                self.tableView.reloadRows(at: [ IndexPath(row: 0, section: 0) ], with: .none)
             }
         }
     }
@@ -296,7 +296,7 @@ class ProfileTableVC: BaseTableVC {
                     self.log.info("Got \(ts.count) tracks.")
                     self.onUiThread {
                         self.tableView.backgroundView = nil
-                        self.onTracks(ts: ts.map { $0.track })
+                        self.onTracks(ts: ts)
                     }
                 case .error(let err):
                     self.state = .failed

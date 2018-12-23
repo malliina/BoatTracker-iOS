@@ -35,35 +35,35 @@ class HttpClient {
         self.session = URLSession.shared
     }
     
-    func get(_ url: URL, headers: [String: String] = [:]) -> Observable<HttpResponse> {
+    func get(_ url: URL, headers: [String: String] = [:]) -> Single<HttpResponse> {
         let req = buildRequest(url: url, httpMethod: HttpClient.GET, headers: headers, body: nil)
         return executeHttp(req)
     }
     
-    func patchJSON(_ url: URL, headers: [String: String] = [:], payload: [String: AnyObject]) -> Observable<HttpResponse> {
+    func patchJSON(_ url: URL, headers: [String: String] = [:], payload: [String: AnyObject]) -> Single<HttpResponse> {
         let json = try? JSONSerialization.data(withJSONObject: payload, options: [])
         let req = buildRequest(url: url, httpMethod: HttpClient.PATCH, headers: headers, body: json)
         return executeHttp(req)
     }
     
-    func postJSON(_ url: URL, headers: [String: String] = [:], payload: [String: AnyObject]) -> Observable<HttpResponse> {
+    func postJSON(_ url: URL, headers: [String: String] = [:], payload: [String: AnyObject]) -> Single<HttpResponse> {
         return postData(url, headers: headers, payload: try? JSONSerialization.data(withJSONObject: payload, options: []))
     }
     
-    func postData(_ url: URL, headers: [String: String] = [:], payload: Data?) -> Observable<HttpResponse> {
+    func postData(_ url: URL, headers: [String: String] = [:], payload: Data?) -> Single<HttpResponse> {
         let req = buildRequest(url: url, httpMethod: HttpClient.POST, headers: headers, body: payload)
         return executeHttp(req)
     }
     
-    func delete(_ url: URL, headers: [String: String] = [:]) -> Observable<HttpResponse> {
+    func delete(_ url: URL, headers: [String: String] = [:]) -> Single<HttpResponse> {
         let req = buildRequest(url: url, httpMethod: HttpClient.DELETE, headers: headers, body: nil)
         return executeHttp(req)
     }
     
-    func executeHttp(_ req: URLRequest, retryCount: Int = 0) -> Observable<HttpResponse> {
-        return session.rx.response(request: req).flatMap { (result) -> Observable<HttpResponse> in
+    func executeHttp(_ req: URLRequest, retryCount: Int = 0) -> Single<HttpResponse> {
+        return session.rx.response(request: req).asSingle().flatMap { (result) -> Single<HttpResponse> in
             let (response, data) = result
-            return Observable.just(HttpResponse(http: response, data: data))
+            return Single.just(HttpResponse(http: response, data: data))
         }
     }
     

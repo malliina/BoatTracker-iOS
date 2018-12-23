@@ -4,4 +4,8 @@
 
 # BoatTracker-iOS
 
-The iOS app for BoatTracker.
+The iOS app for BoatTracker. See [www.boat-tracker.com](https://www.boat-tracker.com) for details.
+
+## Releases
+
+Every commit to the master branch triggers a production release to the [App Store](https://itunes.apple.com/us/app/boat-tracker/id1434203398?ls=1&mt=8) via [appcenter.ms](https://appcenter.ms/apps).
