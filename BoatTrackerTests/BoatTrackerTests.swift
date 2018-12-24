@@ -12,7 +12,6 @@ import BoatTracker
 @testable import BoatTracker
 
 class BoatTrackerTests: XCTestCase {
-    
     override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -21,6 +20,11 @@ class BoatTrackerTests: XCTestCase {
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
+    }
+    
+    func testInitToken() throws {
+        let isSuccess = AppDelegate.initMapboxToken()
+        XCTAssert(isSuccess)
     }
     
     func testExample() throws {

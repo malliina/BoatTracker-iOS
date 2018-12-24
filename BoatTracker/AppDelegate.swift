@@ -15,7 +15,7 @@ import GoogleSignIn
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-    let log = LoggerFactory.shared.system(AppDelegate.self)
+    static let log = LoggerFactory.shared.system(AppDelegate.self)
     let notifications = BoatNotifications.shared
 
     var window: UIWindow?
@@ -29,7 +29,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             MSCrashes.self
         ])
         
-        initMapboxToken()
+        let _ = AppDelegate.initMapboxToken()
         
         google = GoogleAuth.shared
         
@@ -40,12 +40,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
     
-    func initMapboxToken(key: String = "MapboxAccessToken") {
+    static func initMapboxToken(key: String = "MapboxAccessToken") -> Bool {
         do {
             let token = try Credentials.read(key: key)
             MGLAccountManager.accessToken = token
+            return true
         } catch let err {
             log.error(err.describe)
+            return false
         }
     }
     
@@ -86,7 +88,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) {
-        log.info("Received remote notification...")
+        AppDelegate.log.info("Received remote notification...")
         notifications.handleNotification(application, window: window, data: userInfo)
     }
 
