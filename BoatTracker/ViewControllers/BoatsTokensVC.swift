@@ -168,7 +168,7 @@ class BoatTokensVC: BaseTableVC {
             guard let textField = (popup.textFields ?? []).headOption(),
                 let newName = textField.text, !newName.isEmpty,
                 let boat = self.profile?.boats[indexPath.row] else { return }
-            let _ = Backend.shared.http.renameBoat(boat: boat.id, newName: BoatName(name: newName)).subscribe{ (single) in
+            let _ = Backend.shared.http.renameBoat(boat: boat.id, newName: BoatName(name: newName)).subscribe { (single) in
                 switch single {
                 case .success(let boat):
                     self.loadProfile()

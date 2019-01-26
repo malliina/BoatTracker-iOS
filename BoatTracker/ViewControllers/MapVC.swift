@@ -29,7 +29,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     var trails: [TrackName: MGLShapeSource] = [:]
     // The history data is in the above trails also but it is difficult to read an MGLShapeSource. This is more suitable for our purposes.
     var history: [TrackName: [CLLocationCoordinate2D]] = [:]
-    var icons: [TrackName: MGLSymbolStyleLayer] = [:]
+    var boatIcons: [TrackName: MGLSymbolStyleLayer] = [:]
     var topSpeedMarkers: [TrackName: ActiveMarker] = [:]
     
     var mapView: MGLMapView?
@@ -50,6 +50,16 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     
     var latestToken: UserToken? = nil
     var latestTrack: TrackName? = nil
+    
+    // AIS-related variables. TODO Move to its own module.
+    let aisVesselLayer = "ais-vessels"
+    let aisTrailLayer = "ais-vessels-trails"
+    let headingKey = "heading"
+    let maxTrailLength = 200
+    var vesselTrails: MGLShapeSource? = nil
+    var vesselShape: MGLShapeSource? = nil
+    var vesselHistory: [Mmsi: [Vessel]] = [:]
+    var vesselIcons: [Mmsi: MGLSymbolStyleLayer] = [:]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -89,11 +99,37 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         swipes.maximumNumberOfTouches = 1
         swipes.delegate = self
         mapView.addGestureRecognizer(swipes)
+        // Tap: See code in https://docs.mapbox.com/ios/maps/examples/runtime-multiple-annotations/
+        // Adds a single tap gesture recognizer. This gesture requires the built-in MGLMapView tap gestures (such as those for zoom and annotation selection) to fail.
+        let singleTap = UITapGestureRecognizer(target: self, action: #selector(handleMapTap(sender:)))
+        for recognizer in mapView.gestureRecognizers! where recognizer is UITapGestureRecognizer {
+            singleTap.require(toFail: recognizer)
+        }
+        mapView.addGestureRecognizer(singleTap)
+        
         
         MapEvents.shared.delegate = self
         
         GoogleAuth.shared.delegate = self
         GoogleAuth.shared.signInSilently()
+    }
+    
+    
+    @objc func handleMapTap(sender: UITapGestureRecognizer) {
+        guard let mapView = mapView else { return }
+        // https://docs.mapbox.com/ios/maps/examples/runtime-multiple-annotations/
+        if sender.state == .ended {
+            // Limit feature selection to just the following layer identifiers.
+            let layerIdentifiers: Set = [aisVesselLayer, aisTrailLayer]
+            
+            // Try matching the exact point first.
+            guard let senderView = sender.view else { return }
+            let point = sender.location(in: senderView)
+            guard let selected = mapView.visibleFeatures(at: point, styleLayerIdentifiers: layerIdentifiers).find({ $0 is MGLPointFeature }),
+                let name = selected.attribute(forKey: "name")
+                else { return }
+//            log.info("Clicked vessel \(name)")
+        }
     }
     
     func mapView(_ mapView: MGLMapView, viewFor annotation: MGLAnnotation) -> MGLAnnotationView? {
@@ -174,7 +210,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         let trail = trails[track] ?? initEmptyLayers(track: event.from, to: style)
         trail.shape = polyline
         // updates boat icon position
-        guard let lastCoord = coords.last?.coord, let iconLayer = icons[track] else { return }
+        guard let lastCoord = coords.last?.coord, let iconLayer = boatIcons[track] else { return }
         let point = MGLPointFeature()
         point.coordinate = lastCoord
         if let iconSourceId = iconLayer.sourceIdentifier,
@@ -214,6 +250,56 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         }
     }
     
+    func info(for mmsi: Mmsi) -> Vessel? {
+        return vesselHistory[mmsi]?.first
+    }
+    
+    private func update(vessels: [Vessel]) {
+        if vesselShape == nil {
+            // Icons
+            let vesselIconSource = MGLShapeSource(identifier: aisVesselLayer, shape: nil, options: nil)
+            let vesselIconLayer = MGLSymbolStyleLayer(identifier: aisVesselLayer, source: vesselIconSource)
+            vesselIconLayer.iconImageName = NSExpression(forConstantValue: "boat-resized-opt-30")
+            vesselIconLayer.iconScale = NSExpression(forConstantValue: 0.7)
+            vesselIconLayer.iconHaloColor = NSExpression(forConstantValue: UIColor.white)
+            vesselIconLayer.iconRotation = NSExpression(forKeyPath: Vessel.heading)
+            style?.addSource(vesselIconSource)
+            style?.addLayer(vesselIconLayer)
+            vesselShape = vesselIconSource
+            
+            // Trails
+            let vesselTrailsSource = MGLShapeSource(identifier: aisTrailLayer, shape: nil, options: nil)
+            let vesselTrailLayer = MGLLineStyleLayer(identifier: aisTrailLayer, source: vesselTrailsSource)
+            vesselTrailLayer.lineJoin = NSExpression(forConstantValue: "round")
+            vesselTrailLayer.lineCap = NSExpression(forConstantValue: "round")
+            vesselTrailLayer.lineColor = NSExpression(forConstantValue: UIColor.black)
+            vesselTrailLayer.lineWidth = NSExpression(forConstantValue: 1)
+            style?.addSource(vesselTrailsSource)
+            style?.addLayer(vesselTrailLayer)
+            vesselTrails = vesselTrailsSource
+            
+            log.info("Initialized vessel source.")
+        }
+        vessels.forEach { v in
+            vesselHistory.updateValue(([v] + (vesselHistory[v.mmsi] ?? [])).take(maxTrailLength), forKey: v.mmsi)
+        }
+        let updatedVessels: [MGLPointFeature] = vesselHistory.values.compactMap { v in
+            guard let latest: Vessel = v.first else { return nil }
+            let point = MGLPointFeature()
+            point.coordinate = latest.coord
+            point.attributes = [Mmsi.key: latest.mmsi.mmsi, Vessel.name: latest.name, Vessel.heading: latest.heading ?? latest.cog]
+            return point
+        }
+        vesselShape?.shape = MGLShapeCollectionFeature(shapes: updatedVessels)
+        let updatedTrails: [MGLPolylineFeature] = vesselHistory.values.compactMap { v in
+            let tail = v.dropFirst()
+            guard !tail.isEmpty else { return nil }
+            return MGLPolylineFeature(coordinates: tail.map { $0.coord }, count: UInt(tail.count))
+        }
+        vesselTrails?.shape = MGLMultiPolylineFeature(polylines: updatedTrails)
+//        log.info("Updated vessel source which now has \(updatedVessels.count) locations.")
+    }
+    
     // https://www.mapbox.com/ios-sdk/examples/runtime-animate-line/
     func initEmptyLayers(track: TrackRef, to style: MGLStyle) -> MGLShapeSource {
         let trailId = trailName(for: track.trackName)
@@ -240,7 +326,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         iconLayer.iconImageName = NSExpression(forConstantValue: "boat-resized-opt-30")
         iconLayer.iconScale = NSExpression(forConstantValue: 0.7)
         iconLayer.iconHaloColor = NSExpression(forConstantValue: UIColor.white)
-        icons.updateValue(iconLayer, forKey: track.trackName)
+        boatIcons.updateValue(iconLayer, forKey: track.trackName)
         style.addLayer(iconLayer)
         
         // Trophy icon
@@ -283,6 +369,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         }
         Backend.shared.updateToken(new: token)
         socket.delegate = self
+        socket.vesselDelegate = self
         socket.open()
     }
     
@@ -305,7 +392,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         }
         trails = [:]
         history = [:]
-        icons = [:]
+        boatIcons = [:]
         topSpeedMarkers = [:]
         latestTrack = nil
         mapMode = .fit
@@ -344,6 +431,14 @@ extension MapVC: BoatSocketDelegate {
     func onCoords(event: CoordsData) {
         onUiThread {
             self.addCoords(event: event)
+        }
+    }
+}
+
+extension MapVC: VesselDelegate {
+    func on(vessels: [Vessel]) {
+        onUiThread {
+            self.update(vessels: vessels)
         }
     }
 }

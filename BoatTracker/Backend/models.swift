@@ -9,6 +9,38 @@
 import Foundation
 import Mapbox
 
+struct Vessel {
+    static let heading = "heading"
+    static let name = "name"
+    let mmsi: Mmsi
+    let name: String
+    let heading: Double?
+    let cog: Double
+    let shipType: Int
+    let draft: Distance
+    let coord: CLLocationCoordinate2D
+    let timestamp: Date
+    let destination: String?
+    
+    static func parse(json: JsObject) throws -> Vessel {
+        return Vessel(
+            mmsi: Mmsi.from(number: try json.readUInt("mmsi")),
+            name: try json.readString("name"),
+            heading: try json.readOpt(Double.self, "heading"),
+            cog: try json.readDouble("cog"),
+            shipType: try json.readInt("shipType"),
+            draft: try json.readDouble("draft").meters,
+            coord: try json.coord("coord"),
+            timestamp: try json.timestampMillis("timestampMillis"),
+            destination: try json.readOpt(String.self, "destination")
+        )
+    }
+    
+    static func list(json: JsObject) throws -> [Vessel] {
+        return try json.readObjectArray("vessels", each: parse)
+    }
+}
+
 class CoordsData {
     let coords: [CoordBody]
     let from: TrackRef
@@ -39,9 +71,8 @@ class CoordBody {
     let waterTemp: Temperature
     
     static func parse(json: JsObject) throws -> CoordBody {
-        let c = try json.readObject("coord")
         return CoordBody(
-            coord: CLLocationCoordinate2D(latitude: try c.readDouble("lat"), longitude: try c.readDouble("lng")),
+            coord: try json.coord("coord"),
             boatTime: try json.readString("boatTime"),
             boatTimeMillis: try json.readUInt("boatTimeMillis"),
             speed: Speed(knots: try json.readDouble("speed")),
@@ -144,6 +175,16 @@ struct Username: Equatable, Hashable, CustomStringConvertible {
     var description: String { return name }
     
     static func == (lhs: Username, rhs: Username) -> Bool { return lhs.name == rhs.name }
+}
+
+struct Mmsi: Equatable, Hashable, CustomStringConvertible {
+    static let key = "mmsi"
+    let mmsi: String
+    var description: String { return mmsi }
+    
+    static func == (lhs: Mmsi, rhs: Mmsi) -> Bool { return lhs.mmsi == rhs.mmsi }
+    
+    static func from(number: UInt64) -> Mmsi { return Mmsi(mmsi: "\(number)") }
 }
 
 class BackendInfo {

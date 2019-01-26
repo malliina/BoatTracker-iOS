@@ -7,6 +7,8 @@
 //
 
 import Foundation
+// Imported because I use Mapbox's coordinate type as a primitive
+import Mapbox
 
 class JsValue {
     let value: AnyObject
@@ -52,6 +54,13 @@ open class JsObject {
     
     func readString(_ key: String) throws -> String { return try read(key) }
     
+    func timestampMillis(_ key: String) throws -> Date { return Date(timeIntervalSince1970: try readDouble(key) / 1000) }
+    
+    func coord(_ key: String) throws -> CLLocationCoordinate2D {
+        let c = try readObject(key)
+        return CLLocationCoordinate2D(latitude: try c.readDouble("lat"), longitude: try c.readDouble("lng"))
+    }
+    
     func readObject(_ key: String) throws -> JsObject {
         let dict: [String: AnyObject] = try read(key)
         return JsObject(dict: dict)
@@ -74,6 +83,7 @@ open class JsObject {
         return t
     }
     
+    /// Pass the first parameter like CustomType.self
     func readOpt<T>(_ t: T.Type, _ key: String) throws -> T? {
         let raw = dict[key]
         guard let value = raw else { return nil }

@@ -12,13 +12,20 @@ protocol BoatSocketDelegate {
     func onCoords(event: CoordsData)
 }
 
+protocol VesselDelegate {
+    func on(vessels: [Vessel])
+}
+
 class BoatSocket: SocketDelegate {
     private let log = LoggerFactory.shared.network(BoatSocket.self)
     
     let client: SocketClient
     
+    // Delegate for the map view
     var delegate: BoatSocketDelegate? = nil
+    // Delegate for the profile page with a summary view of the current track
     var statsDelegate: BoatSocketDelegate? = nil
+    var vesselDelegate: VesselDelegate? = nil
     
     convenience init(token: AccessToken?, track: TrackName?) {
         var headers = [HttpClient.ACCEPT: BoatHttpClient.BoatVersion]
@@ -61,12 +68,15 @@ class BoatSocket: SocketDelegate {
                 if let delegate = statsDelegate {
                     delegate.onCoords(event: data)
                 }
+            case "vessels":
+                let vessels = try Vessel.list(json: json.readObject("body"))
+                vesselDelegate?.on(vessels: vessels)
             default:
                 log.info("Unknown event: '\(event)'.")
             }
         } catch {
             if case JsonError.missing(let key) = error {
-                log.error("Missing: \(key)")
+                log.error("Missing: \(key) in \(json.stringify())")
             } else if case JsonError.invalid(let msg, let value) = error{
                 log.error("\(msg) with value \(value)")
             } else {
