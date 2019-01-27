@@ -13,3 +13,9 @@ enum MapMode {
     case follow
     case stay
 }
+
+enum Placement {
+    case left
+    case center
+    case right
+}

@@ -107,13 +107,11 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         }
         mapView.addGestureRecognizer(singleTap)
         
-        
         MapEvents.shared.delegate = self
         
         GoogleAuth.shared.delegate = self
         GoogleAuth.shared.signInSilently()
     }
-    
     
     @objc func handleMapTap(sender: UITapGestureRecognizer) {
         guard let mapView = mapView else { return }
@@ -125,10 +123,14 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
             // Try matching the exact point first.
             guard let senderView = sender.view else { return }
             let point = sender.location(in: senderView)
-            guard let selected = mapView.visibleFeatures(at: point, styleLayerIdentifiers: layerIdentifiers).find({ $0 is MGLPointFeature }),
-                let name = selected.attribute(forKey: "name")
-                else { return }
-//            log.info("Clicked vessel \(name)")
+            if let selected = mapView.visibleFeatures(at: point, styleLayerIdentifiers: layerIdentifiers).find({ $0 is MGLPointFeature }),
+                let mmsi = selected.attribute(forKey: Mmsi.key) as? String,
+                let vessel = vesselHistory[Mmsi(mmsi: mmsi)]?.first {
+                    let popup = VesselAnnotation(vessel: vessel)
+                    mapView.selectAnnotation(popup, animated: true)
+            } else {
+                mapView.deselectAnnotation(mapView.selectedAnnotations.first, animated: true)
+            }
         }
     }
     
@@ -137,13 +139,27 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         if let view = mapView.dequeueReusableAnnotationView(withIdentifier: id) {
             return view
         } else {
-            let view = MGLAnnotationView(annotation: annotation, reuseIdentifier: id)
-            if let image = UIImage(icon: "fa-trophy", backgroundColor: .clear, iconColor: UIColor(r: 255, g: 215, b: 0, alpha: 1.0), fontSize: 14) {
-                let imageView = UIImageView(image: image)
-                view.frame = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
-                view.addSubview(imageView)
+            if let annotation = annotation as? MGLPointAnnotation {
+                let view = MGLAnnotationView(annotation: annotation, reuseIdentifier: id)
+                if let image = UIImage(icon: "fa-trophy", backgroundColor: .clear, iconColor: UIColor(r: 255, g: 215, b: 0, alpha: 1.0), fontSize: 14) {
+                    let imageView = UIImageView(image: image)
+                    view.frame = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
+                    view.addSubview(imageView)
+                }
+                return view
+            } else {
+                return MGLAnnotationView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
             }
-            return view
+        }
+    }
+    
+    func mapView(_ mapView: MGLMapView, calloutViewFor annotation: MGLAnnotation) -> MGLCalloutView? {
+        log.info("calloutViewFor \(annotation)")
+        if let vessel = annotation as? VesselAnnotation {
+            return VesselCallout(annotation: vessel)
+        } else {
+            // Default callout view
+            return nil
         }
     }
     
@@ -153,6 +169,14 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     
     func mapView(_ mapView: MGLMapView, tapOnCalloutFor annotation: MGLAnnotation) {
         mapView.deselectAnnotation(annotation, animated: true)
+    }
+    
+    func mapView(_ mapView: MGLMapView, didDeselect annotation: MGLAnnotation) {
+        if let annotation = annotation as? MGLPointAnnotation {
+
+        } else {
+            mapView.removeAnnotation(annotation)
+        }
     }
     
     @objc func onSwipe(_ sender: UIPanGestureRecognizer) {
@@ -230,7 +254,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         let top = from.topPoint
         if let old = topSpeedMarkers[from.trackName], old.coord.speed < top.speed {
             let marker = old.annotation
-            fill(marker: marker, with: top)
+            fill(trophy: marker, top: top)
             topSpeedMarkers[from.trackName] = ActiveMarker(annotation: marker, coord: top)
         }
         // updates map position
@@ -332,17 +356,17 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         // Trophy icon
         let top = track.topPoint
         let marker = MGLPointAnnotation()
-        fill(marker: marker, with: top)
+        fill(trophy: marker, top: top)
         topSpeedMarkers[track.trackName] = ActiveMarker(annotation: marker, coord: top)
         mapView?.addAnnotation(marker)
         
         return trackSource
     }
     
-    func fill(marker: MGLPointAnnotation, with: CoordBody) {
-        marker.title = with.speed.description
-        marker.subtitle = with.boatTime
-        marker.coordinate = with.coord
+    func fill(trophy: MGLPointAnnotation, top: CoordBody) {
+        trophy.title = top.speed.description
+        trophy.subtitle = top.boatTime
+        trophy.coordinate = top.coord
     }
     
     func trailName(for track: TrackName) -> String {

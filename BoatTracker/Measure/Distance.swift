@@ -20,6 +20,8 @@ public struct Distance: Comparable, CustomStringConvertible {
     
     var rounded: String { return String(format: "%.2f", kilometers) }
     
+    var formatMeters: String { return String(format: "%.1f m", meters) }
+    
     public var description: String { return "\(rounded) km" }
     
     public static func == (lhs: Distance, rhs: Distance) -> Bool {

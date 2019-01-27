@@ -9,18 +9,33 @@
 import Foundation
 import Mapbox
 
-struct Vessel {
+class Vessel: NSObject {
     static let heading = "heading"
     static let name = "name"
+    
     let mmsi: Mmsi
     let name: String
     let heading: Double?
     let cog: Double
+    let speed: Speed
     let shipType: Int
     let draft: Distance
     let coord: CLLocationCoordinate2D
     let timestamp: Date
     let destination: String?
+    
+    init(mmsi: Mmsi, name: String, heading: Double?, cog: Double, speed: Speed, shipType: Int, draft: Distance, coord: CLLocationCoordinate2D, timestamp: Date, destination: String?) {
+        self.mmsi = mmsi
+        self.name = name
+        self.heading = heading
+        self.cog = cog
+        self.speed = speed
+        self.shipType = shipType
+        self.draft = draft
+        self.coord = coord
+        self.timestamp = timestamp
+        self.destination = destination
+    }
     
     static func parse(json: JsObject) throws -> Vessel {
         return Vessel(
@@ -28,6 +43,7 @@ struct Vessel {
             name: try json.readString("name"),
             heading: try json.readOpt(Double.self, "heading"),
             cog: try json.readDouble("cog"),
+            speed: try json.readDouble("sog").knots,
             shipType: try json.readInt("shipType"),
             draft: try json.readDouble("draft").meters,
             coord: try json.coord("coord"),
@@ -62,7 +78,7 @@ class CoordsData {
     }
 }
 
-class CoordBody {
+class CoordBody: NSObject {
     let coord: CLLocationCoordinate2D
     let boatTime: String
     let boatTimeMillis: UInt64
@@ -75,7 +91,7 @@ class CoordBody {
             coord: try json.coord("coord"),
             boatTime: try json.readString("boatTime"),
             boatTimeMillis: try json.readUInt("boatTimeMillis"),
-            speed: Speed(knots: try json.readDouble("speed")),
+            speed: (try json.readDouble("speed")).knots,
             depth: (try json.readDouble("depth")).mm,
             waterTemp: (try json.readDouble("waterTemp")).celsius
         )
