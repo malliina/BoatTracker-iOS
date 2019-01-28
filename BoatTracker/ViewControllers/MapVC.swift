@@ -154,7 +154,6 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     }
     
     func mapView(_ mapView: MGLMapView, calloutViewFor annotation: MGLAnnotation) -> MGLCalloutView? {
-        log.info("calloutViewFor \(annotation)")
         if let vessel = annotation as? VesselAnnotation {
             return VesselCallout(annotation: vessel)
         } else {
@@ -172,9 +171,8 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     }
     
     func mapView(_ mapView: MGLMapView, didDeselect annotation: MGLAnnotation) {
-        if let annotation = annotation as? MGLPointAnnotation {
-
-        } else {
+        let isTrophy = annotation as? MGLPointAnnotation
+        if isTrophy == nil {
             mapView.removeAnnotation(annotation)
         }
     }
