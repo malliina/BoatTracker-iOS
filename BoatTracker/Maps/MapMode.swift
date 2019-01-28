@@ -14,8 +14,13 @@ enum MapMode {
     case stay
 }
 
-enum Placement {
+enum HorizontalPlacement {
     case left
     case center
     case right
+}
+
+enum VerticalPlacement {
+    case top
+    case bottom
 }
