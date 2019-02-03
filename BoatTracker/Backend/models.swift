@@ -9,6 +9,74 @@
 import Foundation
 import Mapbox
 
+enum AidType {
+    case unknown
+    case lighthouse
+    case sectorLight
+    case leadingMark
+    case directionalLight
+    case minorLight
+    case otherMark
+    case edgeMark
+    case radarTarget
+    case buoy
+    case beacon
+    case signatureLighthouse
+    case cairn
+}
+
+enum NavMark {
+    case unknown
+    case left
+    case right
+    case north
+    case south
+    case west
+    case east
+    case rock
+    case safeWaters
+    case special
+    case notApplicable
+}
+
+enum Flotation {
+    case floating
+    case solid
+    case other(name: String)
+}
+
+class MarineSymbol: NSObject {
+    let owner: String
+    let exteriorLight: Bool
+    let topSign: Bool
+    let nameFi: String?
+    let nameSe: String?
+    let locationFi: String?
+    let locationSe: String?
+    let flotation: Flotation
+    let state: String
+    let lit: Bool
+    let aidType: AidType
+    let navMark: NavMark
+    let construction: String?
+    
+    init(owner: String, exteriorLight: Bool, topSign: Bool, nameFi: String?, nameSe: String?, locationFi: String?, locationSe: String?, flotation: Flotation, state: String, lit: Bool, aidType: AidType, navMark: NavMark, construction: String?) {
+        self.owner = owner
+        self.exteriorLight = exteriorLight
+        self.topSign = topSign
+        self.nameFi = nameFi
+        self.nameSe = nameSe
+        self.locationFi = locationFi
+        self.locationSe = locationSe
+        self.flotation = flotation
+        self.state = state
+        self.lit = lit
+        self.aidType = aidType
+        self.navMark = navMark
+        self.construction = construction
+    }
+}
+
 class Vessel: NSObject {
     static let heading = "heading"
     static let name = "name"

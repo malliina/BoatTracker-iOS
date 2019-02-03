@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 
 protocol TracksDelegate {
+    /// Called on the main thread.
     func onTrack(_ track: TrackName)
 }
 
