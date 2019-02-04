@@ -18,8 +18,8 @@ class AISRenderer {
     
     private let headingKey = "heading"
     private let maxTrailLength = 200
-    private var vesselTrails: MGLShapeSource? = nil
-    private var vesselShape: MGLShapeSource? = nil
+    private let vesselTrails: MGLShapeSource
+    private let vesselShape: MGLShapeSource
     private var vesselHistory: [Mmsi: [Vessel]] = [:]
     private var vesselIcons: [Mmsi: MGLSymbolStyleLayer] = [:]
     
@@ -29,6 +29,18 @@ class AISRenderer {
     init(mapView: MGLMapView, style: MGLStyle) {
         self.mapView = mapView
         self.style = style
+        // Icons
+        let vessels = LayerSource(iconId: aisVesselLayer, iconImageName: Layers.boatIcon)
+        vessels.layer.iconRotation = NSExpression(forKeyPath: Vessel.heading)
+        vessels.install(to: style)
+        vesselShape = vessels.source
+        
+        // Trails
+        let trails = LayerSource(lineId: aisTrailLayer)
+        trails.install(to: style)
+        vesselTrails = trails.source
+        
+        log.info("Initialized vessel source.")
     }
     
     func info(for mmsi: Mmsi) -> Vessel? {
@@ -50,9 +62,6 @@ class AISRenderer {
     }
     
     func update(vessels: [Vessel]) {
-        if vesselShape == nil {
-            initLayers()
-        }
         vessels.forEach { v in
             vesselHistory.updateValue(([v] + (vesselHistory[v.mmsi] ?? [])).take(maxTrailLength), forKey: v.mmsi)
         }
@@ -63,39 +72,13 @@ class AISRenderer {
             point.attributes = [Mmsi.key: latest.mmsi.mmsi, Vessel.name: latest.name, Vessel.heading: latest.heading ?? latest.cog]
             return point
         }
-        vesselShape?.shape = MGLShapeCollectionFeature(shapes: updatedVessels)
+        vesselShape.shape = MGLShapeCollectionFeature(shapes: updatedVessels)
         let updatedTrails: [MGLPolylineFeature] = vesselHistory.values.compactMap { v in
             let tail = v.dropFirst()
             guard !tail.isEmpty else { return nil }
             return MGLPolylineFeature(coordinates: tail.map { $0.coord }, count: UInt(tail.count))
         }
-        vesselTrails?.shape = MGLMultiPolylineFeature(polylines: updatedTrails)
+        vesselTrails.shape = MGLMultiPolylineFeature(polylines: updatedTrails)
         //        log.info("Updated vessel source which now has \(updatedVessels.count) locations.")
-    }
-    
-    private func initLayers() {
-        // Icons
-        let vesselIconSource = MGLShapeSource(identifier: aisVesselLayer, shape: nil, options: nil)
-        let vesselIconLayer = MGLSymbolStyleLayer(identifier: aisVesselLayer, source: vesselIconSource)
-        vesselIconLayer.iconImageName = NSExpression(forConstantValue: "boat-resized-opt-30")
-        vesselIconLayer.iconScale = NSExpression(forConstantValue: 0.7)
-        vesselIconLayer.iconHaloColor = NSExpression(forConstantValue: UIColor.white)
-        vesselIconLayer.iconRotation = NSExpression(forKeyPath: Vessel.heading)
-        style.addSource(vesselIconSource)
-        style.addLayer(vesselIconLayer)
-        vesselShape = vesselIconSource
-        
-        // Trails
-        let vesselTrailsSource = MGLShapeSource(identifier: aisTrailLayer, shape: nil, options: nil)
-        let vesselTrailLayer = MGLLineStyleLayer(identifier: aisTrailLayer, source: vesselTrailsSource)
-        vesselTrailLayer.lineJoin = NSExpression(forConstantValue: "round")
-        vesselTrailLayer.lineCap = NSExpression(forConstantValue: "round")
-        vesselTrailLayer.lineColor = NSExpression(forConstantValue: UIColor.black)
-        vesselTrailLayer.lineWidth = NSExpression(forConstantValue: 1)
-        style.addSource(vesselTrailsSource)
-        style.addLayer(vesselTrailLayer)
-        vesselTrails = vesselTrailsSource
-        
-        log.info("Initialized vessel source.")
     }
 }

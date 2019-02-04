@@ -128,31 +128,18 @@ class BoatRenderer {
     // https://www.mapbox.com/ios-sdk/examples/runtime-animate-line/
     private func initEmptyLayers(track: TrackRef, to style: MGLStyle) -> MGLShapeSource {
         let trailId = trailName(for: track.trackName)
-        let trackSource = MGLShapeSource(identifier: trailId, shape: nil, options: nil)
-        style.addSource(trackSource)
-        trails.updateValue(trackSource, forKey: track.trackName)
-        
         // Boat trail
-        let layer = MGLLineStyleLayer(identifier: trailId, source: trackSource)
-        layer.lineJoin = NSExpression(forConstantValue: "round")
-        layer.lineCap = NSExpression(forConstantValue: "round")
-        layer.lineColor = NSExpression(forConstantValue: UIColor.black)
-        
+        let trailData = LayerSource(lineId: trailId)
         // The line width should gradually increase based on the zoom level.
         //        layer.lineWidth = NSExpression(format: "mgl_interpolate:withCurveType:parameters:stops:($zoomLevel, 'linear', nil, %@)", [18: 3, 9: 10])
-        layer.lineWidth = NSExpression(forConstantValue: 1)
-        style.addLayer(layer)
+        trailData.install(to: style)
+        trails.updateValue(trailData.source, forKey: track.trackName)
         
         // Boat icon
         let iconId = iconName(for: track.trackName)
-        let iconSource = MGLShapeSource(identifier: iconId, shape: nil, options: nil)
-        style.addSource(iconSource)
-        let iconLayer = MGLSymbolStyleLayer(identifier: iconId, source: iconSource)
-        iconLayer.iconImageName = NSExpression(forConstantValue: "boat-resized-opt-30")
-        iconLayer.iconScale = NSExpression(forConstantValue: 0.7)
-        iconLayer.iconHaloColor = NSExpression(forConstantValue: UIColor.white)
-        boatIcons.updateValue(iconLayer, forKey: track.trackName)
-        style.addLayer(iconLayer)
+        let iconData = LayerSource(iconId: iconId, iconImageName: Layers.boatIcon)
+        iconData.install(to: style)
+        boatIcons.updateValue(iconData.layer, forKey: track.trackName)
         
         // Trophy icon
         let top = track.topPoint
@@ -160,7 +147,7 @@ class BoatRenderer {
         topSpeedMarkers[track.trackName] = ActiveMarker(annotation: marker, coord: top)
         mapView.addAnnotation(marker)
         
-        return trackSource
+        return trailData.source
     }
     
     private func trailName(for track: TrackName) -> String {
