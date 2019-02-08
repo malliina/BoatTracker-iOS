@@ -31,6 +31,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     var latestToken: UserToken? = nil
     
     var aisRenderer: AISRenderer? = nil
+    var taps: TapListener? = nil
     var boatRenderer: BoatRenderer? = nil
     
     override func viewDidLoad() {
@@ -92,7 +93,9 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
             // Tries matching the exact point first
             guard let senderView = sender.view else { return }
             let point = sender.location(in: senderView)
-            let handled = aisRenderer?.onTap(point: point) ?? false
+            let handledByAis = aisRenderer?.onTap(point: point) ?? false
+            let handledByTaps = taps?.onTap(point: point) ?? false
+            let handled = handledByAis || handledByTaps
             if !handled {
                 mapView.deselectAnnotation(mapView.selectedAnnotations.first, animated: true)
             }
@@ -111,6 +114,8 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     func mapView(_ mapView: MGLMapView, calloutViewFor annotation: MGLAnnotation) -> MGLCalloutView? {
         if let vessel = annotation as? VesselAnnotation {
             return VesselCallout(annotation: vessel)
+        } else if let mark = annotation as? MarkAnnotation {
+            return MarkCallout(annotation: mark)
         } else {
             // Default callout view
             return nil
@@ -163,6 +168,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         self.style = style
         self.boatRenderer = BoatRenderer(mapView: mapView, style: style, followButton: followButton)
         self.aisRenderer = AISRenderer(mapView: mapView, style: style)
+        self.taps = TapListener(mapView: mapView)
     }
 
     override func didReceiveMemoryWarning() {

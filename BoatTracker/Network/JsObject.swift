@@ -91,7 +91,19 @@ open class JsObject {
         return t
     }
     
+    func nonEmptyString(_ key: String) throws -> String? {
+        guard let s = try readOpt(String.self, key) else { return nil }
+        let trimmed = s.trim()
+        return trimmed.count > 0 ? trimmed : nil
+    }
+    
     func stringify(pretty: Bool = true) -> String {
         return Json.stringifyObject(dict)!
+    }
+}
+
+extension String {
+    func trim() -> String {
+        return self.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
     }
 }

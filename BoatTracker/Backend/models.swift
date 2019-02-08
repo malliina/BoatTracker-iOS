@@ -23,6 +23,25 @@ enum AidType {
     case beacon
     case signatureLighthouse
     case cairn
+    
+    static func parse(code: Int) throws -> AidType {
+        switch code {
+        case 0: return .unknown
+        case 1: return .lighthouse
+        case 2: return .sectorLight
+        case 3: return .leadingMark
+        case 4: return .directionalLight
+        case 5: return .minorLight
+        case 6: return .otherMark
+        case 7: return .edgeMark
+        case 8: return .radarTarget
+        case 9: return .buoy
+        case 10: return .beacon
+        case 11: return .signatureLighthouse
+        case 13: return .cairn
+        default: throw JsonError.invalid("Unknown aid type: '\(code)'.", code)
+        }
+    }
 }
 
 enum NavMark {
@@ -37,12 +56,84 @@ enum NavMark {
     case safeWaters
     case special
     case notApplicable
+    
+    static func parse(code: Int) throws -> NavMark {
+        switch code {
+        case 0: return .unknown
+        case 1: return .left
+        case 2: return .right
+        case 3: return .north
+        case 4: return .south
+        case 5: return .west
+        case 6: return .east
+        case 7: return .rock
+        case 8: return .safeWaters
+        case 9: return .special
+        case 99: return .notApplicable
+        default: throw JsonError.invalid("Unknown mark type: '\(code)'.", code)
+        }
+    }
+}
+
+enum ConstructionInfo {
+    case buoyBeacon
+    case iceBuoy
+    case beaconBuoy
+    case superBeacon
+    case exteriorLight
+    case dayBoard
+    case helicopterPlatform
+    case radioMast
+    case waterTower
+    case smokePipe
+    case radarTower
+    case churchTower
+    case superBuoy
+    case edgeCairn
+    case compassCheck
+    case borderMark
+    case borderLineMark
+    case channelEdgeLight
+    case tower
+    
+    static func parse(code: Int) throws -> ConstructionInfo {
+        switch code {
+        case 1: return .buoyBeacon
+        case 2: return .iceBuoy
+        case 4: return .beaconBuoy
+        case 5: return .superBeacon
+        case 6: return .exteriorLight
+        case 7: return .dayBoard
+        case 8: return .helicopterPlatform
+        case 9: return .radioMast
+        case 10: return .waterTower
+        case 11: return .smokePipe
+        case 12: return .radarTower
+        case 13: return .churchTower
+        case 14: return .superBuoy
+        case 15: return .edgeCairn
+        case 16: return .compassCheck
+        case 17: return .borderMark
+        case 18: return .borderLineMark
+        case 19: return .channelEdgeLight
+        case 20: return .tower
+        default: throw JsonError.invalid("Unknown construction type: '\(code)'.", code)
+        }
+    }
 }
 
 enum Flotation {
     case floating
     case solid
     case other(name: String)
+    
+    static func parse(input: String) -> Flotation {
+        switch input {
+        case "KELLUVA": return .floating
+        case "KIINTE": return .solid
+        default: return .other(name: input)
+        }
+    }
 }
 
 class MarineSymbol: NSObject {
@@ -58,9 +149,11 @@ class MarineSymbol: NSObject {
     let lit: Bool
     let aidType: AidType
     let navMark: NavMark
-    let construction: String?
+    let construction: ConstructionInfo?
     
-    init(owner: String, exteriorLight: Bool, topSign: Bool, nameFi: String?, nameSe: String?, locationFi: String?, locationSe: String?, flotation: Flotation, state: String, lit: Bool, aidType: AidType, navMark: NavMark, construction: String?) {
+    var hasLocation: Bool { return locationFi != nil || locationSe != nil }
+    
+    init(owner: String, exteriorLight: Bool, topSign: Bool, nameFi: String?, nameSe: String?, locationFi: String?, locationSe: String?, flotation: Flotation, state: String, lit: Bool, aidType: AidType, navMark: NavMark, construction: ConstructionInfo?) {
         self.owner = owner
         self.exteriorLight = exteriorLight
         self.topSign = topSign
@@ -74,6 +167,40 @@ class MarineSymbol: NSObject {
         self.aidType = aidType
         self.navMark = navMark
         self.construction = construction
+    }
+    
+    static func boolNum(i: Int) throws -> Bool {
+        switch i {
+        case 0: return false
+        case 1: return true
+        default: throw JsonError.invalid("Unexpected integer, must be 1 or 0: '\(i)'.", i)
+        }
+    }
+    
+    static func boolString(s: String) throws -> Bool {
+        switch s {
+        case "K": return true
+        case "E": return false
+        default: throw JsonError.invalid("Unexpected string, must be K or E: '\(s)'.", s)
+        }
+    }
+    
+    static func parse(json: JsObject) throws -> MarineSymbol {
+        return MarineSymbol(
+            owner: try json.readString("OMISTAJA"),
+            exteriorLight: try boolNum(i: try json.readInt("FASADIVALO")),
+            topSign: try boolNum(i: try json.readInt("HUIPPUMERK")),
+            nameFi: try json.nonEmptyString("NIMIS"),
+            nameSe: try json.nonEmptyString("NIMIR"),
+            locationFi: try json.nonEmptyString("SIJAINTIS"),
+            locationSe: try json.nonEmptyString("SIJAINTIR"),
+            flotation: Flotation.parse(input: try json.readString("SUBTYPE")),
+            state: try json.readString("TILA"),
+            lit: try boolString(s: try json.readString("VALAISTU")),
+            aidType: try AidType.parse(code: try json.readInt("TY_JNR")),
+            navMark: try NavMark.parse(code: try json.readInt("NAVL_TYYP")),
+            construction: try json.readOpt(Int.self, "RAKT_TYYP").map { i in try ConstructionInfo.parse(code: i) }
+        )
     }
 }
 

@@ -10,30 +10,130 @@ import Foundation
 import UIKit
 import Mapbox
 
-// https://stackoverflow.com/a/51906338
-// https://docs.mapbox.com/ios/maps/examples/custom-callout/
-class VesselCallout: UIView, MGLCalloutView {
-    let log = LoggerFactory.shared.view(VesselCallout.self)
-    var representedObject: MGLAnnotation
-    let vessel: VesselAnnotation
-    var leftAccessoryView: UIView = UIView()
-    var rightAccessoryView: UIView = UIView()
+class MarkCallout: BoatCallout {
+    let log = LoggerFactory.shared.view(MarkCallout.self)
+    let markAnnoation: MarkAnnotation
     
-    weak var delegate: MGLCalloutViewDelegate?
+    let nameValue = BoatLabel.build(text: "", alignment: .center, numberOfLines: 1, fontSize: 16)
+    let typeLabel = BoatLabel.build(text: "Type", alignment: .left, numberOfLines: 1, fontSize: 12, textColor: .darkGray)
+    let typeValue = BoatLabel.build(text: "", alignment: .left, numberOfLines: 1, fontSize: 12)
+    let constructionLabel = BoatLabel.build(text: "Construction", alignment: .left, numberOfLines: 1, fontSize: 12, textColor: .darkGray)
+    let constructionValue = BoatLabel.build(text: "", alignment: .left, numberOfLines: 1, fontSize: 12)
+    let navigationLabel = BoatLabel.build(text: "Navigation", alignment: .left, numberOfLines: 1, fontSize: 12, textColor: .darkGray)
+    let navigationValue = BoatLabel.build(text: "", alignment: .left, numberOfLines: 1, fontSize: 12)
+    let locationLabel = BoatLabel.build(text: "Location", alignment: .left, numberOfLines: 1, fontSize: 12, textColor: .darkGray)
+    let locationValue = BoatLabel.build(text: "", alignment: .left, numberOfLines: 1, fontSize: 12)
+    let ownerLabel = BoatLabel.build(text: "Owner", alignment: .left, numberOfLines: 1, fontSize: 12, textColor: .darkGray)
+    let ownerValue = BoatLabel.build(text: "", alignment: .left, numberOfLines: 1, fontSize: 12)
     
-    // https://github.com/mapbox/mapbox-gl-native/issues/9228
-    override var center: CGPoint {
-        set {
-            var newCenter = newValue
-            newCenter.y -= bounds.midY
-            super.center = newCenter
-        }
-        get {
-            return super.center
-        }
+    // TODO un-hardcode these
+    var hasConstruction: Bool { return markAnnoation.mark.construction != nil }
+    var hasLocation: Bool { return markAnnoation.mark.hasLocation }
+    var hasNav: Bool { return markAnnoation.mark.navMark != .notApplicable }
+    var rows: Int { return 3 + (hasConstruction ? 1 : 0) + (hasLocation ? 1 : 0) + (hasNav ? 1 : 0) }
+    override var containerWidth: CGFloat { return 240 }
+    override var containerHeight: CGFloat { return CGFloat(80 + (rows - 3) * 24) }
+    
+    required init(annotation: MarkAnnotation) {
+        self.markAnnoation = annotation
+        super.init(representedObject: annotation)
+        setup(mark: annotation.mark)
     }
     
-    let container = UIView()
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func setup(mark: MarineSymbol) {
+        let labelWidth = 75
+        
+        [ nameValue, typeLabel, typeValue, constructionLabel, constructionValue, navigationLabel, navigationValue, locationLabel, locationValue, ownerLabel, ownerValue ].forEach { label in
+            container.addSubview(label)
+        }
+        
+        nameValue.text = mark.nameFi ?? mark.nameSe ?? ""
+        nameValue.snp.makeConstraints { (make) in
+            make.leading.trailing.top.equalToSuperview().inset(inset)
+        }
+        
+        typeLabel.snp.makeConstraints { (make) in
+            make.top.equalTo(nameValue.snp.bottom).offset(spacing)
+            make.leading.equalToSuperview().inset(inset)
+            make.width.equalTo(labelWidth)
+        }
+        
+        typeValue.text = "Type \(mark.aidType)"
+        typeValue.snp.makeConstraints { (make) in
+            make.top.equalTo(typeLabel)
+            make.leading.equalTo(typeLabel.snp.trailing).offset(spacing)
+            make.trailing.equalToSuperview().inset(inset)
+        }
+        
+        if let construction = mark.construction {
+            constructionLabel.snp.makeConstraints { (make) in
+                make.top.equalTo(typeValue.snp.bottom).offset(spacing)
+                make.leading.equalToSuperview().inset(inset)
+                make.width.equalTo(labelWidth)
+            }
+            constructionValue.text = "Constr \(construction)"
+            constructionValue.snp.makeConstraints { (make) in
+                make.top.equalTo(constructionLabel)
+                make.leading.equalTo(constructionLabel.snp.trailing).offset(spacing)
+                make.trailing.equalToSuperview().inset(inset)
+            }
+        }
+        
+        if hasNav {
+            navigationLabel.snp.makeConstraints { (make) in
+                make.top.equalTo((hasConstruction ? constructionValue : typeValue).snp.bottom).offset(spacing)
+                make.leading.equalToSuperview().inset(inset)
+                make.width.equalTo(labelWidth)
+            }
+            
+            navigationValue.text = "Nav \(mark.navMark)"
+            navigationValue.snp.makeConstraints { (make) in
+                make.top.equalTo(navigationLabel)
+                make.leading.equalTo(navigationLabel.snp.trailing).offset(spacing)
+                make.trailing.equalToSuperview().inset(inset)
+            }
+        }
+        
+        if let location = mark.locationFi ?? mark.locationSe {
+            locationLabel.snp.makeConstraints { (make) in
+                make.top.equalTo((hasNav ? navigationLabel : hasConstruction ? constructionLabel : typeLabel).snp.bottom).offset(spacing)
+                make.leading.equalToSuperview().inset(inset)
+                make.width.equalTo(labelWidth)
+            }
+            
+            locationValue.text = location
+            locationValue.snp.makeConstraints { (make) in
+                make.top.equalTo(locationLabel)
+                make.leading.equalTo(locationLabel.snp.trailing).offset(spacing)
+                make.trailing.equalToSuperview().inset(inset)
+            }
+        }
+        
+        ownerLabel.snp.makeConstraints { (make) in
+            make.top.equalTo((hasLocation ? locationLabel : hasNav ? navigationLabel : hasConstruction ? constructionLabel : typeLabel).snp.bottom).offset(spacing)
+            make.leading.equalToSuperview().inset(inset)
+            make.width.equalTo(labelWidth)
+        }
+        
+        ownerValue.text = mark.owner
+        ownerValue.snp.makeConstraints { (make) in
+            make.top.equalTo(ownerLabel)
+            make.leading.equalTo(ownerLabel.snp.trailing).offset(spacing)
+            make.trailing.equalToSuperview().inset(inset)
+        }
+    }
+}
+
+// https://stackoverflow.com/a/51906338
+// https://docs.mapbox.com/ios/maps/examples/custom-callout/
+class VesselCallout: BoatCallout {
+    let log = LoggerFactory.shared.view(VesselCallout.self)
+    let vessel: VesselAnnotation
+    
     let nameLabel = BoatLabel.build(text: "", alignment: .center, numberOfLines: 1, fontSize: 16)
     let destinationLabel = BoatLabel.build(text: "Destination", alignment: .left, numberOfLines: 1, fontSize: 12, textColor: .darkGray)
     let destinationValue = BoatLabel.build(text: "", alignment: .left, numberOfLines: 1, fontSize: 12)
@@ -43,20 +143,14 @@ class VesselCallout: UIView, MGLCalloutView {
     let draftValue = BoatLabel.build(text: "", alignment: .left, numberOfLines: 1, fontSize: 12)
     let boatTimeLabel = BoatLabel.build(text: "", alignment: .center, numberOfLines: 1, fontSize: 12)
 
-    let tipHeight: CGFloat = 10.0
-    let tipWidth: CGFloat = 20.0
     // TODO un-hardcode these
     var hasDestination: Bool { return vessel.destination != nil }
-    var containerWidth: CGFloat { return hasDestination ? 200 : 160 }
-    var containerHeight: CGFloat { return hasDestination ? 120 : 96 }
-    // Maintains placement state: we compute it and use it in presentCallout(...), then use it again in draw(...)
-    private var horizontalPlacement: HorizontalPlacement = .center
-    private var verticalPlacement: VerticalPlacement = .top
+    override var containerWidth: CGFloat { return hasDestination ? 200 : 160 }
+    override var containerHeight: CGFloat { return hasDestination ? 128 : 104 }
     
     required init(annotation: VesselAnnotation) {
-        self.representedObject = annotation
         self.vessel = annotation
-        super.init(frame: .zero)
+        super.init(representedObject: annotation)
         setup(vessel: annotation)
     }
     
@@ -65,23 +159,10 @@ class VesselCallout: UIView, MGLCalloutView {
     }
     
     func setup(vessel: VesselAnnotation) {
-        contentMode = .redraw
-        let spacing = 8
-        let inset = UIEdgeInsets(top: 4, left: 8, bottom: 4, right: 8)
         let labelWidth = 65
-        backgroundColor = .clear
-        addSubview(container)
+        
         [ nameLabel, destinationLabel, destinationValue, speedLabel, speedValue, draftLabel, draftValue, boatTimeLabel ].forEach { label in
             container.addSubview(label)
-        }
-        
-        container.backgroundColor = .white
-        container.layer.cornerRadius = 4.0
-        container.layer.borderColor = UIColor.white.cgColor
-        // Without this an unsatisfied constraint warning was emitted (the hardcoded dimensions are for other reasons)
-        container.snp.makeConstraints { (make) in
-            make.width.equalTo(containerWidth)
-            make.height.equalTo(containerHeight)
         }
         
         nameLabel.text = vessel.name
@@ -134,6 +215,64 @@ class VesselCallout: UIView, MGLCalloutView {
         boatTimeLabel.snp.makeConstraints { (make) in
             make.top.equalTo(draftValue.snp.bottom).offset(spacing)
             make.leading.trailing.bottom.equalToSuperview().inset(inset)
+        }
+    }
+}
+
+class BoatCallout: UIView, MGLCalloutView {
+    weak var delegate: MGLCalloutViewDelegate?
+    
+    var representedObject: MGLAnnotation
+    var leftAccessoryView: UIView = UIView()
+    var rightAccessoryView: UIView = UIView()
+    
+    let container = UIView()
+    
+    let tipHeight: CGFloat = 10.0
+    let tipWidth: CGFloat = 20.0
+    let spacing = 8
+    let inset = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+    
+    // Maintains placement state: we compute it and use it in presentCallout(...), then use it again in draw(...)
+    private var horizontalPlacement: HorizontalPlacement = .center
+    private var verticalPlacement: VerticalPlacement = .top
+    
+    // Override these
+    var containerWidth: CGFloat { return 0 }
+    var containerHeight: CGFloat { return 0 }
+    
+    // https://github.com/mapbox/mapbox-gl-native/issues/9228
+    override var center: CGPoint {
+        set {
+            var newCenter = newValue
+            newCenter.y -= bounds.midY
+            super.center = newCenter
+        }
+        get {
+            return super.center
+        }
+    }
+    
+    init(representedObject: MGLAnnotation) {
+        self.representedObject = representedObject
+        super.init(frame: .zero)
+        setupContainer()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func setupContainer() {
+        backgroundColor = .clear
+        addSubview(container)
+        container.backgroundColor = .white
+        container.layer.cornerRadius = 4.0
+        container.layer.borderColor = UIColor.white.cgColor
+        // Without this an unsatisfied constraint warning was emitted (the hardcoded dimensions are for other reasons)
+        container.snp.makeConstraints { (make) in
+            make.width.equalTo(containerWidth)
+            make.height.equalTo(containerHeight)
         }
     }
     
@@ -200,16 +339,11 @@ class VesselCallout: UIView, MGLCalloutView {
         // Draws the pointed tip of the callout.
         // Placement is top/bottom and left/center/right.
         let fillColor: UIColor = .white
-
         let tipCenter = suggestTipCenter(rect)
-        
         let tipLeft = tipCenter - (tipWidth / 2.0)
-        
-        
         let heightWithoutTip = rect.size.height - tipHeight - 1
-
+        
         let currentContext = UIGraphicsGetCurrentContext()!
-
         let tipPath = CGMutablePath()
         if verticalPlacement == .top {
             // The popup is on top of the annotation, therefore the tip goes below the popup
@@ -229,7 +363,7 @@ class VesselCallout: UIView, MGLCalloutView {
         }
         
         tipPath.closeSubpath()
-
+        
         fillColor.setFill()
         currentContext.addPath(tipPath)
         currentContext.fillPath()
