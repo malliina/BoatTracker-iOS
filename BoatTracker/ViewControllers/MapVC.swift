@@ -33,6 +33,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     var aisRenderer: AISRenderer? = nil
     var taps: TapListener? = nil
     var boatRenderer: BoatRenderer? = nil
+    var clientConf: ClientConf? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -84,6 +85,13 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         
         GoogleAuth.shared.delegate = self
         GoogleAuth.shared.signInSilently()
+        
+        let _ = Backend.shared.http.conf().subscribe { (event) in
+            switch event {
+            case .success(let conf): self.clientConf = conf
+            case .error(let err): self.log.error("Failed to load client conf: '\(err.describe)'.")
+            }
+        }
     }
     
     @objc func handleMapTap(sender: UITapGestureRecognizer) {
@@ -114,8 +122,8 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     func mapView(_ mapView: MGLMapView, calloutViewFor annotation: MGLAnnotation) -> MGLCalloutView? {
         if let vessel = annotation as? VesselAnnotation {
             return VesselCallout(annotation: vessel)
-        } else if let mark = annotation as? MarkAnnotation {
-            return MarkCallout(annotation: mark)
+        } else if let mark = annotation as? MarkAnnotation, let lang = clientConf?.languages.english {
+            return MarkCallout(annotation: mark, lang: lang.mark)
         } else {
             // Default callout view
             return nil

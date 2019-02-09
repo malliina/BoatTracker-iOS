@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6101D549220F75200051A427 /* languages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6101D548220F75200051A427 /* languages.swift */; };
 		6106448A21FDBC8300C9ED0D /* VesselCallout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6106448921FDBC8300C9ED0D /* VesselCallout.swift */; };
 		610EE3E121724CE10040FBC6 /* NSString+FontAwesome.m in Sources */ = {isa = PBXBuildFile; fileRef = 610EE3DA21724CDF0040FBC6 /* NSString+FontAwesome.m */; };
 		610EE3E221724CE10040FBC6 /* UIFont+FontAwesome.m in Sources */ = {isa = PBXBuildFile; fileRef = 610EE3DB21724CDF0040FBC6 /* UIFont+FontAwesome.m */; };
@@ -109,6 +110,7 @@
 		291C188E8DFD75437944D4D8 /* Pods_BoatTrackerTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BoatTrackerTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		39042C4BC3843DC7B96921B7 /* Pods_BoatTracker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BoatTracker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4649148093F31848382B2F37 /* Pods-BoatTrackerUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BoatTrackerUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-BoatTrackerUITests/Pods-BoatTrackerUITests.release.xcconfig"; sourceTree = "<group>"; };
+		6101D548220F75200051A427 /* languages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = languages.swift; sourceTree = "<group>"; };
 		6106448921FDBC8300C9ED0D /* VesselCallout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VesselCallout.swift; sourceTree = "<group>"; };
 		610EE3D921724CDE0040FBC6 /* BoatTracker-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BoatTracker-Bridging-Header.h"; sourceTree = "<group>"; };
 		610EE3DA21724CDF0040FBC6 /* NSString+FontAwesome.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+FontAwesome.m"; sourceTree = "<group>"; };
@@ -468,6 +470,7 @@
 				61DE7F3E20F29F6900C95B3F /* BoatSocket.swift */,
 				612F46A320F4A99E001A3003 /* EnvConf.swift */,
 				61DE7F4220F3AEFC00C95B3F /* models.swift */,
+				6101D548220F75200051A427 /* languages.swift */,
 			);
 			path = Backend;
 			sourceTree = "<group>";
@@ -811,6 +814,7 @@
 				61967A092103CF3E00432672 /* Formatting.swift in Sources */,
 				61B07C6020F21DC300D8B7E0 /* AppDelegate.swift in Sources */,
 				612F46B720F646A0001A3003 /* Temperature.swift in Sources */,
+				6101D549220F75200051A427 /* languages.swift in Sources */,
 				612F46B020F551CB001A3003 /* viewControllerExt.swift in Sources */,
 				61F4198F211F7CBB00B1ED7D /* BoatsTokensVC.swift in Sources */,
 				61F4199321206C4C00B1ED7D /* AttributionCell.swift in Sources */,

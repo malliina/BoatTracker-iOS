@@ -13,6 +13,7 @@ import Mapbox
 class MarkCallout: BoatCallout {
     let log = LoggerFactory.shared.view(MarkCallout.self)
     let markAnnoation: MarkAnnotation
+    let lang: MarkLang
     
     let nameValue = BoatLabel.build(text: "", alignment: .center, numberOfLines: 1, fontSize: 16)
     let typeLabel = BoatLabel.build(text: "Type", alignment: .left, numberOfLines: 1, fontSize: 12, textColor: .darkGray)
@@ -30,12 +31,12 @@ class MarkCallout: BoatCallout {
     var hasConstruction: Bool { return markAnnoation.mark.construction != nil }
     var hasLocation: Bool { return markAnnoation.mark.hasLocation }
     var hasNav: Bool { return markAnnoation.mark.navMark != .notApplicable }
-    var rows: Int { return 3 + (hasConstruction ? 1 : 0) + (hasLocation ? 1 : 0) + (hasNav ? 1 : 0) }
+    override var rows: Int { return 3 + (hasConstruction ? 1 : 0) + (hasLocation ? 1 : 0) + (hasNav ? 1 : 0) }
     override var containerWidth: CGFloat { return 240 }
-    override var containerHeight: CGFloat { return CGFloat(80 + (rows - 3) * 24) }
     
-    required init(annotation: MarkAnnotation) {
+    required init(annotation: MarkAnnotation, lang: MarkLang) {
         self.markAnnoation = annotation
+        self.lang = lang
         super.init(representedObject: annotation)
         setup(mark: annotation.mark)
     }
@@ -56,6 +57,7 @@ class MarkCallout: BoatCallout {
             make.leading.trailing.top.equalToSuperview().inset(inset)
         }
         
+        typeLabel.text = lang.aidType
         typeLabel.snp.makeConstraints { (make) in
             make.top.equalTo(nameValue.snp.bottom).offset(spacing)
             make.leading.equalToSuperview().inset(inset)
@@ -70,6 +72,7 @@ class MarkCallout: BoatCallout {
         }
         
         if let construction = mark.construction {
+            constructionLabel.text = lang.construction
             constructionLabel.snp.makeConstraints { (make) in
                 make.top.equalTo(typeValue.snp.bottom).offset(spacing)
                 make.leading.equalToSuperview().inset(inset)
@@ -84,6 +87,7 @@ class MarkCallout: BoatCallout {
         }
         
         if hasNav {
+            navigationLabel.text = lang.navigation
             navigationLabel.snp.makeConstraints { (make) in
                 make.top.equalTo((hasConstruction ? constructionValue : typeValue).snp.bottom).offset(spacing)
                 make.leading.equalToSuperview().inset(inset)
@@ -99,6 +103,7 @@ class MarkCallout: BoatCallout {
         }
         
         if let location = mark.locationFi ?? mark.locationSe {
+            locationLabel.text = lang.location
             locationLabel.snp.makeConstraints { (make) in
                 make.top.equalTo((hasNav ? navigationLabel : hasConstruction ? constructionLabel : typeLabel).snp.bottom).offset(spacing)
                 make.leading.equalToSuperview().inset(inset)
@@ -113,6 +118,7 @@ class MarkCallout: BoatCallout {
             }
         }
         
+        ownerLabel.text = lang.owner
         ownerLabel.snp.makeConstraints { (make) in
             make.top.equalTo((hasLocation ? locationLabel : hasNav ? navigationLabel : hasConstruction ? constructionLabel : typeLabel).snp.bottom).offset(spacing)
             make.leading.equalToSuperview().inset(inset)
@@ -146,7 +152,7 @@ class VesselCallout: BoatCallout {
     // TODO un-hardcode these
     var hasDestination: Bool { return vessel.destination != nil }
     override var containerWidth: CGFloat { return hasDestination ? 200 : 160 }
-    override var containerHeight: CGFloat { return hasDestination ? 128 : 104 }
+    override var rows: Int { return hasDestination ? 5 : 4 }
     
     required init(annotation: VesselAnnotation) {
         self.vessel = annotation
@@ -239,7 +245,8 @@ class BoatCallout: UIView, MGLCalloutView {
     
     // Override these
     var containerWidth: CGFloat { return 0 }
-    var containerHeight: CGFloat { return 0 }
+    var containerHeight: CGFloat { return CGFloat(80 + (rows - 3) * 24) }
+    var rows: Int { return 0 }
     
     // https://github.com/mapbox/mapbox-gl-native/issues/9228
     override var center: CGPoint {

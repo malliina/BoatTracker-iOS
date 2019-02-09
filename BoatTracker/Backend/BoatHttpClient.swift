@@ -70,6 +70,10 @@ class BoatHttpClient {
         })
     }
     
+    func conf() -> Single<ClientConf> {
+        return getParsed("/conf", parse: ClientConf.parse)
+    }
+    
     func enableNotifications(token: PushToken) -> Single<SimpleMessage> {
         return parsed("/users/notifications", run: { (url) -> Single<HttpResponse> in
             return self.client.postJSON(url, headers: self.postHeaders, payload: ["token": token.token as AnyObject, "device": "ios" as AnyObject])
