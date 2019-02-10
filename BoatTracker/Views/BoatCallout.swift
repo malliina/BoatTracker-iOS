@@ -58,10 +58,13 @@ class BoatCallout: UIView, MGLCalloutView {
         container.backgroundColor = .white
         container.layer.cornerRadius = 4.0
         container.layer.borderColor = UIColor.white.cgColor
-        // Without this an unsatisfied constraint warning was emitted (the hardcoded dimensions are for other reasons)
+        // Without this an unsatisfied constraint warning was emitted
         container.snp.makeConstraints { (make) in
         }
     }
+    
+    var annotationCenterRelativeToFrame: CGFloat = 0
+    var annotationCenterRelativeToScreen: CGFloat = 0
     
     /// https://github.com/mapbox/ios-sdk-examples/blob/master/Examples/Swift/CustomCalloutView.swift
     /// rect is the tapped annotation
@@ -85,6 +88,7 @@ class BoatCallout: UIView, MGLCalloutView {
         
         let containerWidth = container.bounds.width
         let frameOriginX = calloutOriginX(for: rect, calloutWidth: containerWidth)
+        annotationCenterRelativeToScreen = annotationCenterRelativeToFrame - frameOriginX
         let frameOriginY = rect.origin.y + (verticalPlacement == .top ? -frameHeight : 0)
         frame = CGRect(x: frameOriginX, y: frameOriginY, width: containerWidth, height: frameHeight)
         
@@ -97,22 +101,30 @@ class BoatCallout: UIView, MGLCalloutView {
         }
     }
     
-    func calloutOriginX(for rect: CGRect, calloutWidth: CGFloat) -> CGFloat {
-        let halfAnnotation = rect.size.width / 2.0
-        let originX = rect.origin.x
-        let annotationCenter = originX + halfAnnotation
-        horizontalPlacement = suggestPlacement(originX: annotationCenter)
+    func calloutOriginX(for annotation: CGRect, calloutWidth: CGFloat) -> CGFloat {
+        let halfAnnotation = annotation.size.width / 2.0
+        let originX = annotation.origin.x
+        annotationCenterRelativeToFrame = originX + halfAnnotation
+        horizontalPlacement = suggestPlacement(originX: annotationCenterRelativeToFrame)
+        let minOriginX: CGFloat = 0
+        let maxOriginX: CGFloat = UIScreen.main.bounds.width - calloutWidth
         switch horizontalPlacement {
-        case .left: return annotationCenter - tipWidth
-        case .center: return annotationCenter - (calloutWidth / 2.0)
-        case .right: return annotationCenter - calloutWidth + tipWidth
+        case .left:
+            // Callout goes to the left of the annotation, but not so much as to exceed the screen bounds
+            return max(annotationCenterRelativeToFrame - calloutWidth + tipWidth, minOriginX)
+        case .center:
+            // Prefer center of annotation, but within screen bounds
+            return min(max(annotationCenterRelativeToFrame - (calloutWidth / 2.0), minOriginX), maxOriginX)
+        case .right:
+            // Callout goes to the right of the annotation, but not so much right so as to exceed the screen bounds
+            return min(max(annotationCenterRelativeToFrame - tipWidth, 0), maxOriginX)
         }
     }
     
     func suggestPlacement(originX x: CGFloat) -> HorizontalPlacement {
         let columnWidth = UIScreen.main.bounds.width / 3.0
         // | left | center | right |
-        return x < columnWidth ? .left : x < (columnWidth * 2) ? .center : .right
+        return x < columnWidth ? .right : x < (columnWidth * 2) ? .center : .left
     }
     
     func dismissCallout(animated: Bool) {
@@ -133,7 +145,7 @@ class BoatCallout: UIView, MGLCalloutView {
         // Draws the pointed tip of the callout.
         // Placement is top/bottom and left/center/right.
         let fillColor: UIColor = .white
-        let tipCenter = suggestTipCenter(rect)
+        let tipCenter = annotationCenterRelativeToScreen
         let tipLeft = tipCenter - (tipWidth / 2.0)
         let heightWithoutTip = rect.size.height - tipHeight - 1
         
@@ -163,13 +175,13 @@ class BoatCallout: UIView, MGLCalloutView {
         currentContext.fillPath()
     }
     
-    func suggestTipCenter(_ container: CGRect) -> CGFloat {
-        let originX = container.origin.x
-        let containerWidth = container.size.width
-        switch horizontalPlacement {
-        case .left: return originX + tipOffset
-        case .center: return originX + (containerWidth / 2.0)
-        case .right: return originX + containerWidth - tipOffset
-        }
-    }
+//    func suggestTipCenter(_ container: CGRect) -> CGFloat {
+//        let originX = container.origin.x
+//        let containerWidth = container.size.width
+//        switch horizontalPlacement {
+//        case .right: return originX + tipOffset
+//        case .center: return originX + (containerWidth / 2.0)
+//        case .left: return originX + containerWidth - tipOffset
+//        }
+//    }
 }
