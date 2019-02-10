@@ -55,8 +55,6 @@ class VesselCallout: BoatCallout {
 
     // TODO un-hardcode these
     var hasDestination: Bool { return vessel.destination != nil }
-    override var containerWidth: CGFloat { return hasDestination ? 200 : 160 }
-    override var rows: Int { return hasDestination ? 5 : 4 }
     
     required init(annotation: VesselAnnotation, lang: Lang) {
         self.vessel = annotation
@@ -70,8 +68,6 @@ class VesselCallout: BoatCallout {
     }
     
     func setup(vessel: VesselAnnotation) {
-        let labelWidth = 65
-        
         [ nameLabel, destinationLabel, destinationValue, speedLabel, speedValue, draftLabel, draftValue, boatTimeValue ].forEach { label in
             container.addSubview(label)
         }
@@ -86,7 +82,7 @@ class VesselCallout: BoatCallout {
             destinationLabel.snp.makeConstraints { (make) in
                 make.top.equalTo(nameLabel.snp.bottom).offset(spacing)
                 make.leading.equalToSuperview().inset(inset)
-                make.width.equalTo(labelWidth)
+                make.width.equalTo(speedLabel)
             }
             
             destinationValue.text = vessel.destination
@@ -99,9 +95,12 @@ class VesselCallout: BoatCallout {
         
         speedLabel.text = lang.track.speed
         speedLabel.snp.makeConstraints { (make) in
-            make.top.equalTo(hasDestination ? destinationLabel.snp.bottom : nameLabel.snp.bottom).offset(spacing)
+            make.top.equalTo((hasDestination ? destinationLabel : nameLabel).snp.bottom).offset(spacing)
             make.leading.equalToSuperview().inset(inset)
-            make.width.equalTo(labelWidth)
+            if hasDestination {
+                make.width.greaterThanOrEqualTo(destinationLabel)
+            }
+            make.width.greaterThanOrEqualTo(draftLabel)
         }
         
         speedValue.text = vessel.speed.description
@@ -115,7 +114,7 @@ class VesselCallout: BoatCallout {
         draftLabel.snp.makeConstraints { (make) in
             make.top.equalTo(speedValue.snp.bottom).offset(spacing)
             make.leading.equalToSuperview().inset(inset)
-            make.width.equalTo(labelWidth)
+            make.width.equalTo(speedLabel)
         }
         
         draftValue.text = vessel.draft.formatMeters
@@ -129,6 +128,7 @@ class VesselCallout: BoatCallout {
         boatTimeValue.snp.makeConstraints { (make) in
             make.top.equalTo(draftValue.snp.bottom).offset(spacing)
             make.leading.trailing.bottom.equalToSuperview().inset(inset)
+            make.bottom.equalToSuperview().inset(inset)
         }
     }
 }

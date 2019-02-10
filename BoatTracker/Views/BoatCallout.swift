@@ -11,6 +11,7 @@ import Mapbox
 import UIKit
 
 class BoatCallout: UIView, MGLCalloutView {
+    static let log = LoggerFactory.shared.view(BoatCallout.self)
     weak var delegate: MGLCalloutViewDelegate?
     
     var representedObject: MGLAnnotation
@@ -21,17 +22,13 @@ class BoatCallout: UIView, MGLCalloutView {
     
     let tipHeight: CGFloat = 10.0
     let tipWidth: CGFloat = 20.0
+    let tipOffset: CGFloat = 20.0
     let spacing = 8
     let inset = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
     
     // Maintains placement state: we compute it and use it in presentCallout(...), then use it again in draw(...)
     private var horizontalPlacement: HorizontalPlacement = .center
     private var verticalPlacement: VerticalPlacement = .top
-    
-    // Override these
-    var containerWidth: CGFloat { return 0 }
-    var containerHeight: CGFloat { return CGFloat(80 + (rows - 3) * 24) }
-    var rows: Int { return 0 }
     
     // https://github.com/mapbox/mapbox-gl-native/issues/9228
     override var center: CGPoint {
@@ -63,17 +60,21 @@ class BoatCallout: UIView, MGLCalloutView {
         container.layer.borderColor = UIColor.white.cgColor
         // Without this an unsatisfied constraint warning was emitted (the hardcoded dimensions are for other reasons)
         container.snp.makeConstraints { (make) in
-            make.width.equalTo(containerWidth)
-            make.height.equalTo(containerHeight)
         }
     }
     
-    // https://github.com/mapbox/ios-sdk-examples/blob/master/Examples/Swift/CustomCalloutView.swift
-    // rect is the tapped annotation
+    /// https://github.com/mapbox/ios-sdk-examples/blob/master/Examples/Swift/CustomCalloutView.swift
+    /// rect is the tapped annotation
     func presentCallout(from rect: CGRect, in view: UIView, constrainedTo constrainedRect: CGRect, animated: Bool) {
         view.addSubview(self)
-        let frameHeight = containerHeight + tipHeight
+        // These two calls are used to give the container dimensions, which are used when presenting the callout for the tip + placement
+        container.setNeedsLayout()
+        container.layoutIfNeeded()
+        
+//        BoatCallout.log.info("Container height \(container.bounds.height) width \(container.bounds.width)")
+        let frameHeight = container.bounds.height + tipHeight
         // Prefers a top placement, unless there's too little room
+        // What's 8?
         verticalPlacement = rect.origin.y > frameHeight + 8 ? .top : .bottom
         if verticalPlacement == .bottom {
             // Shifts the container down, making room for the tip, which is outside the container but must be inside the frame.
@@ -82,7 +83,8 @@ class BoatCallout: UIView, MGLCalloutView {
             }
         }
         
-        let frameOriginX = calloutOriginX(for: rect)
+        let containerWidth = container.bounds.width
+        let frameOriginX = calloutOriginX(for: rect, calloutWidth: containerWidth)
         let frameOriginY = rect.origin.y + (verticalPlacement == .top ? -frameHeight : 0)
         frame = CGRect(x: frameOriginX, y: frameOriginY, width: containerWidth, height: frameHeight)
         
@@ -95,15 +97,15 @@ class BoatCallout: UIView, MGLCalloutView {
         }
     }
     
-    func calloutOriginX(for rect: CGRect) -> CGFloat {
+    func calloutOriginX(for rect: CGRect, calloutWidth: CGFloat) -> CGFloat {
         let halfAnnotation = rect.size.width / 2.0
         let originX = rect.origin.x
-        let basePosition = originX + halfAnnotation
-        horizontalPlacement = suggestPlacement(originX: originX)
+        let annotationCenter = originX + halfAnnotation
+        horizontalPlacement = suggestPlacement(originX: annotationCenter)
         switch horizontalPlacement {
-        case .left: return basePosition - tipWidth
-        case .center: return basePosition - (containerWidth / 2.0)
-        case .right: return basePosition - containerWidth + tipWidth
+        case .left: return annotationCenter - tipWidth
+        case .center: return annotationCenter - (calloutWidth / 2.0)
+        case .right: return annotationCenter - calloutWidth + tipWidth
         }
     }
     
@@ -138,7 +140,7 @@ class BoatCallout: UIView, MGLCalloutView {
         let currentContext = UIGraphicsGetCurrentContext()!
         let tipPath = CGMutablePath()
         if verticalPlacement == .top {
-            // The popup is on top of the annotation, therefore the tip goes below the popup
+            // The callout is on top of the annotation, therefore the tip goes below the callout
             let bottomLeft = CGPoint(x: tipLeft, y: heightWithoutTip)
             let bottomCenter = CGPoint(x: tipCenter, y: rect.origin.y + rect.size.height)
             let bottomRight = CGPoint(x: tipLeft + tipWidth, y: heightWithoutTip)
@@ -161,11 +163,13 @@ class BoatCallout: UIView, MGLCalloutView {
         currentContext.fillPath()
     }
     
-    func suggestTipCenter(_ rect: CGRect) -> CGFloat {
+    func suggestTipCenter(_ container: CGRect) -> CGFloat {
+        let originX = container.origin.x
+        let containerWidth = container.size.width
         switch horizontalPlacement {
-        case .left: return rect.origin.x + tipWidth
-        case .center: return rect.origin.x + (rect.size.width / 2.0)
-        case .right: return rect.origin.x + rect.size.width - tipWidth
+        case .left: return originX + tipOffset
+        case .center: return originX + (containerWidth / 2.0)
+        case .right: return originX + containerWidth - tipOffset
         }
     }
 }
