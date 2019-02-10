@@ -28,43 +28,6 @@ class TrophyAnnotation: NSObject, MGLAnnotation {
     }
 }
 
-// The annotation may be updated on the go while it's added to the map, therefore the model is mutable (and also to comply with MGLAnnotation)
-class VesselAnnotation: CustomAnnotation {
-    var name: String
-    var destination: String?
-    var speed: Speed
-    var draft: Distance
-    var boatTime: Date
-    
-    init(vessel: Vessel) {
-        self.name = vessel.name
-        self.destination = vessel.destination
-        self.speed = vessel.speed
-        self.draft = vessel.draft
-        self.boatTime = vessel.timestamp
-        super.init(coord: vessel.coord)
-    }
-    
-    func update(with vessel: Vessel) {
-        self.name = vessel.name
-        self.destination = vessel.destination
-        self.speed = vessel.speed
-        self.draft = vessel.draft
-        self.boatTime = vessel.timestamp
-        self.coordinate = vessel.coord
-    }
-    
-}
-
-class MarkAnnotation: CustomAnnotation {
-    let mark: MarineSymbol
-    
-    init(mark: MarineSymbol, coord: CLLocationCoordinate2D) {
-        self.mark = mark
-        super.init(coord: coord)
-    }
-}
-
 class CustomAnnotation: NSObject, MGLAnnotation {
     // Insane hack: the MGLAnnotation object requires a title property, otherwise the callout is never shown.
     // Best source I could find is https://github.com/mapbox/react-native-mapbox-gl/issues/1278.

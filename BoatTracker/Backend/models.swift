@@ -24,6 +24,24 @@ enum AidType {
     case signatureLighthouse
     case cairn
     
+    func translate(lang: AidTypeLang) -> String {
+        switch self {
+        case .lighthouse: return lang.lighthouse
+        case .sectorLight: return lang.sectorLight
+        case .leadingMark: return lang.leadingMark
+        case .directionalLight: return lang.directionalLight
+        case .minorLight: return lang.minorLight
+        case .otherMark: return lang.otherMark
+        case .edgeMark: return lang.edgeMark
+        case .radarTarget: return lang.radarTarget
+        case .buoy: return lang.buoy
+        case .beacon: return lang.beacon
+        case .signatureLighthouse: return lang.signatureLighthouse
+        case .cairn: return lang.cairn
+        case .unknown: return lang.unknown
+        }
+    }
+    
     static func parse(code: Int) throws -> AidType {
         switch code {
         case 0: return .unknown
@@ -56,6 +74,22 @@ enum NavMark {
     case safeWaters
     case special
     case notApplicable
+    
+    func translate(lang: NavMarkLang) -> String {
+        switch self {
+        case .left: return lang.left
+        case .right: return lang.right
+        case .north: return lang.north
+        case .south: return lang.south
+        case .west: return lang.unknown
+        case .east: return lang.east
+        case .rock: return lang.rock
+        case .safeWaters: return lang.safeWaters
+        case .special: return lang.special
+        case .notApplicable: return lang.notApplicable
+        case .unknown: return lang.unknown
+        }
+    }
     
     static func parse(code: Int) throws -> NavMark {
         switch code {
@@ -95,6 +129,30 @@ enum ConstructionInfo {
     case borderLineMark
     case channelEdgeLight
     case tower
+    
+    func translate(lang: ConstructionLang) -> String {
+        switch self {
+        case .buoyBeacon: return lang.buoyBeacon
+        case .iceBuoy: return lang.iceBuoy
+        case .beaconBuoy: return lang.beaconBuoy
+        case .superBeacon: return lang.superBeacon
+        case .exteriorLight: return lang.exteriorLight
+        case .dayBoard: return lang.dayBoard
+        case .helicopterPlatform: return lang.buoyBeacon
+        case .radioMast: return lang.radioMast
+        case .waterTower: return lang.waterTower
+        case .smokePipe: return lang.smokePipe
+        case .radarTower: return lang.radarTower
+        case .churchTower: return lang.churchTower
+        case .superBuoy: return lang.superBuoy
+        case .edgeCairn: return lang.edgeCairn
+        case .compassCheck: return lang.compassCheck
+        case .borderMark: return lang.borderMark
+        case .borderLineMark: return lang.borderLineMark
+        case .channelEdgeLight: return lang.channelEdgeLight
+        case .tower: return lang.tower
+        }
+    }
     
     static func parse(code: Int) throws -> ConstructionInfo {
         switch code {
@@ -152,6 +210,32 @@ class MarineSymbol: NSObject {
     let construction: ConstructionInfo?
     
     var hasLocation: Bool { return locationFi != nil || locationSe != nil }
+    
+    func location(lang: Language) -> String? {
+        switch lang {
+        case .fi: return locationFi ?? locationSe
+        case .se: return locationSe ?? locationFi
+        case .en: return locationFi ?? locationSe
+        }
+    }
+    
+    func name(lang: Language) -> String? {
+        switch lang {
+        case .fi: return nameFi ?? nameSe
+        case .se: return nameSe ?? nameFi
+        case .en: return nameFi ?? nameSe
+        }
+    }
+    
+    func translatedOwner(finnish: SpecialWords, translated: SpecialWords) -> String {
+        switch owner {
+        case finnish.transportAgency: return translated.transportAgency
+        case finnish.defenceForces: return translated.defenceForces
+        case finnish.portOfHelsinki: return translated.portOfHelsinki
+        case finnish.cityOfEspoo: return translated.cityOfEspoo
+        default: return owner
+        }
+    }
     
     init(owner: String, exteriorLight: Bool, topSign: Bool, nameFi: String?, nameSe: String?, locationFi: String?, locationSe: String?, flotation: Flotation, state: String, lit: Bool, aidType: AidType, navMark: NavMark, construction: ConstructionInfo?) {
         self.owner = owner
@@ -447,13 +531,29 @@ struct SimpleMessage {
     }
 }
 
+enum Language {
+    case fi
+    case se
+    case en
+    
+    static func parse(s: String) -> Language {
+        switch s {
+        case "fi": return fi
+        case "se": return se
+        case "en": return en
+        default: return en
+        }
+    }
+}
+
 class UserProfile {
     let id: Int
     let username: Username
     let email: String?
+    let language: Language
     let boats: [Boat]
     let addedMillis: UInt64
-    
+
     static func parse(obj: JsObject) throws -> UserProfile {
         return try parseUser(obj: try obj.readObject("user"))
     }
@@ -462,15 +562,17 @@ class UserProfile {
         return UserProfile(id: try obj.readInt("id"),
                            username: Username(name: try obj.readString("username")),
                            email: try obj.readOpt(String.self, "email"),
+                           language: Language.parse(s: try obj.readString("language")),
                            boats: try obj.readObjectArray("boats", each: Boat.parse),
                            addedMillis: try obj.readUInt("addedMillis")
         )
     }
     
-    init(id: Int, username: Username, email: String?, boats: [Boat], addedMillis: UInt64) {
+    init(id: Int, username: Username, email: String?, language: Language, boats: [Boat], addedMillis: UInt64) {
         self.id = id
         self.username = username
         self.email = email
+        self.language = language
         self.boats = boats
         self.addedMillis = addedMillis
     }

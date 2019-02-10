@@ -18,7 +18,6 @@ class StatCell: BoatCell {
     override func configureView() {
         contentView.addSubview(titleLabel)
         titleLabel.snp.makeConstraints { (make) in
-//            make.centerY.equalToSuperview()
             make.top.bottom.equalToSuperview()
             make.leading.equalTo(contentView.snp.leadingMargin)
         }

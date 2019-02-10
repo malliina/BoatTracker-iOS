@@ -72,13 +72,60 @@ struct ShipTypesLang {
     }
 }
 
+struct FairwayStateLang {
+    let confirmed, aihio, mayChange, changeAihio, mayBeRemoved, removed: String
+    
+    static func parse(json: JsObject) throws -> FairwayStateLang {
+        return FairwayStateLang(
+            confirmed: try json.readString("confirmed"),
+            aihio: try json.readString("aihio"),
+            mayChange: try json.readString("mayChange"),
+            changeAihio: try json.readString("changeAihio"),
+            mayBeRemoved: try json.readString("mayBeRemoved"),
+            removed: try json.readString("removed")
+        )
+    }
+}
+
+struct ZonesLang {
+    let area, fairway, areaAndFairway: String
+    
+    static func parse(json: JsObject) throws -> ZonesLang {
+        return ZonesLang(
+            area: try json.readString("area"),
+            fairway: try json.readString("fairway"),
+            areaAndFairway: try json.readString("areaAndFairway")
+        )
+    }
+}
+
+struct FairwayTypesLang {
+    let navigation, anchoring, meetup, harborPool, turn, channel, coastTraffic, core, special, lock, confirmedExtra, helcom, pilot: String
+    
+    static func parse(json: JsObject) throws -> FairwayTypesLang {
+        return FairwayTypesLang(
+            navigation: try json.readString("navigation"),
+            anchoring: try json.readString("anchoring"),
+            meetup: try json.readString("meetup"),
+            harborPool: try json.readString("harborPool"),
+            turn: try json.readString("turn"),
+            channel: try json.readString("channel"),
+            coastTraffic: try json.readString("coastTraffic"),
+            core: try json.readString("core"),
+            special: try json.readString("special"),
+            lock: try json.readString("lock"),
+            confirmedExtra: try json.readString("confirmedExtra"),
+            helcom: try json.readString("helcom"),
+            pilot: try json.readString("pilot")
+        )
+    }
+}
+
 struct FairwayLang {
-    let fairwayType: String
-    let fairwayDepth: String
-    let harrowDepth: String
-    let minDepth: String
-    let maxDepth: String
-    let state: String
+    let fairwayType, fairwayDepth, harrowDepth, minDepth, maxDepth, state: String
+    let states: FairwayStateLang
+    let zones: ZonesLang
+    let types: FairwayTypesLang
     
     static func parse(json: JsObject) throws -> FairwayLang {
         return FairwayLang(
@@ -87,15 +134,16 @@ struct FairwayLang {
             harrowDepth: try json.readString("harrowDepth"),
             minDepth: try json.readString("minDepth"),
             maxDepth: try json.readString("maxDepth"),
-            state: try json.readString("state")
+            state: try json.readString("state"),
+            states: try json.readObj("states", parse: FairwayStateLang.parse),
+            zones: try json.readObj("zones", parse: ZonesLang.parse),
+            types: try json.readObj("types", parse: FairwayTypesLang.parse)
         )
     }
 }
 
 struct AisLang {
-    let draft: String
-    let destination: String
-    let shipType: String
+    let draft, destination, shipType: String
     
     static func parse(json: JsObject) throws -> AisLang {
         return AisLang(
@@ -126,11 +174,94 @@ struct TrackLang {
     }
 }
 
+struct MarkTypeLang {
+    let lateral, cardinal, unknown: String
+    
+    static func parse(json: JsObject) throws -> MarkTypeLang {
+        return MarkTypeLang(
+            lateral: try json.readString("lateral"),
+            cardinal: try json.readString("cardinal"),
+            unknown: try json.readString("unknown")
+        )
+    }
+}
+
+struct AidTypeLang {
+    let unknown, lighthouse, sectorLight, leadingMark, directionalLight, minorLight, otherMark, edgeMark, radarTarget, buoy, beacon, signatureLighthouse, cairn: String
+    
+    static func parse(json: JsObject) throws -> AidTypeLang {
+        return AidTypeLang(
+            unknown: try json.readString("unknown"),
+            lighthouse: try json.readString("lighthouse"),
+            sectorLight: try json.readString("sectorLight"),
+            leadingMark: try json.readString("leadingMark"),
+            directionalLight: try json.readString("directionalLight"),
+            minorLight: try json.readString("minorLight"),
+            otherMark: try json.readString("otherMark"),
+            edgeMark: try json.readString("edgeMark"),
+            radarTarget: try json.readString("radarTarget"),
+            buoy: try json.readString("buoy"),
+            beacon: try json.readString("beacon"),
+            signatureLighthouse: try json.readString("signatureLighthouse"),
+            cairn: try json.readString("cairn")
+        )
+    }
+}
+
+struct NavMarkLang {
+    let left, right, north, south, west, east, rock, safeWaters, special, notApplicable, unknown: String
+    
+    static func parse(json: JsObject) throws -> NavMarkLang {
+        return NavMarkLang(
+            left: try json.readString("left"),
+            right: try json.readString("right"),
+            north: try json.readString("north"),
+            south: try json.readString("south"),
+            west: try json.readString("west"),
+            east: try json.readString("east"),
+            rock: try json.readString("rock"),
+            safeWaters: try json.readString("safeWaters"),
+            special: try json.readString("special"),
+            notApplicable: try json.readString("notApplicable"),
+            unknown: try json.readString("unknown")
+        )
+    }
+}
+
+struct ConstructionLang {
+    let buoyBeacon, iceBuoy, beaconBuoy, superBeacon, exteriorLight, dayBoard, helicopterPlatform, radioMast, waterTower, smokePipe, radarTower, churchTower, superBuoy, edgeCairn, compassCheck, borderMark, borderLineMark, channelEdgeLight, tower: String
+    
+    static func parse(json: JsObject) throws -> ConstructionLang {
+        return ConstructionLang(
+            buoyBeacon: try json.readString("buoyBeacon"),
+            iceBuoy: try json.readString("iceBuoy"),
+            beaconBuoy: try json.readString("beaconBuoy"),
+            superBeacon: try json.readString("superBeacon"),
+            exteriorLight: try json.readString("exteriorLight"),
+            dayBoard: try json.readString("dayBoard"),
+            helicopterPlatform: try json.readString("helicopterPlatform"),
+            radioMast: try json.readString("radioMast"),
+            waterTower: try json.readString("waterTower"),
+            smokePipe: try json.readString("smokePipe"),
+            radarTower: try json.readString("radarTower"),
+            churchTower: try json.readString("churchTower"),
+            superBuoy: try json.readString("superBuoy"),
+            edgeCairn: try json.readString("edgeCairn"),
+            compassCheck: try json.readString("compassCheck"),
+            borderMark: try json.readString("borderMark"),
+            borderLineMark: try json.readString("borderLineMark"),
+            channelEdgeLight: try json.readString("channelEdgeLight"),
+            tower: try json.readString("tower")
+        )
+    }
+}
+
 struct MarkLang {
-    let markType: String
-    let aidType: String
-    let navigation: String
-    let construction: String, influence: String, location: String, owner: String
+    let markType, aidType, navigation, construction, influence, location, owner: String
+    let types: MarkTypeLang
+    let navTypes: NavMarkLang
+    let structures: ConstructionLang
+    let aidTypes: AidTypeLang
     
     static func parse(json: JsObject) throws -> MarkLang {
         return MarkLang(
@@ -140,17 +271,17 @@ struct MarkLang {
             construction: try json.readString("construction"),
             influence: try json.readString("influence"),
             location: try json.readString("location"),
-            owner: try json.readString("owner")
+            owner: try json.readString("owner"),
+            types: try json.readObj("types", parse: MarkTypeLang.parse),
+            navTypes: try json.readObj("navTypes", parse: NavMarkLang.parse),
+            structures: try json.readObj("structures", parse: ConstructionLang.parse),
+            aidTypes: try json.readObj("aidTypes", parse: AidTypeLang.parse)
         )
     }
 }
 
 struct SpecialWords {
-    let transportAgency: String
-    let defenceForces: String
-    let portOfHelsinki: String
-    let cityOfHelsinki: String
-    let cityOfEspoo: String
+    let transportAgency, defenceForces, portOfHelsinki, cityOfHelsinki, cityOfEspoo: String
     
     static func parse(json: JsObject) throws -> SpecialWords {
         return SpecialWords(
@@ -164,10 +295,8 @@ struct SpecialWords {
 }
 
 struct Lang {
-    let name: String
-    let qualityClass: String
-    let time: String
-    let comparisonLevel: String
+    let language: Language
+    let name, qualityClass, time, comparisonLevel: String
     let specialWords: SpecialWords
     let fairway: FairwayLang
     let track: TrackLang
@@ -177,6 +306,7 @@ struct Lang {
     
     static func parse(json: JsObject) throws -> Lang {
         return Lang(
+            language: Language.parse(s: try json.readString("language")),
             name: try json.readString("name"),
             qualityClass: try json.readString("qualityClass"),
             time: try json.readString("time"),

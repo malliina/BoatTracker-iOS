@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		6101D549220F75200051A427 /* languages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6101D548220F75200051A427 /* languages.swift */; };
+		6101D54B221057340051A427 /* MarkCallout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6101D54A221057340051A427 /* MarkCallout.swift */; };
+		6101D54D221057530051A427 /* BoatCallout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6101D54C221057530051A427 /* BoatCallout.swift */; };
 		6106448A21FDBC8300C9ED0D /* VesselCallout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6106448921FDBC8300C9ED0D /* VesselCallout.swift */; };
 		610EE3E121724CE10040FBC6 /* NSString+FontAwesome.m in Sources */ = {isa = PBXBuildFile; fileRef = 610EE3DA21724CDF0040FBC6 /* NSString+FontAwesome.m */; };
 		610EE3E221724CE10040FBC6 /* UIFont+FontAwesome.m in Sources */ = {isa = PBXBuildFile; fileRef = 610EE3DB21724CDF0040FBC6 /* UIFont+FontAwesome.m */; };
@@ -111,6 +113,8 @@
 		39042C4BC3843DC7B96921B7 /* Pods_BoatTracker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BoatTracker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4649148093F31848382B2F37 /* Pods-BoatTrackerUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BoatTrackerUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-BoatTrackerUITests/Pods-BoatTrackerUITests.release.xcconfig"; sourceTree = "<group>"; };
 		6101D548220F75200051A427 /* languages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = languages.swift; sourceTree = "<group>"; };
+		6101D54A221057340051A427 /* MarkCallout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkCallout.swift; sourceTree = "<group>"; };
+		6101D54C221057530051A427 /* BoatCallout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatCallout.swift; sourceTree = "<group>"; };
 		6106448921FDBC8300C9ED0D /* VesselCallout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VesselCallout.swift; sourceTree = "<group>"; };
 		610EE3D921724CDE0040FBC6 /* BoatTracker-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BoatTracker-Bridging-Header.h"; sourceTree = "<group>"; };
 		610EE3DA21724CDF0040FBC6 /* NSString+FontAwesome.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+FontAwesome.m"; sourceTree = "<group>"; };
@@ -354,19 +358,21 @@
 			children = (
 				61F4199221206C4C00B1ED7D /* AttributionCell.swift */,
 				61DE7F4A20F3ED3900C95B3F /* BoatButton.swift */,
+				6101D54C221057530051A427 /* BoatCallout.swift */,
 				619679F520FBBA3A00432672 /* BoatCell.swift */,
 				6199E0E820F2325100A4009A /* BoatLabel.swift */,
 				613669B4216A98560043494A /* BoatSwitch.swift */,
 				61DE7F4820F3EB0700C95B3F /* BoatTextField.swift */,
 				61ACE5CA2131667600925265 /* BoatTextView.swift */,
 				6171906A212CA06900337B0B /* BoatTokenCell.swift */,
+				6101D54A221057340051A427 /* MarkCallout.swift */,
 				61CD40D021163E0E00F31AA5 /* StatBox.swift */,
 				619679F720FBBB4D00432672 /* StatCell.swift */,
 				619679FF2103BCCF00432672 /* TrackCell.swift */,
 				61F419962120745A00B1ED7D /* TrackSummaryBox.swift */,
 				61F4199C2120B39C00B1ED7D /* TrackSummaryCell.swift */,
-				61AB2C7E2132A63C009774DC /* viewExt.swift */,
 				6106448921FDBC8300C9ED0D /* VesselCallout.swift */,
+				61AB2C7E2132A63C009774DC /* viewExt.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -762,6 +768,7 @@
 				6106448A21FDBC8300C9ED0D /* VesselCallout.swift in Sources */,
 				61DE7F4320F3AEFC00C95B3F /* models.swift in Sources */,
 				6199E0F320F24F8100A4009A /* Json.swift in Sources */,
+				6101D54D221057530051A427 /* BoatCallout.swift in Sources */,
 				61ACE5C921309E5E00925265 /* BoatPrefs.swift in Sources */,
 				610EE3E421724CE10040FBC6 /* UIImage+FontAwesome.m in Sources */,
 				61AB2C7F2132A63C009774DC /* viewExt.swift in Sources */,
@@ -773,6 +780,7 @@
 				61967A072103CAFD00432672 /* BoatColors.swift in Sources */,
 				619679F620FBBA3A00432672 /* BoatCell.swift in Sources */,
 				612F46A620F4AB70001A3003 /* Backend.swift in Sources */,
+				6101D54B221057340051A427 /* MarkCallout.swift in Sources */,
 				61967A022103C4EE00432672 /* BaseTableVC.swift in Sources */,
 				61ACE5CB2131667600925265 /* BoatTextView.swift in Sources */,
 				61DE7F4520F3E6D100C95B3F /* AuthVC.swift in Sources */,

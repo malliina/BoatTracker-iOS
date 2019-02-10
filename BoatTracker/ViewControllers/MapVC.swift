@@ -10,6 +10,7 @@ import UIKit
 import SnapKit
 import Mapbox
 import GoogleSignIn
+import RxSwift
 
 struct ActiveMarker {
     let annotation: TrophyAnnotation
@@ -24,16 +25,19 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     let defaultCenter = CLLocationCoordinate2D(latitude: 60.14, longitude: 24.9)
     
     private var socket: BoatSocket { return Backend.shared.socket }
+    private var http: BoatHttpClient { return Backend.shared.http }
     
-    var mapView: MGLMapView?
-    var style: MGLStyle?
+    private var mapView: MGLMapView?
+    private var style: MGLStyle?
     
-    var latestToken: UserToken? = nil
+    private var latestToken: UserToken? = nil
+    private var isSignedIn: Bool { return latestToken != nil }
     
-    var aisRenderer: AISRenderer? = nil
-    var taps: TapListener? = nil
-    var boatRenderer: BoatRenderer? = nil
-    var clientConf: ClientConf? = nil
+    private var aisRenderer: AISRenderer? = nil
+    private var taps: TapListener? = nil
+    private var boatRenderer: BoatRenderer? = nil
+    private var languages: Languages? = nil
+    private var language: Lang? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -73,6 +77,41 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         swipes.maximumNumberOfTouches = 1
         swipes.delegate = self
         mapView.addGestureRecognizer(swipes)
+        
+        MapEvents.shared.delegate = self
+        
+        GoogleAuth.shared.delegate = self
+        GoogleAuth.shared.signInSilently()
+    }
+    
+    func setupUser() {
+        let userInfo = http.conf().flatMap { c in
+            self.userLanguage().map { l in (l, c) }
+        }
+        let _ = userInfo.subscribe { (event) in
+            switch event {
+            case .success(let (lang, conf)):
+                self.languages = conf.languages
+                self.language = self.selectLanguage(lang: lang, available: conf.languages)
+            case .error(let err):
+                self.log.error("Failed to load client conf: '\(err.describe)'.")
+            }
+        }
+    }
+    
+    func selectLanguage(lang: Language, available: Languages) -> Lang {
+        switch lang {
+        case .fi: return available.finnish
+        case .se: return available.swedish
+        case .en: return available.english
+        }
+    }
+    
+    func userLanguage() -> Single<Language> {
+        return isSignedIn ? http.profile().map { $0.language } : Single.just(Language.en)
+    }
+    
+    func installTapListener(mapView: MGLMapView) {
         // Tap: See code in https://docs.mapbox.com/ios/maps/examples/runtime-multiple-annotations/
         // Adds a single tap gesture recognizer. This gesture requires the built-in MGLMapView tap gestures (such as those for zoom and annotation selection) to fail.
         let singleTap = UITapGestureRecognizer(target: self, action: #selector(handleMapTap(sender:)))
@@ -80,18 +119,6 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
             singleTap.require(toFail: recognizer)
         }
         mapView.addGestureRecognizer(singleTap)
-        
-        MapEvents.shared.delegate = self
-        
-        GoogleAuth.shared.delegate = self
-        GoogleAuth.shared.signInSilently()
-        
-        let _ = Backend.shared.http.conf().subscribe { (event) in
-            switch event {
-            case .success(let conf): self.clientConf = conf
-            case .error(let err): self.log.error("Failed to load client conf: '\(err.describe)'.")
-            }
-        }
     }
     
     @objc func handleMapTap(sender: UITapGestureRecognizer) {
@@ -120,10 +147,11 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     }
     
     func mapView(_ mapView: MGLMapView, calloutViewFor annotation: MGLAnnotation) -> MGLCalloutView? {
+        guard let language = language else { return nil }
         if let vessel = annotation as? VesselAnnotation {
-            return VesselCallout(annotation: vessel)
-        } else if let mark = annotation as? MarkAnnotation, let lang = clientConf?.languages.english {
-            return MarkCallout(annotation: mark, lang: lang.mark)
+            return VesselCallout(annotation: vessel, lang: language)
+        } else if let mark = annotation as? MarkAnnotation, let finnishSpecials = languages?.finnish.specialWords {
+            return MarkCallout(annotation: mark, lang: language, finnishWords: finnishSpecials)
         } else {
             // Default callout view
             return nil
@@ -177,6 +205,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         self.boatRenderer = BoatRenderer(mapView: mapView, style: style, followButton: followButton)
         self.aisRenderer = AISRenderer(mapView: mapView, style: style)
         self.taps = TapListener(mapView: mapView)
+        installTapListener(mapView: mapView)
     }
 
     override func didReceiveMemoryWarning() {
@@ -185,6 +214,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         log.info("Memory warning.")
     }
     
+    /// Called at least once
     func reload(token: UserToken?) {
         latestToken = token
         socket.delegate = nil
@@ -197,6 +227,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         socket.delegate = self
         socket.vesselDelegate = self
         socket.open()
+        setupUser()
     }
     
     func change(to track: TrackName) {
