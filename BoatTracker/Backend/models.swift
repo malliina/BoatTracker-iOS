@@ -138,7 +138,7 @@ enum ConstructionInfo {
         case .superBeacon: return lang.superBeacon
         case .exteriorLight: return lang.exteriorLight
         case .dayBoard: return lang.dayBoard
-        case .helicopterPlatform: return lang.buoyBeacon
+        case .helicopterPlatform: return lang.helicopterPlatform
         case .radioMast: return lang.radioMast
         case .waterTower: return lang.waterTower
         case .smokePipe: return lang.smokePipe

@@ -25,17 +25,17 @@ class MarkCallout: BoatCallout {
     var markLang: MarkLang { return lang.mark }
     let finnishWords: SpecialWords
     
-    let nameValue = BoatLabel.build(text: "", alignment: .center, numberOfLines: 1, fontSize: 16)
-    let typeLabel = BoatLabel.build(text: "", alignment: .left, numberOfLines: 1, fontSize: 12, textColor: .darkGray)
-    let typeValue = BoatLabel.build(text: "", alignment: .left, numberOfLines: 1, fontSize: 12)
-    let constructionLabel = BoatLabel.build(text: "", alignment: .left, numberOfLines: 1, fontSize: 12, textColor: .darkGray)
-    let constructionValue = BoatLabel.build(text: "", alignment: .left, numberOfLines: 1, fontSize: 12)
-    let navigationLabel = BoatLabel.build(text: "", alignment: .left, numberOfLines: 1, fontSize: 12, textColor: .darkGray)
-    let navigationValue = BoatLabel.build(text: "", alignment: .left, numberOfLines: 1, fontSize: 12)
-    let locationLabel = BoatLabel.build(text: "", alignment: .left, numberOfLines: 1, fontSize: 12, textColor: .darkGray)
-    let locationValue = BoatLabel.build(text: "", alignment: .left, numberOfLines: 1, fontSize: 12)
-    let ownerLabel = BoatLabel.build(text: "", alignment: .left, numberOfLines: 1, fontSize: 12, textColor: .darkGray)
-    let ownerValue = BoatLabel.build(text: "", alignment: .left, numberOfLines: 1, fontSize: 12)
+    let nameValue = BoatLabel.centeredTitle()
+    let typeLabel = BoatLabel.smallSubtitle()
+    let typeValue = BoatLabel.smallTitle()
+    let constructionLabel = BoatLabel.smallSubtitle()
+    let constructionValue = BoatLabel.smallTitle()
+    let navigationLabel = BoatLabel.smallSubtitle()
+    let navigationValue = BoatLabel.smallTitle()
+    let locationLabel = BoatLabel.smallSubtitle()
+    let locationValue = BoatLabel.smallTitle(numberOfLines: 0)
+    let ownerLabel = BoatLabel.smallSubtitle()
+    let ownerValue = BoatLabel.smallTitle()
 
     var hasConstruction: Bool { return markAnnoation.mark.construction != nil }
     var hasLocation: Bool { return markAnnoation.mark.hasLocation }
@@ -129,7 +129,7 @@ class MarkCallout: BoatCallout {
         
         ownerLabel.text = markLang.owner
         ownerLabel.snp.makeConstraints { (make) in
-            make.top.equalTo((hasLocation ? locationLabel : hasNav ? navigationLabel : hasConstruction ? constructionLabel : typeLabel).snp.bottom).offset(spacing)
+            make.top.equalTo((hasLocation ? locationValue : hasNav ? navigationLabel : hasConstruction ? constructionLabel : typeLabel).snp.bottom).offset(spacing)
             make.leading.equalToSuperview().inset(inset)
             make.width.equalTo(typeLabel)
             make.bottom.equalToSuperview().inset(inset)

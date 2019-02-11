@@ -44,17 +44,16 @@ class VesselCallout: BoatCallout {
     let vessel: VesselAnnotation
     let lang: Lang
     
-    let nameLabel = BoatLabel.build(text: "", alignment: .center, numberOfLines: 1, fontSize: 16)
-    let destinationLabel = BoatLabel.build(text: "", alignment: .left, numberOfLines: 1, fontSize: 12, textColor: .darkGray)
-    let destinationValue = BoatLabel.build(text: "", alignment: .left, numberOfLines: 1, fontSize: 12)
-    let speedLabel = BoatLabel.build(text: "", alignment: .left, numberOfLines: 1, fontSize: 12, textColor: .darkGray)
-    let speedValue = BoatLabel.build(text: "", alignment: .left, numberOfLines: 1, fontSize: 12)
-    let draftLabel = BoatLabel.build(text: "", alignment: .left, numberOfLines: 1, fontSize: 12, textColor: .darkGray)
-    let draftValue = BoatLabel.build(text: "", alignment: .left, numberOfLines: 1, fontSize: 12)
+    let nameLabel = BoatLabel.centeredTitle()
+    let destinationLabel = BoatLabel.smallSubtitle()
+    let destinationValue = BoatLabel.smallTitle()
+    let speedLabel = BoatLabel.smallSubtitle()
+    let speedValue = BoatLabel.smallTitle()
+    let draftLabel = BoatLabel.smallSubtitle()
+    let draftValue = BoatLabel.smallTitle()
     let boatTimeValue = BoatLabel.build(text: "", alignment: .center, numberOfLines: 1, fontSize: 12)
-
-    // TODO un-hardcode these
-    var hasDestination: Bool { return vessel.destination != nil }
+    
+    private var hasDestination: Bool { return vessel.destination != nil }
     
     required init(annotation: VesselAnnotation, lang: Lang) {
         self.vessel = annotation

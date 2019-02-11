@@ -29,6 +29,8 @@ class BoatCallout: UIView, MGLCalloutView {
     // Maintains placement state: we compute it and use it in presentCallout(...), then use it again in draw(...)
     private var horizontalPlacement: HorizontalPlacement = .center
     private var verticalPlacement: VerticalPlacement = .top
+    private var annotationCenterRelativeToFrame: CGFloat = 0
+    private var annotationCenterRelativeToScreen: CGFloat = 0
     
     // https://github.com/mapbox/mapbox-gl-native/issues/9228
     override var center: CGPoint {
@@ -60,11 +62,9 @@ class BoatCallout: UIView, MGLCalloutView {
         container.layer.borderColor = UIColor.white.cgColor
         // Without this an unsatisfied constraint warning was emitted
         container.snp.makeConstraints { (make) in
+            make.width.lessThanOrEqualTo(UIScreen.main.bounds.width).priority(.high)
         }
     }
-    
-    var annotationCenterRelativeToFrame: CGFloat = 0
-    var annotationCenterRelativeToScreen: CGFloat = 0
     
     /// https://github.com/mapbox/ios-sdk-examples/blob/master/Examples/Swift/CustomCalloutView.swift
     /// rect is the tapped annotation
@@ -107,7 +107,7 @@ class BoatCallout: UIView, MGLCalloutView {
         annotationCenterRelativeToFrame = originX + halfAnnotation
         horizontalPlacement = suggestPlacement(originX: annotationCenterRelativeToFrame)
         let minOriginX: CGFloat = 0
-        let maxOriginX: CGFloat = UIScreen.main.bounds.width - calloutWidth
+        let maxOriginX: CGFloat = max(0, UIScreen.main.bounds.width - calloutWidth)
         switch horizontalPlacement {
         case .left:
             // Callout goes to the left of the annotation, but not so much as to exceed the screen bounds
@@ -174,14 +174,4 @@ class BoatCallout: UIView, MGLCalloutView {
         currentContext.addPath(tipPath)
         currentContext.fillPath()
     }
-    
-//    func suggestTipCenter(_ container: CGRect) -> CGFloat {
-//        let originX = container.origin.x
-//        let containerWidth = container.size.width
-//        switch horizontalPlacement {
-//        case .right: return originX + tipOffset
-//        case .center: return originX + (containerWidth / 2.0)
-//        case .left: return originX + containerWidth - tipOffset
-//        }
-//    }
 }
