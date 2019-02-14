@@ -54,6 +54,8 @@ open class JsObject {
     
     func readString(_ key: String) throws -> String { return try read(key) }
     
+    func readStringArray(_ key: String) throws -> [String] { return try read(key) }
+    
     func timestampMillis(_ key: String) throws -> Date { return Date(timeIntervalSince1970: try readDouble(key) / 1000) }
     
     func coord(_ key: String) throws -> CLLocationCoordinate2D {

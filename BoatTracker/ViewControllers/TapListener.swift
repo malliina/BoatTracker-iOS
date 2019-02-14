@@ -12,28 +12,12 @@ import Mapbox
 class TapListener {
     let log = LoggerFactory.shared.vc(TapListener.self)
     
-    let marksLayers: Set = [
-        "marks-turvavesi",
-        "marks-kummeli",
-        "marks-sektoriloisto",
-        "marks-speed-limit",
-        "marks-merimajakka",
-        "marks-tunnusmajakka",
-        "marks-no-waves",
-        "marks-linjamerkki",
-        "marks-tutka",
-        "lateral-green",
-        "lateral-red",
-        "cardinal-west",
-        "cardinal-south",
-        "cardinal-east",
-        "cardinal-north"
-    ]
-    
     let mapView: MGLMapView
+    let marksLayers: Set<String>
     
-    init(mapView: MGLMapView) {
+    init(mapView: MGLMapView, marksLayers: [String]) {
         self.mapView = mapView
+        self.marksLayers = Set(marksLayers)
     }
     
     func onTap(point: CGPoint) -> Bool {

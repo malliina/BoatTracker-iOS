@@ -13,9 +13,6 @@ import Mapbox
 class AISRenderer {
     let log = LoggerFactory.shared.vc(AISRenderer.self)
     
-    private let aisVesselLayer = "ais-vessels"
-    private let aisTrailLayer = "ais-vessels-trails"
-    
     private let headingKey = "heading"
     private let maxTrailLength = 200
     private let vesselTrails: MGLShapeSource
@@ -25,18 +22,21 @@ class AISRenderer {
     
     private let mapView: MGLMapView
     private let style: MGLStyle
+    private let conf: AisConf
     
-    init(mapView: MGLMapView, style: MGLStyle) {
+    init(mapView: MGLMapView, style: MGLStyle, conf: AisConf) {
         self.mapView = mapView
         self.style = style
+        self.conf = conf
+        
         // Icons
-        let vessels = LayerSource(iconId: aisVesselLayer, iconImageName: Layers.boatIcon)
+        let vessels = LayerSource(iconId: conf.vessel, iconImageName: conf.vesselIcon)
         vessels.layer.iconRotation = NSExpression(forKeyPath: Vessel.heading)
         vessels.install(to: style)
         vesselShape = vessels.source
         
         // Trails
-        let trails = LayerSource(lineId: aisTrailLayer)
+        let trails = LayerSource(lineId: conf.trail)
         trails.install(to: style)
         vesselTrails = trails.source
         
@@ -49,7 +49,7 @@ class AISRenderer {
     
     func onTap(point: CGPoint) -> Bool {
         // Limits feature selection to just the following layer identifiers
-        let layerIdentifiers: Set = [aisVesselLayer, aisTrailLayer]
+        let layerIdentifiers: Set = [conf.vessel, conf.trail]
         if let selected = mapView.visibleFeatures(at: point, styleLayerIdentifiers: layerIdentifiers).find({ $0 is MGLPointFeature }),
             let mmsi = selected.attribute(forKey: Mmsi.key) as? String,
             let vessel = vesselHistory[Mmsi(mmsi: mmsi)]?.first {

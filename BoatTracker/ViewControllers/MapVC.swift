@@ -84,6 +84,28 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         GoogleAuth.shared.signInSilently()
     }
     
+    func mapViewDidFinishLoadingMap(_ mapView: MGLMapView) {
+        
+    }
+    
+    func mapView(_ mapView: MGLMapView, didFinishLoading style: MGLStyle) {
+        self.style = style
+        self.boatRenderer = BoatRenderer(mapView: mapView, style: style, followButton: followButton)
+        installTapListener(mapView: mapView)
+        // Maybe the conf should be cached in a file?
+        let _ = http.conf().subscribe { (event) in
+            switch event {
+            case .success(let conf): self.initInteractive(mapView: mapView, style: style, layers: conf.layers)
+            case .error(let err): self.log.error("Failed to load conf: '\(err.describe)'.")
+            }
+        }
+    }
+    
+    func initInteractive(mapView: MGLMapView, style: MGLStyle, layers: MapboxLayers) {
+        self.aisRenderer = AISRenderer(mapView: mapView, style: style, conf: layers.ais)
+        self.taps = TapListener(mapView: mapView, marksLayers: layers.marks)
+    }
+    
     func setupUser() {
         let userInfo = http.conf().flatMap { c in
             self.userLanguage().map { l in (l, c) }
@@ -195,17 +217,6 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     
     @objc func followClicked(_ sender: UIButton) {
         boatRenderer?.follow()
-    }
-    
-    func mapViewDidFinishLoadingMap(_ mapView: MGLMapView) {
-    }
-    
-    func mapView(_ mapView: MGLMapView, didFinishLoading style: MGLStyle) {
-        self.style = style
-        self.boatRenderer = BoatRenderer(mapView: mapView, style: style, followButton: followButton)
-        self.aisRenderer = AISRenderer(mapView: mapView, style: style)
-        self.taps = TapListener(mapView: mapView)
-        installTapListener(mapView: mapView)
     }
 
     override func didReceiveMemoryWarning() {

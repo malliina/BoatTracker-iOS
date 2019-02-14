@@ -322,7 +322,7 @@ struct Lang {
 }
 
 struct Languages {
-    let finnish: Lang, swedish: Lang, english: Lang
+    let finnish, swedish, english: Lang
     
     static func parse(json: JsObject) throws -> Languages {
         return Languages(
@@ -333,10 +333,38 @@ struct Languages {
     }
 }
 
+struct AisConf {
+    let vessel, trail, vesselIcon: String
+    
+    static func parse(json: JsObject) throws -> AisConf {
+        return AisConf(
+            vessel: try json.readString("vessel"),
+            trail: try json.readString("trail"),
+            vesselIcon: try json.readString("vesselIcon")
+        )
+    }
+}
+
+struct MapboxLayers {
+    let marks: [String]
+    let ais: AisConf
+    
+    static func parse(json: JsObject) throws -> MapboxLayers {
+        return MapboxLayers(
+            marks: try json.readStringArray("marks"),
+            ais: try json.readObj("ais", parse: AisConf.parse)
+        )
+    }
+}
+
 struct ClientConf {
     let languages: Languages
+    let layers: MapboxLayers
     
     static func parse(json: JsObject) throws -> ClientConf {
-        return ClientConf(languages: try json.readObj("languages", parse: Languages.parse))
+        return ClientConf(
+            languages: try json.readObj("languages", parse: Languages.parse),
+            layers: try json.readObj("layers", parse: MapboxLayers.parse)
+        )
     }
 }
