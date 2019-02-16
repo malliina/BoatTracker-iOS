@@ -8,11 +8,16 @@
 
 import Foundation
 
-public struct Duration: Comparable, CustomStringConvertible {
+public struct Duration: Comparable, CustomStringConvertible, IntCodable {
     static let k = 1000
-    static let zero = Duration(ms: 0)
+    static let zero = Duration(0)
     
     let ms: UInt64
+    var value: UInt64 { return ms }
+    
+    init(_ value: UInt64) {
+        self.ms = value
+    }
     
     var seconds: Double { return Double(ms) / Double(Duration.k) }
     
@@ -28,11 +33,11 @@ public struct Duration: Comparable, CustomStringConvertible {
 }
 
 public extension Int {
-    var ms: Duration { return Duration(ms: UInt64(self)) }
-    var seconds: Duration { return Duration(ms: UInt64(self * Duration.k)) }
+    var ms: Duration { return Duration(UInt64(self)) }
+    var seconds: Duration { return Duration(UInt64(self * Duration.k)) }
 }
 
 public extension Double {
-    var ms: Duration { return Duration(ms: UInt64(self)) }
-    var seconds: Duration { return Duration(ms: UInt64(self * Double(Duration.k))) }
+    var ms: Duration { return Duration(UInt64(self)) }
+    var seconds: Duration { return Duration(UInt64(self * Double(Duration.k))) }
 }

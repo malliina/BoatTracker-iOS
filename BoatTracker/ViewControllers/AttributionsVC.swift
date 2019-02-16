@@ -50,7 +50,7 @@ class AttributionsVC: BaseTableVC {
     }
 }
 
-struct AppAttribution {
+struct AppAttribution: Codable {
     let title: String
     let text: String?
     let links: [Link]
@@ -66,7 +66,7 @@ struct AppAttribution {
     }
 }
 
-struct AttributionInfo {
+struct AttributionInfo: Codable {
     let title: String
     let attributions: [AppAttribution]
     
@@ -78,7 +78,7 @@ struct AttributionInfo {
     }
 }
 
-class Link: NSObject {
+class Link: NSObject, Codable {
     let text: String
     let url: URL
     

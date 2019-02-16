@@ -288,6 +288,10 @@ class MarineSymbol: NSObject {
     }
 }
 
+struct Vessels {
+    let vessels: [Vessel]
+}
+
 class Vessel: NSObject {
     static let heading = "heading"
     static let name = "name"
@@ -298,12 +302,14 @@ class Vessel: NSObject {
     let cog: Double
     let speed: Speed
     let shipType: Int
-    let draft: Distance
+    let draft: DistanceMillis
     let coord: CLLocationCoordinate2D
-    let timestamp: Date
+    let timestampMillis: Double
     let destination: String?
+
+    var timestamp: Date { return Date(timeIntervalSince1970: timestampMillis / 1000) }
     
-    init(mmsi: Mmsi, name: String, heading: Double?, cog: Double, speed: Speed, shipType: Int, draft: Distance, coord: CLLocationCoordinate2D, timestamp: Date, destination: String?) {
+    init(mmsi: Mmsi, name: String, heading: Double?, cog: Double, speed: Speed, shipType: Int, draft: DistanceMillis, coord: CLLocationCoordinate2D, timestampMillis: Double, destination: String?) {
         self.mmsi = mmsi
         self.name = name
         self.heading = heading
@@ -312,7 +318,7 @@ class Vessel: NSObject {
         self.shipType = shipType
         self.draft = draft
         self.coord = coord
-        self.timestamp = timestamp
+        self.timestampMillis = timestampMillis
         self.destination = destination
     }
     
@@ -326,7 +332,7 @@ class Vessel: NSObject {
             shipType: try json.readInt("shipType"),
             draft: try json.readDouble("draft").meters,
             coord: try json.coord("coord"),
-            timestamp: try json.timestampMillis("timestampMillis"),
+            timestampMillis: try json.readDouble("timestampMillis"),
             destination: try json.readOpt(String.self, "destination")
         )
     }
@@ -336,140 +342,198 @@ class Vessel: NSObject {
     }
 }
 
-class CoordsData {
-    let coords: [CoordBody]
-    let from: TrackRef
-    
-    static func parse(json: JsObject) throws -> CoordsData {
-        let body = try json.readObject("body")
-        let from = try body.readObj("from", parse: { (f) -> TrackRef in
-            try TrackRef.parse(json: f)
-        })
-        let coords = try body.readObjectArray("coords", each: { (c) -> CoordBody in
-            try CoordBody.parse(json: c)
-        })
-        return CoordsData(coords: coords, from: from)
+extension CLLocationCoordinate2D: Codable {
+    private enum CodingKeys: CodingKey {
+        case lng
+        case lat
     }
     
-    init(coords: [CoordBody], from: TrackRef) {
-        self.coords = coords
-        self.from = from
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let lng = try container.decode(Double.self, forKey: .lng)
+        let lat = try container.decode(Double.self, forKey: .lat)
+        self.init(latitude: lat, longitude: lng)
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(latitude, forKey: .lat)
+        try container.encode(longitude, forKey: .lng)
     }
 }
 
-class CoordBody: NSObject {
+struct CoordsBody: Codable {
+    let body: CoordsData
+}
+
+struct CoordsData: Codable {
+    let coords: [CoordBody]
+    let from: TrackRef
+}
+
+struct CoordBody: Codable {
     let coord: CLLocationCoordinate2D
     let boatTime: String
     let boatTimeMillis: UInt64
     let speed: Speed
     let depth: Distance
     let waterTemp: Temperature
-    
-    static func parse(json: JsObject) throws -> CoordBody {
-        return CoordBody(
-            coord: try json.coord("coord"),
-            boatTime: try json.readString("boatTime"),
-            boatTimeMillis: try json.readUInt("boatTimeMillis"),
-            speed: (try json.readDouble("speed")).knots,
-            depth: (try json.readDouble("depth")).mm,
-            waterTemp: (try json.readDouble("waterTemp")).celsius
-        )
-    }
- 
-    init(coord: CLLocationCoordinate2D, boatTime: String, boatTimeMillis: UInt64, speed: Speed, depth: Distance, waterTemp: Temperature) {
-        self.coord = coord
-        self.boatTime = boatTime
-        self.boatTimeMillis = boatTimeMillis
-        self.speed = speed
-        self.depth = depth
-        self.waterTemp = waterTemp
-    }
 }
 
-struct TrackMeta {
+struct TrackMeta: Codable {
+    let trackName: TrackName
+    let boatName: BoatName
+    let username: Username
+}
+
+struct TracksResponse: Codable {
+    let tracks: [TrackRef]
+}
+
+struct TrackRef: Codable {
     let trackName: TrackName
     let boatName: BoatName
     let username: Username
     
-    static func parse(json: JsObject) throws -> TrackMeta {
-        return TrackMeta(
-            trackName: TrackName(name: try json.readString("trackName")),
-            boatName: BoatName(name: try json.readString("boatName")),
-            username: Username(name: try json.readString("username"))
-        )
-    }
-}
-
-struct TrackRef {
-    let trackName: TrackName
-    let boatName: BoatName
-    let username: Username
-    
-    let start: Date
+    let startMillis: Double
     let topSpeed: Speed?
     let avgSpeed: Speed?
-    let distance: Distance
+    let distance: DistanceMillis
     let duration: Duration
     let avgWaterTemp: Temperature?
     let topPoint: CoordBody
     
     var startDate: String { get { return Formats.shared.format(date: start) } }
-
-    static func parse(json: JsObject) throws -> TrackRef {
-        return TrackRef(
-            trackName: TrackName(name: try json.readString("trackName")),
-            boatName: BoatName(name: try json.readString("boatName")),
-            username: Username(name: try json.readString("username")),
-            start: Date(timeIntervalSince1970: try json.readDouble("startMillis") / 1000),
-            topSpeed: (try json.readOpt(Double.self, "topSpeed")).map { $0.knots },
-            avgSpeed: (try json.readOpt(Double.self, "avgSpeed")).map { $0.knots },
-            distance: (try json.readDouble("distance")).mm,
-            duration: (try json.readInt("duration")).seconds,
-            avgWaterTemp: (try json.readOpt(Double.self, "avgWaterTemp")).map { $0.celsius },
-            topPoint: (try json.readObj("topPoint", parse: CoordBody.parse))
-        )
-    }
+    var start: Date { return Date(timeIntervalSince1970: startMillis / 1000) }
 }
 
-class TrackStats {
+struct TrackStats: Codable {
     let points: Int
     
     static func parse(json: JsObject) throws -> TrackStats {
         return TrackStats(points: try json.readInt("points"))
     }
-    
-    init(points: Int) {
-        self.points = points
-    }
 }
 
-struct AccessToken: Equatable, Hashable, CustomStringConvertible {
+struct AccessToken: Equatable, Hashable, CustomStringConvertible, StringCodable {
     let token: String
     var description: String { return token }
+    
+    init(_ value: String) {
+        self.token = value
+    }
     
     static func == (lhs: AccessToken, rhs: AccessToken) -> Bool { return lhs.token == rhs.token }
 }
 
-struct BoatName: Equatable, Hashable, CustomStringConvertible {
+struct BoatName: Equatable, Hashable, CustomStringConvertible, StringCodable {
     let name: String
     var description: String { return name }
+    
+    init(_ name: String) {
+        self.name = name
+    }
     
     static func == (lhs: BoatName, rhs: BoatName) -> Bool { return lhs.name == rhs.name }
-    
 }
 
-struct TrackName: Equatable, Hashable, CustomStringConvertible {
+struct TrackName: Equatable, Hashable, CustomStringConvertible, StringCodable {
     let name: String
     var description: String { return name }
+    
+    init(_ name: String) {
+        self.name = name
+    }
     
     static func == (lhs: TrackName, rhs: TrackName) -> Bool { return lhs.name == rhs.name }
 }
 
-struct Username: Equatable, Hashable, CustomStringConvertible {
+struct Username: Equatable, Hashable, CustomStringConvertible, StringCodable {
     let name: String
     var description: String { return name }
     
+    init(_ name: String) {
+        self.name = name
+    }
+    
     static func == (lhs: Username, rhs: Username) -> Bool { return lhs.name == rhs.name }
+}
+
+protocol StringCodable: Codable, CustomStringConvertible {
+    init(_ value: String)
+}
+
+extension StringCodable {
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let raw = try container.decode(String.self)
+        if raw.isEmpty {
+            throw DecodingError.dataCorruptedError(
+                in: container,
+                debugDescription: "Cannot initialize value from an empty string"
+            )
+        }
+        self.init(raw)
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(description)
+    }
+}
+
+protocol NormalIntCodable: Codable {
+    init(_ value: Int)
+    var value: Int { get }
+}
+
+extension NormalIntCodable {
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let raw = try container.decode(Int.self)
+        self.init(raw)
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(value)
+    }
+}
+
+protocol IntCodable: Codable {
+    init(_ value: UInt64)
+    var value: UInt64 { get }
+}
+
+extension IntCodable {
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let raw = try container.decode(UInt64.self)
+        self.init(raw)
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(value)
+    }
+}
+
+protocol DoubleCodable: Codable {
+    init(_ value: Double)
+    var value: Double { get }
+}
+
+extension DoubleCodable {
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let raw = try container.decode(Double.self)
+        self.init(raw)
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(value)
+    }
 }
 
 struct Mmsi: Equatable, Hashable, CustomStringConvertible {
@@ -477,45 +541,29 @@ struct Mmsi: Equatable, Hashable, CustomStringConvertible {
     let mmsi: String
     var description: String { return mmsi }
     
+    init(_ mmsi: String) {
+        self.mmsi = mmsi
+    }
+    
     static func == (lhs: Mmsi, rhs: Mmsi) -> Bool { return lhs.mmsi == rhs.mmsi }
     
-    static func from(number: UInt64) -> Mmsi { return Mmsi(mmsi: "\(number)") }
+    static func from(number: UInt64) -> Mmsi { return Mmsi("\(number)") }
 }
 
-class BackendInfo {
+struct BackendInfo: Codable {
     let name: String
     let version: String
-    
-    static func parse(obj: JsObject) throws -> BackendInfo {
-        return BackendInfo(name: try obj.readString("name"), version: try obj.readString("version"))
-    }
-    
-    init(name: String, version: String) {
-        self.name = name
-        self.version = version
-    }
 }
 
-class Boat {
+struct BoatResponse: Codable {
+    let boat: Boat
+}
+
+struct Boat: Codable {
     let id: Int
     let name: BoatName
     let token: String
     let addedMillis: UInt64
-    
-    static func parse(json: JsObject) throws -> Boat {
-        return Boat(id: try json.readInt("id"),
-                    name: BoatName(name: try json.readString("name")),
-                    token: try json.readString("token"),
-                    addedMillis: try json.readUInt("addedMillis")
-        )
-    }
-    
-    init(id: Int, name: BoatName, token: String, addedMillis: UInt64) {
-        self.id = id
-        self.name = name
-        self.token = token
-        self.addedMillis = addedMillis
-    }
 }
 
 struct UserToken {
@@ -523,15 +571,11 @@ struct UserToken {
     let token: AccessToken
 }
 
-struct SimpleMessage {
+struct SimpleMessage: Codable {
     let message: String
-    
-    static func parse(obj: JsObject) throws -> SimpleMessage {
-        return SimpleMessage(message: try obj.readString("message"))
-    }
 }
 
-enum Language {
+enum Language: String, Codable {
     case fi
     case se
     case en
@@ -546,34 +590,15 @@ enum Language {
     }
 }
 
-class UserProfile {
+struct UserContainer: Codable {
+    let user: UserProfile
+}
+
+struct UserProfile: Codable {
     let id: Int
     let username: Username
     let email: String?
     let language: Language
     let boats: [Boat]
     let addedMillis: UInt64
-
-    static func parse(obj: JsObject) throws -> UserProfile {
-        return try parseUser(obj: try obj.readObject("user"))
-    }
-    
-    static func parseUser(obj: JsObject) throws -> UserProfile {
-        return UserProfile(id: try obj.readInt("id"),
-                           username: Username(name: try obj.readString("username")),
-                           email: try obj.readOpt(String.self, "email"),
-                           language: Language.parse(s: try obj.readString("language")),
-                           boats: try obj.readObjectArray("boats", each: Boat.parse),
-                           addedMillis: try obj.readUInt("addedMillis")
-        )
-    }
-    
-    init(id: Int, username: Username, email: String?, language: Language, boats: [Boat], addedMillis: UInt64) {
-        self.id = id
-        self.username = username
-        self.email = email
-        self.language = language
-        self.boats = boats
-        self.addedMillis = addedMillis
-    }
 }

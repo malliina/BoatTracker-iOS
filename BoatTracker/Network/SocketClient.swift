@@ -10,7 +10,7 @@ import Foundation
 import SocketRocket
 
 protocol SocketDelegate {
-    func onMessage(json: JsObject)
+    func onMessage(json: Data)
 }
 
 // Web socket that supports reconnects
@@ -61,8 +61,9 @@ class SocketClient: NSObject, SRWebSocketDelegate {
     
     public func webSocket(_ webSocket: SRWebSocket!, didReceiveMessage message: Any!) {
         do {
-            let obj = try JsObject.parse(any: message)
-            delegate?.onMessage(json: obj)
+            guard let msg = message as? String else { throw JsonError.invalid("Not JSON.", message) }
+            guard let json = msg.data(using: .utf8) else { throw JsonError.invalid("Not JSON.", message) }
+            delegate?.onMessage(json: json)
         } catch {
             if let message = message as? String {
                 log.info("Got message \(message)")

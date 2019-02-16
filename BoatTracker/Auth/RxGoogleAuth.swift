@@ -42,7 +42,7 @@ class RxGoogleAuth: NSObject, GIDSignInDelegate {
             }
             let email = user.profile.email ?? "unknown"
             log.info("Got email '\(email)' with token '\(idToken)'.")
-            subject.onNext(UserToken(email: email, token: AccessToken(token: idToken)))
+            subject.onNext(UserToken(email: email, token: AccessToken(idToken)))
             subject.onCompleted()
         }
     }

@@ -52,7 +52,7 @@ class AISRenderer {
         let layerIdentifiers: Set = [conf.vessel, conf.trail]
         if let selected = mapView.visibleFeatures(at: point, styleLayerIdentifiers: layerIdentifiers).find({ $0 is MGLPointFeature }),
             let mmsi = selected.attribute(forKey: Mmsi.key) as? String,
-            let vessel = vesselHistory[Mmsi(mmsi: mmsi)]?.first {
+            let vessel = vesselHistory[Mmsi(mmsi)]?.first {
             let popup = VesselAnnotation(vessel: vessel)
             mapView.selectAnnotation(popup, animated: true)
             return true

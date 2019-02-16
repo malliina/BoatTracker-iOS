@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct Temperature: Comparable, CustomStringConvertible {
+public struct Temperature: Comparable, CustomStringConvertible, DoubleCodable {
     static func fahrenheitToCelsius(f: Double) -> Double {
         return (f - 32) * 5 / 9
     }
@@ -17,9 +17,15 @@ public struct Temperature: Comparable, CustomStringConvertible {
         return k + 273.15
     }
     
-    static let zero = Temperature(celsius: 0)
+    static let zero = Temperature(0)
     
     let celsius: Double
+    
+    var value: Double { return celsius }
+    
+    public init(_ celsius: Double) {
+        self.celsius = celsius
+    }
     
     var rounded: String { return String(format: "%.2f", celsius) }
     
@@ -35,9 +41,9 @@ public struct Temperature: Comparable, CustomStringConvertible {
 }
 
 public extension Double {
-    var celsius: Temperature { return Temperature(celsius: self) }
-    var fahrenheit: Temperature { return Temperature(celsius: Temperature.fahrenheitToCelsius(f: self)) }
-    var kelvin: Temperature { return Temperature(celsius: Temperature.kelvinToCelsius(k: self)) }
+    var celsius: Temperature { return Temperature(self) }
+    var fahrenheit: Temperature { return Temperature(Temperature.fahrenheitToCelsius(f: self)) }
+    var kelvin: Temperature { return Temperature(Temperature.kelvinToCelsius(k: self)) }
 }
 
 public extension Int {

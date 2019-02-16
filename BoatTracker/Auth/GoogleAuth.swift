@@ -65,7 +65,7 @@ class GoogleAuth: NSObject, GIDSignInDelegate {
             }
             let email = user.profile.email ?? "unknown"
             log.info("Got email '\(email)' with token '\(idToken)'.")
-            onToken(token: UserToken(email: email, token: AccessToken(token: idToken)))
+            onToken(token: UserToken(email: email, token: AccessToken(idToken)))
         }
     }
     

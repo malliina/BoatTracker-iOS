@@ -51,36 +51,39 @@ class BoatSocket: SocketDelegate {
         client.updateAuthHeaderValue(newValue: token.map(BoatHttpClient.authValue))
     }
     
-    func onMessage(json: JsObject) {
-//        log.info("Got \(json.stringify())")
+    func onMessage(json: Data) {
+        let decoder = JSONDecoder()
         do {
-            let event = try json.readString("event")
-            switch event {
+            let event = try decoder.decode(BoatEvent.self, from: json)
+            switch event.event {
             case "ping":
                 ()
             case "coords":
-                let data = try CoordsData.parse(json: json)
+                let data = try decoder.decode(CoordsBody.self, from: json)
                 if let delegate = delegate {
-                    delegate.onCoords(event: data)
+                    delegate.onCoords(event: data.body)
                 } else {
                     log.warn("No delegate for coords. This is probably an error.")
                 }
                 if let delegate = statsDelegate {
-                    delegate.onCoords(event: data)
+                    delegate.onCoords(event: data.body)
                 }
             case "vessels":
-                let vessels = try Vessel.list(json: json.readObject("body"))
+                let obj = try JsObject.parse(data: json)
+                let vessels = try Vessel.list(json: obj.readObject("body"))
                 vesselDelegate?.on(vessels: vessels)
             default:
                 log.info("Unknown event: '\(event)'.")
             }
         } catch {
+//            let obj = try JsObject.parse(data: json)
             if case JsonError.missing(let key) = error {
-                log.error("Missing: \(key) in \(json.stringify())")
+                log.error("Missing: \(key)")//" in \(obj.stringify())")
             } else if case JsonError.invalid(let msg, let value) = error{
                 log.error("\(msg) with value \(value)")
             } else {
-                log.info("Unknown JSON: '\(json.stringify())'.")
+//                let str = String(data: json, encoding: .utf8)
+                log.info("Unknown JSON.")
             }
         }
     }
@@ -100,4 +103,8 @@ class BoatSocket: SocketDelegate {
     func close() {
         client.close()
     }
+}
+
+struct BoatEvent: Codable {
+    let event: String
 }

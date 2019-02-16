@@ -15,7 +15,7 @@ class VesselAnnotation: CustomAnnotation {
     var name: String
     var destination: String?
     var speed: Speed
-    var draft: Distance
+    var draft: DistanceMillis
     var boatTime: Date
     
     init(vessel: Vessel) {

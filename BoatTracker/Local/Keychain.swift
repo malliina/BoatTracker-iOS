@@ -72,7 +72,7 @@ open class Keychain {
             let tokenData = existingItem[kSecValueData as String] as? Data,
             let token = String(data: tokenData, encoding: String.Encoding.utf8)
             else { throw KeychainError.unexpectedTokenData }
-        return AccessToken(token: token)
+        return AccessToken(token)
     }
 }
 

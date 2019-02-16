@@ -32,7 +32,7 @@ struct BoatNotification {
     let state: BoatState
     
     static func parse(obj: JsObject) throws -> BoatNotification {
-        return BoatNotification(boatName: BoatName(name: try obj.readString("boatName")),
+        return BoatNotification(boatName: BoatName(try obj.readString("boatName")),
                                 state: try BoatState.parse(input: try obj.readString("state"))
         )
     }

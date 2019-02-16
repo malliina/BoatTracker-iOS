@@ -57,64 +57,85 @@ class BoatHttpClient {
     }
     
     func pingAuth() -> Single<BackendInfo> {
-        return getParsed("/pingAuth", parse: BackendInfo.parse)
+        return getParsed2(BackendInfo.self, "/pingAuth")
     }
     
     func profile() -> Single<UserProfile> {
-        return getParsed("/users/me", parse: UserProfile.parse)
+        return getParsed2(UserContainer.self, "/users/me").map { $0.user }
     }
     
     func tracks() -> Single<[TrackRef]> {
-        return getParsed("/tracks", parse: { (json) -> [TrackRef] in
-            try json.readObjectArray("tracks", each: TrackRef.parse)
-        })
+        return getParsed2(TracksResponse.self, "/tracks").map { $0.tracks }
     }
     
     func conf() -> Single<ClientConf> {
-        return getParsed("/conf", parse: ClientConf.parse)
+        return getParsed2(ClientConf.self, "/conf")
     }
     
     func enableNotifications(token: PushToken) -> Single<SimpleMessage> {
-        return parsed("/users/notifications", run: { (url) -> Single<HttpResponse> in
+        return parsed2(SimpleMessage.self, "/users/notifications", run: { (url) -> Single<HttpResponse> in
             return self.client.postJSON(url, headers: self.postHeaders, payload: ["token": token.token as AnyObject, "device": "ios" as AnyObject])
-        }, parse: { (obj) -> SimpleMessage in
-            return try SimpleMessage.parse(obj: obj)
         })
     }
     
     func disableNotifications(token: PushToken) -> Single<SimpleMessage> {
-        return parsed("/users/notifications/disable", run: { (url) -> Single<HttpResponse> in
+        return parsed2(SimpleMessage.self, "/users/notifications/disable", run: { (url) -> Single<HttpResponse> in
             return self.client.postJSON(url, headers: self.postHeaders, payload: ["token": token.token as AnyObject])
-        }, parse: { (obj) -> SimpleMessage in
-            return try SimpleMessage.parse(obj: obj)
         })
     }
     
     func renameBoat(boat: Int, newName: BoatName) -> Single<Boat> {
-        return parsed("/boats/\(boat)", run: { (url) -> Single<HttpResponse> in
+        return parsed2(BoatResponse.self, "/boats/\(boat)", run: { (url) -> Single<HttpResponse> in
             self.client.patchJSON(url, headers: self.postHeaders, payload: ["boatName": newName.name as AnyObject])
-        }, parse: { (obj) -> Boat in
-            try obj.readObj("boat", parse: Boat.parse)
+        }).map { $0.boat }
+    }
+    
+//    func getParsed<T>(_ uri: String, parse: @escaping (JsObject) throws -> T) -> Single<T> {
+//        return parsed(uri, run: { (url) -> Single<HttpResponse> in
+//            self.client.get(url, headers: self.defaultHeaders)
+//        }, parse: parse)
+//    }
+    
+    func getParsed2<T: Decodable>(_ t: T.Type, _ uri: String) -> Single<T> {
+        return parsed2(t, uri, run: { (url) -> Single<HttpResponse> in
+            self.client.get(url, headers: self.defaultHeaders)
         })
     }
     
-    func getParsed<T>(_ uri: String, parse: @escaping (JsObject) throws -> T) -> Single<T> {
-        return parsed(uri, run: { (url) -> Single<HttpResponse> in
-            self.client.get(url, headers: self.defaultHeaders)
-        }, parse: parse)
-    }
+//    func parsed<T>(_ uri: String, run: @escaping (URL) -> Single<HttpResponse>, parse: @escaping (JsObject) throws -> T, attempt: Int = 1) -> Single<T> {
+//        let url = fullUrl(to: uri)
+//        return run(url).flatMap { (response) -> Single<T> in
+//            if (response.isStatusOK) {
+//                return self.parseAs(response: response, parse: parse)
+//            } else {
+//                self.log.error("Request to '\(url)' failed with status '\(response.statusCode)'.")
+//                if attempt == 1 && response.isTokenExpired {
+//                    return RxGoogleAuth().signIn().flatMap { (token) -> Single<T> in
+//                        self.updateToken(token: token.token)
+//                        return self.parsed(uri, run: run, parse: parse, attempt: 2)
+//                    }
+//                } else {
+//                    var errorMessage: String? = nil
+//                    if let json = Json.asJson(response.data) as? NSDictionary {
+//                        errorMessage = json[JsonError.Key] as? String
+//                    }
+//                    return Single.error(AppError.responseFailure(ResponseDetails(url: url, code: response.statusCode, message: errorMessage)))
+//                }
+//            }
+//        }
+//    }
     
-    func parsed<T>(_ uri: String, run: @escaping (URL) -> Single<HttpResponse>, parse: @escaping (JsObject) throws -> T, attempt: Int = 1) -> Single<T> {
+    func parsed2<T : Decodable>(_ t: T.Type, _ uri: String, run: @escaping (URL) -> Single<HttpResponse>, attempt: Int = 1) -> Single<T> {
         let url = fullUrl(to: uri)
         return run(url).flatMap { (response) -> Single<T> in
-            if (response.isStatusOK) {
-                return self.parseAs(response: response, parse: parse)
+            if response.isStatusOK {
+                return self.parseAs2(t, response: response)
             } else {
                 self.log.error("Request to '\(url)' failed with status '\(response.statusCode)'.")
                 if attempt == 1 && response.isTokenExpired {
                     return RxGoogleAuth().signIn().flatMap { (token) -> Single<T> in
                         self.updateToken(token: token.token)
-                        return self.parsed(uri, run: run, parse: parse, attempt: 2)
+                        return self.parsed2(t, uri, run: run, attempt: 2)
                     }
                 } else {
                     var errorMessage: String? = nil
@@ -131,15 +152,38 @@ class BoatHttpClient {
         return URL(string: to, relativeTo: baseUrl)!
     }
     
-    private func parseAs<T>(response: HttpResponse, parse: @escaping (JsObject) throws -> T) -> Single<T> {
+//    private func parseAs<T>(response: HttpResponse, parse: @escaping (JsObject) throws -> T) -> Single<T> {
+//        do {
+//            let obj = try JsObject.parse(data: response.data)
+////            print(obj.stringify())
+//            return Single.just(try parse(obj))
+//        } catch let error as JsonError {
+//            self.log.error(error.describe)
+//            return Single.error(AppError.parseError(error))
+//        } catch _ {
+//            return Single.error(AppError.simple("Unknown parse error."))
+//        }
+//    }
+    
+    private func parseAs2<T: Decodable>(_ t: T.Type, response: HttpResponse) -> Single<T> {
         do {
-            let obj = try JsObject.parse(data: response.data)
-//            print(obj.stringify())
-            return Single.just(try parse(obj))
+            let decoder = JSONDecoder()
+//            content = try JsObject.parse(data: response.data).stringify()
+            return Single.just(try decoder.decode(t, from: response.data))
         } catch let error as JsonError {
             self.log.error(error.describe)
             return Single.error(AppError.parseError(error))
-        } catch _ {
+        } catch DecodingError.dataCorrupted(let ctx) {
+            self.log.error("Corrupted: \(ctx)")
+            return Single.error(AppError.simple("Unknown parse error."))
+        } catch DecodingError.typeMismatch(let t, let context) {
+            self.log.error("Type mismatch: \(t) ctx \(context)")
+            return Single.error(AppError.simple("Unknown parse error."))
+        } catch DecodingError.keyNotFound(let key, let context) {
+            self.log.error("Key not found: \(key) ctx \(context)")
+            return Single.error(AppError.simple("Unknown parse error."))
+        } catch let error {
+            self.log.error(error.localizedDescription)
             return Single.error(AppError.simple("Unknown parse error."))
         }
     }

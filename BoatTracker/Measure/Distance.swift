@@ -8,11 +8,52 @@
 
 import Foundation
 
-public struct Distance: Comparable, CustomStringConvertible {
+struct Distance: Comparable, CustomStringConvertible, DoubleCodable {
     static let k = 1000
-    static let zero = Distance(mm: 0)
+    static let zero = Distance(0.0)
+    
+    let meters: Double
+    var value: Double { return meters }
+    
+    init(_ value: Double) {
+        self.meters = value
+    }
+    
+    init(meters: Double) {
+        self.meters = meters
+    }
+    
+    var kilometers: Double { return meters / 1000 }
+    
+    var rounded: String { return String(format: "%.2f", kilometers) }
+    
+    var formatMeters: String { return String(format: "%.1f m", meters) }
+    
+    public var description: String { return "\(rounded) km" }
+    
+    public static func == (lhs: Distance, rhs: Distance) -> Bool {
+        return lhs.meters == rhs.meters
+    }
+    
+    public static func < (lhs: Distance, rhs: Distance) -> Bool {
+        return lhs.meters < rhs.meters
+    }
+}
+
+public struct DistanceMillis: Comparable, CustomStringConvertible, NormalIntCodable {
+    static let k = 1000
+    static let zero = DistanceMillis(mm: 0)
     
     let mm: Int
+    var value: Int { return mm }
+    
+    init(_ value: Int) {
+        self.mm = value
+    }
+    
+    init(mm: Int) {
+        self.mm = mm
+    }
     
     var meters: Double { return Double(mm) / 1000 }
     
@@ -24,23 +65,23 @@ public struct Distance: Comparable, CustomStringConvertible {
     
     public var description: String { return "\(rounded) km" }
     
-    public static func == (lhs: Distance, rhs: Distance) -> Bool {
+    public static func == (lhs: DistanceMillis, rhs: DistanceMillis) -> Bool {
         return lhs.mm == rhs.mm
     }
     
-    public static func < (lhs: Distance, rhs: Distance) -> Bool {
+    public static func < (lhs: DistanceMillis, rhs: DistanceMillis) -> Bool {
         return lhs.mm < rhs.mm
     }
 }
 
 public extension Int {
-    var mm: Distance { return Distance(mm: self) }
-    var meters: Distance { return Distance(mm: self * Distance.k) }
-    var kilometers: Distance { return Distance(mm: self * Distance.k * Distance.k) }
+    var mm: DistanceMillis { return DistanceMillis(mm: self) }
+    var meters: DistanceMillis { return DistanceMillis(mm: self * DistanceMillis.k) }
+    var kilometers: DistanceMillis { return DistanceMillis(mm: self * DistanceMillis.k * DistanceMillis.k) }
 }
 
 public extension Double {
-    var mm: Distance { return Int(self).mm }
-    var meters: Distance { return Int(self).meters }
-    var kilometers: Distance { return Int(self).kilometers }
+    var mm: DistanceMillis { return Int(self).mm }
+    var meters: DistanceMillis { return Int(self).meters }
+    var kilometers: DistanceMillis { return Int(self).kilometers }
 }
