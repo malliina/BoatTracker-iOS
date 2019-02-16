@@ -32,8 +32,10 @@ class AuthVC: BaseTableVC, GIDSignInUIDelegate, TokenDelegate {
     
     let delegate: TokenDelegate
     let welcomeDelegate: WelcomeDelegate
+    let lang: Lang
     
-    init(tokenDelegate: TokenDelegate, welcome: WelcomeDelegate) {
+    init(tokenDelegate: TokenDelegate, welcome: WelcomeDelegate, lang: Lang) {
+        self.lang = lang
         self.delegate = tokenDelegate
         self.welcomeDelegate = welcome
         super.init(nibName: nil, bundle: nil)
@@ -45,11 +47,9 @@ class AuthVC: BaseTableVC, GIDSignInUIDelegate, TokenDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView?.register(UITableViewCell.self, forCellReuseIdentifier: chooseIdentifier)
-        tableView?.register(UITableViewCell.self, forCellReuseIdentifier: googleIdentifier)
-        tableView?.register(UITableViewCell.self, forCellReuseIdentifier: attributionsIdentifier)
-        tableView?.register(UITableViewCell.self, forCellReuseIdentifier: basicIdentifier)
-        tableView?.register(UITableViewCell.self, forCellReuseIdentifier: linkIdentifier)
+        [chooseIdentifier, googleIdentifier, attributionsIdentifier, basicIdentifier, linkIdentifier].forEach { (identifier) in
+            tableView?.register(UITableViewCell.self, forCellReuseIdentifier: identifier)
+        }
         tableView?.separatorStyle = .none
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelClicked(_:)))
         navigationItem.title = "Sign In"
@@ -99,7 +99,7 @@ class AuthVC: BaseTableVC, GIDSignInUIDelegate, TokenDelegate {
             cell.selectionStyle = .none
         case attributionsIndex:
             cell.accessoryType = .disclosureIndicator
-            cell.textLabel?.text = "Attributions"
+            cell.textLabel?.text = lang.attributions.title
         default:
             cell.selectionStyle = .none
             ()
@@ -109,7 +109,7 @@ class AuthVC: BaseTableVC, GIDSignInUIDelegate, TokenDelegate {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch indexPath.row {
-        case attributionsIndex: nav(to: AttributionsVC())
+        case attributionsIndex: nav(to: AttributionsVC(info: lang.attributions))
         default: ()
         }
     }

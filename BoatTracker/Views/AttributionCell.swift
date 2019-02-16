@@ -14,7 +14,7 @@ class AttributionCell: BoatCell {
     let subText = BoatLabel.build(text: "", numberOfLines: 0)
     let link = BoatButton.nav(title: "", fontSize: 14)
     
-    var attribution: Attribution? = nil
+    var attribution: AppAttribution? = nil
     
     static let rowHeight: CGFloat = 120
     
@@ -39,15 +39,16 @@ class AttributionCell: BoatCell {
         link.addTarget(self, action: #selector(linkClicked(_:)), for: .touchUpInside)
     }
     
-    func fill(with data: Attribution) {
+    func fill(with data: AppAttribution) {
         attribution = data
         title.text = data.title
         subText.text = data.text
-        link.setTitle(data.link.text, for: .normal)
+        guard let firstLink = data.links.first else { return }
+        link.setTitle(firstLink.text, for: .normal)
     }
     
     @objc func linkClicked(_ sender: UIButton) {
-        guard let url = attribution?.link.url else { return }
+        guard let url = attribution?.links.first?.url else { return }
         open(url: url)
     }
     
@@ -57,13 +58,13 @@ class AttributionCell: BoatCell {
 }
 
 class LinksAttributionCell: BoatCell {
-    let title = BoatLabel.build(text: "")
-    let link1 = BoatButton.nav(title: "", fontSize: 14)
-    let link2 = BoatButton.nav(title: "", fontSize: 14)
+    var title = BoatLabel.build(text: "")
+    var link1 = BoatButton.nav(title: "", fontSize: 14)
+    var link2 = BoatButton.nav(title: "", fontSize: 14)
     
     static let rowHeight: CGFloat = 120
     
-    var data: LinksAttribution? = nil
+    var data: AppAttribution? = nil
     
     override func configureView() {
         contentView.addSubview(title)
@@ -87,24 +88,84 @@ class LinksAttributionCell: BoatCell {
         link2.addTarget(self, action: #selector(link2Clicked(_:)), for: .touchUpInside)
     }
     
-    func fill(with data: LinksAttribution) {
+    func fill(with data: AppAttribution) {
         self.data = data
         title.text = data.title
-        link1.setTitle(data.link1.text, for: .normal)
-        link2.setTitle(data.link2.text, for: .normal)
+        link1.setTitle(data.links[0].text, for: .normal)
+        link2.setTitle(data.links[1].text, for: .normal)
     }
     
     @objc func link1Clicked(_ sender: UIButton) {
-        guard let url = data?.link1.url else { return }
+        guard let url = data?.links[0].url else { return }
         open(url: url)
     }
     
     @objc func link2Clicked(_ sender: UIButton) {
-        guard let url = data?.link2.url else { return }
+        guard let url = data?.links[1].url else { return }
         open(url: url)
     }
     
     func open(url: URL) {
+        UIApplication.shared.open(url, options: [:], completionHandler: nil)
+    }
+}
+
+class AppAttributionCell: BoatCell {
+    var title: UILabel? = nil
+    var subTitle: UILabel? = nil
+    var links: [UIButton] = []
+    
+    var data: AppAttribution? = nil
+    
+    override func configureView() {
+    }
+    
+    func fill(with data: AppAttribution) {
+        self.data = data
+        if title == nil {
+            let titleLabel = BoatLabel.build(text: data.title)
+            title = titleLabel
+            contentView.addSubview(titleLabel)
+            titleLabel.snp.makeConstraints { (make) in
+                make.top.equalToSuperview().offset(spacing)
+                make.leading.equalTo(contentView.snp.leadingMargin)
+                make.trailing.equalTo(contentView.snp.trailingMargin)
+            }
+        }
+        if let text = data.text, let title = title {
+            if subTitle == nil {
+                let subLabel = BoatLabel.build(text: text)
+                subTitle = subLabel
+                contentView.addSubview(subLabel)
+                subLabel.snp.makeConstraints { (make) in
+                    make.leading.trailing.equalTo(title)
+                    make.top.equalTo(title.snp.bottom).offset(spacing)
+                }
+            }
+        }
+        data.links.enumerated().forEach { (offset, link) in
+            let exists = links.indices.contains(offset)
+            guard let viewAbove = offset == 0 ? subTitle ?? title : links[offset-1] else { return }
+            if !exists {
+                let btn = BoatButton.nav(title: link.text, fontSize: 14)
+                contentView.addSubview(btn)
+                links.append(btn)
+                btn.snp.makeConstraints { (make) in
+                    make.leading.trailing.equalTo(viewAbove)
+                    make.top.equalTo(viewAbove.snp.bottom).offset(spacing)
+                    let isLast = offset == data.links.count - 1
+                    if isLast {
+                        make.bottom.equalTo(contentView.snp.bottom).inset(spacing)
+                    }
+                }
+                btn.addTarget(self, action: #selector(linkClicked(_:)), for: .touchUpInside)
+            }
+        }
+    }
+    
+    @objc func linkClicked(_ sender: UIButton) {
+        guard let idx = links.firstIndex(of: sender) else { return }
+        guard let url = data?.links[idx].url else { return }
         UIApplication.shared.open(url, options: [:], completionHandler: nil)
     }
 }

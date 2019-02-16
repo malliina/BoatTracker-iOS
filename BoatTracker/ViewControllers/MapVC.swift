@@ -36,8 +36,16 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     private var aisRenderer: AISRenderer? = nil
     private var taps: TapListener? = nil
     private var boatRenderer: BoatRenderer? = nil
-    private var languages: Languages? = nil
-    private var language: Lang? = nil
+    private var clientConf: ClientConf? = nil
+    private var profile: UserProfile? = nil
+    private var languages: Languages? { return clientConf?.languages }
+    private var language: Lang? {
+        get {
+            guard let languages = languages else { return nil }
+            let userLanguage = profile?.language ?? Language.en
+            return selectLanguage(lang: userLanguage, available: languages)
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -82,6 +90,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         
         GoogleAuth.shared.delegate = self
         GoogleAuth.shared.signInSilently()
+        initConf()
     }
     
     func mapViewDidFinishLoadingMap(_ mapView: MGLMapView) {
@@ -106,18 +115,23 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         self.taps = TapListener(mapView: mapView, marksLayers: layers.marks)
     }
     
-    func setupUser() {
-        let userInfo = http.conf().flatMap { c in
-            self.userLanguage().map { l in (l, c) }
+    func initConf() {
+        let _ = http.conf().subscribe(onSuccess: { (conf) in
+            self.clientConf = conf
+        }) { (err) in
+            self.log.error("Unable to load configuration: '\(err.describe)'.")
         }
-        let _ = userInfo.subscribe { (event) in
-            switch event {
-            case .success(let (lang, conf)):
-                self.languages = conf.languages
-                self.language = self.selectLanguage(lang: lang, available: conf.languages)
-            case .error(let err):
-                self.log.error("Failed to load client conf: '\(err.describe)'.")
+    }
+    
+    func setupUser() {
+        if isSignedIn {
+            let _ = http.profile().subscribe(onSuccess: { (profile) in
+                self.profile = profile
+            }) { (err) in
+                self.log.error("Unable to load profile: '\(err.describe)'.")
             }
+        } else {
+            self.profile = nil
         }
     }
     
@@ -127,10 +141,6 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         case .se: return available.swedish
         case .en: return available.english
         }
-    }
-    
-    func userLanguage() -> Single<Language> {
-        return isSignedIn ? http.profile().map { $0.language } : Single.just(Language.en)
     }
     
     func installTapListener(mapView: MGLMapView) {
@@ -206,11 +216,15 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     }
     
     @objc func userClicked(_ sender: UIButton) {
+        guard let language = language else {
+            log.error("No language info. Cannot open user info.")
+            return
+        }
         if let user = latestToken {
-            let dest = ProfileTableVC(tokenDelegate: self, tracksDelegate: self, current: boatRenderer?.latestTrack, user: user)
+            let dest = ProfileTableVC(tokenDelegate: self, tracksDelegate: self, current: boatRenderer?.latestTrack, user: user, lang: language)
             navigate(to: dest)
         } else {
-            let dest = AuthVC(tokenDelegate: self, welcome: self)
+            let dest = AuthVC(tokenDelegate: self, welcome: self, lang: language)
             navigate(to: dest)
         }
     }

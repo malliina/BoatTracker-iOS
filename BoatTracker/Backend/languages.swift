@@ -303,6 +303,7 @@ struct Lang {
     let mark: MarkLang
     let ais: AisLang
     let shipTypes: ShipTypesLang
+    let attributions: AttributionInfo
     
     static func parse(json: JsObject) throws -> Lang {
         return Lang(
@@ -316,7 +317,8 @@ struct Lang {
             track: try json.readObj("track", parse: TrackLang.parse),
             mark: try json.readObj("mark", parse: MarkLang.parse),
             ais: try json.readObj("ais", parse: AisLang.parse),
-            shipTypes: try json.readObj("shipTypes", parse: ShipTypesLang.parse)
+            shipTypes: try json.readObj("shipTypes", parse: ShipTypesLang.parse),
+            attributions: try json.readObj("attributions", parse: AttributionInfo.parse)
         )
     }
 }

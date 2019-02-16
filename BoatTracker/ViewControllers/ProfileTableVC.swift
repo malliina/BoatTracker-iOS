@@ -36,6 +36,7 @@ class ProfileTableVC: BaseTableVC {
     let tracksDelegate: TracksDelegate
     let user: UserToken
     let current: TrackName?
+    let lang: Lang
     
     var summary: TrackRef? = nil
     var state: ViewState = .loading
@@ -52,7 +53,8 @@ class ProfileTableVC: BaseTableVC {
         }
     }
     
-    init(tokenDelegate: TokenDelegate, tracksDelegate: TracksDelegate, current: TrackName?, user: UserToken) {
+    init(tokenDelegate: TokenDelegate, tracksDelegate: TracksDelegate, current: TrackName?, user: UserToken, lang: Lang) {
+        self.lang = lang
         self.delegate = tokenDelegate
         self.tracksDelegate = tracksDelegate
         self.current = current
@@ -69,10 +71,9 @@ class ProfileTableVC: BaseTableVC {
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Map", style: .plain, target: self, action: #selector(cancelClicked(_:)))
         navigationItem.title = "BoatTracker"
         tableView?.register(TrackSummaryCell.self, forCellReuseIdentifier: TrackSummaryCell.identifier)
-        tableView?.register(UITableViewCell.self, forCellReuseIdentifier: noTracksIdentifier)
-        tableView?.register(UITableViewCell.self, forCellReuseIdentifier: basicCellIdentifier)
-        tableView?.register(UITableViewCell.self, forCellReuseIdentifier: infoIdentifier)
-        tableView?.register(UITableViewCell.self, forCellReuseIdentifier: logoutIdentifier)
+        [noTracksIdentifier, basicCellIdentifier, infoIdentifier, logoutIdentifier].forEach { (identifier) in
+            tableView?.register(UITableViewCell.self, forCellReuseIdentifier: identifier)
+        }
         loadTracks()
         socket.statsDelegate = self
     }
@@ -130,7 +131,7 @@ class ProfileTableVC: BaseTableVC {
     
     func initAttributionsCell(cell: UITableViewCell) {
         cell.accessoryType = .disclosureIndicator
-        cell.textLabel?.text = "Attributions"
+        cell.textLabel?.text = lang.attributions.title
     }
     
     func initLogoutCells(cell: UITableViewCell, indexPath: IndexPath) {
@@ -188,7 +189,7 @@ class ProfileTableVC: BaseTableVC {
             default: ()
             }
         case 2:
-            nav(to: AttributionsVC())
+            openAttributions()
         case 3:
             switch indexPath.row {
             case 1: logout()
@@ -206,7 +207,7 @@ class ProfileTableVC: BaseTableVC {
             default: ()
             }
         case 1:
-            nav(to: AttributionsVC())
+            openAttributions()
         case 2:
             switch indexPath.row {
             case 1: logout()
@@ -214,6 +215,10 @@ class ProfileTableVC: BaseTableVC {
             }
         default: ()
         }
+    }
+    
+    func openAttributions() {
+        nav(to: AttributionsVC(info: lang.attributions))
     }
     
     func logout() {
