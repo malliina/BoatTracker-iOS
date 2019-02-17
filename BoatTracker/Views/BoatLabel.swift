@@ -11,7 +11,9 @@ import UIKit
 
 class BoatLabel {
     static func smallSubtitle() -> UILabel {
-        return smallTitle(textColor: .darkGray)
+        let label = smallTitle(textColor: .darkGray)
+        label.setContentCompressionResistancePriority(.required, for: .horizontal)
+        return label
     }
     
     static func smallTitle(textColor: UIColor = .black, numberOfLines: Int = 1) -> UILabel {

@@ -69,20 +69,25 @@ class BoatSocket: SocketDelegate {
                     delegate.onCoords(event: data.body)
                 }
             case "vessels":
-                let obj = try JsObject.parse(data: json)
-                let vessels = try Vessel.list(json: obj.readObject("body"))
-                vesselDelegate?.on(vessels: vessels)
+                let data = try decoder.decode(VesselsBody.self, from: json)
+                vesselDelegate?.on(vessels: data.body.vessels)
             default:
                 log.info("Unknown event: '\(event)'.")
             }
+        } catch DecodingError.typeMismatch(let t, let ctx) {
+            log.info("Type mismatch: '\(t) with context \(ctx)'. \(ctx.debugDescription)")
+        } catch DecodingError.keyNotFound(let key, let ctx) {
+            log.info("Key not found: '\(key)' with context '\(ctx)'. \(ctx.debugDescription)")
+        } catch DecodingError.valueNotFound(let t, let ctx) {
+            log.info("Value not found in type: \(t) with context: '\(ctx)'. \(ctx.debugDescription)")
+        } catch DecodingError.dataCorrupted(let ctx) {
+            log.info("Data corrupted with context: 'ctx'. \(ctx.debugDescription)")
         } catch {
-//            let obj = try JsObject.parse(data: json)
             if case JsonError.missing(let key) = error {
-                log.error("Missing: \(key)")//" in \(obj.stringify())")
-            } else if case JsonError.invalid(let msg, let value) = error{
+                log.error("Missing: \(key)")
+            } else if case JsonError.invalid(let msg, let value) = error {
                 log.error("\(msg) with value \(value)")
             } else {
-//                let str = String(data: json, encoding: .utf8)
                 log.info("Unknown JSON.")
             }
         }

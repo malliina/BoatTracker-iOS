@@ -9,33 +9,12 @@
 import Foundation
 
 struct SpecialCategory: Codable {
-    let fishing: String
-    let tug: String
-    let dredger: String
-    let diveVessel: String
-    let militaryOps: String
-    let sailing: String
-    let pleasureCraft: String
+    let fishing, tug, dredger, diveVessel, militaryOps, sailing, pleasureCraft: String
 }
 
 struct ShipTypesLang: Codable {
-    let wingInGround: String
     let special: SpecialCategory
-    let highSpeedCraft: String
-    let pilotVessel: String
-    let searchAndRescue: String
-    let searchAndRescueAircraft: String
-    let portTender: String
-    let antiPollution: String
-    let lawEnforce: String
-    let localVessel: String
-    let medicalTransport: String
-    let specialCraft: String
-    let passenger: String
-    let cargo: String
-    let tanker: String
-    let other: String
-    let unknown: String
+    let wingInGround, highSpeedCraft, pilotVessel, searchAndRescue, searchAndRescueAircraft, portTender, antiPollution, lawEnforce, localVessel, medicalTransport, specialCraft, passenger, cargo, tanker, other, unknown: String
 }
 
 struct FairwayStateLang: Codable {
@@ -62,12 +41,7 @@ struct AisLang: Codable {
 }
 
 struct TrackLang: Codable {
-    let tracks: String
-    let speed: String
-    let water: String
-    let depth: String
-    let top: String
-    let duration: String
+    let tracks, speed, water, depth, top, duration: String
 }
 
 struct MarkTypeLang: Codable {

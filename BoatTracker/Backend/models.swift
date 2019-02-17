@@ -288,58 +288,31 @@ class MarineSymbol: NSObject {
     }
 }
 
-struct Vessels {
+struct VesselsBody: Codable {
+    let body: Vessels
+}
+
+struct Vessels: Codable {
     let vessels: [Vessel]
 }
 
-class Vessel: NSObject {
-    static let heading = "heading"
-    static let name = "name"
+struct Vessel: Codable {
+    static let headingKey = "heading"
+    static let nameKey = "name"
     
     let mmsi: Mmsi
     let name: String
     let heading: Double?
     let cog: Double
-    let speed: Speed
+    let sog: Speed
     let shipType: Int
-    let draft: DistanceMillis
+    let draft: Distance
     let coord: CLLocationCoordinate2D
     let timestampMillis: Double
     let destination: String?
 
     var timestamp: Date { return Date(timeIntervalSince1970: timestampMillis / 1000) }
-    
-    init(mmsi: Mmsi, name: String, heading: Double?, cog: Double, speed: Speed, shipType: Int, draft: DistanceMillis, coord: CLLocationCoordinate2D, timestampMillis: Double, destination: String?) {
-        self.mmsi = mmsi
-        self.name = name
-        self.heading = heading
-        self.cog = cog
-        self.speed = speed
-        self.shipType = shipType
-        self.draft = draft
-        self.coord = coord
-        self.timestampMillis = timestampMillis
-        self.destination = destination
-    }
-    
-    static func parse(json: JsObject) throws -> Vessel {
-        return Vessel(
-            mmsi: Mmsi.from(number: try json.readUInt("mmsi")),
-            name: try json.readString("name"),
-            heading: try json.readOpt(Double.self, "heading"),
-            cog: try json.readDouble("cog"),
-            speed: try json.readDouble("sog").knots,
-            shipType: try json.readInt("shipType"),
-            draft: try json.readDouble("draft").meters,
-            coord: try json.coord("coord"),
-            timestampMillis: try json.readDouble("timestampMillis"),
-            destination: try json.readOpt(String.self, "destination")
-        )
-    }
-    
-    static func list(json: JsObject) throws -> [Vessel] {
-        return try json.readObjectArray("vessels", each: parse)
-    }
+    var speed: Speed { return sog }
 }
 
 extension CLLocationCoordinate2D: Codable {
@@ -536,7 +509,7 @@ extension DoubleCodable {
     }
 }
 
-struct Mmsi: Equatable, Hashable, CustomStringConvertible {
+struct Mmsi: Equatable, Hashable, CustomStringConvertible, Codable {
     static let key = "mmsi"
     let mmsi: String
     var description: String { return mmsi }
@@ -548,6 +521,17 @@ struct Mmsi: Equatable, Hashable, CustomStringConvertible {
     static func == (lhs: Mmsi, rhs: Mmsi) -> Bool { return lhs.mmsi == rhs.mmsi }
     
     static func from(number: UInt64) -> Mmsi { return Mmsi("\(number)") }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let raw = try container.decode(UInt64.self)
+        self.init("\(raw)")
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(UInt64(mmsi))
+    }
 }
 
 struct BackendInfo: Codable {

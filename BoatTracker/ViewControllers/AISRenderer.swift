@@ -31,7 +31,7 @@ class AISRenderer {
         
         // Icons
         let vessels = LayerSource(iconId: conf.vessel, iconImageName: conf.vesselIcon)
-        vessels.layer.iconRotation = NSExpression(forKeyPath: Vessel.heading)
+        vessels.layer.iconRotation = NSExpression(forKeyPath: Vessel.headingKey)
         vessels.install(to: style)
         vesselShape = vessels.source
         
@@ -69,7 +69,7 @@ class AISRenderer {
             guard let latest: Vessel = v.first else { return nil }
             let point = MGLPointFeature()
             point.coordinate = latest.coord
-            point.attributes = [Mmsi.key: latest.mmsi.mmsi, Vessel.name: latest.name, Vessel.heading: latest.heading ?? latest.cog]
+            point.attributes = [Mmsi.key: latest.mmsi.mmsi, Vessel.nameKey: latest.name, Vessel.headingKey: latest.heading ?? latest.cog]
             return point
         }
         vesselShape.shape = MGLShapeCollectionFeature(shapes: updatedVessels)
