@@ -9,6 +9,88 @@
 import Foundation
 import Mapbox
 
+class MinimalMarkAnnotation: CustomAnnotation {
+    let mark: MinimalMarineSymbol
+    
+    init(mark: MinimalMarineSymbol, coord: CLLocationCoordinate2D) {
+        self.mark = mark
+        super.init(coord: coord)
+    }
+}
+
+class MinimalMarkCallout: BoatCallout {
+    let log = LoggerFactory.shared.view(MinimalMarkCallout.self)
+    let markAnnoation: MinimalMarkAnnotation
+    let lang: Lang
+    var markLang: MarkLang { return lang.mark }
+    let finnishWords: SpecialWords
+    
+    let nameValue = BoatLabel.centeredTitle()
+    let locationLabel = BoatLabel.smallSubtitle()
+    let locationValue = BoatLabel.smallTitle(numberOfLines: 0)
+    let ownerLabel = BoatLabel.smallSubtitle()
+    let ownerValue = BoatLabel.smallTitle()
+    
+    var hasLocation: Bool { return markAnnoation.mark.hasLocation }
+ 
+    required init(annotation: MinimalMarkAnnotation, lang: Lang, finnishWords: SpecialWords) {
+        self.markAnnoation = annotation
+        self.lang = lang
+        self.finnishWords = finnishWords
+        super.init(representedObject: annotation)
+        setup(mark: annotation.mark)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func setup(mark: MinimalMarineSymbol) {
+        [ nameValue, locationLabel, locationValue, ownerLabel, ownerValue ].forEach { label in
+            container.addSubview(label)
+        }
+        
+        nameValue.text = mark.name(lang: lang.language)?.value
+        nameValue.snp.makeConstraints { (make) in
+            make.leading.trailing.top.equalToSuperview().inset(inset)
+        }
+        
+        if hasLocation {
+            locationLabel.text = markLang.location
+            locationLabel.snp.makeConstraints { (make) in
+                make.top.equalTo(nameValue.snp.bottom).offset(spacing)
+                make.leading.equalToSuperview().inset(inset)
+                make.width.equalTo(ownerLabel)
+            }
+            
+            locationValue.text = mark.location(lang: lang.language)?.value
+            locationValue.snp.makeConstraints { (make) in
+                make.top.equalTo(locationLabel)
+                make.leading.equalTo(locationLabel.snp.trailing).offset(spacing)
+                make.trailing.equalToSuperview().inset(inset)
+            }
+        }
+        
+        ownerLabel.text = markLang.owner
+        ownerLabel.snp.makeConstraints { (make) in
+            make.top.equalTo((hasLocation ? locationValue : nameValue).snp.bottom).offset(spacing)
+            make.leading.equalToSuperview().inset(inset)
+            if hasLocation {
+                make.width.greaterThanOrEqualTo(locationLabel)
+            }
+            make.bottom.equalToSuperview().inset(inset)
+        }
+        
+        ownerValue.text = mark.translatedOwner(finnish: finnishWords, translated: lang.specialWords)
+        ownerValue.snp.makeConstraints { (make) in
+            make.top.equalTo(ownerLabel)
+            make.leading.equalTo(ownerLabel.snp.trailing).offset(spacing)
+            make.trailing.equalToSuperview().inset(inset)
+            make.bottom.equalToSuperview().inset(inset)
+        }
+    }
+}
+
 class MarkAnnotation: CustomAnnotation {
     let mark: MarineSymbol
     
@@ -58,7 +140,7 @@ class MarkCallout: BoatCallout {
             container.addSubview(label)
         }
         
-        nameValue.text = mark.name(lang: lang.language)
+        nameValue.text = mark.name(lang: lang.language)?.value
         nameValue.snp.makeConstraints { (make) in
             make.leading.trailing.top.equalToSuperview().inset(inset)
         }
@@ -119,7 +201,7 @@ class MarkCallout: BoatCallout {
                 make.width.equalTo(typeLabel)
             }
             
-            locationValue.text = mark.location(lang: lang.language)
+            locationValue.text = mark.location(lang: lang.language)?.value
             locationValue.snp.makeConstraints { (make) in
                 make.top.equalTo(locationLabel)
                 make.leading.equalTo(locationLabel.snp.trailing).offset(spacing)

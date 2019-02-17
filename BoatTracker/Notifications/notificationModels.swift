@@ -16,24 +16,12 @@ class PushToken {
     }
 }
 
-enum BoatState {
+enum BoatState: String, Codable {
     case connected
     case disconnected
-    
-    static func parse(input: String) throws -> BoatState {
-        if input == "connected" { return connected }
-        else if input == "disconnected" { return disconnected }
-        else { throw JsonError.invalid("Unknown boat state: '\(input)'.", input) }
-    }
 }
 
-struct BoatNotification {
+struct BoatNotification: Codable {
     let boatName: BoatName
     let state: BoatState
-    
-    static func parse(obj: JsObject) throws -> BoatNotification {
-        return BoatNotification(boatName: BoatName(try obj.readString("boatName")),
-                                state: try BoatState.parse(input: try obj.readString("state"))
-        )
-    }
 }

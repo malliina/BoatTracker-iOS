@@ -41,7 +41,7 @@ struct AisLang: Codable {
 }
 
 struct TrackLang: Codable {
-    let tracks, speed, water, depth, top, duration: String
+    let boats, tracks, speed, water, depth, top, duration, distance, topSpeed, avgSpeed, waterTemp, date, trackHistory, graph: String
 }
 
 struct MarkTypeLang: Codable {
@@ -72,13 +72,21 @@ struct SpecialWords: Codable {
     let transportAgency, defenceForces, portOfHelsinki, cityOfHelsinki, cityOfEspoo: String
 }
 
+struct ProfileLang: Codable {
+    let username, signedInAs, logout, chooseIdentityProvider, finnish, swedish, english: String
+}
+
+struct MessagesLang: Codable {
+    let failedToLoadProfile, noSavedTracks: String
+}
+
 struct SettingsLang: Codable {
     let welcome, welcomeText, laterText, notifications, notificationsText, howItWorks, signIn, signInText, boat, token, tokenText, tokenTextLong, rename, renameBoat, newName, cancel, back: String
 }
 
 struct Lang: Codable {
     let language: Language
-    let name, qualityClass, time, comparisonLevel: String
+    let map, name, qualityClass, time, comparisonLevel: String
     let specialWords: SpecialWords
     let fairway: FairwayLang
     let track: TrackLang
@@ -86,6 +94,9 @@ struct Lang: Codable {
     let ais: AisLang
     let shipTypes: ShipTypesLang
     let attributions: AttributionInfo
+    let profile: ProfileLang
+    let messages: MessagesLang
+    let settings: SettingsLang
 }
 
 struct Languages: Codable {
@@ -94,14 +105,6 @@ struct Languages: Codable {
 
 struct AisConf: Codable {
     let vessel, trail, vesselIcon: String
-    
-    static func parse(json: JsObject) throws -> AisConf {
-        return AisConf(
-            vessel: try json.readString("vessel"),
-            trail: try json.readString("trail"),
-            vesselIcon: try json.readString("vesselIcon")
-        )
-    }
 }
 
 struct MapboxLayers: Codable {

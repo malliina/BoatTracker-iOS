@@ -184,6 +184,8 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
             return VesselCallout(annotation: vessel, lang: language)
         } else if let mark = annotation as? MarkAnnotation, let finnishSpecials = languages?.finnish.specialWords {
             return MarkCallout(annotation: mark, lang: language, finnishWords: finnishSpecials)
+        } else if let mark = annotation as? MinimalMarkAnnotation, let finnishSpecials = languages?.finnish.specialWords {
+            return MinimalMarkCallout(annotation: mark, lang: language, finnishWords: finnishSpecials)
         } else {
             // Default callout view
             return nil

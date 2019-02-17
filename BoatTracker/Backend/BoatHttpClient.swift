@@ -138,11 +138,9 @@ class BoatHttpClient {
                         return self.parsed2(t, uri, run: run, attempt: 2)
                     }
                 } else {
-                    var errorMessage: String? = nil
-                    if let json = Json.asJson(response.data) as? NSDictionary {
-                        errorMessage = json[JsonError.Key] as? String
-                    }
-                    return Single.error(AppError.responseFailure(ResponseDetails(url: url, code: response.statusCode, message: errorMessage)))
+                    let decoder = JSONDecoder()
+                    let errors = (try? decoder.decode(Errors.self, from: response.data))?.errors ?? []
+                    return Single.error(AppError.responseFailure(ResponseDetails(url: url, code: response.statusCode, errors: errors)))
                 }
             }
         }
@@ -152,23 +150,9 @@ class BoatHttpClient {
         return URL(string: to, relativeTo: baseUrl)!
     }
     
-//    private func parseAs<T>(response: HttpResponse, parse: @escaping (JsObject) throws -> T) -> Single<T> {
-//        do {
-//            let obj = try JsObject.parse(data: response.data)
-////            print(obj.stringify())
-//            return Single.just(try parse(obj))
-//        } catch let error as JsonError {
-//            self.log.error(error.describe)
-//            return Single.error(AppError.parseError(error))
-//        } catch _ {
-//            return Single.error(AppError.simple("Unknown parse error."))
-//        }
-//    }
-    
     private func parseAs2<T: Decodable>(_ t: T.Type, response: HttpResponse) -> Single<T> {
         do {
             let decoder = JSONDecoder()
-//            content = try JsObject.parse(data: response.data).stringify()
             return Single.just(try decoder.decode(t, from: response.data))
         } catch let error as JsonError {
             self.log.error(error.describe)

@@ -93,11 +93,21 @@ class BoatSocket: SocketDelegate {
         }
     }
     
-    func send(_ dict: [String: AnyObject]) -> SingleError? {
-        guard let socket = client.socket else { return failWith("Unable to send payload, socket not available.") }
-        guard let payload = Json.stringifyObject(dict, prettyPrinted: false) else { return failWith("Unable to send payload, encountered non-JSON payload: \(dict)") }
-        socket.send(payload)
-        return nil
+    func send<T: Encodable>(t: T) -> SingleError? {
+        guard let socket = client.socket else {
+            return failWith("Unable to send payload, socket not available.")
+        }
+        let encoder = JSONEncoder()
+        do {
+            let data = try encoder.encode(t)
+            guard let asString = String(data: data, encoding: .utf8) else {
+                return failWith("Unable to send data, cannot stringify payload.")
+            }
+            socket.send(asString)
+            return nil
+        } catch {
+            return failWith("Unable to send payload, encoding error.")
+        }
     }
     
     func failWith(_ message: String) -> SingleError {

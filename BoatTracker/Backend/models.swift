@@ -9,7 +9,7 @@
 import Foundation
 import Mapbox
 
-enum AidType {
+enum AidType: Decodable {
     case unknown
     case lighthouse
     case sectorLight
@@ -42,6 +42,12 @@ enum AidType {
         }
     }
     
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let code = try container.decode(Int.self)
+        self = try AidType.parse(code: code)
+    }
+    
     static func parse(code: Int) throws -> AidType {
         switch code {
         case 0: return .unknown
@@ -62,7 +68,7 @@ enum AidType {
     }
 }
 
-enum NavMark {
+enum NavMark: Decodable {
     case unknown
     case left
     case right
@@ -91,6 +97,11 @@ enum NavMark {
         }
     }
     
+    init(from decoder: Decoder) throws {
+        let code = try decoder.singleValueContainer().decode(Int.self)
+        self = try NavMark.parse(code: code)
+    }
+    
     static func parse(code: Int) throws -> NavMark {
         switch code {
         case 0: return .unknown
@@ -109,7 +120,7 @@ enum NavMark {
     }
 }
 
-enum ConstructionInfo {
+enum ConstructionInfo: Decodable {
     case buoyBeacon
     case iceBuoy
     case beaconBuoy
@@ -154,6 +165,11 @@ enum ConstructionInfo {
         }
     }
     
+    init(from decoder: Decoder) throws {
+        let code = try decoder.singleValueContainer().decode(Int.self)
+        self = try ConstructionInfo.parse(code: code)
+    }
+    
     static func parse(code: Int) throws -> ConstructionInfo {
         switch code {
         case 1: return .buoyBeacon
@@ -194,38 +210,22 @@ enum Flotation {
     }
 }
 
-class MarineSymbol: NSObject {
-    let owner: String
-    let exteriorLight: Bool
-    let topSign: Bool
-    let nameFi: String?
-    let nameSe: String?
-    let locationFi: String?
-    let locationSe: String?
-    let flotation: Flotation
-    let state: String
-    let lit: Bool
-    let aidType: AidType
-    let navMark: NavMark
-    let construction: ConstructionInfo?
-    
+enum ZoneOfInfluence: String, Codable {
+    case area = "A"
+    case zone = "V"
+    case zoneAndArea = "AV"
+}
+
+protocol BaseSymbol {
+    var owner: String { get }
+    var nameFi: NonEmptyString? { get }
+    var nameSe: NonEmptyString? { get }
+    var locationFi: NonEmptyString? { get }
+    var locationSe: NonEmptyString? { get }
+}
+
+extension BaseSymbol {
     var hasLocation: Bool { return locationFi != nil || locationSe != nil }
-    
-    func location(lang: Language) -> String? {
-        switch lang {
-        case .fi: return locationFi ?? locationSe
-        case .se: return locationSe ?? locationFi
-        case .en: return locationFi ?? locationSe
-        }
-    }
-    
-    func name(lang: Language) -> String? {
-        switch lang {
-        case .fi: return nameFi ?? nameSe
-        case .se: return nameSe ?? nameFi
-        case .en: return nameFi ?? nameSe
-        }
-    }
     
     func translatedOwner(finnish: SpecialWords, translated: SpecialWords) -> String {
         switch owner {
@@ -237,7 +237,96 @@ class MarineSymbol: NSObject {
         }
     }
     
-    init(owner: String, exteriorLight: Bool, topSign: Bool, nameFi: String?, nameSe: String?, locationFi: String?, locationSe: String?, flotation: Flotation, state: String, lit: Bool, aidType: AidType, navMark: NavMark, construction: ConstructionInfo?) {
+    func location(lang: Language) -> NonEmptyString? {
+        switch lang {
+        case .fi: return locationFi ?? locationSe
+        case .se: return locationSe ?? locationFi
+        case .en: return locationFi ?? locationSe
+        }
+    }
+    
+    func name(lang: Language) -> NonEmptyString? {
+        switch lang {
+        case .fi: return nameFi ?? nameSe
+        case .se: return nameSe ?? nameFi
+        case .en: return nameFi ?? nameSe
+        }
+    }
+}
+
+struct MinimalMarineSymbol: BaseSymbol, Codable {
+    let owner: String
+    let nameFi, nameSe, locationFi, locationSe: NonEmptyString?
+    let influence: ZoneOfInfluence
+    
+    private enum CodingKeys: String, CodingKey {
+        case owner = "OMISTAJA"
+        case nameFi = "NIMIS"
+        case nameSe = "NIMIR"
+        case locationFi = "SIJAINTIS"
+        case locationSe = "SIJAINTIR"
+        case influence = "VAIKUTUSAL"
+    }
+}
+
+struct StringBool: Codable {
+    let value: Bool
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let raw = try container.decode(String.self)
+        if let parsed = StringBool.parse(raw: raw) {
+            value = parsed
+        } else {
+            throw DecodingError.dataCorruptedError(in: container, debugDescription: "Unexpected string, must be K or E: '\(raw)'.")
+        }
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(value ? "K" : "E")
+    }
+    
+    static func parse(raw: String) -> Bool? {
+        switch raw {
+        case "K": return true
+        case "E": return false
+        default: return nil
+        }
+    }
+}
+
+struct IntBool: Codable {
+    let value: Bool
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let raw = try container.decode(Int.self)
+        switch raw {
+        case 1: value = true
+        case 0: value = false
+        default: throw DecodingError.dataCorruptedError(in: container, debugDescription: "Unexpected integer, must be 1 or 0: '\(raw)'.")
+        }
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(value ? 1 : 0)
+    }
+}
+
+class MarineSymbol: NSObject, BaseSymbol, Decodable {
+    let owner: String
+    let exteriorLight, topSign: Bool
+    let nameFi, nameSe, locationFi, locationSe: NonEmptyString?
+    let flotation: Flotation
+    let state: String
+    let lit: StringBool
+    let aidType: AidType
+    let navMark: NavMark
+    let construction: ConstructionInfo?
+    
+    init(owner: String, exteriorLight: Bool, topSign: Bool, nameFi: NonEmptyString?, nameSe: NonEmptyString?, locationFi: NonEmptyString?, locationSe: NonEmptyString?, flotation: Flotation, state: String, lit: StringBool, aidType: AidType, navMark: NavMark, construction: ConstructionInfo?) {
         self.owner = owner
         self.exteriorLight = exteriorLight
         self.topSign = topSign
@@ -269,22 +358,62 @@ class MarineSymbol: NSObject {
         }
     }
     
-    static func parse(json: JsObject) throws -> MarineSymbol {
-        return MarineSymbol(
-            owner: try json.readString("OMISTAJA"),
-            exteriorLight: try boolNum(i: try json.readInt("FASADIVALO")),
-            topSign: try boolNum(i: try json.readInt("HUIPPUMERK")),
-            nameFi: try json.nonEmptyString("NIMIS"),
-            nameSe: try json.nonEmptyString("NIMIR"),
-            locationFi: try json.nonEmptyString("SIJAINTIS"),
-            locationSe: try json.nonEmptyString("SIJAINTIR"),
-            flotation: Flotation.parse(input: try json.readString("SUBTYPE")),
-            state: try json.readString("TILA"),
-            lit: try boolString(s: try json.readString("VALAISTU")),
-            aidType: try AidType.parse(code: try json.readInt("TY_JNR")),
-            navMark: try NavMark.parse(code: try json.readInt("NAVL_TYYP")),
-            construction: try json.readOpt(Int.self, "RAKT_TYYP").map { i in try ConstructionInfo.parse(code: i) }
+    private enum CodingKeys: String, CodingKey {
+        case owner = "OMISTAJA"
+        case exteriorLight = "FASADIVALO"
+        case topSign = "HUIPPUMERK"
+        case nameFi = "NIMIS"
+        case nameSe = "NIMIR"
+        case locationFi = "SIJAINTIS"
+        case locationSe = "SIJAINTIR"
+        case flotation = "SUBTYPE"
+        case state = "TILA"
+        case lit = "VALAISTU"
+        case aidType = "TY_JNR"
+        case navMark = "NAVL_TYYP"
+        case construction = "RAKT_TYYP"
+    }
+    
+    required convenience init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(owner: try container.decode(String.self, forKey: .owner),
+                  exteriorLight: try MarineSymbol.boolNum(i: try container.decode(Int.self, forKey: .exteriorLight)),
+                  topSign: try MarineSymbol.boolNum(i: try container.decode(Int.self, forKey: .topSign)),
+                  nameFi: try container.decodeIfPresent(NonEmptyString.self, forKey: .nameFi),
+                  nameSe: try container.decodeIfPresent(NonEmptyString.self, forKey: .nameSe),
+                  locationFi: try container.decodeIfPresent(NonEmptyString.self, forKey: .locationFi),
+                  locationSe: try container.decodeIfPresent(NonEmptyString.self, forKey: .locationSe),
+                  flotation: Flotation.parse(input: try container.decode(String.self, forKey: .flotation)),
+                  state: try container.decode(String.self, forKey: .state),
+                  lit: try container.decode(StringBool.self, forKey: .lit),
+                  aidType: try container.decode(AidType.self, forKey: .aidType),
+                  navMark: try container.decode(NavMark.self, forKey: .navMark),
+                  construction: try container.decodeIfPresent(ConstructionInfo.self, forKey: .construction)
         )
+    }
+}
+
+extension KeyedDecodingContainerProtocol {
+    func trimmedNonEmpty(forKey key: Self.Key) throws -> String? {
+        guard let s = try self.decodeIfPresent(String.self, forKey: key) else { return nil }
+        let trimmed = s.trim()
+        return trimmed.isEmpty ? nil : trimmed
+    }
+}
+
+public protocol JSONBlankRepresentable: RawRepresentable {}
+
+extension KeyedDecodingContainer {
+    /// Decodes empty strings and other whitespace as nil.
+    /// http://davelyon.net/2017/08/16/jsondecoder-in-the-real-world
+    public func decodeIfPresent<T>(_ type: T.Type, forKey key: KeyedDecodingContainer.Key) throws -> T? where T : Decodable & NonEmpty {
+        if contains(key) {
+            if let stringValue = try decodeIfPresent(String.self, forKey: key),
+                let nonEmpty = NonEmptyString.transform(raw: stringValue) {
+                return T.init(nonEmpty)
+            }
+        }
+        return nil
     }
 }
 
@@ -382,10 +511,6 @@ struct TrackRef: Codable {
 
 struct TrackStats: Codable {
     let points: Int
-    
-    static func parse(json: JsObject) throws -> TrackStats {
-        return TrackStats(points: try json.readInt("points"))
-    }
 }
 
 struct AccessToken: Equatable, Hashable, CustomStringConvertible, StringCodable {
@@ -432,6 +557,27 @@ struct Username: Equatable, Hashable, CustomStringConvertible, StringCodable {
     static func == (lhs: Username, rhs: Username) -> Bool { return lhs.name == rhs.name }
 }
 
+// Marker trait
+public protocol NonEmpty {
+    init(_ value: String)
+}
+
+struct NonEmptyString: Equatable, Hashable, CustomStringConvertible, Codable, NonEmpty {
+    let value: String
+    var description: String { return value }
+    
+    init(_ value: String) {
+        self.value = value
+    }
+    
+    static func == (lhs: NonEmptyString, rhs: NonEmptyString) -> Bool { return lhs.value == rhs.value }
+    
+    static func transform(raw: String) -> String? {
+        let trimmed = raw.trim()
+        return !trimmed.isEmpty ? trimmed : nil
+    }
+}
+
 protocol StringCodable: Codable, CustomStringConvertible {
     init(_ value: String)
 }
@@ -439,7 +585,7 @@ protocol StringCodable: Codable, CustomStringConvertible {
 extension StringCodable {
     init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
-        let raw = try container.decode(String.self)
+        let raw = try container.decode(String.self).trim()
         if raw.isEmpty {
             throw DecodingError.dataCorruptedError(
                 in: container,

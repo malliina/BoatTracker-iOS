@@ -9,23 +9,21 @@
 import Foundation
 
 class HttpResponse {
+    static let log = LoggerFactory.shared.network(HttpResponse.self)
+    
     let http: HTTPURLResponse
     let data: Data
     
     var statusCode: Int { return http.statusCode }
     var isStatusOK: Bool { return statusCode >= 200 && statusCode < 300 }
-    var json: NSDictionary? { return Json.asJson(data) as? NSDictionary }
+
     var errors: [SingleError] {
         get {
-            if let json = json, let errors = json["errors"] as? [NSDictionary] {
-                return errors.compactMap({ (dict) -> SingleError? in
-                    if let key = dict["key"] as? String, let message = dict["message"] as? String {
-                        return SingleError(key: key, message: message)
-                    } else {
-                        return nil
-                    }
-                })
-            } else {
+            let decoder = JSONDecoder()
+            do {
+                return try decoder.decode(Errors.self, from: data).errors
+            } catch {
+                HttpResponse.log.error("HTTP response failed, and failed to parse error model. \(error.describe)")
                 return []
             }
         }
@@ -43,11 +41,13 @@ class HttpResponse {
 class ResponseDetails {
     let url: URL
     let code: Int
-    let message: String?
+    let errors: [SingleError]
     
-    init(url: URL, code: Int, message: String?) {
+    var message: String? { return errors.first?.message }
+    
+    init(url: URL, code: Int, errors: [SingleError]) {
         self.url = url
         self.code = code
-        self.message = message
+        self.errors = errors
     }
 }

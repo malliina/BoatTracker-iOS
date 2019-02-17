@@ -64,8 +64,9 @@ open class BoatNotifications {
     func handleNotification(_ app: UIApplication, window: UIWindow?, data: [AnyHashable: Any]) {
         do {
             guard let meta = data["meta"] else { return }
-            let obj = try JsObject.parse(obj: meta as AnyObject)
-            let notification = try BoatNotification.parse(obj: obj)
+            let metaData = try JSONSerialization.data(withJSONObject: meta)
+            let decoder = JSONDecoder()
+            let notification = try decoder.decode(BoatNotification.self, from: metaData)
             log.info("Got \(notification.state) notification for boat \(notification.boatName)")
         } catch let err {
             log.error("Failed to parse notification. \(err.describe)")

@@ -55,27 +55,27 @@ struct AppAttribution: Codable {
     let text: String?
     let links: [Link]
     
-    static func parse(json: JsObject) throws -> AppAttribution {
-        return AppAttribution(
-            title: try json.readString("title"),
-            text: try json.readOpt(String.self, "text"),
-            links: try json.readObjectArray("links", each: { (link) -> Link in
-                Link(text: try link.readString("text"), url: URL(string: try link.readString("url"))!)
-            })
-        )
-    }
+//    static func parse(json: JsObject) throws -> AppAttribution {
+//        return AppAttribution(
+//            title: try json.readString("title"),
+//            text: try json.readOpt(String.self, "text"),
+//            links: try json.readObjectArray("links", each: { (link) -> Link in
+//                Link(text: try link.readString("text"), url: URL(string: try link.readString("url"))!)
+//            })
+//        )
+//    }
 }
 
 struct AttributionInfo: Codable {
     let title: String
     let attributions: [AppAttribution]
     
-    static func parse(json: JsObject) throws -> AttributionInfo {
-        return AttributionInfo(
-            title: try json.readString("title"),
-            attributions: try json.readObjectArray("attributions", each: AppAttribution.parse)
-        )
-    }
+//    static func parse(json: JsObject) throws -> AttributionInfo {
+//        return AttributionInfo(
+//            title: try json.readString("title"),
+//            attributions: try json.readObjectArray("attributions", each: AppAttribution.parse)
+//        )
+//    }
 }
 
 class Link: NSObject, Codable {

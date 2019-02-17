@@ -8,17 +8,22 @@
 
 import Foundation
 
-class SingleError {
+struct Errors: Codable {
+    let errors: [SingleError]
+}
+
+struct SingleError: Codable {
     let key: String
     let message: String
     
-    convenience init(message: String) {
-        self.init(key: "error", message: message)
-    }
     
     init(key: String, message: String) {
         self.key = key
         self.message = message
+    }
+    
+    init(message: String) {
+        self.init(key: "error", message: message)
     }
 }
 

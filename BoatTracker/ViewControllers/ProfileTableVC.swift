@@ -68,7 +68,7 @@ class ProfileTableVC: BaseTableVC {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Map", style: .plain, target: self, action: #selector(cancelClicked(_:)))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: lang.map, style: .plain, target: self, action: #selector(cancelClicked(_:)))
         navigationItem.title = "BoatTracker"
         tableView?.register(TrackSummaryCell.self, forCellReuseIdentifier: TrackSummaryCell.identifier)
         [noTracksIdentifier, basicCellIdentifier, infoIdentifier, logoutIdentifier].forEach { (identifier) in
@@ -91,9 +91,9 @@ class ProfileTableVC: BaseTableVC {
             case 1:
                 cell.accessoryType = .disclosureIndicator
                 switch indexPath.row {
-                case 0: cell.textLabel?.text = "Graph"
-                case 1: cell.textLabel?.text = "Track History"
-                case 2: cell.textLabel?.text = "Boats"
+                case 0: cell.textLabel?.text = lang.track.graph
+                case 1: cell.textLabel?.text = lang.track.trackHistory
+                case 2: cell.textLabel?.text = lang.track.boats
                 default: ()
                 }
             case 2: initAttributionsCell(cell: cell)
@@ -118,7 +118,7 @@ class ProfileTableVC: BaseTableVC {
     }
     
     func initNoTracksCell(cell: UITableViewCell) {
-        cell.textLabel?.text = "No saved tracks"
+        cell.textLabel?.text = lang.messages.noSavedTracks
         cell.textLabel?.textColor = colors.secondaryText
         cell.textLabel?.textAlignment = .center
         cell.selectionStyle = .none
@@ -126,7 +126,7 @@ class ProfileTableVC: BaseTableVC {
     
     func initBoatsCell(cell: UITableViewCell) {
         cell.accessoryType = .disclosureIndicator
-        cell.textLabel?.text = "Boats"
+        cell.textLabel?.text = lang.track.boats
     }
     
     func initAttributionsCell(cell: UITableViewCell) {
@@ -138,7 +138,7 @@ class ProfileTableVC: BaseTableVC {
         switch indexPath.row {
         case 0:
             if let label = cell.textLabel {
-                label.text = "Signed in as \(user.email)"
+                label.text = "\(lang.profile.signedInAs) \(user.email)"
                 label.textAlignment = .center
                 label.textColor = .lightGray
             }
@@ -153,7 +153,7 @@ class ProfileTableVC: BaseTableVC {
     
     func initLogout(cell: UITableViewCell) {
         if let label = cell.textLabel {
-            label.text = "Logout"
+            label.text = lang.profile.logout
             label.textColor = .red
             label.textAlignment = .center
         }
@@ -185,7 +185,7 @@ class ProfileTableVC: BaseTableVC {
             case 1:
                 nav(to: TrackListVC(delegate: tracksDelegate))
             case 2:
-                nav(to: BoatTokensVC())
+                openBoats()
             default: ()
             }
         case 2:
@@ -203,7 +203,7 @@ class ProfileTableVC: BaseTableVC {
         switch indexPath.section {
         case 0:
             switch indexPath.row {
-            case 1: nav(to: BoatTokensVC())
+            case 1: openBoats()
             default: ()
             }
         case 1:
@@ -215,6 +215,10 @@ class ProfileTableVC: BaseTableVC {
             }
         default: ()
         }
+    }
+    
+    func openBoats() {
+        nav(to: BoatTokensVC(lang: lang))
     }
     
     func openAttributions() {
@@ -305,7 +309,7 @@ class ProfileTableVC: BaseTableVC {
                     }
                 case .error(let err):
                     self.state = .failed
-                    self.tableView.backgroundView = self.feedbackView(text: "Failed to load profile.")
+                    self.tableView.backgroundView = self.feedbackView(text: self.lang.messages.failedToLoadProfile)
                     self.log.error("Unable to load tracks. \(err.describe)")
                 }
             }

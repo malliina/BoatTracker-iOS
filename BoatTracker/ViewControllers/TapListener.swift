@@ -23,11 +23,20 @@ class TapListener {
     func onTap(point: CGPoint) -> Bool {
         guard let selected = mapView.visibleFeatures(at: point, styleLayerIdentifiers: marksLayers).first else { return false }
         do {
-            let mark = try MarineSymbol.parse(json: JsObject(dict: selected.attributes.mapValues { $0 as AnyObject }))
-//            log.info("Tapped \((mark.nameFi ?? mark.nameSe) ?? "unknown")")
-            let popup = MarkAnnotation(mark: mark, coord: selected.coordinate)
-            mapView.selectAnnotation(popup, animated: true)
-            return true
+            let json = try JSONSerialization.data(withJSONObject: selected.attributes, options: .prettyPrinted)
+//            log.info(String(data: json, encoding: .utf8) ?? "No JSON string")
+            let decoder = JSONDecoder()
+            do {
+                let mark = try decoder.decode(MarineSymbol.self, from: json)
+                let popup = MarkAnnotation(mark: mark, coord: selected.coordinate)
+                mapView.selectAnnotation(popup, animated: true)
+                return true
+            } catch {
+                let mark = try decoder.decode(MinimalMarineSymbol.self, from: json)
+                let popup = MinimalMarkAnnotation(mark: mark, coord: selected.coordinate)
+                mapView.selectAnnotation(popup, animated: true)
+                return true
+            }
         } catch let err {
             log.info("Failed to parse marine symbol: \(err.describe).")
         }

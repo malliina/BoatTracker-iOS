@@ -74,8 +74,11 @@ class BoatTokensVC: BaseTableVC {
     var profile: UserProfile? = nil
     var onOff: UISwitch?
     var loadError: Error? = nil
+    let lang: Lang
+    var settingsLang: SettingsLang { return lang.settings }
     
-    init() {
+    init(lang: Lang) {
+        self.lang = lang
         super.init(style: .plain)
     }
     
@@ -93,7 +96,7 @@ class BoatTokensVC: BaseTableVC {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.title = "Boats"
+        navigationItem.title = lang.track.boats
         tableView?.register(BoatTokenCell.self, forCellReuseIdentifier: BoatTokenCell.identifier)
         tableView?.register(UITableViewCell.self, forCellReuseIdentifier: notificationsKey)
         onOff = BoatSwitch { (uiSwitch) in
@@ -107,7 +110,7 @@ class BoatTokensVC: BaseTableVC {
         switch indexPath.section {
         case 0:
             let cell = tableView.dequeueReusableCell(withIdentifier: notificationsKey, for: indexPath)
-            cell.textLabel?.text = "Notifications"
+            cell.textLabel?.text = settingsLang.notifications
             cell.accessoryView = onOff
             return cell
         default:
@@ -148,8 +151,8 @@ class BoatTokensVC: BaseTableVC {
     
     override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         switch section {
-        case 0: return footerView(text: "Turn on to receive notifications when your boat connects or disconnects from BoatTracker.")
-        case 1: return footerView(text: "Add the token to the BoatTracker agent software running in your boat. For more information, see https://www.boat-tracker.com/docs/agent.")
+        case 0: return footerView(text: settingsLang.notificationsText)
+        case 1: return footerView(text: settingsLang.tokenText)
         default: return nil
         }
     }
@@ -162,9 +165,9 @@ class BoatTokensVC: BaseTableVC {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let popup = UIAlertController(title: "Rename Boat", message: "Provide a new name", preferredStyle: .alert)
+        let popup = UIAlertController(title: settingsLang.renameBoat, message: settingsLang.newName, preferredStyle: .alert)
         popup.addTextField(configurationHandler: nil)
-        let okAction = UIAlertAction(title: "Rename", style: .default) { (a) in
+        let okAction = UIAlertAction(title: settingsLang.rename, style: .default) { (a) in
             guard let textField = (popup.textFields ?? []).headOption(),
                 let newName = textField.text, !newName.isEmpty,
                 let boat = self.profile?.boats[indexPath.row] else { return }
@@ -179,7 +182,7 @@ class BoatTokensVC: BaseTableVC {
             }
         }
         popup.addAction(okAction)
-        popup.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        popup.addAction(UIAlertAction(title: settingsLang.cancel, style: .cancel, handler: nil))
         present(popup, animated: true, completion: nil)
     }
     
@@ -201,7 +204,7 @@ class BoatTokensVC: BaseTableVC {
             tableView.reloadData()
         case .error(let err):
             loadError = err
-            tableView.backgroundView = feedbackView(text: "Unable to load profile.")
+            tableView.backgroundView = feedbackView(text: self.lang.messages.failedToLoadProfile)
             log.error("Unable to load profile. \(err.describe)")
         }
     }
