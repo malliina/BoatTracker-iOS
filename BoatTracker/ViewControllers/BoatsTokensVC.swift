@@ -116,7 +116,7 @@ class BoatTokensVC: BaseTableVC {
         default:
             let cell = tableView.dequeueReusableCell(withIdentifier: BoatTokenCell.identifier, for: indexPath)
             if let boat = profile?.boats[indexPath.row], let cell = cell as? BoatTokenCell {
-                cell.fill(boat: boat.name, token: boat.token)
+                cell.fill(boat: boat.name, token: boat.token, lang: lang.settings)
             }
             return cell
         }

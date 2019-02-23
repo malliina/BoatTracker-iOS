@@ -24,7 +24,7 @@ class TrackSummaryCell: BoatCell {
         }
     }
     
-    func fill(track: TrackRef) {
-        stats.fill(track: track)
+    func fill(track: TrackRef, lang: Lang) {
+        stats.fill(track: track, lang: lang)
     }
 }

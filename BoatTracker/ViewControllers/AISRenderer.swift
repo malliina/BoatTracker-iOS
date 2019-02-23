@@ -28,7 +28,6 @@ class AISRenderer {
         self.mapView = mapView
         self.style = style
         self.conf = conf
-        
         // Icons
         let vessels = LayerSource(iconId: conf.vessel, iconImageName: conf.vesselIcon)
         vessels.layer.iconRotation = NSExpression(forKeyPath: Vessel.headingKey)

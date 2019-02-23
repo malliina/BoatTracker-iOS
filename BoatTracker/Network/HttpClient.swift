@@ -10,14 +10,18 @@ import Foundation
 import RxSwift
 import RxCocoa
 
+struct Headers {
+    static let accept = "Accept", acceptLanguage = "Accept-Language", authorization = "Authorization", contentType = "Content-Type"
+}
+
 class HttpClient {
     private let log = LoggerFactory.shared.network(HttpClient.self)
-    static let JSON = "application/json", CONTENT_TYPE = "Content-Type", ACCEPT = "Accept", DELETE = "DELETE", GET = "GET", PATCH = "PATCH", POST = "POST", AUTHORIZATION = "Authorization", BASIC = "Basic"
+    static let json = "application/json", delete = "DELETE", get = "GET", patch = "PATCH", post = "POST", basic = "Basic"
     
     static func basicAuthValue(_ username: String, password: String) -> String {
         let encodable = "\(username):\(password)"
         let encoded = encodeBase64(encodable)
-        return "\(HttpClient.BASIC) \(encoded)"
+        return "\(HttpClient.basic) \(encoded)"
     }
     
     static func authHeader(_ word: String, unencoded: String) -> String {
@@ -36,13 +40,13 @@ class HttpClient {
     }
     
     func get(_ url: URL, headers: [String: String] = [:]) -> Single<HttpResponse> {
-        let req = buildRequest(url: url, httpMethod: HttpClient.GET, headers: headers, body: nil)
+        let req = buildRequest(url: url, httpMethod: HttpClient.get, headers: headers, body: nil)
         return executeHttp(req)
     }
     
     func patchJSON(_ url: URL, headers: [String: String] = [:], payload: [String: AnyObject]) -> Single<HttpResponse> {
         let json = try? JSONSerialization.data(withJSONObject: payload, options: [])
-        let req = buildRequest(url: url, httpMethod: HttpClient.PATCH, headers: headers, body: json)
+        let req = buildRequest(url: url, httpMethod: HttpClient.patch, headers: headers, body: json)
         return executeHttp(req)
     }
     
@@ -51,12 +55,12 @@ class HttpClient {
     }
     
     func postData(_ url: URL, headers: [String: String] = [:], payload: Data?) -> Single<HttpResponse> {
-        let req = buildRequest(url: url, httpMethod: HttpClient.POST, headers: headers, body: payload)
+        let req = buildRequest(url: url, httpMethod: HttpClient.post, headers: headers, body: payload)
         return executeHttp(req)
     }
     
     func delete(_ url: URL, headers: [String: String] = [:]) -> Single<HttpResponse> {
-        let req = buildRequest(url: url, httpMethod: HttpClient.DELETE, headers: headers, body: nil)
+        let req = buildRequest(url: url, httpMethod: HttpClient.delete, headers: headers, body: nil)
         return executeHttp(req)
     }
     
@@ -69,7 +73,7 @@ class HttpClient {
     
     func buildRequest(url: URL, httpMethod: String, headers: [String: String], body: Data?) -> URLRequest {
         var req = URLRequest(url: url, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 3600)
-        let useCsrfHeader = httpMethod != HttpClient.GET
+        let useCsrfHeader = httpMethod != HttpClient.get
         if useCsrfHeader {
             req.addCsrf()
         }

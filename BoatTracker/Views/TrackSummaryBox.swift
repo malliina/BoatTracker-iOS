@@ -10,17 +10,23 @@ import Foundation
 import UIKit
 
 class TrackSummaryBox: UIView {
-    let date = StatBox("Date")
-    let duration = StatBox("Duration")
-    let distance = StatBox("Distance")
-    let topSpeed = StatBox("Top Speed")
-    let avgSpeed = StatBox("Avg Speed")
-    let avgWaterTemp = StatBox("Water Temp")
+    let date: StatBox
+    let duration: StatBox
+    let distance: StatBox
+    let topSpeed: StatBox
+    let avgSpeed: StatBox
+    let avgWaterTemp: StatBox
     
     let spacingBig: CGFloat = 36
     let verticalSpacing: CGFloat = 36
     
     init() {
+        date = StatBox()
+        duration = StatBox()
+        distance = StatBox()
+        topSpeed = StatBox()
+        avgSpeed = StatBox()
+        avgWaterTemp = StatBox()
         super.init(frame: CGRect.zero)
         snap()
     }
@@ -63,14 +69,16 @@ class TrackSummaryBox: UIView {
         }
     }
     
-    func fill(track: TrackRef) {
+    func fill(track: TrackRef, lang: Lang) {
         isHidden = false
-        date.value = track.startDate
-        duration.value = track.duration.description
-        distance.value = track.distance.description
-        topSpeed.value = track.topSpeed?.description ?? "N/A"
-        avgSpeed.value = track.avgSpeed?.description ?? "N/A"
-        avgWaterTemp.value = track.avgWaterTemp?.description ?? "N/A"
+        let trackLang = lang.track
+        date.fill(label: trackLang.date, value: track.startDate(lang: lang.settings.formats))
+        duration.fill(label: trackLang.duration, value: track.duration)
+        distance.fill(label: trackLang.distance, value: track.distance)
+        let notAvailable = lang.messages.notAvailable
+        topSpeed.fill(label: trackLang.topSpeed, value: track.topSpeed?.description ?? notAvailable)
+        avgSpeed.fill(label: trackLang.avgSpeed, value: track.avgSpeed?.description ?? notAvailable)
+        avgWaterTemp.fill(label: trackLang.waterTemp, value: track.avgWaterTemp?.description ?? notAvailable)
     }
     
     required init?(coder aDecoder: NSCoder) {

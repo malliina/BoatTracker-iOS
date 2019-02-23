@@ -12,16 +12,23 @@ import UIKit
 class TrackCell: BoatCell {
     static let identifier = String(describing: TrackCell.self)
 
-    let dateTime = BoatLabel.build(text: "", alignment: .left, numberOfLines: 0)
-    let distance = StatBox("Distance", style: .small)
-    let duration = StatBox("Duration", style: .small)
-    let topSpeed = StatBox("Top", style: .small)
+    let dateTime = BoatLabel.build(alignment: .left, numberOfLines: 1)
+    let title = BoatLabel.build(alignment: .left, textColor: .lightGray)
+    let distance = StatBox(style: .small)
+    let duration = StatBox(style: .small)
+    let topSpeed = StatBox(style: .small)
 
     override func configureView() {
         contentView.addSubview(dateTime)
+        dateTime.setContentCompressionResistancePriority(.required, for: .horizontal)
         dateTime.snp.makeConstraints { (make) in
             make.top.equalToSuperview().offset(spacing)
             make.leading.equalTo(contentView.snp.leadingMargin)
+        }
+        contentView.addSubview(title)
+        title.snp.makeConstraints { (make) in
+            make.top.equalTo(dateTime)
+            make.leading.equalTo(dateTime.snp.trailing).offset(spacing)
             make.trailing.equalTo(contentView.snp.trailingMargin)
         }
         contentView.addSubview(distance)
@@ -45,10 +52,14 @@ class TrackCell: BoatCell {
         }
     }
     
-    func fill(track: TrackRef) {
-        dateTime.text = track.startDate
-        distance.value = track.distance.description
-        duration.value = track.duration.description
-        topSpeed.value = track.topSpeed?.description ?? "N/A"
+    func fill(track: TrackRef, lang: Lang) {
+        if let trackTitle = track.trackTitle {
+            title.text = trackTitle.title
+        }
+        dateTime.text = track.startDate(lang: lang.settings.formats)
+        let trackLang = lang.track
+        distance.fill(label: trackLang.distance, value: track.distance)
+        duration.fill(label: trackLang.duration, value: track.duration)
+        topSpeed.fill(label: trackLang.topSpeed, value: track.topSpeed?.description ?? lang.messages.notAvailable)
     }
 }

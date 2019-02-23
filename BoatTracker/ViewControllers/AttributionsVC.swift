@@ -31,17 +31,12 @@ class AttributionsVC: BaseTableVC {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = attributionCell(indexPath: indexPath)
-        cell.selectionStyle = .none
-        return cell
-    }
-    
-    func attributionCell(indexPath: IndexPath) -> UITableViewCell {
         let attribution = attributions[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: attributionKey, for: indexPath)
         if let cell = cell as? AppAttributionCell {
             cell.fill(with: attribution)
         }
+        cell.selectionStyle = .none
         return cell
     }
     
@@ -54,28 +49,11 @@ struct AppAttribution: Codable {
     let title: String
     let text: String?
     let links: [Link]
-    
-//    static func parse(json: JsObject) throws -> AppAttribution {
-//        return AppAttribution(
-//            title: try json.readString("title"),
-//            text: try json.readOpt(String.self, "text"),
-//            links: try json.readObjectArray("links", each: { (link) -> Link in
-//                Link(text: try link.readString("text"), url: URL(string: try link.readString("url"))!)
-//            })
-//        )
-//    }
 }
 
 struct AttributionInfo: Codable {
     let title: String
     let attributions: [AppAttribution]
-    
-//    static func parse(json: JsObject) throws -> AttributionInfo {
-//        return AttributionInfo(
-//            title: try json.readString("title"),
-//            attributions: try json.readObjectArray("attributions", each: AppAttribution.parse)
-//        )
-//    }
 }
 
 class Link: NSObject, Codable {

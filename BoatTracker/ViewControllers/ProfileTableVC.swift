@@ -69,7 +69,7 @@ class ProfileTableVC: BaseTableVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: lang.map, style: .plain, target: self, action: #selector(cancelClicked(_:)))
-        navigationItem.title = "BoatTracker"
+        navigationItem.title = lang.appName
         tableView?.register(TrackSummaryCell.self, forCellReuseIdentifier: TrackSummaryCell.identifier)
         [noTracksIdentifier, basicCellIdentifier, infoIdentifier, logoutIdentifier].forEach { (identifier) in
             tableView?.register(UITableViewCell.self, forCellReuseIdentifier: identifier)
@@ -86,7 +86,7 @@ class ProfileTableVC: BaseTableVC {
             case 0:
                 cell.selectionStyle = .none
                 if let summary = summary, let cell = cell as? TrackSummaryCell {
-                    cell.fill(track: summary)
+                    cell.fill(track: summary, lang: lang)
                 }
             case 1:
                 cell.accessoryType = .disclosureIndicator
@@ -181,9 +181,9 @@ class ProfileTableVC: BaseTableVC {
             switch indexPath.row {
             case 0:
                 guard let track = current else { return }
-                navigate(to: ChartsVC(track: track), style: .fullScreen, transition: .flipHorizontal)
+                navigate(to: ChartsVC(track: track, lang: lang), style: .fullScreen, transition: .flipHorizontal)
             case 1:
-                nav(to: TrackListVC(delegate: tracksDelegate))
+                nav(to: TrackListVC(delegate: tracksDelegate, lang: lang))
             case 2:
                 openBoats()
             default: ()

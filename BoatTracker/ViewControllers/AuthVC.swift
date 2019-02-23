@@ -28,11 +28,10 @@ class AuthVC: BaseTableVC, GIDSignInUIDelegate, TokenDelegate {
     let linkIdentifier = "LinkIdentifier"
     let attributionsIndex = 6
     
-    let chooseProvider = BoatLabel.build(text: "Choose Identity Provider", alignment: .center)
-    
     let delegate: TokenDelegate
     let welcomeDelegate: WelcomeDelegate
     let lang: Lang
+    var settingsLang: SettingsLang { return lang.settings }
     
     init(tokenDelegate: TokenDelegate, welcome: WelcomeDelegate, lang: Lang) {
         self.lang = lang
@@ -52,7 +51,7 @@ class AuthVC: BaseTableVC, GIDSignInUIDelegate, TokenDelegate {
         }
         tableView?.separatorStyle = .none
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelClicked(_:)))
-        navigationItem.title = "Sign In"
+        navigationItem.title = lang.settings.signIn
         
         view.backgroundColor = .white
         
@@ -64,7 +63,7 @@ class AuthVC: BaseTableVC, GIDSignInUIDelegate, TokenDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: identifier(for: indexPath), for: indexPath)
         switch indexPath.row {
         case 0:
-            cell.textLabel?.text = "Choose Identity Provider"
+            cell.textLabel?.text = lang.profile.chooseIdentityProvider
             cell.textLabel?.textAlignment = .center
             cell.selectionStyle = .none
         case 1:
@@ -78,16 +77,16 @@ class AuthVC: BaseTableVC, GIDSignInUIDelegate, TokenDelegate {
                 make.trailing.equalTo(cell.contentView.snp.trailingMargin)
             }
         case 2:
-            cell.textLabel?.text = "Sign in to view past tracks driven with your boat."
+            cell.textLabel?.text = settingsLang.signInText
             cell.textLabel?.numberOfLines = 0
             cell.selectionStyle = .none
         case 3:
-            cell.textLabel?.text = "How it works"
+            cell.textLabel?.text = settingsLang.howItWorks
             cell.textLabel?.textColor = colors.secondaryText
             cell.textLabel?.numberOfLines = 0
             cell.selectionStyle = .none
         case 4:
-            let textView = BoatTextView(text: "Add the token provided after sign in to the Boat-Tracker agent software running in your boat. Subsequently, tracks driven with the boat are saved to your account and can be viewed in this app. For agent installation instructions, see https://www.boat-tracker.com/docs/agent.", font: UIFont.systemFont(ofSize: 17))
+            let textView = BoatTextView(text: lang.settings.tokenTextLong, font: UIFont.systemFont(ofSize: 17))
             textView.textContainer.lineFragmentPadding = 0
             textView.contentInset = .zero
             cell.contentView.addSubview(textView)

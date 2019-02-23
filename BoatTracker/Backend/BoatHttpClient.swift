@@ -22,33 +22,35 @@ class BoatHttpClient {
     
     var postHeaders: [String: String] { return defaultHeaders.merging(postSpecificHeaders)  { (current, _) in current } }
     
-    convenience init(bearerToken: AccessToken, baseUrl: URL) {
-        self.init(bearerToken: bearerToken, baseUrl: baseUrl, client: HttpClient())
+    convenience init(bearerToken: AccessToken, baseUrl: URL, language: Language) {
+        self.init(bearerToken: bearerToken, baseUrl: baseUrl, client: HttpClient(), language: language)
     }
     
-    init(bearerToken: AccessToken?, baseUrl: URL, client: HttpClient) {
+    init(bearerToken: AccessToken?, baseUrl: URL, client: HttpClient, language: Language) {
         self.baseUrl = baseUrl
         self.client = client
         if let token = bearerToken {
             self.defaultHeaders = [
-                HttpClient.AUTHORIZATION: BoatHttpClient.authValue(for: token),
-                HttpClient.ACCEPT: BoatHttpClient.BoatVersion
+                Headers.authorization: BoatHttpClient.authValue(for: token),
+                Headers.accept: BoatHttpClient.BoatVersion,
+                Headers.acceptLanguage: language.rawValue
             ]
         } else {
             self.defaultHeaders = [
-                HttpClient.ACCEPT: BoatHttpClient.BoatVersion
+                Headers.accept: BoatHttpClient.BoatVersion,
+                Headers.acceptLanguage: language.rawValue
             ]
         }
         self.postSpecificHeaders = [
-            HttpClient.CONTENT_TYPE: HttpClient.JSON
+            Headers.contentType: HttpClient.json
         ]
     }
     
     func updateToken(token: AccessToken?) {
         if let token = token {
-            self.defaultHeaders.updateValue(BoatHttpClient.authValue(for: token), forKey: HttpClient.AUTHORIZATION)
+            self.defaultHeaders.updateValue(BoatHttpClient.authValue(for: token), forKey: Headers.authorization)
         } else {
-            self.defaultHeaders.removeValue(forKey: HttpClient.AUTHORIZATION)
+            self.defaultHeaders.removeValue(forKey: Headers.authorization)
         }
     }
     
@@ -57,85 +59,56 @@ class BoatHttpClient {
     }
     
     func pingAuth() -> Single<BackendInfo> {
-        return getParsed2(BackendInfo.self, "/pingAuth")
+        return getParsed(BackendInfo.self, "/pingAuth")
     }
     
     func profile() -> Single<UserProfile> {
-        return getParsed2(UserContainer.self, "/users/me").map { $0.user }
+        return getParsed(UserContainer.self, "/users/me").map { $0.user }
     }
     
     func tracks() -> Single<[TrackRef]> {
-        return getParsed2(TracksResponse.self, "/tracks").map { $0.tracks }
+        return getParsed(TracksResponse.self, "/tracks").map { $0.tracks }
     }
     
     func conf() -> Single<ClientConf> {
-        return getParsed2(ClientConf.self, "/conf")
+        return getParsed(ClientConf.self, "/conf")
     }
     
     func enableNotifications(token: PushToken) -> Single<SimpleMessage> {
-        return parsed2(SimpleMessage.self, "/users/notifications", run: { (url) -> Single<HttpResponse> in
+        return parsed(SimpleMessage.self, "/users/notifications", run: { (url) -> Single<HttpResponse> in
             return self.client.postJSON(url, headers: self.postHeaders, payload: ["token": token.token as AnyObject, "device": "ios" as AnyObject])
         })
     }
     
     func disableNotifications(token: PushToken) -> Single<SimpleMessage> {
-        return parsed2(SimpleMessage.self, "/users/notifications/disable", run: { (url) -> Single<HttpResponse> in
+        return parsed(SimpleMessage.self, "/users/notifications/disable", run: { (url) -> Single<HttpResponse> in
             return self.client.postJSON(url, headers: self.postHeaders, payload: ["token": token.token as AnyObject])
         })
     }
     
     func renameBoat(boat: Int, newName: BoatName) -> Single<Boat> {
-        return parsed2(BoatResponse.self, "/boats/\(boat)", run: { (url) -> Single<HttpResponse> in
+        return parsed(BoatResponse.self, "/boats/\(boat)", run: { (url) -> Single<HttpResponse> in
             self.client.patchJSON(url, headers: self.postHeaders, payload: ["boatName": newName.name as AnyObject])
         }).map { $0.boat }
     }
     
-//    func getParsed<T>(_ uri: String, parse: @escaping (JsObject) throws -> T) -> Single<T> {
-//        return parsed(uri, run: { (url) -> Single<HttpResponse> in
-//            self.client.get(url, headers: self.defaultHeaders)
-//        }, parse: parse)
-//    }
-    
-    func getParsed2<T: Decodable>(_ t: T.Type, _ uri: String) -> Single<T> {
-        return parsed2(t, uri, run: { (url) -> Single<HttpResponse> in
+    func getParsed<T: Decodable>(_ t: T.Type, _ uri: String) -> Single<T> {
+        return parsed(t, uri, run: { (url) -> Single<HttpResponse> in
             self.client.get(url, headers: self.defaultHeaders)
         })
     }
     
-//    func parsed<T>(_ uri: String, run: @escaping (URL) -> Single<HttpResponse>, parse: @escaping (JsObject) throws -> T, attempt: Int = 1) -> Single<T> {
-//        let url = fullUrl(to: uri)
-//        return run(url).flatMap { (response) -> Single<T> in
-//            if (response.isStatusOK) {
-//                return self.parseAs(response: response, parse: parse)
-//            } else {
-//                self.log.error("Request to '\(url)' failed with status '\(response.statusCode)'.")
-//                if attempt == 1 && response.isTokenExpired {
-//                    return RxGoogleAuth().signIn().flatMap { (token) -> Single<T> in
-//                        self.updateToken(token: token.token)
-//                        return self.parsed(uri, run: run, parse: parse, attempt: 2)
-//                    }
-//                } else {
-//                    var errorMessage: String? = nil
-//                    if let json = Json.asJson(response.data) as? NSDictionary {
-//                        errorMessage = json[JsonError.Key] as? String
-//                    }
-//                    return Single.error(AppError.responseFailure(ResponseDetails(url: url, code: response.statusCode, message: errorMessage)))
-//                }
-//            }
-//        }
-//    }
-    
-    func parsed2<T : Decodable>(_ t: T.Type, _ uri: String, run: @escaping (URL) -> Single<HttpResponse>, attempt: Int = 1) -> Single<T> {
+    func parsed<T : Decodable>(_ t: T.Type, _ uri: String, run: @escaping (URL) -> Single<HttpResponse>, attempt: Int = 1) -> Single<T> {
         let url = fullUrl(to: uri)
         return run(url).flatMap { (response) -> Single<T> in
             if response.isStatusOK {
-                return self.parseAs2(t, response: response)
+                return self.parseAs(t, response: response)
             } else {
                 self.log.error("Request to '\(url)' failed with status '\(response.statusCode)'.")
                 if attempt == 1 && response.isTokenExpired {
                     return RxGoogleAuth().signIn().flatMap { (token) -> Single<T> in
                         self.updateToken(token: token.token)
-                        return self.parsed2(t, uri, run: run, attempt: 2)
+                        return self.parsed(t, uri, run: run, attempt: 2)
                     }
                 } else {
                     let decoder = JSONDecoder()
@@ -150,9 +123,12 @@ class BoatHttpClient {
         return URL(string: to, relativeTo: baseUrl)!
     }
     
-    private func parseAs2<T: Decodable>(_ t: T.Type, response: HttpResponse) -> Single<T> {
+    private func parseAs<T: Decodable>(_ t: T.Type, response: HttpResponse) -> Single<T> {
         do {
             let decoder = JSONDecoder()
+//            if let str = String(data: response.data, encoding: .utf8) {
+//                log.info("Response is: \(str)")
+//            }
             return Single.just(try decoder.decode(t, from: response.data))
         } catch let error as JsonError {
             self.log.error(error.describe)

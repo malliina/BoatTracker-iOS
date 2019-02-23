@@ -14,17 +14,24 @@ class TrophyAnnotation: NSObject, MGLAnnotation {
     var title: String?
     var subtitle: String?
     var coordinate: CLLocationCoordinate2D
+    var top: CoordBody
     
     init(top: CoordBody) {
+        self.top = top
         self.title = top.speed.description
-        self.subtitle = top.boatTime
+        self.subtitle = top.time.dateTime
         self.coordinate = top.coord
     }
     
     func update(top: CoordBody) {
+        self.top = top
         self.title = top.speed.description
-        self.subtitle = top.boatTime
+        self.subtitle = top.time.dateTime
         self.coordinate = top.coord
+    }
+    
+    func formatTime(formatting: FormatsLang) {
+        subtitle = Formats.shared.dateTime(millis: top.time.millis, lang: formatting)
     }
 }
 

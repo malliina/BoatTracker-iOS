@@ -23,9 +23,12 @@ class TrackListVC: BaseTableVC, TokenDelegate {
     private var tracks: [TrackRef] = []
     private var delegate: TracksDelegate? = nil
     
-    init(delegate: TracksDelegate?, login: Bool = false) {
+    let lang: Lang
+    
+    init(delegate: TracksDelegate?, login: Bool = false, lang: Lang) {
         self.delegate = delegate
         self.login = login
+        self.lang = lang
         super.init(style: .plain)
     }
     
@@ -35,7 +38,7 @@ class TrackListVC: BaseTableVC, TokenDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.title = "Tracks"
+        navigationItem.title = lang.track.tracks
         tableView?.register(TrackCell.self, forCellReuseIdentifier: cellKey)
 //        tableView.rowHeight = TrackCell.rowHeight
         
@@ -54,7 +57,7 @@ class TrackListVC: BaseTableVC, TokenDelegate {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellKey, for: indexPath) as! TrackCell
-        cell.fill(track: tracks[indexPath.row])
+        cell.fill(track: tracks[indexPath.row], lang: lang)
         return cell
     }
     
@@ -70,14 +73,14 @@ class TrackListVC: BaseTableVC, TokenDelegate {
     }
     
     func loadTracks() {
-        display(text: "Loading...")
+        display(text: lang.messages.loading)
         let _ = Backend.shared.http.tracks().subscribe { (single) in
             switch single {
             case .success(let ts):
                 self.log.info("Got \(ts.count) tracks.")
                 self.onUiThread {
                     if ts.isEmpty {
-                        self.tableView.backgroundView = self.feedbackView(text: "Hello! You have no saved tracks. To save tracks, you'll need to connect the BoatTracker agent software to the GPS chartplotter in your boat.")
+                        self.tableView.backgroundView = self.feedbackView(text: self.lang.settings.noTracksHelp)
                     } else {
                         self.tableView.backgroundView = nil
                         self.tracks = ts

@@ -11,8 +11,8 @@ import Foundation
 class BoatTokenCell: BoatCell {
     static let identifier = String(describing: BoatTokenCell.self)
     
-    let boatBox = StatBox("Boat", style: .large)
-    let tokenBox = StatBox("Token", style: .large)
+    let boatBox = StatBox(style: .large)
+    let tokenBox = StatBox(style: .large)
     
     override func configureView() {
         contentView.addSubview(boatBox)
@@ -29,8 +29,8 @@ class BoatTokenCell: BoatCell {
         }
     }
     
-    func fill(boat: BoatName, token: String) {
-        boatBox.fill(value: boat.name)
-        tokenBox.fill(value: token)
+    func fill(boat: BoatName, token: String, lang: SettingsLang) {
+        boatBox.fill(label: lang.boat, value: boat)
+        tokenBox.fill(label: lang.token, value: token)
     }
 }

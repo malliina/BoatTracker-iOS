@@ -8,36 +8,38 @@
 
 import Foundation
 
-public struct Duration: Comparable, CustomStringConvertible, IntCodable {
-    static let k = 1000
-    static let zero = Duration(0)
+public struct Duration: Comparable, CustomStringConvertible, DoubleCodable {
+    static let k: Double = 1000.0
+    static let zero = Duration(seconds: 0)
     
-    let ms: UInt64
-    var value: UInt64 { return ms }
+    let seconds: Double
+    var value: Double { return seconds }
     
-    init(_ value: UInt64) {
-        self.ms = value
+    init(_ seconds: Double) {
+        self.init(seconds: seconds)
     }
     
-    var seconds: Double { return Double(ms) / Double(Duration.k) }
+    init(seconds: Double) {
+        self.seconds = seconds
+    }
     
     public var description: String { return Formatting.shared.format(duration: self) }
     
     public static func == (lhs: Duration, rhs: Duration) -> Bool {
-        return lhs.ms == rhs.ms
+        return lhs.seconds == rhs.seconds
     }
     
     public static func < (lhs: Duration, rhs: Duration) -> Bool {
-        return lhs.ms < rhs.ms
+        return lhs.seconds < rhs.seconds
     }
 }
 
 public extension Int {
-    var ms: Duration { return Duration(UInt64(self)) }
-    var seconds: Duration { return Duration(UInt64(self * Duration.k)) }
+    var ms: Duration { return Duration(seconds: Double(self) / Duration.k) }
+    var seconds: Duration { return Duration(seconds: Double(self)) }
 }
 
 public extension Double {
-    var ms: Duration { return Duration(UInt64(self)) }
-    var seconds: Duration { return Duration(UInt64(self * Double(Duration.k))) }
+    var ms: Duration { return Duration(seconds: Double(self) / Duration.k) }
+    var seconds: Duration { return Duration(seconds: Double(self)) }
 }

@@ -10,12 +10,14 @@ import Foundation
 import UIKit
 
 class WelcomeSignedIn: UIViewController {
-    let welcomeLabel = BoatLabel.build(text: "Add this token to the Boat-Tracker agent software in your boat to save tracks to this app:")
+    let welcomeLabel = BoatLabel.build()
     let tokenLabel: UILabel
-    let laterLabel = BoatLabel.build(text: "You can later view this token in the Boats section of the app.")
+    let laterLabel = BoatLabel.build()
     let spacing = 16
+    let lang: SettingsLang
     
-    init(boatToken: String) {
+    init(boatToken: String, lang: SettingsLang) {
+        self.lang = lang
         tokenLabel = BoatLabel.build(text: boatToken, textColor: BoatColors.shared.secondaryText)
         super.init(nibName: nil, bundle: nil)
     }
@@ -26,10 +28,11 @@ class WelcomeSignedIn: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.title = "Welcome"
+        navigationItem.title = lang.welcome
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneClicked(_:)))
         view.backgroundColor = colors.backgroundColor
         view.addSubview(welcomeLabel)
+        welcomeLabel.text = lang.welcomeText
         welcomeLabel.snp.makeConstraints { (make) in
             make.leadingMargin.trailingMargin.centerX.centerY.equalToSuperview()
         }
@@ -39,6 +42,7 @@ class WelcomeSignedIn: UIViewController {
             make.top.equalTo(welcomeLabel.snp.bottom).offset(spacing)
         }
         view.addSubview(laterLabel)
+        laterLabel.text = lang.laterText
         laterLabel.snp.makeConstraints { (make) in
             make.leadingMargin.trailingMargin.equalToSuperview()
             make.top.equalTo(tokenLabel.snp.bottom).offset(spacing)

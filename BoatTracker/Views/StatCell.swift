@@ -12,8 +12,8 @@ import UIKit
 class StatCell: BoatCell {
     static let identifier = String(describing: StatCell.self)
     
-    let titleLabel = BoatLabel.build(text: "", alignment: .left, numberOfLines: 0)
-    let statLabel = BoatLabel.build(text: "", alignment: .left, numberOfLines: 0)
+    let titleLabel = BoatLabel.build(alignment: .left, numberOfLines: 0)
+    let statLabel = BoatLabel.build(alignment: .left, numberOfLines: 0)
     
     override func configureView() {
         contentView.addSubview(titleLabel)
@@ -31,7 +31,11 @@ class StatCell: BoatCell {
     }
     
     func fill(kv: LabeledValue) {
-        titleLabel.text = kv.label
-        statLabel.text = kv.value
+        fill(label: kv.label, value: kv.value)
+    }
+    
+    func fill(label: String, value: CustomStringConvertible) {
+        titleLabel.text = label
+        statLabel.text = value.description
     }
 }

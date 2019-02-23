@@ -77,16 +77,21 @@ struct ProfileLang: Codable {
 }
 
 struct MessagesLang: Codable {
-    let failedToLoadProfile, noSavedTracks: String
+    let loading, failedToLoadProfile, noSavedTracks, notAvailable: String
+}
+
+struct FormatsLang: Codable, Hashable {
+    let date, time, timeShort: String, dateTime: String
 }
 
 struct SettingsLang: Codable {
-    let welcome, welcomeText, laterText, notifications, notificationsText, howItWorks, signIn, signInText, boat, token, tokenText, tokenTextLong, rename, renameBoat, newName, cancel, back: String
+    let welcome, welcomeText, laterText, notifications, notificationsText, howItWorks, signIn, signInText, boat, token, tokenText, tokenTextLong, rename, renameBoat, newName, cancel, back, noTracksHelp: String
+    let formats: FormatsLang
 }
 
 struct Lang: Codable {
     let language: Language
-    let map, name, qualityClass, time, comparisonLevel: String
+    let appName, map, name, qualityClass, time, comparisonLevel: String
     let specialWords: SpecialWords
     let fairway: FairwayLang
     let track: TrackLang

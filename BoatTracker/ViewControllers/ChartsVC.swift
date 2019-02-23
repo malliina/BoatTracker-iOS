@@ -19,12 +19,16 @@ class ChartsVC: UIViewController {
     private var socket: BoatSocket? = nil
     let chart = LineChartView(frame: CGRect.zero)
     // Inits empty datasets whose data will be filled when coordinate events arrive
-    let speedDataSet = LineChartDataSet(values: [], label: "Speed (kn)")
-    let depthDataSet = LineChartDataSet(values: [], label: "Depth (m)")
+    let speedDataSet: LineChartDataSet
+    let depthDataSet: LineChartDataSet
     let track: TrackName
+    let lang: Lang
     
-    init(track: TrackName) {
+    init(track: TrackName, lang: Lang) {
         self.track = track
+        self.lang = lang
+        speedDataSet = LineChartDataSet(values: [], label: "\(lang.track.speed) (kn)")
+        depthDataSet = LineChartDataSet(values: [], label: "\(lang.track.depth) (m)")
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -36,7 +40,7 @@ class ChartsVC: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
         navigationController?.navigationBar.isTranslucent = false
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(goBackClicked(_:)))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: lang.settings.back, style: .plain, target: self, action: #selector(goBackClicked(_:)))
         
         speedDataSet.colors = [ .red ]
         speedDataSet.circleRadius = 0
@@ -47,7 +51,7 @@ class ChartsVC: UIViewController {
         depthDataSet.circleHoleRadius = 0
         
         chart.data = LineChartData(dataSets: [speedDataSet, depthDataSet])
-        chart.xAxis.valueFormatter = TimeFormatter()
+        chart.xAxis.valueFormatter = TimeFormatter(formatting: lang.settings.formats)
         chart.xAxis.labelPosition = .bottom
         view.addSubview(chart)
         chart.snp.makeConstraints { (make) in
@@ -71,13 +75,13 @@ class ChartsVC: UIViewController {
 extension ChartsVC: BoatSocketDelegate {
     func onCoords(event: CoordsData) {
         let speedEntries = event.coords.map { c in
-            ChartDataEntry(x: Double(c.boatTimeMillis), y: c.speed.knots, data: c.boatTime as AnyObject)
+            ChartDataEntry(x: Double(c.time.millis), y: c.speed.knots, data: c.time.dateTime as AnyObject)
         }
         let depthEntries = event.coords.map { c in
-            ChartDataEntry(x: Double(c.boatTimeMillis), y: c.depth.meters, data: c.depth as AnyObject)
+            ChartDataEntry(x: Double(c.time.millis), y: c.depth.meters, data: c.depth as AnyObject)
         }
         onUiThread {
-            self.navigationItem.title = event.from.startDate
+            self.navigationItem.title = event.from.trackTitle?.description ?? event.from.startDate(lang: self.lang.settings.formats)
             self.speedDataSet.values = self.speedDataSet.values + speedEntries
             self.depthDataSet.values = self.depthDataSet.values + depthEntries
             self.chart.data?.notifyDataChanged()
@@ -93,11 +97,12 @@ extension ChartsVC: ChartViewDelegate {
 }
 
 class TimeFormatter: IAxisValueFormatter {
-    let formatter: DateFormatter = DateFormatter()
+    let formatter: DateFormatter
 
-    init() {
-        formatter.dateStyle = .none
-        formatter.timeStyle = .short
+    init(formatting: FormatsLang) {
+        let formatter = DateFormatter()
+        formatter.dateFormat = formatting.timeShort
+        self.formatter = formatter
     }
     
     func stringForValue(_ value: Double, axis: AxisBase?) -> String {

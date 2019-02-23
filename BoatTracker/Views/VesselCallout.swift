@@ -123,7 +123,7 @@ class VesselCallout: BoatCallout {
             make.trailing.equalToSuperview().inset(inset)
         }
         
-        boatTimeValue.text = Formats.shared.timestamped(date: vessel.boatTime)
+        boatTimeValue.text = Formats.shared.dateTime(date: vessel.boatTime, lang: lang.settings.formats)
         boatTimeValue.snp.makeConstraints { (make) in
             make.top.equalTo(draftValue.snp.bottom).offset(spacing)
             make.leading.trailing.bottom.equalToSuperview().inset(inset)

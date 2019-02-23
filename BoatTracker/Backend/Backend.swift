@@ -15,21 +15,22 @@ class Backend {
     let baseUrl: URL
     private var latestToken: UserToken? = nil
     
+    var language: Language = Language.en
     var http: BoatHttpClient
     var socket: BoatSocket
     
     init(_ baseUrl: URL) {
         Logging.URLRequests = { _ in false }
         self.baseUrl = baseUrl
-        self.http = BoatHttpClient(bearerToken: nil, baseUrl: baseUrl, client: HttpClient())
-        self.socket = BoatSocket(token: nil, track: nil)
+        self.http = BoatHttpClient(bearerToken: nil, baseUrl: baseUrl, client: HttpClient(), language: language)
+        self.socket = BoatSocket(token: nil, track: nil, language: language)
     }
     
     func updateToken(new token: UserToken?) {
         latestToken = token
         http.updateToken(token: token?.token)
         socket.close()
-        socket = BoatSocket(token: token?.token, track: nil)
+        socket = BoatSocket(token: token?.token, track: nil, language: language)
     }
     
     func open(track: TrackName, delegate: BoatSocketDelegate) {
@@ -39,7 +40,7 @@ class Backend {
     }
     
     func openStandalone(track: TrackName, delegate: BoatSocketDelegate) -> BoatSocket {
-        let s = BoatSocket(token: latestToken?.token, track: track)
+        let s = BoatSocket(token: latestToken?.token, track: track, language: language)
         s.delegate = delegate
         s.open()
         return s

@@ -26,7 +26,7 @@ class Formatting {
     
     func format(duration: Duration) -> String {
         let seconds = duration.seconds
-        let formatter = duration.seconds >= 3600 ? hours : minutes
+        let formatter = seconds >= 3600 ? hours : minutes
         return formatter.string(from: seconds) ?? "\(seconds) s"
     }
 }

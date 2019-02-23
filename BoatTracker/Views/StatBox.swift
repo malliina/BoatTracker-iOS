@@ -15,7 +15,7 @@ enum StatBoxStyle {
 }
 
 class StatBox: UIView {
-    let label: UILabel
+    let labelText: UILabel
     let valueText: UILabel
     
     var value: String {
@@ -23,38 +23,37 @@ class StatBox: UIView {
         set { valueText.text = newValue }
     }
     
-    convenience init(_ title: String, style: StatBoxStyle) {
+    convenience init(_ title: String = "", style: StatBoxStyle) {
         switch style {
         case .small:
-            self.init(title, initialValue: "N/A", labelFontSize: 12, valueFontSize: 15, verticalSpace: 6)
+            self.init(title, labelFontSize: 12, valueFontSize: 15, verticalSpace: 6)
         case .large:
-            self.init(title, initialValue: "N/A", labelFontSize: 14, valueFontSize: 17, verticalSpace: 12)
+            self.init(title, labelFontSize: 14, valueFontSize: 17, verticalSpace: 12)
         }
     }
     
-    init(_ title: String, initialValue: String = "N/A", labelFontSize: CGFloat = 14, valueFontSize: CGFloat = 17, verticalSpace: CGFloat = 12) {
-        label = BoatLabel.build(text: "", fontSize: labelFontSize, textColor: BoatColors.shared.secondaryText)
-        valueText = BoatLabel.build(text: "", fontSize: valueFontSize)
+    init(_ title: String = "", labelFontSize: CGFloat = 14, valueFontSize: CGFloat = 17, verticalSpace: CGFloat = 12) {
+        labelText = BoatLabel.build(text: title, fontSize: labelFontSize, textColor: BoatColors.shared.secondaryText)
+        valueText = BoatLabel.build(fontSize: valueFontSize)
         super.init(frame: CGRect.zero)
-        addSubview(label)
+        addSubview(labelText)
         addSubview(valueText)
-        label.text = title
-        valueText.text = initialValue
         snap(verticalSpace: verticalSpace)
     }
     
     func snap(verticalSpace: CGFloat) {
-        label.snp.makeConstraints { (make) in
+        labelText.snp.makeConstraints { (make) in
             make.leading.trailing.top.equalToSuperview()
         }
         valueText.snp.makeConstraints { (make) in
-            make.top.equalTo(label.snp.bottom).offset(verticalSpace)
+            make.top.equalTo(labelText.snp.bottom).offset(verticalSpace)
             make.leading.trailing.bottom.equalToSuperview()
         }
     }
     
-    func fill(value: String) {
-        valueText.text = value
+    func fill(label: String, value: CustomStringConvertible) {
+        labelText.text = label
+        valueText.text = value.description
     }
     
     required init?(coder aDecoder: NSCoder) {

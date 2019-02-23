@@ -46,6 +46,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
             return selectLanguage(lang: userLanguage, available: languages)
         }
     }
+    private var firstInit: Bool = true
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -111,8 +112,11 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     }
     
     func initInteractive(mapView: MGLMapView, style: MGLStyle, layers: MapboxLayers) {
-        self.aisRenderer = AISRenderer(mapView: mapView, style: style, conf: layers.ais)
-        self.taps = TapListener(mapView: mapView, marksLayers: layers.marks)
+        if firstInit {
+            firstInit = false
+            self.aisRenderer = AISRenderer(mapView: mapView, style: style, conf: layers.ais)
+            self.taps = TapListener(mapView: mapView, marksLayers: layers.marks)
+        }
     }
     
     func initConf() {
@@ -171,6 +175,9 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     
     func mapView(_ mapView: MGLMapView, viewFor annotation: MGLAnnotation) -> MGLAnnotationView? {
         if let annotation = annotation as? TrophyAnnotation, let renderer = boatRenderer {
+            if let language = language {
+                annotation.formatTime(formatting: language.settings.formats)
+            }
             return renderer.viewFor(annotation: annotation)
         } else {
             // This is for custom annotation views, which we display manually in handleMapTap, I think
@@ -313,9 +320,9 @@ extension MapVC: WelcomeDelegate {
         let _ = Backend.shared.http.profile().subscribe { (event) in
             switch event {
             case .success(let profile):
-                if let boatToken = profile.boats.headOption()?.token {
+                if let boatToken = profile.boats.headOption()?.token, let lang = self.language {
                     self.onUiThread {
-                        self.navigate(to: WelcomeSignedIn(boatToken: boatToken))
+                        self.navigate(to: WelcomeSignedIn(boatToken: boatToken, lang: lang.settings))
                     }
                 } else {
                     self.log.warn("Signed in but user has no boats.")

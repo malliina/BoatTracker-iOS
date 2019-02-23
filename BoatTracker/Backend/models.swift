@@ -475,11 +475,12 @@ struct CoordsData: Codable {
 
 struct CoordBody: Codable {
     let coord: CLLocationCoordinate2D
-    let boatTime: String
+//    let boatTime: String
     let boatTimeMillis: UInt64
     let speed: Speed
     let depth: Distance
     let waterTemp: Temperature
+    let time: Timing
 }
 
 struct TrackMeta: Codable {
@@ -492,21 +493,35 @@ struct TracksResponse: Codable {
     let tracks: [TrackRef]
 }
 
+struct Timing: Codable {
+    let date, time, dateTime: String
+    let millis: UInt64
+}
+
+struct Times: Codable {
+    let start, end: Timing
+    let range: String
+}
+
 struct TrackRef: Codable {
     let trackName: TrackName
+    let trackTitle: TrackTitle?
     let boatName: BoatName
     let username: Username
-    
-    let startMillis: Double
+
     let topSpeed: Speed?
     let avgSpeed: Speed?
     let distance: DistanceMillis
     let duration: Duration
     let avgWaterTemp: Temperature?
     let topPoint: CoordBody
+    let times: Times
     
-    var startDate: String { get { return Formats.shared.format(date: start) } }
-    var start: Date { return Date(timeIntervalSince1970: startMillis / 1000) }
+    var start: Date { return Date(timeIntervalSince1970: Double(times.start.millis) / 1000) }
+    
+    func startDate(lang: FormatsLang) -> String {
+        return Formats.shared.date(date: start, lang: lang)
+    }
 }
 
 struct TrackStats: Codable {
@@ -535,7 +550,7 @@ struct BoatName: Equatable, Hashable, CustomStringConvertible, StringCodable {
     static func == (lhs: BoatName, rhs: BoatName) -> Bool { return lhs.name == rhs.name }
 }
 
-struct TrackName: Equatable, Hashable, CustomStringConvertible, StringCodable {
+struct TrackName: Hashable, CustomStringConvertible, StringCodable {
     let name: String
     var description: String { return name }
     
@@ -546,7 +561,18 @@ struct TrackName: Equatable, Hashable, CustomStringConvertible, StringCodable {
     static func == (lhs: TrackName, rhs: TrackName) -> Bool { return lhs.name == rhs.name }
 }
 
-struct Username: Equatable, Hashable, CustomStringConvertible, StringCodable {
+struct TrackTitle: Hashable, CustomStringConvertible, StringCodable {
+    let title: String
+    var description: String { return title }
+    
+    init(_ name: String) {
+        self.title = name
+    }
+    
+    static func == (lhs: TrackTitle, rhs: TrackTitle) -> Bool { return lhs.title == rhs.title }
+}
+
+struct Username: Hashable, CustomStringConvertible, StringCodable {
     let name: String
     var description: String { return name }
     
@@ -706,17 +732,12 @@ struct SimpleMessage: Codable {
 }
 
 enum Language: String, Codable {
-    case fi
-    case se
-    case en
+    case fi = "fi-FI"
+    case se = "sv-SE"
+    case en = "en-US"
     
     static func parse(s: String) -> Language {
-        switch s {
-        case "fi": return fi
-        case "se": return se
-        case "en": return en
-        default: return en
-        }
+        return Language(rawValue: s) ?? en
     }
 }
 

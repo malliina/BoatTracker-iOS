@@ -27,10 +27,13 @@ class BoatSocket: SocketDelegate {
     var statsDelegate: BoatSocketDelegate? = nil
     var vesselDelegate: VesselDelegate? = nil
     
-    convenience init(token: AccessToken?, track: TrackName?) {
-        var headers = [HttpClient.ACCEPT: BoatHttpClient.BoatVersion]
+    convenience init(token: AccessToken?, track: TrackName?, language: Language) {
+        var headers = [
+            Headers.accept: BoatHttpClient.BoatVersion,
+            Headers.acceptLanguage: language.rawValue
+        ]
         if let token = token {
-            headers.updateValue("bearer \(token.token)", forKey: HttpClient.AUTHORIZATION)
+            headers.updateValue("bearer \(token.token)", forKey: Headers.authorization)
         }
         let trackQuery = track.map { "?track=\($0.name)" } ?? ""
         let url = URL(string: "/ws/updates\(trackQuery)", relativeTo: EnvConf.shared.baseUrl)!
