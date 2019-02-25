@@ -16,14 +16,14 @@ class VesselAnnotation: CustomAnnotation {
     var destination: String?
     var speed: Speed
     var draft: Distance
-    var boatTime: Date
+    var time: Timing
     
     init(vessel: Vessel) {
         self.name = vessel.name
         self.destination = vessel.destination
         self.speed = vessel.speed
         self.draft = vessel.draft
-        self.boatTime = vessel.timestamp
+        self.time = vessel.time
         super.init(coord: vessel.coord)
     }
     
@@ -32,7 +32,7 @@ class VesselAnnotation: CustomAnnotation {
         self.destination = vessel.destination
         self.speed = vessel.speed
         self.draft = vessel.draft
-        self.boatTime = vessel.timestamp
+        self.time = vessel.time
         self.coordinate = vessel.coord
     }
 }
@@ -123,7 +123,7 @@ class VesselCallout: BoatCallout {
             make.trailing.equalToSuperview().inset(inset)
         }
         
-        boatTimeValue.text = Formats.shared.dateTime(date: vessel.boatTime, lang: lang.settings.formats)
+        boatTimeValue.text = vessel.time.dateTime
         boatTimeValue.snp.makeConstraints { (make) in
             make.top.equalTo(draftValue.snp.bottom).offset(spacing)
             make.leading.trailing.bottom.equalToSuperview().inset(inset)

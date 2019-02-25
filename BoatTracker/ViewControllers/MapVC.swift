@@ -175,9 +175,6 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     
     func mapView(_ mapView: MGLMapView, viewFor annotation: MGLAnnotation) -> MGLAnnotationView? {
         if let annotation = annotation as? TrophyAnnotation, let renderer = boatRenderer {
-            if let language = language {
-                annotation.formatTime(formatting: language.settings.formats)
-            }
             return renderer.viewFor(annotation: annotation)
         } else {
             // This is for custom annotation views, which we display manually in handleMapTap, I think

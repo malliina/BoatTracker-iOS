@@ -72,7 +72,7 @@ class TrackSummaryBox: UIView {
     func fill(track: TrackRef, lang: Lang) {
         isHidden = false
         let trackLang = lang.track
-        date.fill(label: trackLang.date, value: track.startDate(lang: lang.settings.formats))
+        date.fill(label: trackLang.date, value: track.startDate)
         duration.fill(label: trackLang.duration, value: track.duration)
         distance.fill(label: trackLang.distance, value: track.distance)
         let notAvailable = lang.messages.notAvailable

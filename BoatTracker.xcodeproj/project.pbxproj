@@ -52,7 +52,6 @@
 		6199E0F720F254FB00A4009A /* SocketClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6199E0F620F254FB00A4009A /* SocketClient.swift */; };
 		6199E0F920F25EA100A4009A /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6199E0F820F25EA100A4009A /* Credentials.swift */; };
 		6199E0FB20F2656500A4009A /* Credentials.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6199E0FA20F2656500A4009A /* Credentials.plist */; };
-		619F960621139EA1001F7B86 /* Formats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619F960521139EA1001F7B86 /* Formats.swift */; };
 		61AB2C7F2132A63C009774DC /* viewExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61AB2C7E2132A63C009774DC /* viewExt.swift */; };
 		61ACE5C72130956A00925265 /* WelcomeSignedIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61ACE5C62130956A00925265 /* WelcomeSignedIn.swift */; };
 		61ACE5C921309E5E00925265 /* BoatPrefs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61ACE5C821309E5E00925265 /* BoatPrefs.swift */; };
@@ -161,7 +160,6 @@
 		6199E0F620F254FB00A4009A /* SocketClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocketClient.swift; sourceTree = "<group>"; };
 		6199E0F820F25EA100A4009A /* Credentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Credentials.swift; sourceTree = "<group>"; };
 		6199E0FA20F2656500A4009A /* Credentials.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Credentials.plist; sourceTree = "<group>"; };
-		619F960521139EA1001F7B86 /* Formats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Formats.swift; sourceTree = "<group>"; };
 		61AB2C7E2132A63C009774DC /* viewExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = viewExt.swift; sourceTree = "<group>"; };
 		61ACE5C62130956A00925265 /* WelcomeSignedIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeSignedIn.swift; sourceTree = "<group>"; };
 		61ACE5C821309E5E00925265 /* BoatPrefs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatPrefs.swift; sourceTree = "<group>"; };
@@ -392,7 +390,6 @@
 				61F4199421206F9200B1ED7D /* Arrays.swift */,
 				6199E0F820F25EA100A4009A /* Credentials.swift */,
 				61CD40CE211635FD00F31AA5 /* Dummy.swift */,
-				619F960521139EA1001F7B86 /* Formats.swift */,
 				613669BD217117390043494A /* generalExtensions.swift */,
 				6199E0EE20F24EC300A4009A /* Log.swift */,
 				61DE7F4020F2A23100C95B3F /* StringUtils.swift */,
@@ -798,7 +795,6 @@
 				619679F820FBBB4D00432672 /* StatCell.swift in Sources */,
 				613669BE217117390043494A /* generalExtensions.swift in Sources */,
 				6199E0F520F2501E00A4009A /* errors.swift in Sources */,
-				619F960621139EA1001F7B86 /* Formats.swift in Sources */,
 				6199E0F720F254FB00A4009A /* SocketClient.swift in Sources */,
 				619679FA20FBCDB100432672 /* TrackListVC.swift in Sources */,
 				61BCBE7D2207730400EE74EB /* BoatRenderer.swift in Sources */,

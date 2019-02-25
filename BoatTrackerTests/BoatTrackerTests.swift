@@ -40,28 +40,10 @@ class BoatTrackerTests: XCTestCase {
         XCTAssertNil(try kc.findToken())
     }
     
-    func testTimeFormatting() throws {
-        let now = Date()
-        let tf = DateFormatter()
-        tf.dateFormat = "yyyy-MM-dd HH:mm:ss"
-//        print(tf.string(from: now))
-        XCTAssertEqual(tf.string(from: now).count, tf.dateFormat.count)
-    }
-    
     func testPerformanceExample() {
         // This is an example of a performance test case.
         self.measure {
             // Put the code you want to measure the time of here.
         }
     }
-    
-    func testFormatting() {
-        let formatter = DateFormatter()
-        let format = "HH:mm:ss"
-        formatter.dateFormat = format
-        let formatted = formatter.string(from: Date())
-//        print(formatted)
-        XCTAssertTrue(formatted.count == format.count)
-    }
-    
 }

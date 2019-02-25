@@ -81,7 +81,7 @@ extension ChartsVC: BoatSocketDelegate {
             ChartDataEntry(x: Double(c.time.millis), y: c.depth.meters, data: c.depth as AnyObject)
         }
         onUiThread {
-            self.navigationItem.title = event.from.trackTitle?.description ?? event.from.startDate(lang: self.lang.settings.formats)
+            self.navigationItem.title = event.from.trackTitle?.description ?? event.from.startDate
             self.speedDataSet.values = self.speedDataSet.values + speedEntries
             self.depthDataSet.values = self.depthDataSet.values + depthEntries
             self.chart.data?.notifyDataChanged()

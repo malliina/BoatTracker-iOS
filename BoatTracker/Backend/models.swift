@@ -439,8 +439,8 @@ struct Vessel: Codable {
     let coord: CLLocationCoordinate2D
     let timestampMillis: Double
     let destination: String?
+    let time: Timing
 
-    var timestamp: Date { return Date(timeIntervalSince1970: timestampMillis / 1000) }
     var speed: Speed { return sog }
 }
 
@@ -475,7 +475,6 @@ struct CoordsData: Codable {
 
 struct CoordBody: Codable {
     let coord: CLLocationCoordinate2D
-//    let boatTime: String
     let boatTimeMillis: UInt64
     let speed: Speed
     let depth: Distance
@@ -518,10 +517,7 @@ struct TrackRef: Codable {
     let times: Times
     
     var start: Date { return Date(timeIntervalSince1970: Double(times.start.millis) / 1000) }
-    
-    func startDate(lang: FormatsLang) -> String {
-        return Formats.shared.date(date: start, lang: lang)
-    }
+    var startDate: String { return times.start.date }
 }
 
 struct TrackStats: Codable {

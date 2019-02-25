@@ -29,10 +29,6 @@ class TrophyAnnotation: NSObject, MGLAnnotation {
         self.subtitle = top.time.dateTime
         self.coordinate = top.coord
     }
-    
-    func formatTime(formatting: FormatsLang) {
-        subtitle = Formats.shared.dateTime(millis: top.time.millis, lang: formatting)
-    }
 }
 
 class CustomAnnotation: NSObject, MGLAnnotation {

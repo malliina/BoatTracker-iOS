@@ -39,7 +39,7 @@ class AISRenderer {
         trails.install(to: style)
         vesselTrails = trails.source
         
-        log.info("Initialized vessel source.")
+//        log.info("Initialized vessel source.")
     }
     
     func info(for mmsi: Mmsi) -> Vessel? {
