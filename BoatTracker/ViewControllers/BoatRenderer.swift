@@ -171,20 +171,8 @@ class BoatRenderer {
     }
     
     private func removeTrack(track: TrackName) {
-        let tName = trailName(for: track)
-        let iName = iconName(for: track)
-        if let trail = style.layer(withIdentifier: tName) {
-            style.removeLayer(trail)
-        }
-        if let trailSource = style.source(withIdentifier: tName) {
-            style.removeSource(trailSource)
-        }
-        if let icon = style.layer(withIdentifier: iName) {
-            style.removeLayer(icon)
-        }
-        if let iconSource = style.source(withIdentifier: iName) {
-            style.removeSource(iconSource)
-        }
+        style.removeSourceAndLayer(id: trailName(for: track))
+        style.removeSourceAndLayer(id: iconName(for: track))
         if let marker = topSpeedMarkers[track]?.annotation {
             mapView.deselectAnnotation(marker, animated: false)
             mapView.removeAnnotation(marker)

@@ -24,12 +24,15 @@ class Layers {
         return iconLayer
     }
     
-    static func line(id: String, source: MGLShapeSource) -> MGLLineStyleLayer {
+    static func line(id: String, source: MGLShapeSource, color: UIColor = .black, minimumZoomLevel: Float? = nil) -> MGLLineStyleLayer {
         let lineLayer = MGLLineStyleLayer(identifier: id, source: source)
         lineLayer.lineJoin = NSExpression(forConstantValue: "round")
         lineLayer.lineCap = NSExpression(forConstantValue: "round")
-        lineLayer.lineColor = NSExpression(forConstantValue: UIColor.black)
+        lineLayer.lineColor = NSExpression(forConstantValue: color)
         lineLayer.lineWidth = NSExpression(forConstantValue: 1)
+        if let minimumZoomLevel = minimumZoomLevel {
+            lineLayer.minimumZoomLevel = minimumZoomLevel
+        }
         return lineLayer
     }
 }
@@ -50,9 +53,9 @@ class LayerSource<L: MGLStyleLayer> {
 }
 
 extension LayerSource where L == MGLLineStyleLayer {
-    convenience init(lineId: String) {
+    convenience init(lineId: String, lineColor: UIColor = .black, minimumZoomLevel: Float? = nil) {
         let source = MGLShapeSource(identifier: lineId, shape: nil, options: nil)
-        let layer = Layers.line(id: lineId, source: source)
+        let layer = Layers.line(id: lineId, source: source, color: lineColor, minimumZoomLevel: minimumZoomLevel)
         self.init(source, layer: layer)
     }
 }
@@ -62,5 +65,16 @@ extension LayerSource where L == MGLSymbolStyleLayer {
         let source = MGLShapeSource(identifier: iconId, shape: nil, options: nil)
         let layer = Layers.icon(id: iconId, iconImageName: iconImageName, source: source)
         self.init(source, layer: layer)
+    }
+}
+
+extension MGLStyle {
+    func removeSourceAndLayer(id: String) {
+        if let layer = self.layer(withIdentifier: id) {
+            self.removeLayer(layer)
+        }
+        if let source = self.source(withIdentifier: id) {
+            self.removeSource(source)
+        }
     }
 }

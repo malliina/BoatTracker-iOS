@@ -334,5 +334,6 @@ extension MapVC: WelcomeDelegate {
 extension MapVC: MapDelegate {
     func close() {
         disconnect()
+        aisRenderer?.clear()
     }
 }

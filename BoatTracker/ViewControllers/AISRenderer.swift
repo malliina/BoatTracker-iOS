@@ -13,7 +13,6 @@ import Mapbox
 class AISRenderer {
     let log = LoggerFactory.shared.vc(AISRenderer.self)
     
-    private let headingKey = "heading"
     private let maxTrailLength = 200
     private let vesselTrails: MGLShapeSource
     private let vesselShape: MGLShapeSource
@@ -35,11 +34,9 @@ class AISRenderer {
         vesselShape = vessels.source
         
         // Trails
-        let trails = LayerSource(lineId: conf.trail)
+        let trails = LayerSource(lineId: conf.trail, lineColor: .darkGray, minimumZoomLevel: 11.0)
         trails.install(to: style)
         vesselTrails = trails.source
-        
-//        log.info("Initialized vessel source.")
     }
     
     func info(for mmsi: Mmsi) -> Vessel? {
@@ -68,7 +65,11 @@ class AISRenderer {
             guard let latest: Vessel = v.first else { return nil }
             let point = MGLPointFeature()
             point.coordinate = latest.coord
-            point.attributes = [Mmsi.key: latest.mmsi.mmsi, Vessel.nameKey: latest.name, Vessel.headingKey: latest.heading ?? latest.cog]
+            point.attributes = [
+                Mmsi.key: latest.mmsi.mmsi,
+                Vessel.nameKey: latest.name,
+                Vessel.headingKey: latest.heading ?? latest.cog
+            ]
             return point
         }
         vesselShape.shape = MGLShapeCollectionFeature(shapes: updatedVessels)
@@ -79,5 +80,21 @@ class AISRenderer {
         }
         vesselTrails.shape = MGLMultiPolylineFeature(polylines: updatedTrails)
         //        log.info("Updated vessel source which now has \(updatedVessels.count) locations.")
+    }
+    
+    /// Clears the map to avoid discontinuities in AIS trails.
+    ///
+    /// Otherwise the following error occurs:
+    ///
+    /// 1) The app comes to the foreground, connects, shows AIS trails
+    /// 2) The app goes to the background, disconnecting any connections
+    /// 3) The app returns to the foreground, reconnects any sockets, then reconnects any trails rendered in step 1)
+    ///
+    /// In other words, we should always clear trails when the app goes to the background or where there's a socket disconnection
+    /// (unless we have persistence, which we don't).
+    func clear() {
+        log.info("Clearing vessels")
+        vesselTrails.shape = MGLMultiPolylineFeature(polylines: [])
+        vesselShape.shape = MGLShapeCollectionFeature(shapes: [])
     }
 }
