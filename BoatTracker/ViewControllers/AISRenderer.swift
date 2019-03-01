@@ -94,6 +94,8 @@ class AISRenderer {
     /// (unless we have persistence, which we don't).
     func clear() {
         log.info("Clearing vessels")
+        vesselHistory.removeAll()
+        vesselIcons.removeAll()
         vesselTrails.shape = MGLMultiPolylineFeature(polylines: [])
         vesselShape.shape = MGLShapeCollectionFeature(shapes: [])
     }
