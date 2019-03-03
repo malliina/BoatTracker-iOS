@@ -77,6 +77,7 @@ class BoatRenderer {
     }
     
     func addCoords(event: CoordsData) {
+        log.info("Got coords \(event)")
         let from = event.from
         let track = from.trackName
         latestTrack = track
@@ -113,7 +114,11 @@ class BoatRenderer {
         switch mapMode {
         case .fit:
             if coords.count > 1 {
-                let destinationCamera = mapView.cameraThatFitsCoordinateBounds(polyline.overlayBounds, edgePadding: UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20))
+                let edgePadding = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
+//                let destinationCamera = mapView.cameraThatFitsCoordinateBounds(polyline.overlayBounds)
+                let bounds = polyline.overlayBounds
+                log.info("Fitting to \(bounds.sw) \(bounds.ne)")
+                let destinationCamera = mapView.cameraThatFitsCoordinateBounds(bounds, edgePadding: edgePadding)
                 mapView.fly(to: destinationCamera, completionHandler: nil)
                 mapMode = .follow
             }

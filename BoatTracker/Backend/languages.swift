@@ -73,7 +73,7 @@ struct SpecialWords: Codable {
 }
 
 struct ProfileLang: Codable {
-    let username, signedInAs, logout, chooseIdentityProvider, finnish, swedish, english: String
+    let username, signedInAs, logout, chooseIdentityProvider, language, finnish, swedish, english: String
 }
 
 struct MessagesLang: Codable {

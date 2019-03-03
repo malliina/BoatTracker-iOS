@@ -16,7 +16,7 @@ struct Headers {
 
 class HttpClient {
     private let log = LoggerFactory.shared.network(HttpClient.self)
-    static let json = "application/json", delete = "DELETE", get = "GET", patch = "PATCH", post = "POST", basic = "Basic"
+    static let json = "application/json", delete = "DELETE", get = "GET", patch = "PATCH", post = "POST", put = "PUT", basic = "Basic"
     
     static func basicAuthValue(_ username: String, password: String) -> String {
         let encodable = "\(username):\(password)"
@@ -46,16 +46,21 @@ class HttpClient {
     
     func patchJSON(_ url: URL, headers: [String: String] = [:], payload: [String: AnyObject]) -> Single<HttpResponse> {
         let json = try? JSONSerialization.data(withJSONObject: payload, options: [])
-        let req = buildRequest(url: url, httpMethod: HttpClient.patch, headers: headers, body: json)
-        return executeHttp(req)
+        return sendData(url, headers: headers, payload: json, httpMethod: HttpClient.patch)
     }
     
     func postJSON(_ url: URL, headers: [String: String] = [:], payload: [String: AnyObject]) -> Single<HttpResponse> {
-        return postData(url, headers: headers, payload: try? JSONSerialization.data(withJSONObject: payload, options: []))
+        let json = try? JSONSerialization.data(withJSONObject: payload, options: [])
+        return sendData(url, headers: headers, payload: json, httpMethod: HttpClient.post)
     }
     
-    func postData(_ url: URL, headers: [String: String] = [:], payload: Data?) -> Single<HttpResponse> {
-        let req = buildRequest(url: url, httpMethod: HttpClient.post, headers: headers, body: payload)
+    func putJSON(_ url: URL, headers: [String: String] = [:], payload: [String: AnyObject]) -> Single<HttpResponse> {
+        let json = try? JSONSerialization.data(withJSONObject: payload, options: [])
+        return sendData(url, headers: headers, payload: json, httpMethod: HttpClient.put)
+    }
+    
+    func sendData(_ url: URL, headers: [String: String] = [:], payload: Data?, httpMethod: String) -> Single<HttpResponse> {
+        let req = buildRequest(url: url, httpMethod: httpMethod, headers: headers, body: payload)
         return executeHttp(req)
     }
     

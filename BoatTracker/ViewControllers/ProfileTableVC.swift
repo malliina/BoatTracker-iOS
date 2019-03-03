@@ -36,7 +36,7 @@ class ProfileTableVC: BaseTableVC {
     let tracksDelegate: TracksDelegate
     let user: UserToken
     let current: TrackName?
-    let lang: Lang
+    var lang: Lang
     
     var summary: TrackRef? = nil
     var state: ViewState = .loading
@@ -54,16 +54,12 @@ class ProfileTableVC: BaseTableVC {
     }
     
     init(tokenDelegate: TokenDelegate, tracksDelegate: TracksDelegate, current: TrackName?, user: UserToken, lang: Lang) {
-        self.lang = lang
         self.delegate = tokenDelegate
         self.tracksDelegate = tracksDelegate
         self.current = current
         self.user = user
+        self.lang = lang
         super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
     
     override func viewDidLoad() {
@@ -76,6 +72,16 @@ class ProfileTableVC: BaseTableVC {
         }
         loadTracks()
         socket.statsDelegate = self
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if settings.currentLanguage != lang.language, let newLang = settings.lang {
+            self.lang = newLang
+            navigationItem.title = newLang.appName
+            navigationItem.leftBarButtonItem?.title = newLang.map
+            tableView.reloadData()
+        }
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -96,8 +102,11 @@ class ProfileTableVC: BaseTableVC {
                 case 2: cell.textLabel?.text = lang.track.boats
                 default: ()
                 }
-            case 2: initAttributionsCell(cell: cell)
-            case 3: initLogoutCells(cell: cell, indexPath: indexPath)
+            case 2:
+                cell.accessoryType = .disclosureIndicator
+                cell.textLabel?.text = lang.profile.language
+            case 3: initAttributionsCell(cell: cell)
+            case 4: initLogoutCells(cell: cell, indexPath: indexPath)
             default: ()
             }
         case .empty:
@@ -189,8 +198,10 @@ class ProfileTableVC: BaseTableVC {
             default: ()
             }
         case 2:
-            openAttributions()
+            openLanguageSelection()
         case 3:
+            openAttributions()
+        case 4:
             switch indexPath.row {
             case 1: logout()
             default: ()
@@ -215,6 +226,10 @@ class ProfileTableVC: BaseTableVC {
             }
         default: ()
         }
+    }
+    
+    func openLanguageSelection() {
+        nav(to: SelectLanguageVC(lang: lang.profile))
     }
     
     func openBoats() {
@@ -264,7 +279,8 @@ class ProfileTableVC: BaseTableVC {
             default:
                 return basicCellIdentifier
             }
-        default: return basicCellIdentifier
+        default:
+            return basicCellIdentifier
         }
     }
     
@@ -275,7 +291,8 @@ class ProfileTableVC: BaseTableVC {
             case 0: return 1
             case 1: return 3
             case 2: return 1
-            case 3: return 2
+            case 3: return 1
+            case 4: return 2
             default: return 0
             }
         case .empty:
@@ -291,7 +308,7 @@ class ProfileTableVC: BaseTableVC {
     }
     override func numberOfSections(in tableView: UITableView) -> Int {
         switch state {
-        case .content: return 4
+        case .content: return 5
         case .empty: return 3
         default: return 0
         }
@@ -326,5 +343,9 @@ class ProfileTableVC: BaseTableVC {
     
     @objc func cancelClicked(_ sender: UIBarButtonItem) {
         goBack()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }

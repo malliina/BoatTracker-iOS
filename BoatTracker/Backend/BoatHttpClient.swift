@@ -23,22 +23,22 @@ class BoatHttpClient {
     var postHeaders: [String: String] { return defaultHeaders.merging(postSpecificHeaders)  { (current, _) in current } }
     
     convenience init(bearerToken: AccessToken, baseUrl: URL, language: Language) {
-        self.init(bearerToken: bearerToken, baseUrl: baseUrl, client: HttpClient(), language: language)
+        self.init(bearerToken: bearerToken, baseUrl: baseUrl, client: HttpClient())
     }
     
-    init(bearerToken: AccessToken?, baseUrl: URL, client: HttpClient, language: Language) {
+    init(bearerToken: AccessToken?, baseUrl: URL, client: HttpClient) {
         self.baseUrl = baseUrl
         self.client = client
         if let token = bearerToken {
             self.defaultHeaders = [
                 Headers.authorization: BoatHttpClient.authValue(for: token),
                 Headers.accept: BoatHttpClient.BoatVersion,
-                Headers.acceptLanguage: language.rawValue
+//                Headers.acceptLanguage: language.rawValue
             ]
         } else {
             self.defaultHeaders = [
                 Headers.accept: BoatHttpClient.BoatVersion,
-                Headers.acceptLanguage: language.rawValue
+//                Headers.acceptLanguage: language.rawValue
             ]
         }
         self.postSpecificHeaders = [
@@ -90,6 +90,12 @@ class BoatHttpClient {
         return parsed(BoatResponse.self, "/boats/\(boat)", run: { (url) -> Single<HttpResponse> in
             self.client.patchJSON(url, headers: self.postHeaders, payload: ["boatName": newName.name as AnyObject])
         }).map { $0.boat }
+    }
+    
+    func changeLanguage(to: Language) -> Single<SimpleMessage> {
+        return parsed(SimpleMessage.self, "/users/me", run: { (url) in
+            return self.client.putJSON(url, headers: self.postHeaders, payload: [ "language": to.rawValue as AnyObject ])
+        })
     }
     
     func getParsed<T: Decodable>(_ t: T.Type, _ uri: String) -> Single<T> {

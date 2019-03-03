@@ -27,10 +27,10 @@ class BoatSocket: SocketDelegate {
     var statsDelegate: BoatSocketDelegate? = nil
     var vesselDelegate: VesselDelegate? = nil
     
-    convenience init(token: AccessToken?, track: TrackName?, language: Language) {
+    convenience init(token: AccessToken?, track: TrackName?) {
         var headers = [
-            Headers.accept: BoatHttpClient.BoatVersion,
-            Headers.acceptLanguage: language.rawValue
+            Headers.accept: BoatHttpClient.BoatVersion
+//            Headers.acceptLanguage: language.rawValue
         ]
         if let token = token {
             headers.updateValue("bearer \(token.token)", forKey: Headers.authorization)

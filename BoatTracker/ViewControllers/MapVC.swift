@@ -36,16 +36,9 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     private var aisRenderer: AISRenderer? = nil
     private var taps: TapListener? = nil
     private var boatRenderer: BoatRenderer? = nil
-    private var clientConf: ClientConf? = nil
-    private var profile: UserProfile? = nil
-    private var languages: Languages? { return clientConf?.languages }
-    private var language: Lang? {
-        get {
-            guard let languages = languages else { return nil }
-            let userLanguage = profile?.language ?? Language.en
-            return selectLanguage(lang: userLanguage, available: languages)
-        }
-    }
+    private var settings: UserSettings { return UserSettings.shared }
+    private var clientConf: ClientConf? { return settings.conf }
+    
     private var firstInit: Bool = true
     
     override func viewDidLoad() {
@@ -121,7 +114,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     
     func initConf() {
         let _ = http.conf().subscribe(onSuccess: { (conf) in
-            self.clientConf = conf
+            UserSettings.shared.conf = conf
         }) { (err) in
             self.log.error("Unable to load configuration: '\(err.describe)'.")
         }
@@ -130,20 +123,12 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     func setupUser() {
         if isSignedIn {
             let _ = http.profile().subscribe(onSuccess: { (profile) in
-                self.profile = profile
+                UserSettings.shared.profile = profile
             }) { (err) in
                 self.log.error("Unable to load profile: '\(err.describe)'.")
             }
         } else {
-            self.profile = nil
-        }
-    }
-    
-    func selectLanguage(lang: Language, available: Languages) -> Lang {
-        switch lang {
-        case .fi: return available.finnish
-        case .se: return available.swedish
-        case .en: return available.english
+            UserSettings.shared.profile = nil
         }
     }
     
@@ -183,12 +168,12 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     }
     
     func mapView(_ mapView: MGLMapView, calloutViewFor annotation: MGLAnnotation) -> MGLCalloutView? {
-        guard let language = language else { return nil }
+        guard let language = settings.lang else { return nil }
         if let vessel = annotation as? VesselAnnotation {
             return VesselCallout(annotation: vessel, lang: language)
-        } else if let mark = annotation as? MarkAnnotation, let finnishSpecials = languages?.finnish.specialWords {
+        } else if let mark = annotation as? MarkAnnotation, let finnishSpecials = settings.languages?.finnish.specialWords {
             return MarkCallout(annotation: mark, lang: language, finnishWords: finnishSpecials)
-        } else if let mark = annotation as? MinimalMarkAnnotation, let finnishSpecials = languages?.finnish.specialWords {
+        } else if let mark = annotation as? MinimalMarkAnnotation, let finnishSpecials = settings.languages?.finnish.specialWords {
             return MinimalMarkCallout(annotation: mark, lang: language, finnishWords: finnishSpecials)
         } else {
             // Default callout view
@@ -222,7 +207,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     }
     
     @objc func userClicked(_ sender: UIButton) {
-        guard let language = language else {
+        guard let language = settings.lang else {
             log.error("No language info. Cannot open user info.")
             return
         }
@@ -317,7 +302,7 @@ extension MapVC: WelcomeDelegate {
         let _ = Backend.shared.http.profile().subscribe { (event) in
             switch event {
             case .success(let profile):
-                if let boatToken = profile.boats.headOption()?.token, let lang = self.language {
+                if let boatToken = profile.boats.headOption()?.token, let lang = self.settings.lang {
                     self.onUiThread {
                         self.navigate(to: WelcomeSignedIn(boatToken: boatToken, lang: lang.settings))
                     }

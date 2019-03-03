@@ -13,7 +13,7 @@ import RxCocoa
 
 extension BoatTokensVC: NotificationPermissionDelegate {
     func didRegister(_ token: PushToken) {
-        if let token = self.settings.pushToken {
+        if let token = self.boatSettings.pushToken {
             log.info("Permission granted.")
             registerWithToken(token: token)
         } else {
@@ -31,7 +31,7 @@ extension BoatTokensVC: NotificationPermissionDelegate {
     
     func registerNotifications() {
         notifications.permissionDelegate = self
-        if let token = settings.pushToken {
+        if let token = boatSettings.pushToken {
             log.info("Registering with previously saved push token...")
             registerWithToken(token: token)
         } else {
@@ -41,7 +41,7 @@ extension BoatTokensVC: NotificationPermissionDelegate {
     }
     
     func disableNotifications() {
-        if let token = settings.pushToken {
+        if let token = boatSettings.pushToken {
             http.disableNotifications(token: token).subscribe { (event) in
                 switch event {
                 case .success(_): self.log.info("Disabled notifications with backend.")
@@ -66,7 +66,7 @@ class BoatTokensVC: BaseTableVC {
     let log = LoggerFactory.shared.vc(BoatTokensVC.self)
     let cellKey = "BoatCell"
     let notificationsKey = "NotificationsCell"
-    let settings = BoatPrefs.shared
+    let boatSettings = BoatPrefs.shared
     let http = Backend.shared.http
     let notifications = BoatNotifications.shared
     let bag = DisposeBag()
@@ -102,7 +102,7 @@ class BoatTokensVC: BaseTableVC {
         onOff = BoatSwitch { (uiSwitch) in
             self.didToggleNotifications(uiSwitch)
         }
-        onOff?.isOn = settings.pushToken != nil
+        onOff?.isOn = boatSettings.pushToken != nil
         loadProfile()
     }
     

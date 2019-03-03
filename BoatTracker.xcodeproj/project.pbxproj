@@ -31,6 +31,8 @@
 		613669BE217117390043494A /* generalExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613669BD217117390043494A /* generalExtensions.swift */; };
 		613D5D242220AC0A003FF8EB /* viewModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613D5D232220AC09003FF8EB /* viewModels.swift */; };
 		613E82D021A0789000D3C412 /* ChartsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613E82CF21A0789000D3C412 /* ChartsVC.swift */; };
+		614221B4222B094900FD1FF3 /* SelectLanguageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614221B3222B094900FD1FF3 /* SelectLanguageVC.swift */; };
+		614221B6222C10A700FD1FF3 /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614221B5222C10A700FD1FF3 /* UserSettings.swift */; };
 		6171906B212CA06900337B0B /* BoatTokenCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6171906A212CA06900337B0B /* BoatTokenCell.swift */; };
 		61832AAE220B69D400413FD0 /* TapListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61832AAD220B69D400413FD0 /* TapListener.swift */; };
 		619679EB20F78B5900432672 /* MapMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619679EA20F78B5900432672 /* MapMode.swift */; };
@@ -139,6 +141,8 @@
 		613669BF217124560043494A /* BoatTracker.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BoatTracker.entitlements; sourceTree = "<group>"; };
 		613D5D232220AC09003FF8EB /* viewModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = viewModels.swift; sourceTree = "<group>"; };
 		613E82CF21A0789000D3C412 /* ChartsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartsVC.swift; sourceTree = "<group>"; };
+		614221B3222B094900FD1FF3 /* SelectLanguageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectLanguageVC.swift; sourceTree = "<group>"; };
+		614221B5222C10A700FD1FF3 /* UserSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettings.swift; sourceTree = "<group>"; };
 		6171906A212CA06900337B0B /* BoatTokenCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatTokenCell.swift; sourceTree = "<group>"; };
 		61832AAD220B69D400413FD0 /* TapListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapListener.swift; sourceTree = "<group>"; };
 		619679EA20F78B5900432672 /* MapMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapMode.swift; sourceTree = "<group>"; };
@@ -274,6 +278,7 @@
 			children = (
 				61ACE5C821309E5E00925265 /* BoatPrefs.swift */,
 				612F46AB20F52776001A3003 /* Keychain.swift */,
+				614221B5222C10A700FD1FF3 /* UserSettings.swift */,
 			);
 			path = Local;
 			sourceTree = "<group>";
@@ -340,6 +345,7 @@
 				613E82CF21A0789000D3C412 /* ChartsVC.swift */,
 				61B07C6120F21DC300D8B7E0 /* MapVC.swift */,
 				61F4199A2120B2F700B1ED7D /* ProfileTableVC.swift */,
+				614221B3222B094900FD1FF3 /* SelectLanguageVC.swift */,
 				61832AAD220B69D400413FD0 /* TapListener.swift */,
 				619679F920FBCDB100432672 /* TrackListVC.swift */,
 				612F46AF20F551CB001A3003 /* viewControllerExt.swift */,
@@ -754,6 +760,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				614221B4222B094900FD1FF3 /* SelectLanguageVC.swift in Sources */,
 				61F4199121206A5600B1ED7D /* AttributionsVC.swift in Sources */,
 				61ACE5C72130956A00925265 /* WelcomeSignedIn.swift in Sources */,
 				61F4199B2120B2F700B1ED7D /* ProfileTableVC.swift in Sources */,
@@ -817,6 +824,7 @@
 				613D5D242220AC0A003FF8EB /* viewModels.swift in Sources */,
 				6101D549220F75200051A427 /* languages.swift in Sources */,
 				612F46B020F551CB001A3003 /* viewControllerExt.swift in Sources */,
+				614221B6222C10A700FD1FF3 /* UserSettings.swift in Sources */,
 				61F4198F211F7CBB00B1ED7D /* BoatsTokensVC.swift in Sources */,
 				61F4199321206C4C00B1ED7D /* AppAttributionCell.swift in Sources */,
 				612F46AC20F52776001A3003 /* Keychain.swift in Sources */,

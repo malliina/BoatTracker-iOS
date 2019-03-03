@@ -10,6 +10,8 @@ import Foundation
 import UIKit
 
 class BaseTableVC: UITableViewController {
+    var settings: UserSettings { return UserSettings.shared }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Removes separators when there are no more rows
