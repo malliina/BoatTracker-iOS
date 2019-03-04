@@ -520,6 +520,10 @@ struct TrackRef: Codable {
     var startDate: String { return times.start.date }
 }
 
+struct TrackResponse: Codable {
+    let track: TrackRef
+}
+
 struct TrackStats: Codable {
     let points: Int
 }

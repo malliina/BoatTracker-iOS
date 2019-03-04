@@ -8,6 +8,8 @@
 
 import Foundation
 import UIKit
+import RxSwift
+import RxCocoa
 
 protocol TracksDelegate {
     /// Called on the main thread.
@@ -24,6 +26,7 @@ class TrackListVC: BaseTableVC, TokenDelegate {
     private var delegate: TracksDelegate? = nil
     
     let lang: Lang
+    var settingsLang: SettingsLang { return lang.settings }
     
     init(delegate: TracksDelegate?, login: Bool = false, lang: Lang) {
         self.delegate = delegate
@@ -40,8 +43,6 @@ class TrackListVC: BaseTableVC, TokenDelegate {
         super.viewDidLoad()
         navigationItem.title = lang.track.tracks
         tableView?.register(TrackCell.self, forCellReuseIdentifier: cellKey)
-//        tableView.rowHeight = TrackCell.rowHeight
-        
         if login {
             // Dev time only
             GoogleAuth.shared.uiDelegate = self
@@ -59,6 +60,35 @@ class TrackListVC: BaseTableVC, TokenDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellKey, for: indexPath) as! TrackCell
         cell.fill(track: tracks[indexPath.row], lang: lang)
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        return [
+            UITableViewRowAction(style: .default, title: "Edit", handler: { (action, indexPath) in
+                self.showEditTitlePopup(tableView, at: indexPath, track: self.tracks[indexPath.row])
+            })
+        ]
+    }
+    
+    func showEditTitlePopup(_ tableView: UITableView, at indexPath: IndexPath, track: TrackRef) {
+        let popup = UIAlertController(title: settingsLang.rename, message: settingsLang.newName, preferredStyle: .alert)
+        popup.addTextField(configurationHandler: nil)
+        let okAction = UIAlertAction(title: settingsLang.rename, style: .default) { (a) in
+            guard let textField = (popup.textFields ?? []).headOption(),
+                let newName = textField.text, !newName.isEmpty else { return }
+            let _ = Backend.shared.http.changeTrackTitle(name: track.trackName, title: TrackTitle(newName)).observeOn(MainScheduler.instance).subscribe { (single) in
+                switch single {
+                case .success(let updatedTrack):
+                    self.tracks[indexPath.row] = updatedTrack.track
+                    tableView.reloadRows(at: [indexPath], with: .automatic)
+                case .error(let err):
+                    self.log.error("Unable to rename. \(err.describe)")
+                }
+            }
+        }
+        popup.addAction(okAction)
+        popup.addAction(UIAlertAction(title: settingsLang.cancel, style: .cancel, handler: nil))
+        present(popup, animated: true, completion: nil)
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
