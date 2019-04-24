@@ -33,7 +33,8 @@ class TrackCell: BoatCell {
         }
         contentView.addSubview(distance)
         distance.snp.makeConstraints { (make) in
-            make.top.equalTo(dateTime.snp.bottom).offset(spacing)
+            make.top.greaterThanOrEqualTo(dateTime.snp.bottom).offset(spacing)
+            make.top.greaterThanOrEqualTo(title.snp.bottom).offset(spacing)
             make.leading.equalTo(contentView.snp.leadingMargin)
         }
         contentView.addSubview(duration)
@@ -53,9 +54,7 @@ class TrackCell: BoatCell {
     }
     
     func fill(track: TrackRef, lang: Lang) {
-        if let trackTitle = track.trackTitle {
-            title.text = trackTitle.title
-        }
+        title.text = track.trackTitle?.title
         dateTime.text = track.times.start.date
         let trackLang = lang.track
         distance.fill(label: trackLang.distance, value: track.distance)

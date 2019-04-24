@@ -8,12 +8,10 @@
 
 import Foundation
 
-class PushToken {
+struct PushToken: Equatable, Hashable, CustomStringConvertible, Codable {
     let token: String
     
-    init(token: String) {
-        self.token = token
-    }
+    var description: String { return token }
 }
 
 enum BoatState: String, Codable {

@@ -40,32 +40,29 @@ class HttpClient {
     }
     
     func get(_ url: URL, headers: [String: String] = [:]) -> Single<HttpResponse> {
-        let req = buildRequest(url: url, httpMethod: HttpClient.get, headers: headers, body: nil)
+        let req = buildRequest(url: url, httpMethod: HttpClient.get, headers: headers)
         return executeHttp(req)
     }
     
-    func patchJSON(_ url: URL, headers: [String: String] = [:], payload: [String: AnyObject]) -> Single<HttpResponse> {
-        let json = try? JSONSerialization.data(withJSONObject: payload, options: [])
-        return sendData(url, headers: headers, payload: json, httpMethod: HttpClient.patch)
+    func patchJSON<T: Encodable>(_ url: URL, headers: [String: String] = [:], payload: T) -> Single<HttpResponse> {
+        return sendData(url, headers: headers, payload: payload, httpMethod: HttpClient.patch)
     }
     
-    func postJSON(_ url: URL, headers: [String: String] = [:], payload: [String: AnyObject]) -> Single<HttpResponse> {
-        let json = try? JSONSerialization.data(withJSONObject: payload, options: [])
-        return sendData(url, headers: headers, payload: json, httpMethod: HttpClient.post)
+    func postJSON<T: Encodable>(_ url: URL, headers: [String: String] = [:], payload: T) -> Single<HttpResponse> {
+        return sendData(url, headers: headers, payload: payload, httpMethod: HttpClient.post)
     }
     
-    func putJSON(_ url: URL, headers: [String: String] = [:], payload: [String: AnyObject]) -> Single<HttpResponse> {
-        let json = try? JSONSerialization.data(withJSONObject: payload, options: [])
-        return sendData(url, headers: headers, payload: json, httpMethod: HttpClient.put)
+    func putJSON<T: Encodable>(_ url: URL, headers: [String: String] = [:], payload: T) -> Single<HttpResponse> {
+        return sendData(url, headers: headers, payload: payload, httpMethod: HttpClient.put)
     }
     
-    func sendData(_ url: URL, headers: [String: String] = [:], payload: Data?, httpMethod: String) -> Single<HttpResponse> {
-        let req = buildRequest(url: url, httpMethod: httpMethod, headers: headers, body: payload)
+    func sendData<T: Encodable>(_ url: URL, headers: [String: String] = [:], payload: T, httpMethod: String) -> Single<HttpResponse> {
+        let req = buildRequestWithBody(url: url, httpMethod: httpMethod, headers: headers, body: payload)
         return executeHttp(req)
     }
     
     func delete(_ url: URL, headers: [String: String] = [:]) -> Single<HttpResponse> {
-        let req = buildRequest(url: url, httpMethod: HttpClient.delete, headers: headers, body: nil)
+        let req = buildRequest(url: url, httpMethod: HttpClient.delete, headers: headers)
         return executeHttp(req)
     }
     
@@ -76,7 +73,16 @@ class HttpClient {
         }
     }
     
-    func buildRequest(url: URL, httpMethod: String, headers: [String: String], body: Data?) -> URLRequest {
+    func buildRequestWithBody<T: Encodable>(url: URL, httpMethod: String, headers: [String: String], body: T?) -> URLRequest {
+        var req = buildRequest(url: url, httpMethod: httpMethod, headers: headers)
+        if let body = body {
+            let encoder = JSONEncoder()
+            req.httpBody = try? encoder.encode(body)
+        }
+        return req
+    }
+    
+    func buildRequest(url: URL, httpMethod: String, headers: [String: String]) -> URLRequest {
         var req = URLRequest(url: url, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 3600)
         let useCsrfHeader = httpMethod != HttpClient.get
         if useCsrfHeader {
@@ -85,9 +91,6 @@ class HttpClient {
         req.httpMethod = httpMethod
         for (key, value) in headers {
             req.addValue(value, forHTTPHeaderField: key)
-        }
-        if let body = body {
-            req.httpBody = body
         }
         return req
     }

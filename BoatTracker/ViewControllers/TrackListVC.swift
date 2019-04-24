@@ -64,7 +64,7 @@ class TrackListVC: BaseTableVC, TokenDelegate {
     
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         return [
-            UITableViewRowAction(style: .default, title: "Edit", handler: { (action, indexPath) in
+            UITableViewRowAction(style: .default, title: settingsLang.edit, handler: { (action, indexPath) in
                 self.showEditTitlePopup(tableView, at: indexPath, track: self.tracks[indexPath.row])
             })
         ]

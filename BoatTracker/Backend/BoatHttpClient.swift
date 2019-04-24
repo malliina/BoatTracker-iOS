@@ -72,7 +72,7 @@ class BoatHttpClient {
     
     func changeTrackTitle(name: TrackName, title: TrackTitle) -> Single<TrackResponse> {
         return parsed(TrackResponse.self, "/tracks/\(name)", run: { (url) in
-            return self.client.putJSON(url, headers: self.postHeaders, payload: ["title": title.title as AnyObject])
+            return self.client.putJSON(url, headers: self.postHeaders, payload: ChangeTrackTitle(title: title))
         })
     }
     
@@ -82,25 +82,25 @@ class BoatHttpClient {
     
     func enableNotifications(token: PushToken) -> Single<SimpleMessage> {
         return parsed(SimpleMessage.self, "/users/notifications", run: { (url) -> Single<HttpResponse> in
-            return self.client.postJSON(url, headers: self.postHeaders, payload: ["token": token.token as AnyObject, "device": "ios" as AnyObject])
+            return self.client.postJSON(url, headers: self.postHeaders, payload: PushPayload(token))
         })
     }
     
     func disableNotifications(token: PushToken) -> Single<SimpleMessage> {
         return parsed(SimpleMessage.self, "/users/notifications/disable", run: { (url) -> Single<HttpResponse> in
-            return self.client.postJSON(url, headers: self.postHeaders, payload: ["token": token.token as AnyObject])
+            return self.client.postJSON(url, headers: self.postHeaders, payload: DisablePush(token: token))
         })
     }
     
     func renameBoat(boat: Int, newName: BoatName) -> Single<Boat> {
         return parsed(BoatResponse.self, "/boats/\(boat)", run: { (url) -> Single<HttpResponse> in
-            self.client.patchJSON(url, headers: self.postHeaders, payload: ["boatName": newName.name as AnyObject])
+            self.client.patchJSON(url, headers: self.postHeaders, payload: ChangeBoatName(boatName: newName))
         }).map { $0.boat }
     }
     
     func changeLanguage(to: Language) -> Single<SimpleMessage> {
         return parsed(SimpleMessage.self, "/users/me", run: { (url) in
-            return self.client.putJSON(url, headers: self.postHeaders, payload: [ "language": to.rawValue as AnyObject ])
+            return self.client.putJSON(url, headers: self.postHeaders, payload: ChangeLanguage(language: to))
         })
     }
     

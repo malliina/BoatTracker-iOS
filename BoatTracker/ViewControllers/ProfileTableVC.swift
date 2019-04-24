@@ -11,9 +11,7 @@ import UIKit
 
 extension ProfileTableVC: BoatSocketDelegate {
     func onCoords(event: CoordsData) {
-        onUiThread {
-            self.update(stats: event.from)
-        }
+        self.update(stats: event.from)
     }
 }
 
@@ -31,6 +29,8 @@ class ProfileTableVC: BaseTableVC {
     let infoIdentifier = "InfoCell"
     let logoutIdentifier = "LogoutCell"
     let noTracksIdentifier = "NoTracksCell"
+    let summaryRow = 0
+    let summarySection = 0
     
     let delegate: TokenDelegate
     let tracksDelegate: TracksDelegate
@@ -45,10 +45,14 @@ class ProfileTableVC: BaseTableVC {
     private var socket: BoatSocket { return Backend.shared.socket }
     
     func update(stats: TrackRef) {
-        if let current = current, stats.trackName == current {
-            onUiThread {
+        onUiThread {
+            if let current = self.current, stats.trackName == current {
                 self.summary = stats
-                self.tableView.reloadRows(at: [ IndexPath(row: 0, section: 0) ], with: .none)
+                if let cell = self.tableView?.cellForRow(at: IndexPath(row: self.summaryRow, section: self.summarySection)) as? TrackSummaryCell {
+                    cell.fill(track: stats, lang: self.lang)
+                } else {
+                    self.log.debug("No cell. Live track update?")
+                }
             }
         }
     }
@@ -89,7 +93,7 @@ class ProfileTableVC: BaseTableVC {
         switch state {
         case .content:
             switch indexPath.section {
-            case 0:
+            case summarySection:
                 cell.selectionStyle = .none
                 if let summary = summary, let cell = cell as? TrackSummaryCell {
                     cell.fill(track: summary, lang: lang)
@@ -250,7 +254,7 @@ class ProfileTableVC: BaseTableVC {
         switch state {
         case .content:
             switch indexPath.section {
-            case 0:
+            case summarySection:
                 return TrackSummaryCell.identifier
             case 3:
                 switch indexPath.row {

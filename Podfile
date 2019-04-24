@@ -12,8 +12,8 @@ target 'BoatTracker' do
   pod 'Charts', '3.2.1'
   pod 'GoogleSignIn', '4.3.0'
   pod 'Mapbox-iOS-SDK', '4.9.0'
-  pod 'RxCocoa', '4.4.0'
-  pod 'RxSwift', '4.4.0'
+  pod 'RxCocoa', '4.4.1'
+  pod 'RxSwift', '4.4.1'
   pod 'SnapKit', '4.0.1'
   pod 'SocketRocket', '0.5.1'
   

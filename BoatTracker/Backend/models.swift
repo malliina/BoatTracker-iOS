@@ -681,7 +681,7 @@ extension DoubleCodable {
     }
 }
 
-struct Mmsi: Equatable, Hashable, CustomStringConvertible, Codable {
+struct Mmsi: Hashable, CustomStringConvertible, Codable {
     static let key = "mmsi"
     let mmsi: String
     var description: String { return mmsi }
@@ -704,6 +704,10 @@ struct Mmsi: Equatable, Hashable, CustomStringConvertible, Codable {
         var container = encoder.singleValueContainer()
         try container.encode(UInt64(mmsi))
     }
+}
+
+protocol WrappedString: Hashable, CustomStringConvertible, Codable {
+    
 }
 
 struct BackendInfo: Codable {

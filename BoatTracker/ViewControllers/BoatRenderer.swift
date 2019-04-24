@@ -11,7 +11,7 @@ import UIKit
 import Mapbox
 
 class BoatRenderer {
-    let log = LoggerFactory.shared.vc(AISRenderer.self)
+    let log = LoggerFactory.shared.vc(BoatRenderer.self)
     
     // state of boat trails and icons
     private var trails: [TrackName: MGLShapeSource] = [:]
@@ -77,7 +77,7 @@ class BoatRenderer {
     }
     
     func addCoords(event: CoordsData) {
-        log.info("Got coords \(event)")
+//        log.info("Got coords \(event)")
         let from = event.from
         let track = from.trackName
         latestTrack = track
