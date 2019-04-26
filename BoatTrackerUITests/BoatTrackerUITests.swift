@@ -33,6 +33,7 @@ class BoatTrackerUITests: XCTestCase {
     func testAboutMapboxButton() {
         // Use recording to get started writing UI tests.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
+        print("testing...")
         let aboutButton = app/*@START_MENU_TOKEN@*/.buttons["About this map"]/*[[".otherElements[\"Map\"].buttons[\"About this map\"]",".buttons[\"About this map\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/
         XCTAssertTrue(aboutButton.exists)
         aboutButton.tap()
