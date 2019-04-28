@@ -27,8 +27,8 @@ class ChartsVC: UIViewController {
     init(track: TrackName, lang: Lang) {
         self.track = track
         self.lang = lang
-        speedDataSet = LineChartDataSet(values: [], label: "\(lang.track.speed) (kn)")
-        depthDataSet = LineChartDataSet(values: [], label: "\(lang.track.depth) (m)")
+        speedDataSet = LineChartDataSet(entries: [], label: "\(lang.track.speed) (kn)")
+        depthDataSet = LineChartDataSet(entries: [], label: "\(lang.track.depth) (m)")
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -82,8 +82,8 @@ extension ChartsVC: BoatSocketDelegate {
         }
         onUiThread {
             self.navigationItem.title = event.from.trackTitle?.description ?? event.from.startDate
-            self.speedDataSet.values = self.speedDataSet.values + speedEntries
-            self.depthDataSet.values = self.depthDataSet.values + depthEntries
+            self.speedDataSet.replaceEntries(self.speedDataSet.entries + speedEntries)
+            self.depthDataSet.replaceEntries(self.depthDataSet.entries + depthEntries)
             self.chart.data?.notifyDataChanged()
             self.chart.notifyDataSetChanged()
         }

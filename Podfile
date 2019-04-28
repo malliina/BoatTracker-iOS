@@ -4,11 +4,11 @@ ENV['COCOAPODS_DISABLE_STATS'] = "true"
 
 def app_pods
     pod 'AppCenter', '1.7.1'
-    pod 'Charts', '3.2.1'
-    pod 'GoogleSignIn', '4.3.0'
+    pod 'Charts', '3.3.0'
+    pod 'GoogleSignIn', '4.4.0'
     pod 'Mapbox-iOS-SDK', '4.10.0'
-    pod 'RxCocoa', '4.4.1'
-    pod 'RxSwift', '4.4.1'
+    pod 'RxCocoa', '4.5.0'
+    pod 'RxSwift', '4.5.0'
     pod 'SnapKit', '4.0.1'
     pod 'SocketRocket', '0.5.1'
 end
@@ -22,10 +22,12 @@ target 'BoatTracker' do
   app_pods
   
   target 'BoatTrackerTests' do
-      inherit! :complete
+      inherit! :search_paths
+      app_pods
   end
   
   target 'BoatTrackerUITests' do
-      inherit! :complete
+      inherit! :search_paths
+      app_pods
   end
 end

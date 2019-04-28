@@ -512,7 +512,7 @@
 				61B07C5920F21DC300D8B7E0 /* Frameworks */,
 				61B07C5A20F21DC300D8B7E0 /* Resources */,
 				F2E2CD14295704AA33B5D94B /* [CP] Embed Pods Frameworks */,
-				FD8F011BF6F777A6BE0CCFC9 /* [CP] Copy Pods Resources */,
+				82D6EFAD2F1D894A6624CB54 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -532,7 +532,7 @@
 				61B07C6D20F21DC400D8B7E0 /* Frameworks */,
 				61B07C6E20F21DC400D8B7E0 /* Resources */,
 				F0EE032C34F03D51EFF8D2EB /* [CP] Embed Pods Frameworks */,
-				BBD27C4D91E5C3AB4C194CA9 /* [CP] Copy Pods Resources */,
+				47F7DB012BB6B6DE6B935077 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -553,7 +553,7 @@
 				61B07C7820F21DC400D8B7E0 /* Frameworks */,
 				61B07C7920F21DC400D8B7E0 /* Resources */,
 				422E563578E769889580B2D3 /* [CP] Embed Pods Frameworks */,
-				BB48773704FC7566DBF900D6 /* [CP] Copy Pods Resources */,
+				A56265E6A641B28EF62EA251 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -669,14 +669,12 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-BoatTracker-BoatTrackerUITests/Pods-BoatTracker-BoatTrackerUITests-frameworks.sh",
+				"${SRCROOT}/Pods/Target Support Files/Pods-BoatTrackerUITests/Pods-BoatTrackerUITests-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Charts/Charts.framework",
-				"${BUILT_PRODUCTS_DIR}/GTMOAuth2/GTMOAuth2.framework",
 				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
 				"${PODS_ROOT}/Mapbox-iOS-SDK/dynamic/Mapbox.framework",
 				"${PODS_ROOT}/Mapbox-iOS-SDK/dynamic/Mapbox.framework.dSYM",
-				"${BUILT_PRODUCTS_DIR}/RxAtomic/RxAtomic.framework",
 				"${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework",
 				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework",
@@ -685,12 +683,10 @@
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Charts.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMOAuth2.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Mapbox.framework",
 				"${DWARF_DSYM_FOLDER_PATH}/Mapbox.framework.dSYM",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxAtomic.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCocoa.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SnapKit.framework",
@@ -698,16 +694,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BoatTracker-BoatTrackerUITests/Pods-BoatTracker-BoatTrackerUITests-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BoatTrackerUITests/Pods-BoatTrackerUITests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		BB48773704FC7566DBF900D6 /* [CP] Copy Pods Resources */ = {
+		47F7DB012BB6B6DE6B935077 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-BoatTracker-BoatTrackerUITests/Pods-BoatTracker-BoatTrackerUITests-resources.sh",
+				"${SRCROOT}/Pods/Target Support Files/Pods-BoatTrackerTests/Pods-BoatTrackerTests-resources.sh",
 				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
@@ -716,16 +712,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BoatTracker-BoatTrackerUITests/Pods-BoatTracker-BoatTrackerUITests-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BoatTrackerTests/Pods-BoatTrackerTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		BBD27C4D91E5C3AB4C194CA9 /* [CP] Copy Pods Resources */ = {
+		82D6EFAD2F1D894A6624CB54 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-BoatTracker-BoatTrackerTests/Pods-BoatTracker-BoatTrackerTests-resources.sh",
+				"${SRCROOT}/Pods/Target Support Files/Pods-BoatTracker/Pods-BoatTracker-resources.sh",
 				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
@@ -734,7 +730,25 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BoatTracker-BoatTrackerTests/Pods-BoatTracker-BoatTrackerTests-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BoatTracker/Pods-BoatTracker-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A56265E6A641B28EF62EA251 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-BoatTrackerUITests/Pods-BoatTrackerUITests-resources.sh",
+				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleSignIn.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BoatTrackerUITests/Pods-BoatTrackerUITests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		C1067F2F3EB3C046A70EDD58 /* [CP] Check Pods Manifest.lock */ = {
@@ -748,7 +762,7 @@
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-BoatTracker-BoatTrackerTests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-BoatTrackerTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -761,14 +775,12 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-BoatTracker-BoatTrackerTests/Pods-BoatTracker-BoatTrackerTests-frameworks.sh",
+				"${SRCROOT}/Pods/Target Support Files/Pods-BoatTrackerTests/Pods-BoatTrackerTests-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Charts/Charts.framework",
-				"${BUILT_PRODUCTS_DIR}/GTMOAuth2/GTMOAuth2.framework",
 				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
 				"${PODS_ROOT}/Mapbox-iOS-SDK/dynamic/Mapbox.framework",
 				"${PODS_ROOT}/Mapbox-iOS-SDK/dynamic/Mapbox.framework.dSYM",
-				"${BUILT_PRODUCTS_DIR}/RxAtomic/RxAtomic.framework",
 				"${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework",
 				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework",
@@ -777,12 +789,10 @@
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Charts.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMOAuth2.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Mapbox.framework",
 				"${DWARF_DSYM_FOLDER_PATH}/Mapbox.framework.dSYM",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxAtomic.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCocoa.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SnapKit.framework",
@@ -790,7 +800,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BoatTracker-BoatTrackerTests/Pods-BoatTracker-BoatTrackerTests-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BoatTrackerTests/Pods-BoatTrackerTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		F2E2CD14295704AA33B5D94B /* [CP] Embed Pods Frameworks */ = {
@@ -801,12 +811,10 @@
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-BoatTracker/Pods-BoatTracker-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Charts/Charts.framework",
-				"${BUILT_PRODUCTS_DIR}/GTMOAuth2/GTMOAuth2.framework",
 				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
 				"${PODS_ROOT}/Mapbox-iOS-SDK/dynamic/Mapbox.framework",
 				"${PODS_ROOT}/Mapbox-iOS-SDK/dynamic/Mapbox.framework.dSYM",
-				"${BUILT_PRODUCTS_DIR}/RxAtomic/RxAtomic.framework",
 				"${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework",
 				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework",
@@ -815,12 +823,10 @@
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Charts.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMOAuth2.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Mapbox.framework",
 				"${DWARF_DSYM_FOLDER_PATH}/Mapbox.framework.dSYM",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxAtomic.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCocoa.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SnapKit.framework",
@@ -842,29 +848,11 @@
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-BoatTracker-BoatTrackerUITests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-BoatTrackerUITests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		FD8F011BF6F777A6BE0CCFC9 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-BoatTracker/Pods-BoatTracker-resources.sh",
-				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleSignIn.bundle",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BoatTracker/Pods-BoatTracker-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -1128,7 +1116,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "BoatTracker/FontAwesome/BoatTracker-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -1152,14 +1140,14 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "BoatTracker/FontAwesome/BoatTracker-Bridging-Header.h";
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
 		61B07C8820F21DC500D8B7E0 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 51EBAB846C1BB38BFDABD3DB /* Pods-BoatTracker-BoatTrackerTests.debug.xcconfig */;
+			baseConfigurationReference = 238A7DC75A362584F29C8B0C /* Pods-BoatTrackerTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -1173,7 +1161,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.malliina.BoatTrackerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BoatTracker.app/BoatTracker";
 			};
@@ -1181,7 +1169,7 @@
 		};
 		61B07C8920F21DC500D8B7E0 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DAAC7F62F1865BA3F32C3767 /* Pods-BoatTracker-BoatTrackerTests.release.xcconfig */;
+			baseConfigurationReference = 259087395FEB9018E68B3B88 /* Pods-BoatTrackerTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -1195,7 +1183,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.malliina.BoatTrackerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BoatTracker.app/BoatTracker";
 			};
@@ -1203,7 +1191,7 @@
 		};
 		61B07C8B20F21DC500D8B7E0 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 822C395E276467BD717F287C /* Pods-BoatTracker-BoatTrackerUITests.debug.xcconfig */;
+			baseConfigurationReference = 6C4293DD11E6684622982210 /* Pods-BoatTrackerUITests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1216,7 +1204,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.malliina.BoatTrackerUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = BoatTracker;
 			};
@@ -1224,7 +1212,7 @@
 		};
 		61B07C8C20F21DC500D8B7E0 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 714A6D15E925A57206CFD7C1 /* Pods-BoatTracker-BoatTrackerUITests.release.xcconfig */;
+			baseConfigurationReference = 4649148093F31848382B2F37 /* Pods-BoatTrackerUITests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1237,7 +1225,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.malliina.BoatTrackerUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = BoatTracker;
 			};
