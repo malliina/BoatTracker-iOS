@@ -61,8 +61,8 @@ class SocketClient: NSObject, SRWebSocketDelegate {
     
     public func webSocket(_ webSocket: SRWebSocket!, didReceiveMessage message: Any!) {
         do {
-            guard let msg = message as? String else { throw JsonError.invalid("Not JSON.", message) }
-            guard let json = msg.data(using: .utf8) else { throw JsonError.invalid("Not JSON.", message) }
+            guard let msg = message as? String else { throw JsonError.invalid("Not JSON.", message ?? "Unknown message") }
+            guard let json = msg.data(using: .utf8) else { throw JsonError.invalid("Not JSON.", message ?? "Unknown message") }
             delegate?.onMessage(json: json)
         } catch {
             if let message = message as? String {
