@@ -9,7 +9,7 @@ def app_pods
     pod 'Mapbox-iOS-SDK', '4.10.0'
     pod 'RxCocoa', '4.5.0'
     pod 'RxSwift', '4.5.0'
-    pod 'SnapKit', '4.0.1'
+    pod 'SnapKit', '4.2.0'
     pod 'SocketRocket', '0.5.1'
 end
 
