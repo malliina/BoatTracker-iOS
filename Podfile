@@ -3,7 +3,7 @@ platform :ios, '11.3'
 ENV['COCOAPODS_DISABLE_STATS'] = "true"
 
 def app_pods
-    pod 'AppCenter', '1.7.1'
+    pod 'AppCenter', '1.14.0'
     pod 'Charts', '3.3.0'
     pod 'GoogleSignIn', '4.4.0'
     pod 'Mapbox-iOS-SDK', '4.10.0'
