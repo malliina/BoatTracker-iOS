@@ -115,9 +115,7 @@ class BoatRenderer {
         case .fit:
             if coords.count > 1 {
                 let edgePadding = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
-//                let destinationCamera = mapView.cameraThatFitsCoordinateBounds(polyline.overlayBounds)
                 let bounds = polyline.overlayBounds
-                log.info("Fitting to \(bounds.sw) \(bounds.ne)")
                 let destinationCamera = mapView.cameraThatFitsCoordinateBounds(bounds, edgePadding: edgePadding)
                 mapView.fly(to: destinationCamera, completionHandler: nil)
                 mapMode = .follow

@@ -29,7 +29,7 @@ class WelcomeSignedIn: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = lang.welcome
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneClicked(_:)))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: lang.done, style: .plain, target: self, action: #selector(doneClicked(_:)))
         view.backgroundColor = colors.backgroundColor
         view.addSubview(welcomeLabel)
         welcomeLabel.text = lang.welcomeText
