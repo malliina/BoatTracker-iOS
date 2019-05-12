@@ -18,19 +18,19 @@ target 'BoatTracker' do
   pod 'SocketRocket', '0.5.1'
   
   target 'BoatTrackerTests' do
-      inherit! :search_paths
+      inherit! :complete
   end
   
   target 'BoatTrackerUITests' do
-      inherit! :search_paths
+      inherit! :complete
       
-      pod 'AppCenter', '1.14.0'
-      pod 'Charts', '3.3.0'
-      pod 'GoogleSignIn', '4.4.0'
-      pod 'Mapbox-iOS-SDK', '4.10.0'
-      pod 'RxCocoa', '4.5.0'
-      pod 'RxSwift', '4.5.0'
-      pod 'SnapKit', '4.2.0'
-      pod 'SocketRocket', '0.5.1'
+#      pod 'AppCenter', '1.14.0'
+#      pod 'Charts', '3.3.0'
+#      pod 'GoogleSignIn', '4.4.0'
+#      pod 'Mapbox-iOS-SDK', '4.10.0'
+#      pod 'RxCocoa', '4.5.0'
+#      pod 'RxSwift', '4.5.0'
+#      pod 'SnapKit', '4.2.0'
+#      pod 'SocketRocket', '0.5.1'
   end
 end
