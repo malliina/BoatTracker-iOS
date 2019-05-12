@@ -23,9 +23,12 @@ target 'BoatTracker' do
   
   target 'BoatTrackerTests' do
       inherit! :search_paths
+      pod 'AppCenter', '1.14.0'
   end
-  
-#  target 'BoatTrackerUITests' do
-#      inherit! :complete
-#  end
+
+  target 'BoatTrackerUITests' do
+    inherit! :search_paths
+    
+    app_pods
+  end
 end
