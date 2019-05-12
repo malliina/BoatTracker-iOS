@@ -23,11 +23,11 @@ target 'BoatTracker' do
   
   target 'BoatTrackerTests' do
       inherit! :search_paths
-      app_pods
   end
   
   target 'BoatTrackerUITests' do
       inherit! :search_paths
-      app_pods
+      pod 'Charts', '3.3.0'
+      pod 'Mapbox-iOS-SDK', '4.10.0'
   end
 end
