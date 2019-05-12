@@ -1,11 +1,11 @@
 PODS:
-  - AppCenter (1.7.1):
-    - AppCenter/Analytics (= 1.7.1)
-    - AppCenter/Crashes (= 1.7.1)
-  - AppCenter/Analytics (1.7.1):
+  - AppCenter (1.14.0):
+    - AppCenter/Analytics (= 1.14.0)
+    - AppCenter/Crashes (= 1.14.0)
+  - AppCenter/Analytics (1.14.0):
     - AppCenter/Core
-  - AppCenter/Core (1.7.1)
-  - AppCenter/Crashes (1.7.1):
+  - AppCenter/Core (1.14.0)
+  - AppCenter/Crashes (1.14.0):
     - AppCenter/Core
   - Charts (3.3.0):
     - Charts/Core (= 3.3.0)
@@ -27,17 +27,17 @@ PODS:
   - RxCocoa (4.5.0):
     - RxSwift (>= 4.4.2, ~> 4.4)
   - RxSwift (4.5.0)
-  - SnapKit (4.0.1)
+  - SnapKit (4.2.0)
   - SocketRocket (0.5.1)
 
 DEPENDENCIES:
-  - AppCenter (= 1.7.1)
+  - AppCenter (= 1.14.0)
   - Charts (= 3.3.0)
   - GoogleSignIn (= 4.4.0)
   - Mapbox-iOS-SDK (= 4.10.0)
   - RxCocoa (= 4.5.0)
   - RxSwift (= 4.5.0)
-  - SnapKit (= 4.0.1)
+  - SnapKit (= 4.2.0)
   - SocketRocket (= 0.5.1)
 
 SPEC REPOS:
@@ -54,7 +54,7 @@ SPEC REPOS:
     - SocketRocket
 
 SPEC CHECKSUMS:
-  AppCenter: 53349f138e596f2514f7559bb50a7e6e55219f17
+  AppCenter: 02c5efe08d3bbab5421ae41d5f7aa7238906b817
   Charts: ec1f57f9340054155691e84d4544a1d239d382c5
   GoogleSignIn: 7ff245e1a7b26d379099d3243a562f5747e23d39
   GoogleToolboxForMac: ff31605b7d66400dcec09bed5861689aebadda4d
@@ -62,9 +62,9 @@ SPEC CHECKSUMS:
   Mapbox-iOS-SDK: 8b1b777de7de373cdf000994c91af101ef886477
   RxCocoa: cbf70265dc65a981d4ac982e513c10cf23df24a0
   RxSwift: f172070dfd1a93d70a9ab97a5a01166206e1c575
-  SnapKit: 0de968a9fec17499afa29683b05d0c775b6d1c29
+  SnapKit: fe8a619752f3f27075cc9a90244d75c6c3f27e2a
   SocketRocket: d57c7159b83c3c6655745cd15302aa24b6bae531
 
-PODFILE CHECKSUM: 667bec6ac119f592f83c58aa2e78b12e99aff4eb
+PODFILE CHECKSUM: ba4cfeb6286fc79013fa7c2b0ea2947d1c4d76d9
 
 COCOAPODS: 1.5.3

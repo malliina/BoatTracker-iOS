@@ -78,7 +78,7 @@ extension ChartsVC: BoatSocketDelegate {
             ChartDataEntry(x: Double(c.time.millis), y: c.speed.knots, data: c.time.dateTime as AnyObject)
         }
         let depthEntries = event.coords.map { c in
-            ChartDataEntry(x: Double(c.time.millis), y: c.depth.meters, data: c.depth as AnyObject)
+            ChartDataEntry(x: Double(c.time.millis), y: c.depthMeters.meters, data: c.depthMeters as AnyObject)
         }
         onUiThread {
             self.navigationItem.title = event.from.trackTitle?.description ?? event.from.startDate

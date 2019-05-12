@@ -74,7 +74,7 @@ class TrackSummaryBox: UIView {
         let trackLang = lang.track
         date.fill(label: trackLang.date, value: track.startDate)
         duration.fill(label: trackLang.duration, value: track.duration)
-        distance.fill(label: trackLang.distance, value: track.distance)
+        distance.fill(label: trackLang.distance, value: track.distanceMeters)
         let notAvailable = lang.messages.notAvailable
         topSpeed.fill(label: trackLang.topSpeed, value: track.topSpeed?.description ?? notAvailable)
         avgSpeed.fill(label: trackLang.avgSpeed, value: track.avgSpeed?.description ?? notAvailable)

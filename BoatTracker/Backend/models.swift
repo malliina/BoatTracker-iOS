@@ -477,7 +477,7 @@ struct CoordBody: Codable {
     let coord: CLLocationCoordinate2D
     let boatTimeMillis: UInt64
     let speed: Speed
-    let depth: Distance
+    let depthMeters: Distance
     let waterTemp: Temperature
     let time: Timing
 }
@@ -510,7 +510,7 @@ struct TrackRef: Codable {
 
     let topSpeed: Speed?
     let avgSpeed: Speed?
-    let distance: DistanceMillis
+    let distanceMeters: Distance
     let duration: Duration
     let avgWaterTemp: Temperature?
     let topPoint: CoordBody

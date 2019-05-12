@@ -57,7 +57,7 @@ class TrackCell: BoatCell {
         title.text = track.trackTitle?.title
         dateTime.text = track.times.start.date
         let trackLang = lang.track
-        distance.fill(label: trackLang.distance, value: track.distance)
+        distance.fill(label: trackLang.distance, value: track.distanceMeters)
         duration.fill(label: trackLang.duration, value: track.duration)
         topSpeed.fill(label: trackLang.topSpeed, value: track.topSpeed?.description ?? lang.messages.notAvailable)
     }
