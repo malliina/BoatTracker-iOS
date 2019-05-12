@@ -6,6 +6,13 @@
 
 The iOS app for BoatTracker. See [www.boat-tracker.com](https://www.boat-tracker.com) for details.
 
+## Development
+
+To run tests from the command line:
+
+    pod install
+    xcodebuild test -workspace BoatTracker.xcworkspace -scheme BoatTracker -destination 'platform=iOS Simulator,name=iPhone 6,OS=12.2'
+
 ## Releases
 
 Every commit to the master branch triggers a production release to the [App Store](https://itunes.apple.com/us/app/boat-tracker/id1434203398?ls=1&mt=8) via [appcenter.ms](https://appcenter.ms/apps).
