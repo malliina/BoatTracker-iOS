@@ -531,8 +531,6 @@
 				61B07C6C20F21DC400D8B7E0 /* Sources */,
 				61B07C6D20F21DC400D8B7E0 /* Frameworks */,
 				61B07C6E20F21DC400D8B7E0 /* Resources */,
-				F0EE032C34F03D51EFF8D2EB /* [CP] Embed Pods Frameworks */,
-				47F7DB012BB6B6DE6B935077 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -553,7 +551,7 @@
 				61B07C7820F21DC400D8B7E0 /* Frameworks */,
 				61B07C7920F21DC400D8B7E0 /* Resources */,
 				422E563578E769889580B2D3 /* [CP] Embed Pods Frameworks */,
-				A56265E6A641B28EF62EA251 /* [CP] Copy Pods Resources */,
+				CBB10E9421E3229070079B3A /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -697,24 +695,6 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BoatTrackerUITests/Pods-BoatTrackerUITests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		47F7DB012BB6B6DE6B935077 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-BoatTrackerTests/Pods-BoatTrackerTests-resources.sh",
-				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleSignIn.bundle",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BoatTrackerTests/Pods-BoatTrackerTests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		82D6EFAD2F1D894A6624CB54 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -731,24 +711,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BoatTracker/Pods-BoatTracker-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		A56265E6A641B28EF62EA251 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-BoatTrackerUITests/Pods-BoatTrackerUITests-resources.sh",
-				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleSignIn.bundle",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BoatTrackerUITests/Pods-BoatTrackerUITests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		C1067F2F3EB3C046A70EDD58 /* [CP] Check Pods Manifest.lock */ = {
@@ -769,38 +731,22 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		F0EE032C34F03D51EFF8D2EB /* [CP] Embed Pods Frameworks */ = {
+		CBB10E9421E3229070079B3A /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-BoatTrackerTests/Pods-BoatTrackerTests-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/Charts/Charts.framework",
-				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
-				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
-				"${PODS_ROOT}/Mapbox-iOS-SDK/dynamic/Mapbox.framework",
-				"${PODS_ROOT}/Mapbox-iOS-SDK/dynamic/Mapbox.framework.dSYM",
-				"${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework",
-				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
-				"${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework",
-				"${BUILT_PRODUCTS_DIR}/SocketRocket/SocketRocket.framework",
+				"${SRCROOT}/Pods/Target Support Files/Pods-BoatTrackerUITests/Pods-BoatTrackerUITests-resources.sh",
+				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
 			);
-			name = "[CP] Embed Pods Frameworks";
+			name = "[CP] Copy Pods Resources";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Charts.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Mapbox.framework",
-				"${DWARF_DSYM_FOLDER_PATH}/Mapbox.framework.dSYM",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCocoa.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SnapKit.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SocketRocket.framework",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleSignIn.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BoatTrackerTests/Pods-BoatTrackerTests-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BoatTrackerUITests/Pods-BoatTrackerUITests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		F2E2CD14295704AA33B5D94B /* [CP] Embed Pods Frameworks */ = {
@@ -1193,7 +1139,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 6C4293DD11E6684622982210 /* Pods-BoatTrackerUITests.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = D2T2QC36Z9;
 				INFOPLIST_FILE = BoatTrackerUITests/Info.plist;
@@ -1214,7 +1160,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 4649148093F31848382B2F37 /* Pods-BoatTrackerUITests.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = D2T2QC36Z9;
 				INFOPLIST_FILE = BoatTrackerUITests/Info.plist;
