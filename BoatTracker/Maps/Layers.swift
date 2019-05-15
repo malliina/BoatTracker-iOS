@@ -11,6 +11,7 @@ import Mapbox
 
 class Layers {
     static let boatIcon: String = "boat-resized-opt-30"
+    
     static func boatIcon(id: String, source: MGLShapeSource) -> MGLSymbolStyleLayer {
         return icon(id: id, iconImageName: boatIcon, source: source)
     }

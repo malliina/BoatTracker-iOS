@@ -36,6 +36,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     private var aisRenderer: AISRenderer? = nil
     private var taps: TapListener? = nil
     private var boatRenderer: BoatRenderer? = nil
+    private var pathFinder: PathFinder? = nil
     private var settings: UserSettings { return UserSettings.shared }
     private var clientConf: ClientConf? { return settings.conf }
     
@@ -94,6 +95,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     func mapView(_ mapView: MGLMapView, didFinishLoading style: MGLStyle) {
         self.style = style
         self.boatRenderer = BoatRenderer(mapView: mapView, style: style, followButton: followButton)
+        self.pathFinder = PathFinder(mapView: mapView, style: style)
         installTapListener(mapView: mapView)
         // Maybe the conf should be cached in a file?
         let _ = http.conf().subscribe { (event) in
@@ -160,11 +162,24 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     
     func mapView(_ mapView: MGLMapView, viewFor annotation: MGLAnnotation) -> MGLAnnotationView? {
         if let annotation = annotation as? TrophyAnnotation, let renderer = boatRenderer {
-            return renderer.viewFor(annotation: annotation)
+            return renderer.trophyAnnotationView(annotation: annotation)
+        } else if let annotation = annotation as? RouteAnnotation {
+            let (id, faIcon) = annotation.isEnd ? ("route-end", "fa-flag-checkered") : ("route-start", "fa-flag")
+            return routeAnnotationView(id: id, faIcon: faIcon, of: annotation, mapView: mapView)
         } else {
             // This is for custom annotation views, which we display manually in handleMapTap, I think
             return MGLAnnotationView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
         }
+    }
+    
+    func routeAnnotationView(id: String, faIcon: String,  of annotation: MGLAnnotation, mapView: MGLMapView) -> MGLAnnotationView {
+        let view = mapView.dequeueReusableAnnotationView(withIdentifier: id) ?? MGLAnnotationView(annotation: annotation, reuseIdentifier: id)
+        if let image = UIImage(icon: faIcon, backgroundColor: .clear, iconColor: UIColor.black, fontSize: 14) {
+            let imageView = UIImageView(image: image)
+            view.frame = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
+            view.addSubview(imageView)
+        }
+        return view
     }
     
     func mapView(_ mapView: MGLMapView, calloutViewFor annotation: MGLAnnotation) -> MGLCalloutView? {

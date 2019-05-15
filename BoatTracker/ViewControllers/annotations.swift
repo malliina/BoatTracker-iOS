@@ -31,6 +31,20 @@ class TrophyAnnotation: NSObject, MGLAnnotation {
     }
 }
 
+class RouteAnnotation: NSObject, MGLAnnotation {
+    var title: String?
+    var subtitle: String?
+    var coordinate: CLLocationCoordinate2D
+    var isEnd: Bool
+    
+    init(at: CLLocationCoordinate2D, isEnd: Bool) {
+        self.title = "t"
+        self.subtitle = "s"
+        self.coordinate = at
+        self.isEnd = isEnd
+    }
+}
+
 class CustomAnnotation: NSObject, MGLAnnotation {
     // Insane hack: the MGLAnnotation object requires a title property, otherwise the callout is never shown.
     // Best source I could find is https://github.com/mapbox/react-native-mapbox-gl/issues/1278.

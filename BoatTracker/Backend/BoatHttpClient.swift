@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Mapbox
 import RxSwift
 
 class BoatHttpClient {
@@ -102,6 +103,10 @@ class BoatHttpClient {
         return parsed(SimpleMessage.self, "/users/me", run: { (url) in
             return self.client.putJSON(url, headers: self.postHeaders, payload: ChangeLanguage(language: to))
         })
+    }
+    
+    func shortestRoute(from: CLLocationCoordinate2D, to: CLLocationCoordinate2D) -> Single<RouteResult> {
+        return getParsed(RouteResult.self, "/routes/\(from.latitude)/\(from.longitude)/\(to.latitude)/\(to.longitude)")
     }
     
     func getParsed<T: Decodable>(_ t: T.Type, _ uri: String) -> Single<T> {

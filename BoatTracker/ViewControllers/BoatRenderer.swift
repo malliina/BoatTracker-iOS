@@ -45,10 +45,11 @@ class BoatRenderer {
         self.followButton = followButton
     }
     
-    func viewFor(annotation: TrophyAnnotation) -> MGLAnnotationView {
+    func trophyAnnotationView(annotation: TrophyAnnotation) -> MGLAnnotationView {
         let id = "trophy"
+        let gold = UIColor(r: 255, g: 215, b: 0, alpha: 1.0)
         let view = mapView.dequeueReusableAnnotationView(withIdentifier: id) ?? MGLAnnotationView(annotation: annotation, reuseIdentifier: id)
-        if let image = UIImage(icon: "fa-trophy", backgroundColor: .clear, iconColor: UIColor(r: 255, g: 215, b: 0, alpha: 1.0), fontSize: 14) {
+        if let image = UIImage(icon: "fa-trophy", backgroundColor: .clear, iconColor: gold, fontSize: 14) {
             let imageView = UIImageView(image: image)
             view.frame = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
             view.addSubview(imageView)
