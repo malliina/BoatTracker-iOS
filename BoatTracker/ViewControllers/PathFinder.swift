@@ -50,7 +50,7 @@ class PathFinder: NSObject, UIGestureRecognizerDelegate {
     private let mapView: MGLMapView
     private let style: MGLStyle
     
-    private let edgePadding = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
+    private let edgePadding = UIEdgeInsets(top: 40, left: 40, bottom: 40, right: 40)
     
     private var start: RouteAnnotation? = nil
     private var end: RouteAnnotation? = nil
