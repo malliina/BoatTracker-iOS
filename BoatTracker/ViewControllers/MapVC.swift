@@ -276,6 +276,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     
     func removeAllTrails() {
         boatRenderer?.clear()
+        pathFinder?.clear()
     }
 }
 

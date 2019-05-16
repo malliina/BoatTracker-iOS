@@ -50,7 +50,7 @@ class PathFinder: NSObject, UIGestureRecognizerDelegate {
     private let mapView: MGLMapView
     private let style: MGLStyle
     
-    private let edgePadding = UIEdgeInsets(top: 40, left: 40, bottom: 40, right: 40)
+    private let edgePadding = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
     
     private var start: RouteAnnotation? = nil
     private var end: RouteAnnotation? = nil
@@ -99,10 +99,6 @@ class PathFinder: NSObject, UIGestureRecognizerDelegate {
     }
     
     func shortest(from: CLLocationCoordinate2D, to: CLLocationCoordinate2D) {
-//        if let start = start, let end = end {
-//            mapView.fly(to: <#T##MGLMapCamera#>, completionHandler: <#T##(() -> Void)?##(() -> Void)?##() -> Void#>)
-//            mapView.showAnnotations([start, end], edgePadding: edgePadding, animated: true)
-//        }
         log.info("Loading shortest route from \(from) to \(to)...")
         let _ = Backend.shared.http.shortestRoute(from: from, to: to).subscribe { (event) in
             switch event {
@@ -122,6 +118,10 @@ class PathFinder: NSObject, UIGestureRecognizerDelegate {
             layers.update(initial: [route.from, fairwayPath.first ?? route.to],
                           fairways: fairwayPath,
                           tail: [fairwayPath.last ?? route.from, route.to])
+            let coords = fairwayPath + [ route.from, route.to ]
+            let bounds = MGLPolylineFeature(coordinates: coords, count: UInt(coords.count)).overlayBounds
+            let camera = self.mapView.cameraThatFitsCoordinateBounds(bounds, edgePadding: self.edgePadding)
+            self.mapView.fly(to: camera, completionHandler: nil)
         }
     }
 
@@ -143,5 +143,13 @@ class PathFinder: NSObject, UIGestureRecognizerDelegate {
         if let start = start {
             mapView.removeAnnotation(start)
         }
+        if let current = current {
+            [current.initial, current.fairways, current.tail].forEach { (layerSource) in
+                style.removeSourceAndLayer(id: layerSource.layer.identifier)
+            }
+        }
+        start = nil
+        end = nil
+        current = nil
     }
 }
