@@ -100,8 +100,8 @@ class BoatRenderer {
         }
         // Updates boat icon bearing
         let lastTwo = Array(newTrail.suffix(2))
-        if lastTwo.count == 2 {
-            let bearing = Geo.shared.bearing(from: lastTwo[0], to: lastTwo[1])
+        let bearing = lastTwo.count == 2 ? Geo.shared.bearing(from: lastTwo[0], to: lastTwo[1]) : nil
+        if let bearing = bearing {
             iconLayer.iconRotation = NSExpression(forConstantValue: bearing)
         }
         // Updates trophy
@@ -123,7 +123,12 @@ class BoatRenderer {
             }
         case .follow:
             guard let lastCoord = coords.last else { return }
-            mapView.setCenter(lastCoord.coord, animated: true)
+            if let bearing = bearing {
+                let camera = MGLMapCamera(lookingAtCenter: lastCoord.coord, altitude: 200, pitch: 60, heading: bearing)
+                mapView.fly(to: camera, withDuration: 0.8, completionHandler: nil)
+            } else {
+                mapView.setCenter(lastCoord.coord, animated: true)
+            }
         case .stay:
             ()
         }
