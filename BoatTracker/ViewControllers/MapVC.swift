@@ -153,7 +153,8 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
             let point = sender.location(in: senderView)
             let handledByAis = aisRenderer?.onTap(point: point) ?? false
             let handledByTaps = taps?.onTap(point: point) ?? false
-            let handled = handledByAis || handledByTaps
+            let handledByBoat = boatRenderer?.onTap(point: point) ?? false
+            let handled = handledByAis || handledByTaps || handledByBoat
             if !handled {
                 mapView.deselectAnnotation(mapView.selectedAnnotations.first, animated: true)
             }
@@ -184,7 +185,9 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     
     func mapView(_ mapView: MGLMapView, calloutViewFor annotation: MGLAnnotation) -> MGLCalloutView? {
         guard let language = settings.lang else { return nil }
-        if let vessel = annotation as? VesselAnnotation {
+        if let boat = annotation as? BoatAnnotation {
+            return TrackedBoatCallout(annotation: boat, lang: language)
+        } else if let vessel = annotation as? VesselAnnotation {
             return VesselCallout(annotation: vessel, lang: language)
         } else if let mark = annotation as? MarkAnnotation, let finnishSpecials = settings.languages?.finnish.specialWords {
             return MarkCallout(annotation: mark, lang: language, finnishWords: finnishSpecials)

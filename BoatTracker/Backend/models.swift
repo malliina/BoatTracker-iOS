@@ -493,6 +493,7 @@ struct TracksResponse: Codable {
 }
 
 struct Timing: Codable {
+    static let dateTimeKey = "dateTime"
     let date, time, dateTime: String
     let millis: UInt64
 }
@@ -540,6 +541,7 @@ struct AccessToken: Equatable, Hashable, CustomStringConvertible, StringCodable 
 }
 
 struct BoatName: Equatable, Hashable, CustomStringConvertible, StringCodable {
+    static let key = "boatName"
     let name: String
     var description: String { return name }
     
@@ -551,6 +553,7 @@ struct BoatName: Equatable, Hashable, CustomStringConvertible, StringCodable {
 }
 
 struct TrackName: Hashable, CustomStringConvertible, StringCodable {
+    static let key = "trackName"
     let name: String
     var description: String { return name }
     
@@ -562,6 +565,7 @@ struct TrackName: Hashable, CustomStringConvertible, StringCodable {
 }
 
 struct TrackTitle: Hashable, CustomStringConvertible, StringCodable {
+    static let key = "trackTitle"
     let title: String
     var description: String { return title }
     

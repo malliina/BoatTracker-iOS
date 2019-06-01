@@ -10,6 +10,75 @@ import Foundation
 import UIKit
 import Mapbox
 
+class BoatAnnotation: CustomAnnotation {
+    var name: BoatName
+    var track: TrackName
+    var trackTitle: TrackTitle?
+    var dateTime: String
+    
+    init(name: BoatName, track: TrackName, title: TrackTitle?, dateTime: String, coord: CLLocationCoordinate2D) {
+        self.name = name
+        self.track = track
+        self.trackTitle = title
+        self.dateTime = dateTime
+        super.init(coord: coord)
+    }
+}
+
+class TrackedBoatCallout: BoatCallout {
+    let log = LoggerFactory.shared.view(TrackedBoatCallout.self)
+    
+    let boat: BoatAnnotation
+    let lang: Lang
+    
+    let nameLabel = BoatLabel.centeredTitle()
+    let trackTitleLabel = BoatLabel.smallSubtitle()
+    let trackTitleValue = BoatLabel.smallTitle()
+    let dateTimeLabel = BoatLabel.smallCenteredTitle()
+    
+    required init(annotation: BoatAnnotation, lang: Lang) {
+        self.boat = annotation
+        self.lang = lang
+        super.init(representedObject: annotation)
+        setup(boat: annotation)
+    }
+    
+    private func setup(boat: BoatAnnotation) {
+        container.addSubview(nameLabel)
+        nameLabel.text = boat.name.name
+        nameLabel.snp.makeConstraints { (make) in
+            make.leading.trailing.top.equalToSuperview().inset(inset)
+        }
+        let hasTitle = boat.trackTitle != nil
+        if hasTitle {
+            container.addSubview(trackTitleLabel)
+            trackTitleLabel.text = lang.name
+            trackTitleLabel.snp.makeConstraints { (make) in
+                make.top.equalTo(nameLabel.snp.bottom).offset(spacing)
+                make.leading.equalToSuperview().inset(inset)
+            }
+            container.addSubview(trackTitleValue)
+            trackTitleValue.text = boat.trackTitle?.title
+            trackTitleValue.snp.makeConstraints { (make) in
+                make.top.bottom.equalTo(trackTitleLabel)
+                make.leading.equalTo(trackTitleLabel.snp.trailing).offset(spacing)
+                make.trailing.equalToSuperview().inset(inset)
+            }
+        }
+        container.addSubview(dateTimeLabel)
+        dateTimeLabel.text = boat.dateTime
+        dateTimeLabel.snp.makeConstraints { (make) in
+            make.top.equalTo(hasTitle ? trackTitleLabel.snp.bottom : nameLabel.snp.bottom).offset(spacing)
+            make.leading.trailing.equalToSuperview().inset(inset)
+            make.bottom.equalToSuperview().inset(inset)
+        }
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
 class TrophyAnnotation: NSObject, MGLAnnotation {
     var title: String?
     var subtitle: String?

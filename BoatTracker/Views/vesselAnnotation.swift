@@ -51,7 +51,7 @@ class VesselCallout: BoatCallout {
     let speedValue = BoatLabel.smallTitle()
     let draftLabel = BoatLabel.smallSubtitle()
     let draftValue = BoatLabel.smallTitle()
-    let boatTimeValue = BoatLabel.build(text: "", alignment: .center, numberOfLines: 1, fontSize: 12)
+    let boatTimeValue = BoatLabel.smallCenteredTitle()
     
     private var hasDestination: Bool { return vessel.destination != nil }
     

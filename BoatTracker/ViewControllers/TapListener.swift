@@ -24,7 +24,6 @@ class TapListener {
         guard let selected = mapView.visibleFeatures(at: point, styleLayerIdentifiers: marksLayers).first else { return false }
         do {
             let json = try JSONSerialization.data(withJSONObject: selected.attributes, options: .prettyPrinted)
-//            log.info(String(data: json, encoding: .utf8) ?? "No JSON string")
             let decoder = JSONDecoder()
             do {
                 let mark = try decoder.decode(MarineSymbol.self, from: json)

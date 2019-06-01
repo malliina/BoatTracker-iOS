@@ -45,6 +45,26 @@ class BoatRenderer {
         self.followButton = followButton
     }
     
+    func onTap(point: CGPoint) -> Bool {
+        // Limits feature selection to just the following layer identifiers
+        let layerIdentifiers: Set = Set(boatIcons.map { (track, layer) -> String in iconName(for: track) })
+        if let selected = mapView.visibleFeatures(at: point, styleLayerIdentifiers: layerIdentifiers).find({ $0 is MGLPointFeature }),
+            let boatName = selected.attribute(forKey: BoatName.key) as? String,
+            let trackName = selected.attribute(forKey: TrackName.key) as? String,
+            let dateTime = selected.attribute(forKey: Timing.dateTimeKey) as? String {
+            let trackTitle = selected.attribute(forKey: TrackTitle.key) as? String
+            let popup = BoatAnnotation(name: BoatName(boatName),
+                                       track: TrackName(trackName),
+                                       title: trackTitle.map { t in TrackTitle(t) },
+                                       dateTime: dateTime,
+                                       coord: selected.coordinate)
+            mapView.selectAnnotation(popup, animated: true)
+            return true
+        } else {
+            return false
+        }
+    }
+    
     func trophyAnnotationView(annotation: TrophyAnnotation) -> MGLAnnotationView {
         let id = "trophy"
         let gold = UIColor(r: 255, g: 215, b: 0, alpha: 1.0)
@@ -83,17 +103,25 @@ class BoatRenderer {
         let track = from.trackName
         latestTrack = track
         let coords = event.coords
-        // updates boat trail
+        // Updates boat trail
         let newTrail = (history[track] ?? []) + event.coords.map { $0.coord }
         history.updateValue(newTrail, forKey: track)
         var mutableCoords = newTrail
         let polyline = MGLPolylineFeature(coordinates: &mutableCoords, count: UInt(mutableCoords.count))
         let trail = trails[track] ?? initEmptyLayers(track: event.from, to: style)
         trail.shape = polyline
-        // updates boat icon position
-        guard let lastCoord = coords.last?.coord, let iconLayer = boatIcons[track] else { return }
+        // Updates boat icon position
+        guard let lastCoord = coords.last, let iconLayer = boatIcons[track] else { return }
         let point = MGLPointFeature()
-        point.coordinate = lastCoord
+        point.coordinate = lastCoord.coord
+        let titled = from.trackTitle.map { (title) -> [String: String] in
+            [TrackTitle.key: title.title]
+        }
+        point.attributes = [
+            BoatName.key: from.boatName.name,
+            TrackName.key: from.trackName.name,
+            Timing.dateTimeKey: lastCoord.time.dateTime
+        ].merging(titled ?? [:]) { (current, _) in current }
         if let iconSourceId = iconLayer.sourceIdentifier,
             let iconSource = style.source(withIdentifier: iconSourceId) as? MGLShapeSource {
             iconSource.shape = point
