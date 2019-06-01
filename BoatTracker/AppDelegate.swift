@@ -15,7 +15,8 @@ import GoogleSignIn
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-    static let log = LoggerFactory.shared.system(AppDelegate.self)
+    static let logger = LoggerFactory.shared.system(AppDelegate.self)
+    var log: Logger { return AppDelegate.logger }
     let notifications = BoatNotifications.shared
 
     var window: UIWindow?
@@ -40,13 +41,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
     
+    /// https://developer.apple.com/documentation/uikit/core_app/allowing_apps_and_websites_to_link_to_your_content/handling_universal_links
+    func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
+        guard userActivity.activityType == NSUserActivityTypeBrowsingWeb,
+            let incomingURL = userActivity.webpageURL else {
+                return false
+        }
+        log.info("Handled universal link from \(incomingURL).")
+        return true
+    }
+    
     static func initMapboxToken(key: String = "MapboxAccessToken") -> Bool {
         do {
             let token = try Credentials.read(key: key)
             MGLAccountManager.accessToken = token
             return true
         } catch let err {
-            log.error(err.describe)
+            AppDelegate.logger.error(err.describe)
             return false
         }
     }
@@ -88,7 +99,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) {
-        AppDelegate.log.info("Received remote notification...")
+        log.info("Received remote notification...")
         notifications.handleNotification(application, window: window, data: userInfo)
     }
 

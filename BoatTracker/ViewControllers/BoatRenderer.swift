@@ -176,7 +176,6 @@ class BoatRenderer {
         boatIcons = [:]
         topSpeedMarkers = [:]
         latestTrack = nil
-        mapMode = .fit
     }
     
     private func removeTrack(track: TrackName) {
