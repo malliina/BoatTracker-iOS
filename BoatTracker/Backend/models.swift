@@ -482,6 +482,11 @@ struct CoordBody: Codable {
     let time: Timing
 }
 
+struct BoatPoint: Codable {
+    let from: TrackRef
+    let coord: CoordBody
+}
+
 struct TrackMeta: Codable {
     let trackName: TrackName
     let boatName: BoatName
@@ -603,8 +608,12 @@ struct NonEmptyString: Equatable, Hashable, CustomStringConvertible, Codable, No
     static func == (lhs: NonEmptyString, rhs: NonEmptyString) -> Bool { return lhs.value == rhs.value }
     
     static func transform(raw: String) -> String? {
+        return validate(raw)?.value
+    }
+    
+    static func validate(_ raw: String) -> NonEmptyString? {
         let trimmed = raw.trim()
-        return !trimmed.isEmpty ? trimmed : nil
+        return !trimmed.isEmpty ? NonEmptyString(trimmed) : nil
     }
 }
 
@@ -760,4 +769,10 @@ struct UserProfile: Codable {
     let language: Language
     let boats: [Boat]
     let addedMillis: UInt64
+}
+
+struct TrackedBoat: Codable {
+    let boatName: BoatName
+    let trackName: TrackName
+    let trackTitle: TrackTitle?
 }

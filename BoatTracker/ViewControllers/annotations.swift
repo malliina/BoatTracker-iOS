@@ -11,17 +11,11 @@ import UIKit
 import Mapbox
 
 class BoatAnnotation: CustomAnnotation {
-    var name: BoatName
-    var track: TrackName
-    var trackTitle: TrackTitle?
-    var dateTime: String
+    var info: BoatPoint
     
-    init(name: BoatName, track: TrackName, title: TrackTitle?, dateTime: String, coord: CLLocationCoordinate2D) {
-        self.name = name
-        self.track = track
-        self.trackTitle = title
-        self.dateTime = dateTime
-        super.init(coord: coord)
+    init(info: BoatPoint) {
+        self.info = info
+        super.init(coord: info.coord.coord)
     }
 }
 
@@ -44,12 +38,14 @@ class TrackedBoatCallout: BoatCallout {
     }
     
     private func setup(boat: BoatAnnotation) {
+        let info = boat.info
+        let from = info.from
         container.addSubview(nameLabel)
-        nameLabel.text = boat.name.name
+        nameLabel.text = from.boatName.name
         nameLabel.snp.makeConstraints { (make) in
             make.leading.trailing.top.equalToSuperview().inset(inset)
         }
-        let hasTitle = boat.trackTitle != nil
+        let hasTitle = from.trackTitle != nil
         if hasTitle {
             container.addSubview(trackTitleLabel)
             trackTitleLabel.text = lang.name
@@ -58,7 +54,7 @@ class TrackedBoatCallout: BoatCallout {
                 make.leading.equalToSuperview().inset(inset)
             }
             container.addSubview(trackTitleValue)
-            trackTitleValue.text = boat.trackTitle?.title
+            trackTitleValue.text = from.trackTitle?.title
             trackTitleValue.snp.makeConstraints { (make) in
                 make.top.bottom.equalTo(trackTitleLabel)
                 make.leading.equalTo(trackTitleLabel.snp.trailing).offset(spacing)
@@ -66,7 +62,7 @@ class TrackedBoatCallout: BoatCallout {
             }
         }
         container.addSubview(dateTimeLabel)
-        dateTimeLabel.text = boat.dateTime
+        dateTimeLabel.text = info.coord.time.dateTime
         dateTimeLabel.snp.makeConstraints { (make) in
             make.top.equalTo(hasTitle ? trackTitleLabel.snp.bottom : nameLabel.snp.bottom).offset(spacing)
             make.leading.trailing.equalToSuperview().inset(inset)

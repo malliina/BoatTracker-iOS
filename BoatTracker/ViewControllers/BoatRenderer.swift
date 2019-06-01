@@ -48,19 +48,16 @@ class BoatRenderer {
     func onTap(point: CGPoint) -> Bool {
         // Limits feature selection to just the following layer identifiers
         let layerIdentifiers: Set = Set(boatIcons.map { (track, layer) -> String in iconName(for: track) })
-        if let selected = mapView.visibleFeatures(at: point, styleLayerIdentifiers: layerIdentifiers).find({ $0 is MGLPointFeature }),
-            let boatName = selected.attribute(forKey: BoatName.key) as? String,
-            let trackName = selected.attribute(forKey: TrackName.key) as? String,
-            let dateTime = selected.attribute(forKey: Timing.dateTimeKey) as? String {
-            let trackTitle = selected.attribute(forKey: TrackTitle.key) as? String
-            let popup = BoatAnnotation(name: BoatName(boatName),
-                                       track: TrackName(trackName),
-                                       title: trackTitle.map { t in TrackTitle(t) },
-                                       dateTime: dateTime,
-                                       coord: selected.coordinate)
-            mapView.selectAnnotation(popup, animated: true)
-            return true
-        } else {
+        do {
+            if let selected = mapView.visibleFeatures(at: point, styleLayerIdentifiers: layerIdentifiers).find({ $0 is MGLPointFeature }) {
+                let info = try Json.shared.read(BoatPoint.self, dict: selected.attributes)
+                mapView.selectAnnotation(BoatAnnotation(info: info), animated: true)
+                return true
+            } else {
+                return false
+            }
+        } catch let err {
+            log.error("Unable to handle boat tap. \(err.describe)")
             return false
         }
     }
@@ -112,19 +109,17 @@ class BoatRenderer {
         trail.shape = polyline
         // Updates boat icon position
         guard let lastCoord = coords.last, let iconLayer = boatIcons[track] else { return }
-        let point = MGLPointFeature()
-        point.coordinate = lastCoord.coord
-        let titled = from.trackTitle.map { (title) -> [String: String] in
-            [TrackTitle.key: title.title]
-        }
-        point.attributes = [
-            BoatName.key: from.boatName.name,
-            TrackName.key: from.trackName.name,
-            Timing.dateTimeKey: lastCoord.time.dateTime
-        ].merging(titled ?? [:]) { (current, _) in current }
-        if let iconSourceId = iconLayer.sourceIdentifier,
-            let iconSource = style.source(withIdentifier: iconSourceId) as? MGLShapeSource {
-            iconSource.shape = point
+        do {
+            let dict = try Json.shared.write(from: BoatPoint(from: from, coord: lastCoord))
+            let point = MGLPointFeature()
+            point.coordinate = lastCoord.coord
+            point.attributes = dict
+            if let iconSourceId = iconLayer.sourceIdentifier,
+                let iconSource = style.source(withIdentifier: iconSourceId) as? MGLShapeSource {
+                iconSource.shape = point
+            }
+        } catch let err {
+            log.error("Failed to encode JSON. \(err.describe)")
         }
         // Updates boat icon bearing
         let lastTwo = Array(newTrail.suffix(2))
@@ -167,7 +162,7 @@ class BoatRenderer {
         let trailId = trailName(for: track.trackName)
         // Boat trail
         let trailData = LayerSource(lineId: trailId)
-        // The line width should gradually increase based on the zoom level.
+        // The line width should gradually increase based on the zoom level
         //        layer.lineWidth = NSExpression(format: "mgl_interpolate:withCurveType:parameters:stops:($zoomLevel, 'linear', nil, %@)", [18: 3, 9: 10])
         trailData.install(to: style)
         trails.updateValue(trailData.source, forKey: track.trackName)

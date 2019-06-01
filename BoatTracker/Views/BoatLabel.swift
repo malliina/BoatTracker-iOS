@@ -10,8 +10,8 @@ import Foundation
 import UIKit
 
 class BoatLabel {
-    static func smallSubtitle() -> UILabel {
-        let label = smallTitle(textColor: .darkGray)
+    static func smallSubtitle(numberOfLines: Int = 1) -> UILabel {
+        let label = smallTitle(textColor: .darkGray, numberOfLines: numberOfLines)
         label.setContentCompressionResistancePriority(.required, for: .horizontal)
         return label
     }

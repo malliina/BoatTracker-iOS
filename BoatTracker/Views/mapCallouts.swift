@@ -9,6 +9,98 @@
 import Foundation
 import Mapbox
 
+class LimitAnnotation: CustomAnnotation {
+    let limit: LimitArea
+    
+    init(limit: LimitArea, coord: CLLocationCoordinate2D) {
+        self.limit = limit
+        super.init(coord: coord)
+    }
+    
+    func callout(lang: Lang) -> LimitCallout {
+        return LimitCallout(annotation: self, lang: lang)
+    }
+}
+
+class LimitCallout: BoatCallout {
+    let limit: LimitAnnotation
+    let lang: Lang
+    
+    let limitsLabel = BoatLabel.smallSubtitle()
+    let limitsValue = BoatLabel.smallTitle(numberOfLines: 0)
+    
+    let speedLabel = BoatLabel.smallSubtitle()
+    let speedValue = BoatLabel.smallTitle()
+    
+    let locationLabel = BoatLabel.smallSubtitle()
+    let locationValue = BoatLabel.smallTitle()
+    
+    let fairwayLabel = BoatLabel.smallSubtitle()
+    let fairwayValue = BoatLabel.smallTitle()
+    
+    required init(annotation: LimitAnnotation, lang: Lang) {
+        self.limit = annotation
+        self.lang = lang
+        super.init(representedObject: annotation)
+        setup(limit: annotation.limit)
+    }
+    
+    func setup(limit: LimitArea) {
+        let hasSpeed = limit.limit != nil
+        let speedLabels = hasSpeed ? [speedLabel, speedValue] : []
+        ([limitsLabel, limitsValue, fairwayLabel, fairwayValue] + speedLabels).forEach { (label) in
+            container.addSubview(label)
+        }
+        limitsLabel.text = lang.limits.limit
+        limitsLabel.snp.makeConstraints { (make) in
+            make.top.equalToSuperview().offset(spacing)
+            make.leading.equalToSuperview().inset(inset)
+            make.width.greaterThanOrEqualTo(limitsLabel)
+            make.width.greaterThanOrEqualTo(fairwayLabel)
+            if hasSpeed {
+                make.width.greaterThanOrEqualTo(speedLabel)
+            }
+        }
+        limitsValue.text = limit.types.map { $0.translate(lang: lang.limits.types) }.joined(separator: ", ")
+        limitsValue.snp.makeConstraints { (make) in
+            make.top.equalTo(limitsLabel)
+            make.leading.equalTo(limitsLabel.snp.trailing).offset(spacing)
+            make.trailing.equalToSuperview().inset(inset)
+        }
+        if hasSpeed {
+            speedLabel.text = lang.limits.magnitude
+            speedLabel.snp.makeConstraints { (make) in
+                make.top.equalTo(limitsValue.snp.bottom).offset(spacing)
+                make.leading.equalToSuperview().inset(inset)
+                make.width.equalTo(limitsLabel)
+            }
+            speedValue.text = limit.limit?.formattedKmh
+            speedValue.snp.makeConstraints { (make) in
+                make.top.equalTo(speedLabel)
+                make.leading.equalTo(speedLabel.snp.trailing).offset(spacing)
+                make.trailing.equalToSuperview().inset(inset)
+            }
+        }
+        fairwayLabel.text = lang.limits.fairwayName
+        fairwayLabel.snp.makeConstraints { (make) in
+            make.top.equalTo((hasSpeed ? speedLabel : limitsLabel).snp.bottom).offset(spacing)
+            make.leading.equalToSuperview().inset(inset)
+            make.width.equalTo(limitsLabel)
+        }
+        fairwayValue.text = limit.fairwayName
+        fairwayValue.snp.makeConstraints { (make) in
+            make.top.equalTo(fairwayLabel)
+            make.leading.equalTo(fairwayLabel.snp.trailing).offset(spacing)
+            make.trailing.equalToSuperview().inset(inset)
+            make.bottom.equalToSuperview().inset(inset)
+        }
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
 class MinimalMarkAnnotation: CustomAnnotation {
     let mark: MinimalMarineSymbol
     

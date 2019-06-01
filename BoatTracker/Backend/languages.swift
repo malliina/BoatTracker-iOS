@@ -41,7 +41,7 @@ struct AisLang: Codable {
 }
 
 struct TrackLang: Codable {
-    let boats, tracks, speed, water, depth, top, duration, distance, topSpeed, avgSpeed, waterTemp, date, trackHistory, graph: String
+    let track, boats, tracks, speed, water, depth, top, duration, distance, topSpeed, avgSpeed, waterTemp, date, trackHistory, graph: String
 }
 
 struct MarkTypeLang: Codable {
@@ -89,6 +89,30 @@ struct SettingsLang: Codable {
     let formats: FormatsLang
 }
 
+struct LimitTypes: Codable {
+    let speedLimit: String
+    let noWaves: String
+    let noWindSurfing: String
+    let noJetSkiing: String
+    let noMotorPower: String
+    let noAnchoring: String
+    let noStopping: String
+    let noAttachment: String
+    let noOvertaking: String
+    let noRendezVous: String
+    let speedRecommendation: String
+}
+
+struct LimitLang: Codable {
+    let limit: String
+    let magnitude: String
+    let length: String
+    let location: String
+    let fairwayName: String
+    let responsible: String
+    let types: LimitTypes
+}
+
 struct Lang: Codable {
     let language: Language
     let appName, map, name, qualityClass, time, comparisonLevel: String
@@ -102,6 +126,7 @@ struct Lang: Codable {
     let profile: ProfileLang
     let messages: MessagesLang
     let settings: SettingsLang
+    let limits: LimitLang
 }
 
 struct Languages: Codable {
@@ -114,6 +139,7 @@ struct AisConf: Codable {
 
 struct MapboxLayers: Codable {
     let marks: [String]
+    let limits: [String]
     let ais: AisConf
 }
 

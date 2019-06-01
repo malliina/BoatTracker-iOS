@@ -13,10 +13,13 @@ public struct Speed: Comparable, CustomStringConvertible, DoubleCodable {
     static let zero = Speed(0)
     
     let knots: Double
+    var kmh: Double { return knots * Speed.knotInKmh }
     var value: Double { return knots }
     var rounded: String { return String(format: "%.2f", knots) }
+    var roundedKmh: String { return String(format: "%.0f", kmh) }
     
     public var description: String { return "\(rounded) kn" }
+    var formattedKmh: String { return "\(roundedKmh) km/h" }
     
     init(_ knots: Double) {
         self.knots = knots
@@ -33,7 +36,7 @@ public struct Speed: Comparable, CustomStringConvertible, DoubleCodable {
 
 public extension Double {
     var knots: Speed { return Speed(self) }
-    var kmh: Speed { return Speed(Speed.knotInKmh * self) }
+    var kmh: Speed { return Speed(self / Speed.knotInKmh) }
 }
 
 public extension Int {

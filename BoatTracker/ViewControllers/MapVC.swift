@@ -110,7 +110,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         if firstInit {
             firstInit = false
             self.aisRenderer = AISRenderer(mapView: mapView, style: style, conf: layers.ais)
-            self.taps = TapListener(mapView: mapView, marksLayers: layers.marks)
+            self.taps = TapListener(mapView: mapView, layers: layers)
         }
     }
     
@@ -193,6 +193,8 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
             return MarkCallout(annotation: mark, lang: language, finnishWords: finnishSpecials)
         } else if let mark = annotation as? MinimalMarkAnnotation, let finnishSpecials = settings.languages?.finnish.specialWords {
             return MinimalMarkCallout(annotation: mark, lang: language, finnishWords: finnishSpecials)
+        } else if let limit = annotation as? LimitAnnotation {
+            return limit.callout(lang: language)
         } else {
             // Default callout view
             return nil
