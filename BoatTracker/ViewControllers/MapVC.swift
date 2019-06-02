@@ -51,7 +51,6 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         mapView.setCenter(defaultCenter, zoomLevel: 10, animated: false)
         view.addSubview(mapView)
-        
         mapView.delegate = self
         
         let buttonSize = 40
