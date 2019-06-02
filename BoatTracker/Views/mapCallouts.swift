@@ -22,10 +22,7 @@ class LimitAnnotation: CustomAnnotation {
     }
 }
 
-class LimitCallout: BoatCallout {
-    let limit: LimitAnnotation
-    let lang: Lang
-    
+class LimitInfoView: UIView {
     let limitsLabel = BoatLabel.smallSubtitle()
     let limitsValue = BoatLabel.smallTitle(numberOfLines: 0)
     
@@ -38,27 +35,32 @@ class LimitCallout: BoatCallout {
     let fairwayLabel = BoatLabel.smallSubtitle()
     let fairwayValue = BoatLabel.smallTitle()
     
-    required init(annotation: LimitAnnotation, lang: Lang) {
-        self.limit = annotation
+    let spacing = BoatCallout.spacing
+    let inset = BoatCallout.inset
+    
+    let limit: LimitArea
+    let lang: Lang
+    
+    init(limit: LimitArea, lang: Lang) {
+        self.limit = limit
         self.lang = lang
-        super.init(representedObject: annotation)
-        setup(limit: annotation.limit)
+        super.init(frame: CGRect.zero)
+        setup(limit)
     }
     
-    func setup(limit: LimitArea) {
+    private func setup(_ limit: LimitArea) {
         let hasSpeed = limit.limit != nil
         let speedLabels = hasSpeed ? [speedLabel, speedValue] : []
         ([limitsLabel, limitsValue, fairwayLabel, fairwayValue] + speedLabels).forEach { (label) in
-            container.addSubview(label)
+            addSubview(label)
         }
         limitsLabel.text = lang.limits.limit
         limitsLabel.snp.makeConstraints { (make) in
-            make.top.equalToSuperview().offset(spacing)
+            make.top.equalToSuperview()
             make.leading.equalToSuperview().inset(inset)
-            make.width.greaterThanOrEqualTo(limitsLabel)
-            make.width.greaterThanOrEqualTo(fairwayLabel)
+            make.width.equalTo(fairwayLabel)
             if hasSpeed {
-                make.width.greaterThanOrEqualTo(speedLabel)
+                make.width.equalTo(speedLabel)
             }
         }
         limitsValue.text = limit.types.map { $0.translate(lang: lang.limits.types) }.joined(separator: ", ")
@@ -92,6 +94,32 @@ class LimitCallout: BoatCallout {
             make.top.equalTo(fairwayLabel)
             make.leading.equalTo(fairwayLabel.snp.trailing).offset(spacing)
             make.trailing.equalToSuperview().inset(inset)
+            make.bottom.equalToSuperview()
+        }
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+class LimitCallout: BoatCallout {
+    let limit: LimitAnnotation
+    let lang: Lang
+    
+    required init(annotation: LimitAnnotation, lang: Lang) {
+        self.limit = annotation
+        self.lang = lang
+        super.init(representedObject: annotation)
+        setup(limit: annotation.limit)
+    }
+    
+    func setup(limit: LimitArea) {
+        let table = LimitInfoView(limit: limit, lang: lang)
+        container.addSubview(table)
+        table.snp.makeConstraints { (make) in
+            make.top.equalToSuperview().offset(spacing)
+            make.leading.trailing.equalToSuperview()
             make.bottom.equalToSuperview().inset(inset)
         }
     }

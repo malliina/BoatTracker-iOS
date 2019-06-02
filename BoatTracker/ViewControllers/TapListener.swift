@@ -13,20 +13,29 @@ class TapListener {
     let log = LoggerFactory.shared.vc(TapListener.self)
     
     let mapView: MGLMapView
+    let layers: MapboxLayers
     let marksLayers: Set<String>
     let limitsLayers: Set<String>
     
     init(mapView: MGLMapView, layers: MapboxLayers) {
         self.mapView = mapView
+        self.layers = layers
         self.marksLayers = Set(layers.marks)
         self.limitsLayers = Set(layers.limits)
     }
     
     func onTap(point: CGPoint) -> Bool {
+        // Preference: marks > fairway info > limits
+        // Fairway info includes any limits
         do {
             let marksHandled = try handleMarksTap(point: point)
             if !marksHandled {
-                return try handleLimitsTap(point: point)
+                let areaHandled = try handleAreaTap(point: point)
+                if !areaHandled {
+                    return try handleLimitsTap(point: point)
+                } else {
+                    return areaHandled
+                }
             }
             return marksHandled
         } catch let err {
@@ -56,12 +65,26 @@ class TapListener {
         return false
     }
     
+    private func handleAreaTap(point: CGPoint) throws -> Bool {
+        guard let selected = mapView.visibleFeatures(at: point, styleLayerIdentifiers: Set(layers.fairwayAreas)).first else { return false }
+        let popup = FairwayAreaAnnotation(
+            info: try selected.properties().validate(FairwayArea.self),
+            limits: try limitAreaInfo(point: point),
+            coord: mapView.convert(point, toCoordinateFrom: nil))
+        mapView.selectAnnotation(popup, animated: true)
+        return true
+    }
+    
     private func handleLimitsTap(point: CGPoint) throws -> Bool {
-        guard let selected = mapView.visibleFeatures(at: point, styleLayerIdentifiers: limitsLayers).first else { return false }
-        let limitArea = try selected.properties().validate(RawLimitArea.self).validate()
+        guard let limitArea = try limitAreaInfo(point: point) else { return false }
         let popup = LimitAnnotation(limit: limitArea, coord: mapView.convert(point, toCoordinateFrom: nil))
         mapView.selectAnnotation(popup, animated: true)
         return true
+    }
+    
+    private func limitAreaInfo(point: CGPoint) throws -> LimitArea? {
+        guard let selected = mapView.visibleFeatures(at: point, styleLayerIdentifiers: limitsLayers).first else { return nil }
+        return try selected.properties().validate(RawLimitArea.self).validate()
     }
     
     func featureData(point: CGPoint, layers: [String]) throws -> Data? {

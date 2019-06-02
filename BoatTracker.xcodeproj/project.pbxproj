@@ -355,7 +355,6 @@
 			isa = PBXGroup;
 			children = (
 				61BCBE7A220768AB00EE74EB /* AISRenderer.swift */,
-				61BCBE782207667F00EE74EB /* annotations.swift */,
 				61F4199021206A5600B1ED7D /* AttributionsVC.swift */,
 				61DE7F4420F3E6D100C95B3F /* AuthVC.swift */,
 				61967A012103C4EE00432672 /* BaseTableVC.swift */,
@@ -377,6 +376,7 @@
 		6199E0E720F2324400A4009A /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				61BCBE782207667F00EE74EB /* annotations.swift */,
 				61F4199221206C4C00B1ED7D /* AppAttributionCell.swift */,
 				61DE7F4A20F3ED3900C95B3F /* boatButtons.swift */,
 				6101D54C221057530051A427 /* BoatCallout.swift */,

@@ -195,6 +195,8 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
             return MinimalMarkCallout(annotation: mark, lang: language, finnishWords: finnishSpecials)
         } else if let limit = annotation as? LimitAnnotation {
             return limit.callout(lang: language)
+        } else if let area = annotation as? FairwayAreaAnnotation {
+            return area.callout(lang: language)
         } else {
             // Default callout view
             return nil

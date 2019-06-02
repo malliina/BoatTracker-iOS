@@ -140,6 +140,7 @@ struct AisConf: Codable {
 struct MapboxLayers: Codable {
     let marks: [String]
     let limits: [String]
+    let fairwayAreas: [String]
     let ais: AisConf
 }
 

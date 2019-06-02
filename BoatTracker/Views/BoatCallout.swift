@@ -12,6 +12,10 @@ import UIKit
 
 class BoatCallout: UIView, MGLCalloutView {
     static let log = LoggerFactory.shared.view(BoatCallout.self)
+    
+    static let spacing = 8
+    static let inset = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+    
     weak var delegate: MGLCalloutViewDelegate?
     
     var representedObject: MGLAnnotation
@@ -23,8 +27,9 @@ class BoatCallout: UIView, MGLCalloutView {
     let tipHeight: CGFloat = 10.0
     let tipWidth: CGFloat = 20.0
     let tipOffset: CGFloat = 20.0
-    let spacing = 8
-    let inset = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+    
+    let spacing = BoatCallout.spacing
+    let inset = BoatCallout.inset
     
     // Maintains placement state: we compute it and use it in presentCallout(...), then use it again in draw(...)
     private var horizontalPlacement: HorizontalPlacement = .center

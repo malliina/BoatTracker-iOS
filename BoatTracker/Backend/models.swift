@@ -9,6 +9,114 @@
 import Foundation
 import Mapbox
 
+enum MarkType: Decodable {
+    case unknown
+    case lateral
+    case cardinal
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let code = try container.decode(Int.self)
+        self = try MarkType.parse(code: code)
+    }
+    
+    func translate(lang: MarkTypeLang) -> String {
+        switch self {
+        case .unknown: return lang.unknown
+        case .lateral: return lang.lateral
+        case .cardinal: return lang.cardinal
+        }
+    }
+    
+    static func parse(code: Int) throws -> MarkType {
+        switch code {
+        case 0: return .unknown
+        case 1: return .lateral
+        case 2: return .cardinal
+        default: throw JsonError.invalid("Unknown mark type: '\(code)'.", code)
+        }
+    }
+}
+
+enum FairwayType: Decodable {
+    case navigation
+    case anchoring
+    case meetup
+    case harborPool
+    case turn
+    case channel
+    case coastTraffic
+    case core
+    case special
+    case lock
+    case confirmedExtra
+    case helcom
+    case pilot
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let code = try container.decode(Int.self)
+        self = try FairwayType.parse(code: code)
+    }
+    
+    func translate(lang: FairwayTypesLang) -> String {
+        switch self {
+        case .navigation: return lang.navigation
+        case .anchoring: return lang.anchoring
+        case .meetup: return lang.meetup
+        case .harborPool: return lang.harborPool
+        case .turn: return lang.turn
+        case .channel: return lang.channel
+        case .coastTraffic: return lang.coastTraffic
+        case .core: return lang.core
+        case .special: return lang.special
+        case .lock: return lang.lock
+        case .confirmedExtra: return lang.confirmedExtra
+        case .helcom: return lang.helcom
+        case .pilot: return lang.pilot
+        }
+    }
+    
+    static func parse(code: Int) throws -> FairwayType {
+        switch code {
+        case 1: return .navigation
+        case 2: return .anchoring
+        case 3: return .meetup
+        case 4: return .harborPool
+        case 5: return .turn
+        case 6: return .channel
+        case 7: return .coastTraffic
+        case 8: return .core
+        case 9: return .special
+        case 10: return .lock
+        case 11: return .confirmedExtra
+        case 12: return .helcom
+        case 13: return .pilot
+        default: throw JsonError.invalid("Unknown fairway type: '\(code)'.", code)
+        }
+    }
+
+}
+
+struct FairwayArea: Decodable {
+    let owner: String
+//    let quality: QualityClass
+    let fairwayType: FairwayType
+    let fairwayDepth: Distance
+    let harrowDepth: Distance
+//    let comparisonLevel: String
+//    let state: FairwayState
+    let markType: MarkType?
+    
+    private enum CodingKeys: String, CodingKey {
+        case owner = "OMISTAJA"
+        case fairwayType = "VAYALUE_TY"
+        case fairwayDepth = "VAYALUE_SY"
+        case harrowDepth = "HARAUS_SYV"
+        case markType = "MERK_LAJI"
+    }
+}
+
 enum AidType: Decodable {
     case unknown
     case lighthouse
