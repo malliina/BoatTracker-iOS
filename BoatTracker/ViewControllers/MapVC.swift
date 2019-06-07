@@ -22,6 +22,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     
     let profileButton = BoatButton.map(icon: #imageLiteral(resourceName: "SettingsSlider"))
     let followButton = BoatButton.map(icon: #imageLiteral(resourceName: "LocationArrow"))
+    let buttonInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
     let defaultCenter = CLLocationCoordinate2D(latitude: 60.14, longitude: 24.9)
     
     private var socket: BoatSocket { return Backend.shared.socket }
@@ -59,7 +60,8 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
             make.topMargin.leadingMargin.equalToSuperview().offset(12)
             make.height.width.equalTo(buttonSize)
         }
-        profileButton.contentEdgeInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+        profileButton.contentEdgeInsets = buttonInsets
+        profileButton.isHidden = true
         profileButton.addTarget(self, action: #selector(userClicked(_:)), for: .touchUpInside)
         
         mapView.addSubview(followButton)
@@ -68,7 +70,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
             make.leadingMargin.equalTo(profileButton.snp.leadingMargin)
             make.height.width.equalTo(buttonSize)
         }
-        followButton.contentEdgeInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+        followButton.contentEdgeInsets = buttonInsets
         followButton.isHidden = true
         followButton.alpha = MapButton.selectedAlpha
         followButton.addTarget(self, action: #selector(followClicked(_:)), for: .touchUpInside)
@@ -118,6 +120,9 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     func initConf() {
         let _ = http.conf().subscribe(onSuccess: { (conf) in
             UserSettings.shared.conf = conf
+            self.onUiThread {
+                self.profileButton.isHidden = false
+            }
         }) { (err) in
             self.log.error("Unable to load configuration: '\(err.describe)'.")
         }
