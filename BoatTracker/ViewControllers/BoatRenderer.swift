@@ -46,21 +46,8 @@ class BoatRenderer {
         self.followButton = followButton
     }
     
-    func onTap(point: CGPoint) -> Bool {
-        // Limits feature selection to just the following layer identifiers
-        let layerIdentifiers: Set = Set(boatIcons.map { (track, layer) -> String in iconName(for: track) })
-        do {
-            if let selected = mapView.visibleFeatures(at: point, styleLayerIdentifiers: layerIdentifiers).find({ $0 is MGLPointFeature }) {
-                let info = try Json.shared.read(BoatPoint.self, dict: selected.attributes)
-                mapView.selectAnnotation(BoatAnnotation(info: info), animated: true)
-                return true
-            } else {
-                return false
-            }
-        } catch let err {
-            log.error("Unable to handle boat tap. \(err.describe)")
-            return false
-        }
+    func layers() -> Set<String> {
+        return Set(boatIcons.map { (track, layer) -> String in iconName(for: track) })
     }
     
     func trophyAnnotationView(annotation: TrophyAnnotation) -> MGLAnnotationView {

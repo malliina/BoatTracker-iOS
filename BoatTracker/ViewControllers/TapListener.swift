@@ -16,70 +16,91 @@ class TapListener {
     let layers: MapboxLayers
     let marksLayers: Set<String>
     let limitsLayers: Set<String>
+    let aisLayers: Set<String>
+    let ais: AISRenderer
+    let boats: BoatRenderer
     
-    init(mapView: MGLMapView, layers: MapboxLayers) {
+    init(mapView: MGLMapView, layers: MapboxLayers, ais: AISRenderer, boats: BoatRenderer) {
         self.mapView = mapView
         self.layers = layers
         self.marksLayers = Set(layers.marks)
         self.limitsLayers = Set(layers.limits)
+        self.aisLayers = [layers.ais.vessel, layers.ais.trail]
+        self.ais = ais
+        self.boats = boats
     }
     
     func onTap(point: CGPoint) -> Bool {
-        // Preference: marks > fairway info > limits
+        // Preference: boats > ais > marks > fairway info > limits
         // Fairway info includes any limits
         do {
-            let marksHandled = try handleMarksTap(point: point)
-            if !marksHandled {
-                let areaHandled = try handleAreaTap(point: point)
-                if !areaHandled {
-                    return try handleLimitsTap(point: point)
-                } else {
-                    return areaHandled
-                }
-            }
-            return marksHandled
+            guard let annotation = try
+                (handleBoatTap(point: point)) ??
+                (try handleAisTap(point: point)) ??
+                (try handleMarksTap(point: point)) ??
+                (try handleAreaTap(point: point)) ??
+                (try handleLimitsTap(point: point)) else { return false}
+            mapView.selectAnnotation(annotation, animated: true)
+            return true
         } catch let err {
             log.error(err.describe)
             return false
         }
     }
     
-    private func handleMarksTap(point: CGPoint) throws -> Bool {
-        guard let selected = mapView.visibleFeatures(at: point, styleLayerIdentifiers: marksLayers).first else { return false }
+    private func handleMarksTap(point: CGPoint) throws -> MGLAnnotation? {
+        guard let selected = mapView.visibleFeatures(at: point, styleLayerIdentifiers: marksLayers).first else { return nil }
         do {
             let json = try selected.properties()
             do {
                 let mark = try json.validate(MarineSymbol.self)
-                let popup = MarkAnnotation(mark: mark, coord: selected.coordinate)
-                mapView.selectAnnotation(popup, animated: true)
-                return true
+                return MarkAnnotation(mark: mark, coord: selected.coordinate)
             } catch {
                 let mark = try json.validate(MinimalMarineSymbol.self)
-                let popup = MinimalMarkAnnotation(mark: mark, coord: selected.coordinate)
-                mapView.selectAnnotation(popup, animated: true)
-                return true
+                return MinimalMarkAnnotation(mark: mark, coord: selected.coordinate)
             }
         } catch let err {
             log.info("Failed to parse marine symbol: \(err.describe).")
         }
-        return false
+        return nil
     }
     
-    private func handleAreaTap(point: CGPoint) throws -> Bool {
-        guard let selected = mapView.visibleFeatures(at: point, styleLayerIdentifiers: Set(layers.fairwayAreas)).first else { return false }
-        let popup = FairwayAreaAnnotation(
+    private func handleBoatTap(point: CGPoint) -> MGLAnnotation? {
+        do {
+            if let selected = mapView.visibleFeatures(at: point, styleLayerIdentifiers: boats.layers()).find({ $0 is MGLPointFeature }) {
+                let info = try Json.shared.read(BoatPoint.self, dict: selected.attributes)
+                return BoatAnnotation(info: info)
+            } else {
+                return nil
+            }
+        } catch let err {
+            log.error("Unable to handle boat tap. \(err.describe)")
+            return nil
+        }
+    }
+    
+    private func handleAisTap(point: CGPoint) throws -> MGLAnnotation? {
+        // Limits feature selection to just the following layer identifiers
+        if let selected = mapView.visibleFeatures(at: point, styleLayerIdentifiers: aisLayers).find({ $0 is MGLPointFeature }),
+            let mmsi = selected.attribute(forKey: Mmsi.key) as? String,
+            let vessel = ais.info(Mmsi(mmsi)) {
+            return VesselAnnotation(vessel: vessel)
+        } else {
+            return nil
+        }
+    }
+    
+    private func handleAreaTap(point: CGPoint) throws -> MGLAnnotation? {
+        guard let selected = mapView.visibleFeatures(at: point, styleLayerIdentifiers: Set(layers.fairwayAreas)).first else { return nil }
+        return FairwayAreaAnnotation(
             info: try selected.properties().validate(FairwayArea.self),
             limits: try limitAreaInfo(point: point),
             coord: mapView.convert(point, toCoordinateFrom: nil))
-        mapView.selectAnnotation(popup, animated: true)
-        return true
     }
     
-    private func handleLimitsTap(point: CGPoint) throws -> Bool {
-        guard let limitArea = try limitAreaInfo(point: point) else { return false }
-        let popup = LimitAnnotation(limit: limitArea, coord: mapView.convert(point, toCoordinateFrom: nil))
-        mapView.selectAnnotation(popup, animated: true)
-        return true
+    private func handleLimitsTap(point: CGPoint) throws -> MGLAnnotation? {
+        guard let limitArea = try limitAreaInfo(point: point) else { return nil }
+        return LimitAnnotation(limit: limitArea, coord: mapView.convert(point, toCoordinateFrom: nil))
     }
     
     private func limitAreaInfo(point: CGPoint) throws -> LimitArea? {

@@ -39,22 +39,8 @@ class AISRenderer {
         vesselTrails = trails.source
     }
     
-    func info(for mmsi: Mmsi) -> Vessel? {
+    func info(_ mmsi: Mmsi) -> Vessel? {
         return vesselHistory[mmsi]?.first
-    }
-    
-    func onTap(point: CGPoint) -> Bool {
-        // Limits feature selection to just the following layer identifiers
-        let layerIdentifiers: Set = [conf.vessel, conf.trail]
-        if let selected = mapView.visibleFeatures(at: point, styleLayerIdentifiers: layerIdentifiers).find({ $0 is MGLPointFeature }),
-            let mmsi = selected.attribute(forKey: Mmsi.key) as? String,
-            let vessel = vesselHistory[Mmsi(mmsi)]?.first {
-            let popup = VesselAnnotation(vessel: vessel)
-            mapView.selectAnnotation(popup, animated: true)
-            return true
-        } else {
-            return false
-        }
     }
     
     func update(vessels: [Vessel]) {

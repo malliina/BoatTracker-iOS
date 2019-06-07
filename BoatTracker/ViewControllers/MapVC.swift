@@ -93,23 +93,25 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     
     func mapView(_ mapView: MGLMapView, didFinishLoading style: MGLStyle) {
         self.style = style
-        self.boatRenderer = BoatRenderer(mapView: mapView, style: style, followButton: followButton)
+        let boats = BoatRenderer(mapView: mapView, style: style, followButton: followButton)
+        self.boatRenderer = boats
         self.pathFinder = PathFinder(mapView: mapView, style: style)
         installTapListener(mapView: mapView)
         // Maybe the conf should be cached in a file?
         let _ = http.conf().subscribe { (event) in
             switch event {
-            case .success(let conf): self.initInteractive(mapView: mapView, style: style, layers: conf.layers)
+            case .success(let conf): self.initInteractive(mapView: mapView, style: style, layers: conf.layers, boats: boats)
             case .error(let err): self.log.error("Failed to load conf: '\(err.describe)'.")
             }
         }
     }
     
-    func initInteractive(mapView: MGLMapView, style: MGLStyle, layers: MapboxLayers) {
+    func initInteractive(mapView: MGLMapView, style: MGLStyle, layers: MapboxLayers, boats: BoatRenderer) {
         if firstInit {
             firstInit = false
-            self.aisRenderer = AISRenderer(mapView: mapView, style: style, conf: layers.ais)
-            self.taps = TapListener(mapView: mapView, layers: layers)
+            let ais = AISRenderer(mapView: mapView, style: style, conf: layers.ais)
+            self.aisRenderer = ais
+            self.taps = TapListener(mapView: mapView, layers: layers, ais: ais, boats: boats)
         }
     }
     
@@ -150,11 +152,8 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
             // Tries matching the exact point first
             guard let senderView = sender.view else { return }
             let point = sender.location(in: senderView)
-            let handledByAis = aisRenderer?.onTap(point: point) ?? false
             let handledByTaps = taps?.onTap(point: point) ?? false
-            let handledByBoat = boatRenderer?.onTap(point: point) ?? false
-            let handled = handledByAis || handledByTaps || handledByBoat
-            if !handled {
+            if !handledByTaps {
                 mapView.deselectAnnotation(mapView.selectedAnnotations.first, animated: true)
             }
         }
