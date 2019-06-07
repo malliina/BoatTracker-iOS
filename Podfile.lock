@@ -1,11 +1,11 @@
 PODS:
-  - AppCenter (1.14.0):
-    - AppCenter/Analytics (= 1.14.0)
-    - AppCenter/Crashes (= 1.14.0)
-  - AppCenter/Analytics (1.14.0):
+  - AppCenter (2.0.1):
+    - AppCenter/Analytics (= 2.0.1)
+    - AppCenter/Crashes (= 2.0.1)
+  - AppCenter/Analytics (2.0.1):
     - AppCenter/Core
-  - AppCenter/Core (1.14.0)
-  - AppCenter/Crashes (1.14.0):
+  - AppCenter/Core (2.0.1)
+  - AppCenter/Crashes (2.0.1):
     - AppCenter/Core
   - Charts (3.3.0):
     - Charts/Core (= 3.3.0)
@@ -23,21 +23,24 @@ PODS:
     - "GoogleToolboxForMac/NSString+URLArguments (= 2.2.0)"
   - "GoogleToolboxForMac/NSString+URLArguments (2.2.0)"
   - GTMSessionFetcher/Core (1.2.1)
-  - Mapbox-iOS-SDK (4.10.0)
-  - RxCocoa (4.5.0):
-    - RxSwift (>= 4.4.2, ~> 4.4)
-  - RxSwift (4.5.0)
-  - SnapKit (4.2.0)
+  - Mapbox-iOS-SDK (5.0.0)
+  - RxCocoa (5.0.0):
+    - RxRelay (~> 5)
+    - RxSwift (~> 5)
+  - RxRelay (5.0.0):
+    - RxSwift (~> 5)
+  - RxSwift (5.0.0)
+  - SnapKit (5.0.0)
   - SocketRocket (0.5.1)
 
 DEPENDENCIES:
-  - AppCenter (= 1.14.0)
+  - AppCenter (= 2.0.1)
   - Charts (= 3.3.0)
   - GoogleSignIn (= 4.4.0)
-  - Mapbox-iOS-SDK (= 4.10.0)
-  - RxCocoa (= 4.5.0)
-  - RxSwift (= 4.5.0)
-  - SnapKit (= 4.2.0)
+  - Mapbox-iOS-SDK (= 5.0.0)
+  - RxCocoa (= 5.0.0)
+  - RxSwift (= 5.0.0)
+  - SnapKit (= 5.0.0)
   - SocketRocket (= 0.5.1)
 
 SPEC REPOS:
@@ -49,22 +52,24 @@ SPEC REPOS:
     - GTMSessionFetcher
     - Mapbox-iOS-SDK
     - RxCocoa
+    - RxRelay
     - RxSwift
     - SnapKit
     - SocketRocket
 
 SPEC CHECKSUMS:
-  AppCenter: 02c5efe08d3bbab5421ae41d5f7aa7238906b817
+  AppCenter: 6a5ff2fd007b53431259fdd74f91eb3d0dfea3d1
   Charts: ec1f57f9340054155691e84d4544a1d239d382c5
   GoogleSignIn: 7ff245e1a7b26d379099d3243a562f5747e23d39
   GoogleToolboxForMac: ff31605b7d66400dcec09bed5861689aebadda4d
   GTMSessionFetcher: 32aeca0aa144acea523e1c8e053089dec2cb98ca
-  Mapbox-iOS-SDK: 8b1b777de7de373cdf000994c91af101ef886477
-  RxCocoa: cbf70265dc65a981d4ac982e513c10cf23df24a0
-  RxSwift: f172070dfd1a93d70a9ab97a5a01166206e1c575
-  SnapKit: fe8a619752f3f27075cc9a90244d75c6c3f27e2a
+  Mapbox-iOS-SDK: 018266d830ecb6e57d913494c280383b47981590
+  RxCocoa: fcf32050ac00d801f34a7f71d5e8e7f23026dcd8
+  RxRelay: 4f7409406a51a55cd88483f21ed898c234d60f18
+  RxSwift: 8b0671caa829a763bbce7271095859121cbd895f
+  SnapKit: fd22d10eb9aff484d79a8724eab922c1ddf89bcf
   SocketRocket: d57c7159b83c3c6655745cd15302aa24b6bae531
 
-PODFILE CHECKSUM: 7a0d0add5ae3dd50611923b49c5cd6430228c896
+PODFILE CHECKSUM: cbc59adb84a6b9cbc322bd7a912b943321f4b4f7
 
 COCOAPODS: 1.6.1
