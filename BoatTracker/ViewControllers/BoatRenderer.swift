@@ -21,6 +21,7 @@ class BoatRenderer {
     private var boatIcons: [TrackName: MGLSymbolStyleLayer] = [:]
     private var topSpeedMarkers: [TrackName: ActiveMarker] = [:]
     var latestTrack: TrackName? = nil
+    private var hasBeenFollowing: Bool = false
     
     private let followButton: UIButton
     private let mapView: MGLMapView
@@ -147,7 +148,10 @@ class BoatRenderer {
         case .follow:
             guard let lastCoord = coords.last else { return }
             if let bearing = bearing {
-                let camera = MGLMapCamera(lookingAtCenter: lastCoord.coord, altitude: 200, pitch: 60, heading: bearing)
+                let initialFollowPitch: CGFloat = 60
+                let pitch = hasBeenFollowing ? mapView.camera.pitch : initialFollowPitch
+                hasBeenFollowing = true
+                let camera = MGLMapCamera(lookingAtCenter: lastCoord.coord, altitude: mapView.camera.altitude, pitch: pitch, heading: bearing)
                 mapView.fly(to: camera, withDuration: 0.8, completionHandler: nil)
             } else {
                 mapView.setCenter(lastCoord.coord, animated: true)
