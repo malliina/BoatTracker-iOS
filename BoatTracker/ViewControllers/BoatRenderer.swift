@@ -12,7 +12,7 @@ import Mapbox
 
 class BoatRenderer {
     let log = LoggerFactory.shared.vc(BoatRenderer.self)
-    
+    var app: UIApplication { return UIApplication.shared }
     // state of boat trails and icons
     private var trails: [TrackName: MGLShapeSource] = [:]
     var isEmpty: Bool { return trails.isEmpty }
@@ -31,10 +31,13 @@ class BoatRenderer {
         didSet {
             switch mapMode {
             case .fit:
+                app.isIdleTimerDisabled = false
                 followButton.alpha = MapButton.selectedAlpha
             case .follow:
+                app.isIdleTimerDisabled = true
                 followButton.alpha = MapButton.deselectedAlpha
             case .stay:
+                app.isIdleTimerDisabled = false
                 followButton.alpha = MapButton.selectedAlpha
             }
         }
@@ -62,7 +65,7 @@ class BoatRenderer {
         return view
     }
     
-    func follow() {
+    func toggleFollow() {
         if mapMode == .stay {
             flyToLatest()
             mapMode = .follow

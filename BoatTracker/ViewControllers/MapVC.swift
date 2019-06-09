@@ -246,7 +246,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     }
     
     @objc func followClicked(_ sender: UIButton) {
-        boatRenderer?.follow()
+        boatRenderer?.toggleFollow()
     }
 
     override func didReceiveMemoryWarning() {
