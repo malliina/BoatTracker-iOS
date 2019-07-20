@@ -43,7 +43,7 @@ open class BoatNotifications {
     
     func didRegister(_ deviceToken: Data) {
         let hexToken = deviceToken.hexString()
-        let token = PushToken(token: hexToken)
+        let token = PushToken(hexToken)
         log.info("Got device token \(hexToken)")
         settings.pushToken = token
         settings.notificationsAllowed = true
@@ -57,7 +57,7 @@ open class BoatNotifications {
     }
     
     func disableNotifications() {
-        settings.pushToken = PushToken(token: BoatPrefs.shared.noPushTokenValue)
+        settings.pushToken = PushToken(BoatPrefs.shared.noPushTokenValue)
         settings.notificationsAllowed = false
     }
     

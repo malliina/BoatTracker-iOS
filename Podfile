@@ -6,7 +6,7 @@ def app_pods
     pod 'AppCenter', '2.0.1'
     pod 'Charts', '3.3.0'
     pod 'GoogleSignIn', '4.4.0'
-    pod 'Mapbox-iOS-SDK', '5.0.0'
+    pod 'Mapbox-iOS-SDK', '5.1.1'
     pod 'RxCocoa', '5.0.0'
     pod 'RxSwift', '5.0.0'
     pod 'SnapKit', '5.0.0'

@@ -8,10 +8,15 @@
 
 import Foundation
 
-struct PushToken: Equatable, Hashable, CustomStringConvertible, Codable {
+struct PushToken: Equatable, Hashable, CustomStringConvertible, StringCodable {
     let token: String
-    
     var description: String { return token }
+    
+    init(_ value: String) {
+        self.token = value
+    }
+    
+    static func == (lhs: PushToken, rhs: PushToken) -> Bool { return lhs.token == rhs.token }
 }
 
 enum BoatState: String, Codable {

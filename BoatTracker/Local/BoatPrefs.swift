@@ -27,12 +27,12 @@ class BoatPrefs {
             let tokenString = prefs.string(forKey: pushTokenKey)
             if let tokenString = tokenString {
                 if tokenString != noPushTokenValue {
-                    return PushToken(token: tokenString)
+                    return PushToken(tokenString)
                 }
             }
             return nil
         }
-        set(newToken) {
+        set (newToken) {
             let token = newToken?.token ?? noPushTokenValue
             prefs.set(token, forKey: pushTokenKey)
         }
@@ -40,7 +40,7 @@ class BoatPrefs {
     
     var notificationsAllowed: Bool {
         get { return prefs.bool(forKey: notificationsAllowedKey) == true }
-        set(allowed) {
+        set (allowed) {
             prefs.set(allowed, forKey: notificationsAllowedKey)
 //            if errors == nil {
 //                notificationPermissionSubject.onNext(allowed)
