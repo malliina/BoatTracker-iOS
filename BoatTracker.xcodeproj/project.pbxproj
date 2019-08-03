@@ -29,6 +29,8 @@
 		613669B7216FDAD10043494A /* BoatNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613669B6216FDAD10043494A /* BoatNotifications.swift */; };
 		613669BC216FDB3E0043494A /* notificationModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613669BB216FDB3E0043494A /* notificationModels.swift */; };
 		613669BE217117390043494A /* generalExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613669BD217117390043494A /* generalExtensions.swift */; };
+		613D174B22F5B0DD008D8E80 /* StatsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613D174A22F5B0DD008D8E80 /* StatsVC.swift */; };
+		613D174D22F5F7D7008D8E80 /* PeriodStatCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613D174C22F5F7D7008D8E80 /* PeriodStatCell.swift */; };
 		613D5D242220AC0A003FF8EB /* viewModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613D5D232220AC09003FF8EB /* viewModels.swift */; };
 		613E82D021A0789000D3C412 /* ChartsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613E82CF21A0789000D3C412 /* ChartsVC.swift */; };
 		614221B4222B094900FD1FF3 /* SelectLanguageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614221B3222B094900FD1FF3 /* SelectLanguageVC.swift */; };
@@ -144,6 +146,8 @@
 		613669BB216FDB3E0043494A /* notificationModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = notificationModels.swift; sourceTree = "<group>"; };
 		613669BD217117390043494A /* generalExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = generalExtensions.swift; sourceTree = "<group>"; };
 		613669BF217124560043494A /* BoatTracker.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BoatTracker.entitlements; sourceTree = "<group>"; };
+		613D174A22F5B0DD008D8E80 /* StatsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsVC.swift; sourceTree = "<group>"; };
+		613D174C22F5F7D7008D8E80 /* PeriodStatCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeriodStatCell.swift; sourceTree = "<group>"; };
 		613D5D232220AC09003FF8EB /* viewModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = viewModels.swift; sourceTree = "<group>"; };
 		613E82CF21A0789000D3C412 /* ChartsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartsVC.swift; sourceTree = "<group>"; };
 		614221B3222B094900FD1FF3 /* SelectLanguageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectLanguageVC.swift; sourceTree = "<group>"; };
@@ -365,6 +369,7 @@
 				6173F248228CB99000A1E9B9 /* PathFinder.swift */,
 				61F4199A2120B2F700B1ED7D /* ProfileTableVC.swift */,
 				614221B3222B094900FD1FF3 /* SelectLanguageVC.swift */,
+				613D174A22F5B0DD008D8E80 /* StatsVC.swift */,
 				61832AAD220B69D400413FD0 /* TapListener.swift */,
 				619679F920FBCDB100432672 /* TrackListVC.swift */,
 				612F46AF20F551CB001A3003 /* viewControllerExt.swift */,
@@ -387,6 +392,7 @@
 				61ACE5CA2131667600925265 /* BoatTextView.swift */,
 				6171906A212CA06900337B0B /* BoatTokenCell.swift */,
 				6101D54A221057340051A427 /* mapCallouts.swift */,
+				613D174C22F5F7D7008D8E80 /* PeriodStatCell.swift */,
 				61CD40D021163E0E00F31AA5 /* StatBox.swift */,
 				619679F720FBBB4D00432672 /* StatCell.swift */,
 				619679FF2103BCCF00432672 /* TrackCell.swift */,
@@ -893,9 +899,11 @@
 				6199E0EC20F24DC700A4009A /* HttpClient.swift in Sources */,
 				61DE7F4920F3EB0700C95B3F /* BoatTextField.swift in Sources */,
 				612F46B520F644B7001A3003 /* Distance.swift in Sources */,
+				613D174D22F5F7D7008D8E80 /* PeriodStatCell.swift in Sources */,
 				61DCDA3C21D02693009A75EB /* RxGoogleAuth.swift in Sources */,
 				619679FC20FBCF2F00432672 /* Duration.swift in Sources */,
 				61DE7F4120F2A23100C95B3F /* StringUtils.swift in Sources */,
+				613D174B22F5B0DD008D8E80 /* StatsVC.swift in Sources */,
 				61967A092103CF3E00432672 /* Formatting.swift in Sources */,
 				61B07C6020F21DC300D8B7E0 /* AppDelegate.swift in Sources */,
 				612F46B720F646A0001A3003 /* Temperature.swift in Sources */,

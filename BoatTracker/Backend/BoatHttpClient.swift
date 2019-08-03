@@ -71,6 +71,10 @@ class BoatHttpClient {
         return getParsed(TracksResponse.self, "/tracks").map { $0.tracks }
     }
     
+    func stats() -> Single<StatsResponse> {
+        return getParsed(StatsResponse.self, "/stats?order=desc")
+    }
+    
     func changeTrackTitle(name: TrackName, title: TrackTitle) -> Single<TrackResponse> {
         return parsed(TrackResponse.self, "/tracks/\(name)", run: { (url) in
             return self.client.putJSON(url, headers: self.postHeaders, payload: ChangeTrackTitle(title: title))

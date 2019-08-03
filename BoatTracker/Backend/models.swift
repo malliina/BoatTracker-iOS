@@ -748,12 +748,15 @@ extension StringCodable {
     }
 }
 
-protocol NormalIntCodable: Codable {
+protocol NormalIntCodable: Codable, CustomStringConvertible {
     init(_ value: Int)
     var value: Int { get }
+    
 }
 
 extension NormalIntCodable {
+    var description: String { return "\(value)"}
+    
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
         let raw = try container.decode(Int.self)
@@ -883,4 +886,61 @@ struct TrackedBoat: Codable {
     let boatName: BoatName
     let trackName: TrackName
     let trackTitle: TrackTitle?
+}
+
+struct DateVal: StringCodable {
+    let value: String
+    var description: String { return value }
+    
+    init(_ value: String) {
+        self.value = value
+    }
+}
+
+struct MonthVal: NormalIntCodable {
+    let value: Int
+    var description: String { return "\(value)" }
+    
+    init(_ value: Int) {
+        self.value = value
+    }
+}
+
+struct YearVal: NormalIntCodable {
+    let value: Int
+    
+    init(_ value: Int) {
+        self.value = value
+    }
+}
+
+struct Stats: Codable {
+    let from, to: DateVal
+    let days, trackCount: Int
+    let distance: Distance
+    let duration: Duration
+}
+
+struct MonthlyStats: Codable {
+    let label: String
+    let year: YearVal
+    let month: MonthVal
+    let days, trackCount: Int
+    let distance: Distance
+    let duration: Duration
+}
+
+struct YearlyStats: Codable {
+    let year: YearVal
+    let days, trackCount: Int
+    let distance: Distance
+    let duration: Duration
+    let monthly: [MonthlyStats]
+}
+
+struct StatsResponse: Codable {
+    let allTime: Stats
+    let yearly: [YearlyStats]
+    
+    var isEmpty: Bool { return allTime.trackCount == 0 }
 }

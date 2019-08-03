@@ -103,7 +103,8 @@ class ProfileTableVC: BaseTableVC {
                 switch indexPath.row {
                 case 0: cell.textLabel?.text = lang.track.graph
                 case 1: cell.textLabel?.text = lang.track.trackHistory
-                case 2: cell.textLabel?.text = lang.track.boats
+                case 2: cell.textLabel?.text = lang.labels.statistics
+                case 3: cell.textLabel?.text = lang.track.boats
                 default: ()
                 }
             case 2:
@@ -198,6 +199,8 @@ class ProfileTableVC: BaseTableVC {
             case 1:
                 nav(to: TrackListVC(delegate: tracksDelegate, lang: lang))
             case 2:
+                nav(to: StatsVC(lang: lang))
+            case 3:
                 openBoats()
             default: ()
             }
@@ -293,7 +296,7 @@ class ProfileTableVC: BaseTableVC {
         case .content:
             switch section {
             case 0: return 1
-            case 1: return 3
+            case 1: return 4
             case 2: return 1
             case 3: return 1
             case 4: return 2

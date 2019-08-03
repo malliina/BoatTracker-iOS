@@ -15,6 +15,7 @@ class BoatColors {
     let blue = UIColor(r: 0, g: 122, b: 255, alpha: 1.0)
     let tealBlue = UIColor(r: 90, g: 200, b: 250, alpha: 1.0)
     let purple = UIColor(r: 88, g: 86, b: 214, alpha: 1.0)
+    let almostWhite = UIColor(r: 244, g: 244, b: 244, alpha: 1.0)
     
     var buttonText: UIColor { return blue }
     let textColor = UIColor.black
