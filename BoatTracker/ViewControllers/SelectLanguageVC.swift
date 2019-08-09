@@ -78,8 +78,6 @@ class SelectLanguageVC: BaseTableVC, LanguageChangedDelegate {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let info = langs[indexPath.row] else { return }
-//        current = info.language
-//        tableView.reloadData()
         changeLanguage(to: info.language)
     }
     

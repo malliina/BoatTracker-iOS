@@ -40,7 +40,7 @@ class TapListener {
                 (try handleMarksTap(point: point)) ??
                 (try handleAreaTap(point: point)) ??
                 (try handleLimitsTap(point: point)) else { return false}
-            mapView.selectAnnotation(annotation, animated: true)
+            mapView.selectAnnotation(annotation, animated: true, completionHandler: nil)
             return true
         } catch let err {
             log.error(err.describe)

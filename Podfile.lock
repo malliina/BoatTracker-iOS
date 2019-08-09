@@ -1,11 +1,11 @@
 PODS:
-  - AppCenter (2.0.1):
-    - AppCenter/Analytics (= 2.0.1)
-    - AppCenter/Crashes (= 2.0.1)
-  - AppCenter/Analytics (2.0.1):
+  - AppCenter (2.2.0):
+    - AppCenter/Analytics (= 2.2.0)
+    - AppCenter/Crashes (= 2.2.0)
+  - AppCenter/Analytics (2.2.0):
     - AppCenter/Core
-  - AppCenter/Core (2.0.1)
-  - AppCenter/Crashes (2.0.1):
+  - AppCenter/Core (2.2.0)
+  - AppCenter/Crashes (2.2.0):
     - AppCenter/Core
   - Charts (3.3.0):
     - Charts/Core (= 3.3.0)
@@ -23,7 +23,7 @@ PODS:
     - "GoogleToolboxForMac/NSString+URLArguments (= 2.2.0)"
   - "GoogleToolboxForMac/NSString+URLArguments (2.2.0)"
   - GTMSessionFetcher/Core (1.2.1)
-  - Mapbox-iOS-SDK (5.0.0)
+  - Mapbox-iOS-SDK (5.2.0)
   - RxCocoa (5.0.0):
     - RxRelay (~> 5)
     - RxSwift (~> 5)
@@ -34,10 +34,10 @@ PODS:
   - SocketRocket (0.5.1)
 
 DEPENDENCIES:
-  - AppCenter (= 2.0.1)
+  - AppCenter (= 2.2.0)
   - Charts (= 3.3.0)
   - GoogleSignIn (= 4.4.0)
-  - Mapbox-iOS-SDK (= 5.0.0)
+  - Mapbox-iOS-SDK (= 5.2.0)
   - RxCocoa (= 5.0.0)
   - RxSwift (= 5.0.0)
   - SnapKit (= 5.0.0)
@@ -58,18 +58,18 @@ SPEC REPOS:
     - SocketRocket
 
 SPEC CHECKSUMS:
-  AppCenter: 6a5ff2fd007b53431259fdd74f91eb3d0dfea3d1
-  Charts: ec1f57f9340054155691e84d4544a1d239d382c5
+  AppCenter: c809e69d93218b9861b4f8e54ded8dcf4d2131e7
+  Charts: e0dd4cd8f257bccf98407b58183ddca8e8d5b578
   GoogleSignIn: 7ff245e1a7b26d379099d3243a562f5747e23d39
   GoogleToolboxForMac: ff31605b7d66400dcec09bed5861689aebadda4d
   GTMSessionFetcher: 32aeca0aa144acea523e1c8e053089dec2cb98ca
-  Mapbox-iOS-SDK: 018266d830ecb6e57d913494c280383b47981590
+  Mapbox-iOS-SDK: 3e095b305126d52ba166fe215d847b15b6fbee63
   RxCocoa: fcf32050ac00d801f34a7f71d5e8e7f23026dcd8
   RxRelay: 4f7409406a51a55cd88483f21ed898c234d60f18
   RxSwift: 8b0671caa829a763bbce7271095859121cbd895f
   SnapKit: fd22d10eb9aff484d79a8724eab922c1ddf89bcf
   SocketRocket: d57c7159b83c3c6655745cd15302aa24b6bae531
 
-PODFILE CHECKSUM: cbc59adb84a6b9cbc322bd7a912b943321f4b4f7
+PODFILE CHECKSUM: d9f478ef03399a728be6df06ba87824b08c6eea0
 
 COCOAPODS: 1.6.1
