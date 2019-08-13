@@ -202,6 +202,7 @@ class TrackedBoatCallout: BoatCallout {
     }
 }
 
+// The iOS SDK uses the title and subtitle properties to render an inbuilt callout
 class TrophyAnnotation: NSObject, MGLAnnotation {
     var title: String?
     var subtitle: String?
