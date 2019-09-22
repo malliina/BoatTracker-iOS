@@ -100,18 +100,25 @@ class ProfileTableVC: BaseTableVC {
                 }
             case 1:
                 cell.accessoryType = .disclosureIndicator
-                switch indexPath.row {
-                case 0: cell.textLabel?.text = lang.track.graph
-                case 1: cell.textLabel?.text = lang.track.trackHistory
-                case 2: cell.textLabel?.text = lang.labels.statistics
-                case 3: cell.textLabel?.text = lang.track.boats
-                default: ()
+                cell.selectionStyle = .default
+                if let label = cell.textLabel {
+                    label.textColor = colors.textColor
+                    label.textAlignment = .left
+                    switch indexPath.row {
+                    case 0: label.text = lang.track.graph
+                    case 1: label.text = lang.track.trackHistory
+                    case 2: label.text = lang.labels.statistics
+                    case 3: label.text = lang.track.boats
+                    default: ()
+                    }
                 }
             case 2:
                 cell.accessoryType = .disclosureIndicator
                 cell.textLabel?.text = lang.profile.language
-            case 3: initAttributionsCell(cell: cell)
-            case 4: initLogoutCells(cell: cell, indexPath: indexPath)
+            case 3:
+                initAttributionsCell(cell: cell)
+            case 4:
+                initLogoutCells(cell: cell, indexPath: indexPath)
             default: ()
             }
         case .empty:
@@ -132,9 +139,11 @@ class ProfileTableVC: BaseTableVC {
     }
     
     func initNoTracksCell(cell: UITableViewCell) {
-        cell.textLabel?.text = lang.messages.noSavedTracks
-        cell.textLabel?.textColor = colors.secondaryText
-        cell.textLabel?.textAlignment = .center
+        if let label = cell.textLabel {
+            label.text = lang.messages.noSavedTracks
+            label.textColor = colors.secondaryText
+            label.textAlignment = .center
+        }
         cell.selectionStyle = .none
     }
     
