@@ -17,7 +17,7 @@ class Json {
     let decoder = JSONDecoder()
     
     func asData(dict: [String: Any]) throws -> Data {
-        return try JSONSerialization.data(withJSONObject: dict, options: .prettyPrinted)
+        try JSONSerialization.data(withJSONObject: dict, options: .prettyPrinted)
     }
     
     func read<T: Decodable>(_ t: T.Type, dict: [String: Any]) throws -> T {
@@ -37,6 +37,6 @@ class Json {
 
 extension Data {
     func validate<T: Decodable>(_ t: T.Type) throws -> T {
-        return try Json.shared.decoder.decode(t, from: self)
+        try Json.shared.decoder.decode(t, from: self)
     }
 }

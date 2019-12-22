@@ -40,6 +40,13 @@ class ChartsVC: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
         navigationController?.navigationBar.isTranslucent = false
+        if #available(iOS 13.0, *) {
+            let navbar = navigationController?.navigationBar
+            let navBarAppearance = UINavigationBarAppearance()
+            navBarAppearance.configureWithDefaultBackground()
+            navbar?.standardAppearance = navBarAppearance
+            navbar?.scrollEdgeAppearance = navBarAppearance
+        }
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: lang.settings.back, style: .plain, target: self, action: #selector(goBackClicked(_:)))
         
         speedDataSet.colors = [ .red ]

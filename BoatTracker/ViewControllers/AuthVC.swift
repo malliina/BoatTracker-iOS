@@ -18,7 +18,7 @@ protocol WelcomeDelegate {
     func showWelcome(token: UserToken?)
 }
 
-class AuthVC: BaseTableVC, GIDSignInUIDelegate, TokenDelegate {
+class AuthVC: BaseTableVC, TokenDelegate {
     let log = LoggerFactory.shared.vc(AuthVC.self)
     
     let chooseIdentifier = "ChooseIdentifier"
@@ -56,7 +56,7 @@ class AuthVC: BaseTableVC, GIDSignInUIDelegate, TokenDelegate {
         view.backgroundColor = .white
         
         GoogleAuth.shared.uiDelegate = self
-        GIDSignIn.sharedInstance().uiDelegate = self
+        GIDSignIn.sharedInstance().presentingViewController = self
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

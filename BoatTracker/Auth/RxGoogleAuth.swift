@@ -28,7 +28,7 @@ class RxGoogleAuth: NSObject, GIDSignInDelegate {
     }
     
     func signIn() -> Single<UserToken> {
-        google.signInSilently()
+        google.restorePreviousSignIn()
         return subject.asSingle()
     }
     

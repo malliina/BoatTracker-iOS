@@ -18,10 +18,14 @@ class UserSettings {
     static let shared = UserSettings()
     
     private let languageSubject = PublishSubject<Lang>()
-    var languageChanges: Observable<Lang> { return languageSubject.observeOn(MainScheduler.instance) }
+    var languageChanges: Observable<Lang> {
+        languageSubject.observeOn(MainScheduler.instance)
+    }
     
     var conf: ClientConf? = nil
-    var languages: Languages? { return conf?.languages }
+    var languages: Languages? {
+        conf?.languages
+    }
     var profile: UserProfile? = nil {
         didSet  {
             userLanguage = profile?.language

@@ -42,7 +42,9 @@ class ProfileTableVC: BaseTableVC {
     var state: ViewState = .loading
     var isInitial: Bool = false
     
-    private var socket: BoatSocket { return Backend.shared.socket }
+    private var socket: BoatSocket {
+        Backend.shared.socket
+    }
     
     func update(stats: TrackRef) {
         onUiThread {
@@ -183,11 +185,11 @@ class ProfileTableVC: BaseTableVC {
     }
     
     override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return 40
+        40
     }
     
     override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        return UIView()
+        UIView()
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

@@ -12,14 +12,14 @@ import GoogleSignIn
 class GoogleAuth: NSObject, GIDSignInDelegate {
     static let shared = GoogleAuth()
     static let logger = LoggerFactory.shared.system(GoogleAuth.self)
-    
+
     let log = GoogleAuth.logger
-    
+
     var delegate: TokenDelegate? = nil
     var uiDelegate: TokenDelegate? = nil
-    
+
     let google = GIDSignIn.sharedInstance()!
-    
+
     override init() {
         super.init()
         do {
@@ -29,24 +29,25 @@ class GoogleAuth: NSObject, GIDSignInDelegate {
         }
         google.delegate = self
     }
-    
+
     /// If the user is authenticated, this will eventually call the delegate with the Google id token.
     ///
     /// If the user is unauthenticated, this will call the delegate with a nil token.
     func signInSilently() {
-        google.signInSilently()
+        google.restorePreviousSignIn()
     }
-    
+
     func signOut() {
         google.signOut()
     }
-    
-    func open(url: URL, options: [UIApplication.OpenURLOptionsKey : Any]) -> Bool {
-        return google.handle(url as URL?,
-                             sourceApplication: options[UIApplication.OpenURLOptionsKey.sourceApplication] as? String,
-                             annotation: options[UIApplication.OpenURLOptionsKey.annotation])
+
+    func open(url: URL, options: [UIApplication.OpenURLOptionsKey: Any]) -> Bool {
+        google.handle(url)
+//        google.handle(url as URL?,
+//                sourceApplication: options[UIApplication.OpenURLOptionsKey.sourceApplication] as? String,
+//                annotation: options[UIApplication.OpenURLOptionsKey.annotation])
     }
-    
+
     func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
         if let error = error {
             log.error("Sign in error: '\(error.localizedDescription)'.")
@@ -68,12 +69,12 @@ class GoogleAuth: NSObject, GIDSignInDelegate {
             onToken(token: UserToken(email: email, token: AccessToken(idToken)))
         }
     }
-    
+
     func onToken(token: UserToken?) {
         uiDelegate?.onToken(token: token)
         delegate?.onToken(token: token)
     }
-    
+
     func sign(_ signIn: GIDSignIn!, didDisconnectWith user: GIDGoogleUser!, withError error: Error!) {
         log.info("User disconnected.")
     }

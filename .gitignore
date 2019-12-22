@@ -15,5 +15,6 @@ DerivedData
 *.xcuserstate
 Pods
 .DS_Store
+.idea
 
 BoatTracker/Credentials.plist

@@ -11,17 +11,21 @@ import Foundation
 class BoatPrefs {
     static let shared = BoatPrefs()
     let prefs = UserDefaults.standard
-    
+
     let welcomeKey = "welcome"
     let pushTokenKey = "pushToken"
     let notificationsAllowedKey = "notificationsAllowed"
     let noPushTokenValue = "none"
-    
+
     var isWelcomeRead: Bool {
-        get { return prefs.bool(forKey: welcomeKey) }
-        set (newValue) { prefs.set(newValue, forKey: welcomeKey) }
+        get {
+            prefs.bool(forKey: welcomeKey)
+        }
+        set(newValue) {
+            prefs.set(newValue, forKey: welcomeKey)
+        }
     }
-    
+
     var pushToken: PushToken? {
         get {
             let tokenString = prefs.string(forKey: pushTokenKey)
@@ -32,15 +36,17 @@ class BoatPrefs {
             }
             return nil
         }
-        set (newToken) {
+        set(newToken) {
             let token = newToken?.token ?? noPushTokenValue
             prefs.set(token, forKey: pushTokenKey)
         }
     }
-    
+
     var notificationsAllowed: Bool {
-        get { return prefs.bool(forKey: notificationsAllowedKey) == true }
-        set (allowed) {
+        get {
+            prefs.bool(forKey: notificationsAllowedKey) == true
+        }
+        set(allowed) {
             prefs.set(allowed, forKey: notificationsAllowedKey)
 //            if errors == nil {
 //                notificationPermissionSubject.onNext(allowed)

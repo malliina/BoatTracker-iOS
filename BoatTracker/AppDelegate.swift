@@ -54,7 +54,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     static func initMapboxToken(key: String = "MapboxAccessToken") -> Bool {
         do {
             let token = try Credentials.read(key: key)
-            MGLAccountManager.accessToken = token
+            MGLAccountManager.accessToken = token as NSString?
             return true
         } catch let err {
             AppDelegate.logger.error(err.describe)
@@ -63,7 +63,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-        return google?.open(url: url, options: options) ?? false
+        google?.open(url: url, options: options) ?? false
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
