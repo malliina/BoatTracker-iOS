@@ -61,7 +61,6 @@
 		6199E0F520F2501E00A4009A /* errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6199E0F420F2501E00A4009A /* errors.swift */; };
 		6199E0F720F254FB00A4009A /* SocketClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6199E0F620F254FB00A4009A /* SocketClient.swift */; };
 		6199E0F920F25EA100A4009A /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6199E0F820F25EA100A4009A /* Credentials.swift */; };
-		6199E0FB20F2656500A4009A /* Credentials.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6199E0FA20F2656500A4009A /* Credentials.plist */; };
 		61AB2C7F2132A63C009774DC /* viewExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61AB2C7E2132A63C009774DC /* viewExt.swift */; };
 		61ACE5C72130956A00925265 /* WelcomeSignedIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61ACE5C62130956A00925265 /* WelcomeSignedIn.swift */; };
 		61ACE5C921309E5E00925265 /* BoatPrefs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61ACE5C821309E5E00925265 /* BoatPrefs.swift */; };
@@ -179,7 +178,6 @@
 		6199E0F420F2501E00A4009A /* errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = errors.swift; sourceTree = "<group>"; };
 		6199E0F620F254FB00A4009A /* SocketClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocketClient.swift; sourceTree = "<group>"; };
 		6199E0F820F25EA100A4009A /* Credentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Credentials.swift; sourceTree = "<group>"; };
-		6199E0FA20F2656500A4009A /* Credentials.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Credentials.plist; sourceTree = "<group>"; };
 		61AB2C7E2132A63C009774DC /* viewExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = viewExt.swift; sourceTree = "<group>"; };
 		61ACE5C62130956A00925265 /* WelcomeSignedIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeSignedIn.swift; sourceTree = "<group>"; };
 		61ACE5C821309E5E00925265 /* BoatPrefs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatPrefs.swift; sourceTree = "<group>"; };
@@ -461,7 +459,6 @@
 				619679EC20F89F6300432672 /* Auth */,
 				61DE7F3D20F29F5800C95B3F /* Backend */,
 				613669BF217124560043494A /* BoatTracker.entitlements */,
-				6199E0FA20F2656500A4009A /* Credentials.plist */,
 				610EE3D821724C7C0040FBC6 /* FontAwesome */,
 				61B07C6B20F21DC400D8B7E0 /* Info.plist */,
 				61B07C6820F21DC400D8B7E0 /* LaunchScreen.storyboard */,
@@ -563,8 +560,8 @@
 				61B07C7720F21DC400D8B7E0 /* Sources */,
 				61B07C7820F21DC400D8B7E0 /* Frameworks */,
 				61B07C7920F21DC400D8B7E0 /* Resources */,
-				2BEB453BC5D8679FE51CF742 /* [CP] Embed Pods Frameworks */,
-				0A63B6943B5D2C05EBB60070 /* [CP] Copy Pods Resources */,
+				811E03A4475427598D604BF1 /* [CP] Embed Pods Frameworks */,
+				F7C97A202ED398AC1FE96A78 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -635,7 +632,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6199E0FB20F2656500A4009A /* Credentials.plist in Resources */,
 				61B07C6A20F21DC400D8B7E0 /* LaunchScreen.storyboard in Resources */,
 				61B07C6720F21DC400D8B7E0 /* Assets.xcassets in Resources */,
 				610EE3E62172524C0040FBC6 /* FontAwesome.ttf in Resources */,
@@ -678,23 +674,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		0A63B6943B5D2C05EBB60070 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-BoatTrackerUITests/Pods-BoatTrackerUITests-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-BoatTrackerUITests/Pods-BoatTrackerUITests-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BoatTrackerUITests/Pods-BoatTrackerUITests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		13B743E43A78918E57E7CAFA /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -717,7 +696,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		2BEB453BC5D8679FE51CF742 /* [CP] Embed Pods Frameworks */ = {
+		811E03A4475427598D604BF1 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -788,6 +767,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BoatTracker/Pods-BoatTracker-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F7C97A202ED398AC1FE96A78 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-BoatTrackerUITests/Pods-BoatTrackerUITests-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-BoatTrackerUITests/Pods-BoatTrackerUITests-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BoatTrackerUITests/Pods-BoatTrackerUITests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */

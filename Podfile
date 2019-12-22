@@ -23,12 +23,12 @@ target 'BoatTracker' do
   
   target 'BoatTrackerTests' do
       inherit! :search_paths
-      pod 'AppCenter', '2.5.3'
+        #pod 'AppCenter', '2.5.3'
   end
 
   target 'BoatTrackerUITests' do
     inherit! :search_paths
-    
-    app_pods
+      #pod 'GoogleSignIn', '5.0.2'
+      #app_pods
   end
 end
