@@ -3,14 +3,14 @@ platform :ios, '11.3'
 ENV['COCOAPODS_DISABLE_STATS'] = "true"
 
 def app_pods
-    pod 'AppCenter', '2.5.3'
-    pod 'Charts', '3.4.0'
-    pod 'GoogleSignIn', '5.0.2'
-    pod 'Mapbox-iOS-SDK', '5.6.0'
-    pod 'RxCocoa', '5.0.1'
-    pod 'RxSwift', '5.0.1'
-    pod 'SnapKit', '5.0.1'
-    pod 'SocketRocket', '0.5.1'
+  pod 'AppCenter', '2.5.3'
+  pod 'Charts', '3.4.0'
+  pod 'GoogleSignIn', '5.0.2'
+  pod 'Mapbox-iOS-SDK', '5.6.0'
+  pod 'RxCocoa', '5.0.1'
+  pod 'RxSwift', '5.0.1'
+  pod 'SnapKit', '5.0.1'
+  pod 'SocketRocket', '0.5.1'
 end
 
 target 'BoatTracker' do
@@ -20,15 +20,14 @@ target 'BoatTracker' do
   inhibit_all_warnings!
 
   app_pods
-  
+
   target 'BoatTrackerTests' do
-      inherit! :search_paths
-        #pod 'AppCenter', '2.5.3'
+    inherit! :search_paths
   end
 
-  target 'BoatTrackerUITests' do
-    inherit! :search_paths
-      #pod 'GoogleSignIn', '5.0.2'
-      #app_pods
-  end
+  #target 'BoatTrackerUITests' do
+  #  inherit! :search_paths
+  #end
+
 end
+
