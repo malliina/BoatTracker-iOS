@@ -13,6 +13,7 @@ To run tests from the command line:
     pod install
     xcodebuild test -workspace BoatTracker.xcworkspace -scheme BoatTracker -destination 'platform=iOS Simulator,name=iPhone 11,OS=13.3'
 
-## Releases
+## Releasing
 
-Every commit to the master branch triggers a production release to the [App Store](https://itunes.apple.com/us/app/boat-tracker/id1434203398?ls=1&mt=8) via [appcenter.ms](https://appcenter.ms/apps).
+1. Update the version number. It appears that the App Store does not allow version number reuse.
+1. Every commit to the master branch triggers a production release to the [App Store](https://itunes.apple.com/us/app/boat-tracker/id1434203398?ls=1&mt=8) via [appcenter.ms](https://appcenter.ms/apps).
