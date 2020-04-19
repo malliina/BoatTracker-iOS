@@ -22,7 +22,9 @@ class SelectLanguageVC: BaseTableVC, LanguageChangedDelegate {
     let cellIdentifier = "LanguageCell"
     
     private var lang: ProfileLang
-    private var current: Language { return settings.currentLanguage }
+    private var current: Language {
+        settings.currentLanguage
+    }
     var langs: [Row: LangInfo] = [:]
     
     var disposeBag: DisposeBag? = nil
@@ -39,7 +41,7 @@ class SelectLanguageVC: BaseTableVC, LanguageChangedDelegate {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
+        super.viewWillAppear(animated)
         let bag = DisposeBag()
         self.disposeBag = bag
         settings.languageChanges.subscribe(onNext: { (lang) in
@@ -91,7 +93,7 @@ class SelectLanguageVC: BaseTableVC, LanguageChangedDelegate {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return langs.count
+        langs.count
     }
     
     required init?(coder aDecoder: NSCoder) {

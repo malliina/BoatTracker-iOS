@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import SwiftUI
 
 extension ProfileTableVC: BoatSocketDelegate {
     func onCoords(event: CoordsData) {
@@ -216,7 +217,10 @@ class ProfileTableVC: BaseTableVC {
             default: ()
             }
         case 2:
-            openLanguageSelection()
+            switch indexPath.row {
+            case 0: openLanguageSelection()
+            default: openLanguageSelection()
+            }
         case 3:
             openAttributions()
         case 4:
@@ -246,6 +250,10 @@ class ProfileTableVC: BaseTableVC {
         }
     }
     
+//    func openLanguageSelection() {
+//        nav(to: UIHostingController(rootView: SelectLanguageUI(lang: lang.profile)))
+//    }
+
     func openLanguageSelection() {
         nav(to: SelectLanguageVC(lang: lang.profile))
     }
@@ -317,7 +325,7 @@ class ProfileTableVC: BaseTableVC {
             switch section {
             case 0: return 2
             case 1: return 1
-            case 2: return 2
+            case 2: return 1
             default: return 0
             }
         default:

@@ -16,8 +16,8 @@ class BoatRenderer {
     // state of boat trails and icons
     private var trails: [TrackName: MGLShapeSource] = [:]
     var isEmpty: Bool { return trails.isEmpty }
-    // The history data is in the above trails also but it is difficult to read an MGLShapeSource. This is more suitable for our purposes.
-    private var history: [TrackName: [CLLocationCoordinate2D]] = [:]
+    // The history data is in the above trails also because it is difficult to read an MGLShapeSource. This is more suitable for our purposes.
+    private var history: [TrackName: [MeasuredCoord]] = [:]
     private var boatIcons: [TrackName: MGLSymbolStyleLayer] = [:]
     private var topSpeedMarkers: [TrackName: ActiveMarker] = [:]
     var latestTrack: TrackName? = nil
@@ -50,7 +50,7 @@ class BoatRenderer {
     }
     
     func layers() -> Set<String> {
-        return Set(boatIcons.map { (track, layer) -> String in iconName(for: track) })
+        Set(boatIcons.map { (track, layer) -> String in iconName(for: track) })
     }
     
     func trophyAnnotationView(annotation: TrophyAnnotation) -> MGLAnnotationView {
@@ -81,10 +81,10 @@ class BoatRenderer {
     private func flyToLatest() {
         guard let last = history.first?.value.last else { return }
         let current = mapView.camera
-        current.centerCoordinate = last
+        current.centerCoordinate = last.coord
         mapView.fly(to: current, completionHandler: nil)
     }
-    
+
     func addCoords(event: CoordsData) {
 //        log.info("Got coords \(event)")
         let from = event.from
@@ -92,10 +92,11 @@ class BoatRenderer {
         latestTrack = track
         let coords = event.coords
         // Updates boat trail
-        let newTrail = (history[track] ?? []) + event.coords.map { $0.coord }
+        let previousTrail = history[track]
+        let newTrail = (previousTrail ?? []) + event.coords
+        let isUpdate = previousTrail != nil && !coords.isEmpty
         history.updateValue(newTrail, forKey: track)
-        var mutableCoords = newTrail
-        let polyline = MGLPolylineFeature(coordinates: &mutableCoords, count: UInt(mutableCoords.count))
+        let polyline = speedFeatures(coords: newTrail)
         let trail = trails[track] ?? initEmptyLayers(track: event.from, to: style)
         trail.shape = polyline
         // Updates boat icon position
@@ -113,7 +114,7 @@ class BoatRenderer {
             log.error("Failed to encode JSON. \(err.describe)")
         }
         // Updates boat icon bearing
-        let lastTwo = Array(newTrail.suffix(2))
+        let lastTwo = Array(newTrail.suffix(2)).map { $0.coord }
         let bearing = lastTwo.count == 2 ? Geo.shared.bearing(from: lastTwo[0], to: lastTwo[1]) : nil
         if let bearing = bearing {
             iconLayer.iconRotation = NSExpression(forConstantValue: bearing)
@@ -130,10 +131,11 @@ class BoatRenderer {
         case .fit:
             if coords.count > 1 {
                 let edgePadding = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
-                let bounds = polyline.overlayBounds
-                let destinationCamera = mapView.cameraThatFitsCoordinateBounds(bounds, edgePadding: edgePadding)
+                let destinationCamera = mapView.cameraThatFitsShape(polyline, direction: 0, edgePadding: edgePadding)
                 mapView.fly(to: destinationCamera, completionHandler: nil)
-                mapMode = .follow
+                if isUpdate {
+                    mapMode = .follow
+                }
             }
         case .follow:
             guard let lastCoord = coords.last else { return }
@@ -155,7 +157,7 @@ class BoatRenderer {
     private func initEmptyLayers(track: TrackRef, to style: MGLStyle) -> MGLShapeSource {
         let trailId = trailName(for: track.trackName)
         // Boat trail
-        let trailData = LayerSource(lineId: trailId)
+        let trailData = LayerSource(lineId: trailId, lineColor: Layers.trackColor)
         // The line width should gradually increase based on the zoom level
         //        layer.lineWidth = NSExpression(format: "mgl_interpolate:withCurveType:parameters:stops:($zoomLevel, 'linear', nil, %@)", [18: 3, 9: 10])
         trailData.install(to: style)
@@ -176,12 +178,25 @@ class BoatRenderer {
         return trailData.source
     }
     
+    private func speedFeatures(coords: [MeasuredCoord]) -> MGLShapeCollectionFeature {
+        let features = Array(zip(coords, coords.tail())).map { p1, p2 -> MGLPolylineFeature in
+            let avgSpeed = [p1.speed.knots, p2.speed.knots].reduce(0, +) / 2.0
+            let meta = try? Json.shared.write(from: TrackPoint(speed: avgSpeed.knots))
+            var edge = [p1.coord, p2.coord]
+            let feature = MGLPolylineFeature(coordinates: &edge, count: 2)
+            feature.attributes = meta ?? [:]
+            return feature
+        }
+        return MGLShapeCollectionFeature(shapes: features)
+    }
+
+    
     private func trailName(for track: TrackName) -> String {
-        return "\(track)-trail"
+        "\(track)-trail"
     }
     
     private func iconName(for track: TrackName) -> String {
-        return "\(track)-icon"
+        "\(track)-icon"
     }
     
     func clear() {

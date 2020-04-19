@@ -3,12 +3,12 @@ platform :ios, '11.3'
 ENV['COCOAPODS_DISABLE_STATS'] = "true"
 
 def app_pods
-  pod 'AppCenter', '2.5.3'
-  pod 'Charts', '3.4.0'
+  pod 'AppCenter', '3.1.1'
+  pod 'Charts', '3.5.0'
   pod 'GoogleSignIn', '5.0.2'
-  pod 'Mapbox-iOS-SDK', '5.6.0'
-  pod 'RxCocoa', '5.0.1'
-  pod 'RxSwift', '5.0.1'
+  pod 'Mapbox-iOS-SDK', '5.8.0'
+  pod 'RxCocoa', '5.1.1'
+  pod 'RxSwift', '5.1.1'
   pod 'SnapKit', '5.0.1'
   pod 'SocketRocket', '0.5.1'
 end
@@ -30,4 +30,3 @@ target 'BoatTracker' do
   #end
 
 end
-

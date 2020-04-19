@@ -38,7 +38,9 @@ class UserSettings {
             }
         }
     }
-    var currentLanguage: Language { return userLanguage ?? Language.en }
+    var currentLanguage: Language {
+        userLanguage ?? Language.en
+    }
     var lang: Lang? {
         get {
             guard let languages = languages else { return nil }

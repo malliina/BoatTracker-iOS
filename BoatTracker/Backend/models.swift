@@ -581,13 +581,22 @@ struct CoordsData: Codable {
     let from: TrackRef
 }
 
-struct CoordBody: Codable {
+protocol MeasuredCoord {
+    var coord: CLLocationCoordinate2D { get }
+    var speed: Speed { get }
+}
+
+struct CoordBody: Codable, MeasuredCoord {
     let coord: CLLocationCoordinate2D
     let boatTimeMillis: UInt64
     let speed: Speed
     let depthMeters: Distance
     let waterTemp: Temperature
     let time: Timing
+}
+
+struct TrackPoint: Codable {
+    let speed: Speed
 }
 
 struct BoatPoint: Codable {
@@ -865,7 +874,7 @@ enum Language: String, Codable {
     case en = "en-US"
     
     static func parse(s: String) -> Language {
-        return Language(rawValue: s) ?? en
+        Language(rawValue: s) ?? en
     }
 }
 

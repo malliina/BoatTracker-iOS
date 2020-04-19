@@ -16,12 +16,18 @@ import GoogleSignIn
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     static let logger = LoggerFactory.shared.system(AppDelegate.self)
-    var log: Logger { return AppDelegate.logger }
+    var log: Logger {
+        AppDelegate.logger
+    }
     let notifications = BoatNotifications.shared
 
     var window: UIWindow?
     
     var google: GoogleAuth?
+
+//    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
+//        UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
+//    }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -33,7 +39,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let _ = AppDelegate.initMapboxToken()
         
         google = GoogleAuth.shared
-        
+
+        //return true
+
         let w = UIWindow(frame: UIScreen.main.bounds)
         window = w
         w.makeKeyAndVisible()
@@ -54,7 +62,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     static func initMapboxToken(key: String = "MapboxAccessToken") -> Bool {
         do {
             let token = try Credentials.read(key: key)
-            MGLAccountManager.accessToken = token as NSString?
+            MGLAccountManager.accessToken = token
             return true
         } catch let err {
             AppDelegate.logger.error(err.describe)
