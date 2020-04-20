@@ -17,12 +17,12 @@ class BoatColors {
     let purple = UIColor(r: 88, g: 86, b: 214, alpha: 1.0)
     let almostWhite = UIColor(r: 244, g: 244, b: 244, alpha: 1.0)
     
-    var buttonText: UIColor { return blue }
+    var buttonText: UIColor { blue }
     let textColor = UIColor.black
     let secondaryText = UIColor.darkGray
     let logoutBackground = UIColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 0.9)
-    var feedback: UIColor { return textColor }
-    var backgroundColor: UIColor { return .white }
+    var feedback: UIColor { textColor }
+    var backgroundColor: UIColor { .white }
 }
 
 extension UIColor {

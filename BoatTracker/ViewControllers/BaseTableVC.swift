@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 class BaseTableVC: UITableViewController {
-    var settings: UserSettings { return UserSettings.shared }
+    var settings: UserSettings { UserSettings.shared }
     
     override func viewDidLoad() {
         super.viewDidLoad()
