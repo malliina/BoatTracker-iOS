@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+if [ ! -n "$MapboxCocoapodsToken" ]
+then
+    echo "You need define the MapboxCocoapodsToken environment variable in App Center"
+    exit
+fi
+
+# Injects .netrc file required during pod install because Mapbox
+if [ "$APPCENTER_BRANCH" == "master" ];
+then
+    echo "machine api.mapbox.com" >> ~/.netrc
+    echo "login mapbox" >> ~/.netrc
+    echo "machine $MapboxCocoapodsToken" >> ~/.netrc
+fi
