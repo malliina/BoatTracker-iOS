@@ -12,7 +12,6 @@ if [ "$APPCENTER_BRANCH" == "master" ];
 then
     echo "machine api.mapbox.com" >> ~/.netrc
     echo "login mapbox" >> ~/.netrc
-    echo "machine $MapboxCocoapodsToken" >> ~/.netrc
+    echo "password $MapboxCocoapodsToken" >> ~/.netrc
     echo "Wrote ~/.netrc"
-    cat ~/.netrc
 fi
