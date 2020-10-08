@@ -17,10 +17,10 @@ class TapListener {
     let marksLayers: Set<String>
     let limitsLayers: Set<String>
     let aisLayers: Set<String>
-    let ais: AISRenderer
+    let ais: AISRenderer?
     let boats: BoatRenderer
     
-    init(mapView: MGLMapView, layers: MapboxLayers, ais: AISRenderer, boats: BoatRenderer) {
+    init(mapView: MGLMapView, layers: MapboxLayers, ais: AISRenderer?, boats: BoatRenderer) {
         self.mapView = mapView
         self.layers = layers
         self.marksLayers = Set(layers.marks)
@@ -83,6 +83,7 @@ class TapListener {
         // Limits feature selection to just the following layer identifiers
         if let selected = mapView.visibleFeatures(at: point, styleLayerIdentifiers: aisLayers).find({ $0 is MGLPointFeature }),
             let mmsi = selected.attribute(forKey: Mmsi.key) as? String,
+            let ais = ais,
             let vessel = ais.info(Mmsi(mmsi)) {
             return VesselAnnotation(vessel: vessel)
         } else {
@@ -95,7 +96,8 @@ class TapListener {
         return FairwayAreaAnnotation(
             info: try selected.properties().validate(FairwayArea.self),
             limits: try limitAreaInfo(point: point),
-            coord: mapView.convert(point, toCoordinateFrom: nil))
+            coord: mapView.convert(point, toCoordinateFrom: nil)
+        )
     }
     
     private func handleLimitsTap(point: CGPoint) throws -> MGLAnnotation? {
@@ -114,12 +116,12 @@ class TapListener {
     }
     
     func visibleFeature(at: CGPoint, layers: Set<String>) -> MGLFeature? {
-        return mapView.visibleFeatures(at: at, styleLayerIdentifiers: layers).first
+        mapView.visibleFeatures(at: at, styleLayerIdentifiers: layers).first
     }
 }
 
 extension MGLFeature {
     func properties() throws -> Data {
-        return try Json.shared.asData(dict: self.attributes)
+        try Json.shared.asData(dict: self.attributes)
     }
 }

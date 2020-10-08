@@ -40,7 +40,7 @@ class AISRenderer {
     }
     
     func info(_ mmsi: Mmsi) -> Vessel? {
-        return vesselHistory[mmsi]?.first
+        vesselHistory[mmsi]?.first
     }
     
     func update(vessels: [Vessel]) {

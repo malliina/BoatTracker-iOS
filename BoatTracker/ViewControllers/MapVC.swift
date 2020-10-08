@@ -25,27 +25,27 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     let buttonInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
     let defaultCenter = CLLocationCoordinate2D(latitude: 60.14, longitude: 24.9)
     
-    private var socket: BoatSocket { return Backend.shared.socket }
-    private var http: BoatHttpClient { return Backend.shared.http }
+    private var socket: BoatSocket { Backend.shared.socket }
+    private var http: BoatHttpClient { Backend.shared.http }
     
     private var mapView: MGLMapView?
     private var style: MGLStyle?
     
     private var latestToken: UserToken? = nil
-    private var isSignedIn: Bool { return latestToken != nil }
+    private var isSignedIn: Bool { latestToken != nil }
     
     private var aisRenderer: AISRenderer? = nil
     private var taps: TapListener? = nil
     private var boatRenderer: BoatRenderer? = nil
     private var pathFinder: PathFinder? = nil
-    private var settings: UserSettings { return UserSettings.shared }
-    private var clientConf: ClientConf? { return settings.conf }
+    private var settings: UserSettings { UserSettings.shared }
+    private var clientConf: ClientConf? { settings.conf }
     
     private var firstInit: Bool = true
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         let url = URL(string: "mapbox://styles/malliina/cjgny1fjc008p2so90sbz8nbv")
         let mapView = MGLMapView(frame: view.bounds, styleURL: url)
         self.mapView = mapView
@@ -111,15 +111,17 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     func initInteractive(mapView: MGLMapView, style: MGLStyle, layers: MapboxLayers, boats: BoatRenderer) {
         if firstInit {
             firstInit = false
-            let ais = AISRenderer(mapView: mapView, style: style, conf: layers.ais)
-            self.aisRenderer = ais
-            self.taps = TapListener(mapView: mapView, layers: layers, ais: ais, boats: boats)
+            if BoatPrefs.shared.isAisEnabled {
+                let ais = AISRenderer(mapView: mapView, style: style, conf: layers.ais)
+                self.aisRenderer = ais
+            }
+            self.taps = TapListener(mapView: mapView, layers: layers, ais: self.aisRenderer, boats: boats)
         }
     }
     
     func initConf() {
         let _ = http.conf().subscribe(onSuccess: { (conf) in
-            UserSettings.shared.conf = conf
+            self.settings.conf = conf
             self.onUiThread {
                 self.profileButton.isHidden = false
             }
@@ -131,12 +133,12 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     func setupUser() {
         if isSignedIn {
             let _ = http.profile().subscribe(onSuccess: { (profile) in
-                UserSettings.shared.profile = profile
+                self.settings.profile = profile
             }) { (err) in
                 self.log.error("Unable to load profile: '\(err.describe)'.")
             }
         } else {
-            UserSettings.shared.profile = nil
+            settings.profile = nil
         }
     }
     
@@ -207,7 +209,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     }
     
     func mapView(_ mapView: MGLMapView, annotationCanShowCallout annotation: MGLAnnotation) -> Bool {
-        return true
+        true
     }
     
     func mapView(_ mapView: MGLMapView, tapOnCalloutFor annotation: MGLAnnotation) {
@@ -228,7 +230,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     }
     
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        return true
+        true
     }
     
     @objc func userClicked(_ sender: UIButton) {

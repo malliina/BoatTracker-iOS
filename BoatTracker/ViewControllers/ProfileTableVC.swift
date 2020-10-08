@@ -171,6 +171,15 @@ class ProfileTableVC: BaseTableVC {
             cell.accessoryType = .none
             cell.selectionStyle = .none
         case 1:
+            
+            if let label = cell.textLabel, let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
+                label.text = "\(lang.appName) \(appVersion)"
+                label.textAlignment = .center
+                label.textColor = .lightGray
+            }
+            cell.accessoryType = .none
+            cell.selectionStyle = .none
+        case 2:
             initLogout(cell: cell)
         default:
             ()
@@ -225,7 +234,7 @@ class ProfileTableVC: BaseTableVC {
             openAttributions()
         case 4:
             switch indexPath.row {
-            case 1: logout()
+            case 2: logout()
             default: ()
             }
         default: ()
@@ -243,7 +252,7 @@ class ProfileTableVC: BaseTableVC {
             openAttributions()
         case 2:
             switch indexPath.row {
-            case 1: logout()
+            case 2: logout()
             default: ()
             }
         default: ()
@@ -318,7 +327,7 @@ class ProfileTableVC: BaseTableVC {
             case 1: return 4
             case 2: return 1
             case 3: return 1
-            case 4: return 2
+            case 4: return 3
             default: return 0
             }
         case .empty:

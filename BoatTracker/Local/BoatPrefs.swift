@@ -16,6 +16,7 @@ class BoatPrefs {
     let pushTokenKey = "pushToken"
     let notificationsAllowedKey = "notificationsAllowed"
     let noPushTokenValue = "none"
+    let aisKey = "aisEnabled"
 
     var isWelcomeRead: Bool {
         get {
@@ -48,9 +49,16 @@ class BoatPrefs {
         }
         set(allowed) {
             prefs.set(allowed, forKey: notificationsAllowedKey)
-//            if errors == nil {
-//                notificationPermissionSubject.onNext(allowed)
-//            }
+        }
+    }
+
+    // Defaults to true by negation. Reading a boolean when the key doesn't exist returns false.
+    var isAisEnabled: Bool {
+        get {
+            !prefs.bool(forKey: aisKey)
+        }
+        set(newValue) {
+            prefs.set(!newValue, forKey: aisKey)
         }
     }
 }
