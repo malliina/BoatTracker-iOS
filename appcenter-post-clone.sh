@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+echo "Running appcenter-post-clone.sh ..."
 if [ ! -n "$MapboxCocoapodsToken" ]
 then
     echo "You need define the MapboxCocoapodsToken environment variable in App Center"
