@@ -12,10 +12,10 @@ import Mapbox
 
 class BoatRenderer {
     let log = LoggerFactory.shared.vc(BoatRenderer.self)
-    var app: UIApplication { return UIApplication.shared }
+    var app: UIApplication { UIApplication.shared }
     // state of boat trails and icons
     private var trails: [TrackName: MGLShapeSource] = [:]
-    var isEmpty: Bool { return trails.isEmpty }
+    var isEmpty: Bool { trails.isEmpty }
     // The history data is in the above trails also because it is difficult to read an MGLShapeSource. This is more suitable for our purposes.
     private var history: [TrackName: [MeasuredCoord]] = [:]
     private var boatIcons: [TrackName: MGLSymbolStyleLayer] = [:]

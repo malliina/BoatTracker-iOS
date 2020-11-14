@@ -171,9 +171,11 @@ class ProfileTableVC: BaseTableVC {
             cell.accessoryType = .none
             cell.selectionStyle = .none
         case 1:
-            
-            if let label = cell.textLabel, let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
-                label.text = "\(lang.appName) \(appVersion)"
+            if let label = cell.textLabel,
+               let bundleMeta = Bundle.main.infoDictionary,
+               let appVersion = bundleMeta["CFBundleShortVersionString"] as? String,
+               let buildId = bundleMeta["CFBundleVersion"] as? String {
+                label.text = "\(lang.appMeta.version) \(appVersion) \(lang.appMeta.build) \(buildId)"
                 label.textAlignment = .center
                 label.textColor = .lightGray
             }
@@ -259,10 +261,6 @@ class ProfileTableVC: BaseTableVC {
         }
     }
     
-//    func openLanguageSelection() {
-//        nav(to: UIHostingController(rootView: SelectLanguageUI(lang: lang.profile)))
-//    }
-
     func openLanguageSelection() {
         nav(to: SelectLanguageVC(lang: lang.profile))
     }

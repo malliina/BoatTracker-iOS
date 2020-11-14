@@ -21,7 +21,7 @@ class BoatHttpClient {
     private var defaultHeaders: [String: String]
     private let postSpecificHeaders: [String: String]
     
-    var postHeaders: [String: String] { return defaultHeaders.merging(postSpecificHeaders)  { (current, _) in current } }
+    var postHeaders: [String: String] { defaultHeaders.merging(postSpecificHeaders)  { (current, _) in current } }
     
     convenience init(bearerToken: AccessToken, baseUrl: URL, language: Language) {
         self.init(bearerToken: bearerToken, baseUrl: baseUrl, client: HttpClient())
@@ -34,12 +34,10 @@ class BoatHttpClient {
             self.defaultHeaders = [
                 Headers.authorization: BoatHttpClient.authValue(for: token),
                 Headers.accept: BoatHttpClient.BoatVersion,
-//                Headers.acceptLanguage: language.rawValue
             ]
         } else {
             self.defaultHeaders = [
                 Headers.accept: BoatHttpClient.BoatVersion,
-//                Headers.acceptLanguage: language.rawValue
             ]
         }
         self.postSpecificHeaders = [
@@ -56,65 +54,65 @@ class BoatHttpClient {
     }
     
     static func authValue(for token: AccessToken) -> String {
-        return "bearer \(token.token)"
+        "bearer \(token.token)"
     }
     
     func pingAuth() -> Single<BackendInfo> {
-        return getParsed(BackendInfo.self, "/pingAuth")
+        getParsed(BackendInfo.self, "/pingAuth")
     }
     
     func profile() -> Single<UserProfile> {
-        return getParsed(UserContainer.self, "/users/me").map { $0.user }
+        getParsed(UserContainer.self, "/users/me").map { $0.user }
     }
     
     func tracks() -> Single<[TrackRef]> {
-        return getParsed(TracksResponse.self, "/tracks").map { $0.tracks }
+        getParsed(TracksResponse.self, "/tracks").map { $0.tracks }
     }
     
     func stats() -> Single<StatsResponse> {
-        return getParsed(StatsResponse.self, "/stats?order=desc")
+        getParsed(StatsResponse.self, "/stats?order=desc")
     }
     
     func changeTrackTitle(name: TrackName, title: TrackTitle) -> Single<TrackResponse> {
-        return parsed(TrackResponse.self, "/tracks/\(name)", run: { (url) in
-            return self.client.putJSON(url, headers: self.postHeaders, payload: ChangeTrackTitle(title: title))
+        parsed(TrackResponse.self, "/tracks/\(name)", run: { (url) in
+            self.client.putJSON(url, headers: self.postHeaders, payload: ChangeTrackTitle(title: title))
         })
     }
     
     func conf() -> Single<ClientConf> {
-        return getParsed(ClientConf.self, "/conf")
+        getParsed(ClientConf.self, "/conf")
     }
     
     func enableNotifications(token: PushToken) -> Single<SimpleMessage> {
-        return parsed(SimpleMessage.self, "/users/notifications", run: { (url) -> Single<HttpResponse> in
-            return self.client.postJSON(url, headers: self.postHeaders, payload: PushPayload(token))
+        parsed(SimpleMessage.self, "/users/notifications", run: { (url) -> Single<HttpResponse> in
+            self.client.postJSON(url, headers: self.postHeaders, payload: PushPayload(token))
         })
     }
     
     func disableNotifications(token: PushToken) -> Single<SimpleMessage> {
-        return parsed(SimpleMessage.self, "/users/notifications/disable", run: { (url) -> Single<HttpResponse> in
-            return self.client.postJSON(url, headers: self.postHeaders, payload: DisablePush(token: token))
+        parsed(SimpleMessage.self, "/users/notifications/disable", run: { (url) -> Single<HttpResponse> in
+            self.client.postJSON(url, headers: self.postHeaders, payload: DisablePush(token: token))
         })
     }
     
     func renameBoat(boat: Int, newName: BoatName) -> Single<Boat> {
-        return parsed(BoatResponse.self, "/boats/\(boat)", run: { (url) -> Single<HttpResponse> in
+        parsed(BoatResponse.self, "/boats/\(boat)", run: { (url) -> Single<HttpResponse> in
             self.client.patchJSON(url, headers: self.postHeaders, payload: ChangeBoatName(boatName: newName))
         }).map { $0.boat }
     }
     
     func changeLanguage(to: Language) -> Single<SimpleMessage> {
-        return parsed(SimpleMessage.self, "/users/me", run: { (url) in
-            return self.client.putJSON(url, headers: self.postHeaders, payload: ChangeLanguage(language: to))
+        parsed(SimpleMessage.self, "/users/me", run: { (url) in
+            self.client.putJSON(url, headers: self.postHeaders, payload: ChangeLanguage(language: to))
         })
     }
     
     func shortestRoute(from: CLLocationCoordinate2D, to: CLLocationCoordinate2D) -> Single<RouteResult> {
-        return getParsed(RouteResult.self, "/routes/\(from.latitude)/\(from.longitude)/\(to.latitude)/\(to.longitude)")
+        getParsed(RouteResult.self, "/routes/\(from.latitude)/\(from.longitude)/\(to.latitude)/\(to.longitude)")
     }
     
     func getParsed<T: Decodable>(_ t: T.Type, _ uri: String) -> Single<T> {
-        return parsed(t, uri, run: { (url) -> Single<HttpResponse> in
+        parsed(t, uri, run: { (url) -> Single<HttpResponse> in
             self.client.get(url, headers: self.defaultHeaders)
         })
     }
@@ -141,7 +139,7 @@ class BoatHttpClient {
     }
     
     func fullUrl(to: String) -> URL {
-        return URL(string: to, relativeTo: baseUrl)!
+        URL(string: to, relativeTo: baseUrl)!
     }
     
     private func parseAs<T: Decodable>(_ t: T.Type, response: HttpResponse) -> Single<T> {

@@ -117,9 +117,16 @@ struct LabelsLang: Codable {
     let statistics, monthly, yearly, allTime: String
 }
 
+struct AppMetaLang: Codable {
+    let appName: String
+    let version: String
+    let build: String
+}
+
 struct Lang: Codable {
     let language: Language
     let appName, map, name, qualityClass, time, comparisonLevel: String
+    let appMeta: AppMetaLang
     let specialWords: SpecialWords
     let fairway: FairwayLang
     let track: TrackLang

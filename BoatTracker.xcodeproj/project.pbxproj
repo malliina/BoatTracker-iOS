@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1A6A64ED37477C4AB5916AF5 /* SelectLanguageUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A6A6F29FF0942BF01A10434 /* SelectLanguageUI.swift */; };
+		1A6A6531279059D19746CE2B /* Files.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A6A693739B80A86DFB4EBF9 /* Files.swift */; };
 		1A6A675D048DFF6E1E0BE701 /* Credentials.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1A6A633812206E4A035E56A6 /* Credentials.plist */; };
 		6101D549220F75200051A427 /* languages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6101D548220F75200051A427 /* languages.swift */; };
 		6101D54B221057340051A427 /* mapCallouts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6101D54A221057340051A427 /* mapCallouts.swift */; };
@@ -110,6 +111,7 @@
 		0E9C3E7946D9FC63B43AD3F4 /* Pods_BoatTracker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BoatTracker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		18EAC7F1D1F6BB188ECC2D6E /* Pods-BoatTracker-BoatTrackerUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BoatTracker-BoatTrackerUITests.debug.xcconfig"; path = "Target Support Files/Pods-BoatTracker-BoatTrackerUITests/Pods-BoatTracker-BoatTrackerUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		1A6A633812206E4A035E56A6 /* Credentials.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Credentials.plist; sourceTree = "<group>"; };
+		1A6A693739B80A86DFB4EBF9 /* Files.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Files.swift; sourceTree = "<group>"; };
 		1A6A6F29FF0942BF01A10434 /* SelectLanguageUI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectLanguageUI.swift; sourceTree = "<group>"; };
 		4A560643C79AD3677BCB7028 /* Pods-BoatTracker.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BoatTracker.debug.xcconfig"; path = "Target Support Files/Pods-BoatTracker/Pods-BoatTracker.debug.xcconfig"; sourceTree = "<group>"; };
 		6101D548220F75200051A427 /* languages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = languages.swift; sourceTree = "<group>"; };
@@ -273,6 +275,7 @@
 				61999FFA22A2E8F3003BD037 /* Json.swift */,
 				612F46AB20F52776001A3003 /* Keychain.swift */,
 				614221B5222C10A700FD1FF3 /* UserSettings.swift */,
+				1A6A693739B80A86DFB4EBF9 /* Files.swift */,
 			);
 			path = Local;
 			sourceTree = "<group>";
@@ -756,6 +759,7 @@
 				6173F249228CB99000A1E9B9 /* PathFinder.swift in Sources */,
 				61CD40D121163E0E00F31AA5 /* StatBox.swift in Sources */,
 				1A6A64ED37477C4AB5916AF5 /* SelectLanguageUI.swift in Sources */,
+				1A6A6531279059D19746CE2B /* Files.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
