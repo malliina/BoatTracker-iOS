@@ -84,11 +84,12 @@ class SelectLanguageVC: BaseTableVC, LanguageChangedDelegate {
     }
     
     func changeLanguage(to language: Language) {
-        let _ = Backend.shared.http.changeLanguage(to: language).subscribe(onSuccess: { (msg) in
+        let _ = Backend.shared.http.changeLanguage(to: language).subscribe { (msg) in
             self.settings.userLanguage = language
             self.log.info(msg.message)
-        }) { (err) in
+        } onFailure: { (err) in
             self.log.error("Failed to change language. \(err.describe)")
+        } onDisposed: {
         }
     }
     

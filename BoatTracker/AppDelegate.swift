@@ -31,9 +31,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-        MSAppCenter.start("adbb4491-3c8c-4893-bd16-cc8be65899a8", withServices: [
-            MSAnalytics.self,
-            MSCrashes.self
+        AppCenter.start(withAppSecret: "adbb4491-3c8c-4893-bd16-cc8be65899a8", services: [
+            Analytics.self,
+            Crashes.self
         ])
         
         let _ = AppDelegate.initMapboxToken()

@@ -19,7 +19,7 @@ class UserSettings {
     
     private let languageSubject = PublishSubject<Lang>()
     var languageChanges: Observable<Lang> {
-        languageSubject.observeOn(MainScheduler.instance)
+        languageSubject.observe(on: MainScheduler.instance)
     }
     
     var conf: ClientConf? = nil

@@ -19,7 +19,7 @@ class Backend {
     var socket: BoatSocket
     
     init(_ baseUrl: URL) {
-        Logging.URLRequests = { _ in false }
+        //Logging.URLRequests = { _ in false }
         self.baseUrl = baseUrl
         self.http = BoatHttpClient(bearerToken: nil, baseUrl: baseUrl, client: HttpClient())
         self.socket = BoatSocket(token: nil, track: nil)

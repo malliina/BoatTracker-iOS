@@ -357,7 +357,7 @@ class ProfileTableVC: BaseTableVC {
                         self.tableView.backgroundView = nil
                         self.onTracks(ts: ts)
                     }
-                case .error(let err):
+                case .failure(let err):
                     self.state = .failed
                     self.tableView.backgroundView = self.feedbackView(text: self.lang.messages.failedToLoadProfile)
                     self.log.error("Unable to load tracks. \(err.describe)")

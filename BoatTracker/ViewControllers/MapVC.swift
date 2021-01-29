@@ -103,7 +103,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         let _ = http.conf().subscribe { (event) in
             switch event {
             case .success(let conf): self.initInteractive(mapView: mapView, style: style, layers: conf.layers, boats: boats)
-            case .error(let err): self.log.error("Failed to load conf: '\(err.describe)'.")
+            case .failure(let err): self.log.error("Failed to load conf: '\(err.describe)'.")
             }
         }
     }
@@ -120,22 +120,25 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     }
     
     func initConf() {
-        let _ = http.conf().subscribe(onSuccess: { (conf) in
+        let _ = http.conf().subscribe { (conf) in
             self.settings.conf = conf
             self.onUiThread {
                 self.profileButton.isHidden = false
             }
-        }) { (err) in
+        } onFailure: { (err) in
             self.log.error("Unable to load configuration: '\(err.describe)'.")
+        } onDisposed: {
+            ()
         }
     }
     
     func setupUser() {
         if isSignedIn {
-            let _ = http.profile().subscribe(onSuccess: { (profile) in
+            let _ = http.profile().subscribe { (profile) in
                 self.settings.profile = profile
-            }) { (err) in
+            } onFailure: { (err) in
                 self.log.error("Unable to load profile: '\(err.describe)'.")
+            } onDisposed: {
             }
         } else {
             settings.profile = nil
@@ -337,7 +340,7 @@ extension MapVC: WelcomeDelegate {
                 } else {
                     self.log.warn("Signed in but user has no boats.")
                 }
-            case .error(let err):
+            case .failure(let err):
                 self.log.error(err.describe)
             }
         }

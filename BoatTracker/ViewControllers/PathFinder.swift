@@ -105,7 +105,7 @@ class PathFinder: NSObject, UIGestureRecognizerDelegate {
             case .success(let route):
                 self.log.info("Loaded shortest route from \(from) to \(to).")
                 self.update(route: route)
-            case .error(let err):
+            case .failure(let err):
                 self.log.error("Failed to load shortest route from \(from) to \(to). \(err.describe)")
             }
         }

@@ -70,7 +70,7 @@ class StatsVC: BaseTableVC {
                     }
                     self.tableView.reloadData()
                 }
-            case .error(let err):
+            case .failure(let err):
                 self.onError(err)
             }
         }

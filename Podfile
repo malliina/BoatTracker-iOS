@@ -3,12 +3,12 @@ platform :ios, '11.3'
 ENV['COCOAPODS_DISABLE_STATS'] = "true"
 
 def app_pods
-  pod 'AppCenter', '3.1.1'
-  pod 'Charts', '3.5.0'
+  pod 'AppCenter', '4.1.0'
+  pod 'Charts', '3.6.0'
   pod 'GoogleSignIn', '5.0.2'
-  pod 'Mapbox-iOS-SDK', '6.2.1'
-  pod 'RxCocoa', '5.1.1'
-  pod 'RxSwift', '5.1.1'
+  pod 'Mapbox-iOS-SDK', '6.3.0'
+  pod 'RxCocoa', '6.0.0'
+  pod 'RxSwift', '6.0.0'
   pod 'SnapKit', '5.0.1'
   pod 'SocketRocket', '0.5.1'
 end

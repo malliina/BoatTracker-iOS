@@ -45,7 +45,7 @@ extension BoatTokensVC: NotificationPermissionDelegate {
             http.disableNotifications(token: token).subscribe { (event) in
                 switch event {
                 case .success(_): self.log.info("Disabled notifications with backend.")
-                case .error(let err): self.log.error("Failed to disable notifications with backend. \(err.describe)")
+                case .failure(let err): self.log.error("Failed to disable notifications with backend. \(err.describe)")
                 }
             }.disposed(by: bag)
         }
@@ -56,7 +56,7 @@ extension BoatTokensVC: NotificationPermissionDelegate {
         http.enableNotifications(token: token).subscribe { (event) in
             switch event {
             case .success(_): self.log.info("Enabled notifications with backend.")
-            case .error(let err): self.log.error(err.describe)
+            case .failure(let err): self.log.error(err.describe)
             }
         }.disposed(by: bag)
     }
@@ -176,7 +176,7 @@ class BoatTokensVC: BaseTableVC {
                 case .success(let boat):
                     self.loadProfile()
                     self.log.info("Renamed to '\(boat.name)'.")
-                case .error(let err):
+                case .failure(let err):
                     self.log.error("Unable to rename. \(err.describe)")
                 }
             }
@@ -202,7 +202,7 @@ class BoatTokensVC: BaseTableVC {
             log.info("Got profile for user \(p.username).")
             tableView.backgroundView = nil
             tableView.reloadData()
-        case .error(let err):
+        case .failure(let err):
             loadError = err
             tableView.backgroundView = feedbackView(text: self.lang.messages.failedToLoadProfile)
             log.error("Unable to load profile. \(err.describe)")

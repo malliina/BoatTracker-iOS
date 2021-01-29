@@ -76,12 +76,12 @@ class TrackListVC: BaseTableVC, TokenDelegate {
         let okAction = UIAlertAction(title: settingsLang.rename, style: .default) { (a) in
             guard let textField = (popup.textFields ?? []).headOption(),
                 let newName = textField.text, !newName.isEmpty else { return }
-            let _ = Backend.shared.http.changeTrackTitle(name: track.trackName, title: TrackTitle(newName)).observeOn(MainScheduler.instance).subscribe { (single) in
+            let _ = Backend.shared.http.changeTrackTitle(name: track.trackName, title: TrackTitle(newName)).observe(on: MainScheduler.instance).subscribe { (single) in
                 switch single {
                 case .success(let updatedTrack):
                     self.tracks[indexPath.row] = updatedTrack.track
                     tableView.reloadRows(at: [indexPath], with: .automatic)
-                case .error(let err):
+                case .failure(let err):
                     self.log.error("Unable to rename. \(err.describe)")
                 }
             }
@@ -117,7 +117,7 @@ class TrackListVC: BaseTableVC, TokenDelegate {
                     }
                     self.tableView.reloadData()
                 }
-            case .error(let err):
+            case .failure(let err):
                 self.onError(err)
             }
         }
