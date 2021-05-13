@@ -11,6 +11,7 @@ import AppCenter
 import AppCenterAnalytics
 import AppCenterCrashes
 import Mapbox
+import MSAL
 import GoogleSignIn
 
 @UIApplicationMain
@@ -71,7 +72,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-        google?.open(url: url, options: options) ?? false
+        let googleAttempt = google?.open(url: url, options: options) ?? false
+        if googleAttempt {
+            return true
+        } else {
+            return MSALPublicClientApplication.handleMSALResponse(url, sourceApplication: options[UIApplication.OpenURLOptionsKey.sourceApplication] as? String)
+        }
     }
 
     func applicationWillResignActive(_ application: UIApplication) {

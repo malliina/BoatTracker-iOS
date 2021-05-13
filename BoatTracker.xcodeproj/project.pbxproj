@@ -92,6 +92,7 @@
 		61F419972120745A00B1ED7D /* TrackSummaryBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61F419962120745A00B1ED7D /* TrackSummaryBox.swift */; };
 		61F4199B2120B2F700B1ED7D /* ProfileTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61F4199A2120B2F700B1ED7D /* ProfileTableVC.swift */; };
 		61F4199D2120B39C00B1ED7D /* TrackSummaryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61F4199C2120B39C00B1ED7D /* TrackSummaryCell.swift */; };
+		7D2CC0F3264D6EBD0091E05C /* MicrosoftAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D2CC0F2264D6EBD0091E05C /* MicrosoftAuth.swift */; };
 		AAB8A21EDC02BA022080687C /* Pods_BoatTracker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E9C3E7946D9FC63B43AD3F4 /* Pods_BoatTracker.framework */; };
 		C8EAA866251260BDB1F3018A /* Pods_BoatTrackerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC06A72AF5F57EEAD7E60DC3 /* Pods_BoatTrackerTests.framework */; };
 /* End PBXBuildFile section */
@@ -205,6 +206,7 @@
 		61F419962120745A00B1ED7D /* TrackSummaryBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackSummaryBox.swift; sourceTree = "<group>"; };
 		61F4199A2120B2F700B1ED7D /* ProfileTableVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileTableVC.swift; sourceTree = "<group>"; };
 		61F4199C2120B39C00B1ED7D /* TrackSummaryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackSummaryCell.swift; sourceTree = "<group>"; };
+		7D2CC0F2264D6EBD0091E05C /* MicrosoftAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrosoftAuth.swift; sourceTree = "<group>"; };
 		CC06A72AF5F57EEAD7E60DC3 /* Pods_BoatTrackerTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BoatTrackerTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E056F09FFE2FB53F39CDBB89 /* Pods-BoatTrackerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BoatTrackerTests.debug.xcconfig"; path = "Target Support Files/Pods-BoatTrackerTests/Pods-BoatTrackerTests.debug.xcconfig"; sourceTree = "<group>"; };
 		F02A86D7A8C81DBA5B27933E /* Pods-BoatTracker-BoatTrackerUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BoatTracker-BoatTrackerUITests.release.xcconfig"; path = "Target Support Files/Pods-BoatTracker-BoatTrackerUITests/Pods-BoatTracker-BoatTrackerUITests.release.xcconfig"; sourceTree = "<group>"; };
@@ -317,6 +319,7 @@
 			children = (
 				619679ED20F89F6D00432672 /* GoogleAuth.swift */,
 				61DCDA3B21D02693009A75EB /* RxGoogleAuth.swift */,
+				7D2CC0F2264D6EBD0091E05C /* MicrosoftAuth.swift */,
 			);
 			path = Auth;
 			sourceTree = "<group>";
@@ -702,6 +705,7 @@
 				61832AAE220B69D400413FD0 /* TapListener.swift in Sources */,
 				61967A072103CAFD00432672 /* BoatColors.swift in Sources */,
 				619679F620FBBA3A00432672 /* BoatCell.swift in Sources */,
+				7D2CC0F3264D6EBD0091E05C /* MicrosoftAuth.swift in Sources */,
 				612F46A620F4AB70001A3003 /* Backend.swift in Sources */,
 				6101D54B221057340051A427 /* mapCallouts.swift in Sources */,
 				61967A022103C4EE00432672 /* BaseTableVC.swift in Sources */,

@@ -7,6 +7,7 @@ def app_pods
   pod 'Charts', '3.6.0'
   pod 'GoogleSignIn', '5.0.2'
   pod 'Mapbox-iOS-SDK', '6.3.0'
+  pod 'MSAL', '1.1.17'
   pod 'RxCocoa', '6.0.0'
   pod 'RxSwift', '6.0.0'
   pod 'SnapKit', '5.0.1'
