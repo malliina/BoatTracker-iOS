@@ -1,16 +1,9 @@
-//
-//  ViewController.swift
-//  BoatTracker
-//
-//  Created by Michael Skogberg on 08/07/2018.
-//  Copyright © 2018 Michael Skogberg. All rights reserved.
-//
-
-import UIKit
-import SnapKit
-import Mapbox
 import GoogleSignIn
+import Mapbox
+import MSAL
 import RxSwift
+import SnapKit
+import UIKit
 
 struct ActiveMarker {
     let annotation: TrophyAnnotation
@@ -39,6 +32,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     private var boatRenderer: BoatRenderer? = nil
     private var pathFinder: PathFinder? = nil
     private var settings: UserSettings { UserSettings.shared }
+    private var prefs: BoatPrefs { BoatPrefs.shared }
     private var clientConf: ClientConf? { settings.conf }
     
     private var firstInit: Bool = true
@@ -83,9 +77,12 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         mapView.addGestureRecognizer(swipes)
         
         MapEvents.shared.delegate = self
+//        GoogleAuth.shared.delegate = self
         
-        GoogleAuth.shared.delegate = self
-        GoogleAuth.shared.signInSilently()
+        let _ = Auth.shared.tokens.subscribe(onNext: { token in
+            self.reload(token: token)
+        })
+        Auth.shared.signIn(from: self)
         initConf()
     }
     
@@ -242,10 +239,10 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
             return
         }
         if let user = latestToken {
-            let dest = ProfileTableVC(tokenDelegate: self, tracksDelegate: self, current: boatRenderer?.latestTrack, user: user, lang: language)
+            let dest = ProfileTableVC(tracksDelegate: self, current: boatRenderer?.latestTrack, user: user, lang: language)
             navigate(to: dest)
         } else {
-            let dest = AuthVC(tokenDelegate: self, welcome: self, lang: language)
+            let dest = AuthVC(welcome: self, lang: language)
             navigate(to: dest)
         }
     }
@@ -269,7 +266,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
             self.removeAllTrails()
             self.followButton.isHidden = true
         }
-        Backend.shared.updateToken(new: token)
+//        Backend.shared.updateToken(new: token)
         socket.delegate = self
         socket.vesselDelegate = self
         socket.open()
@@ -321,11 +318,11 @@ extension MapVC: VesselDelegate {
     }
 }
 
-extension MapVC: TokenDelegate {
-    func onToken(token: UserToken?) {
-        reload(token: token)
-    }
-}
+//extension MapVC: TokenDelegate {
+//    func onToken(token: UserToken?) {
+//        reload(token: token)
+//    }
+//}
 
 extension MapVC: WelcomeDelegate {
     func showWelcome(token: UserToken?) {

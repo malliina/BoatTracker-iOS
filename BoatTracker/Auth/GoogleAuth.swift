@@ -15,8 +15,8 @@ class GoogleAuth: NSObject, GIDSignInDelegate {
 
     let log = GoogleAuth.logger
 
-    var delegate: TokenDelegate? = nil
-    var uiDelegate: TokenDelegate? = nil
+//    var delegate: TokenDelegate? = nil
+//    var uiDelegate: TokenDelegate? = nil
 
     let google = GIDSignIn.sharedInstance()!
 
@@ -71,8 +71,8 @@ class GoogleAuth: NSObject, GIDSignInDelegate {
     }
 
     func onToken(token: UserToken?) {
-        uiDelegate?.onToken(token: token)
-        delegate?.onToken(token: token)
+//        uiDelegate?.onToken(token: token)
+//        delegate?.onToken(token: token)
     }
 
     func sign(_ signIn: GIDSignIn!, didDisconnectWith user: GIDGoogleUser!, withError error: Error!) {

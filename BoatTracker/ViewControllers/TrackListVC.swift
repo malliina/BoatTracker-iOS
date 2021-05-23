@@ -16,7 +16,7 @@ protocol TracksDelegate {
     func onTrack(_ track: TrackName)
 }
 
-class TrackListVC: BaseTableVC, TokenDelegate {
+class TrackListVC: BaseTableVC {
     let log = LoggerFactory.shared.vc(TrackListVC.self)
     let cellKey = "TrackCell"
     
@@ -26,7 +26,7 @@ class TrackListVC: BaseTableVC, TokenDelegate {
     private var delegate: TracksDelegate? = nil
     
     let lang: Lang
-    var settingsLang: SettingsLang { return lang.settings }
+    var settingsLang: SettingsLang { lang.settings }
     
     init(delegate: TracksDelegate?, login: Bool = false, lang: Lang) {
         self.delegate = delegate
@@ -43,13 +43,7 @@ class TrackListVC: BaseTableVC, TokenDelegate {
         super.viewDidLoad()
         navigationItem.title = lang.track.tracks
         tableView?.register(TrackCell.self, forCellReuseIdentifier: cellKey)
-        if login {
-            // Dev time only
-            GoogleAuth.shared.uiDelegate = self
-            GoogleAuth.shared.signInSilently()
-        } else {
-            loadTracks()
-        }
+        loadTracks()
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -97,10 +91,10 @@ class TrackListVC: BaseTableVC, TokenDelegate {
         goBack()
     }
     
-    func onToken(token: UserToken?) {
-        Backend.shared.updateToken(new: token)
-        loadTracks()
-    }
+//    func onToken(token: UserToken?) {
+//        Backend.shared.updateToken(new: token)
+//        loadTracks()
+//    }
     
     func loadTracks() {
         display(text: lang.messages.loading)

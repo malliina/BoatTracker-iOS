@@ -23,14 +23,20 @@ class Backend {
         self.baseUrl = baseUrl
         self.http = BoatHttpClient(bearerToken: nil, baseUrl: baseUrl, client: HttpClient())
         self.socket = BoatSocket(token: nil, track: nil)
+        let _ = Auth.shared.tokens.subscribe(onNext: { token in
+            self.latestToken = token
+            self.http.updateToken(token: token?.token)
+            self.socket.close()
+            self.socket = BoatSocket(token: token?.token, track: nil)
+        })
     }
     
-    func updateToken(new token: UserToken?) {
-        latestToken = token
-        http.updateToken(token: token?.token)
-        socket.close()
-        socket = BoatSocket(token: token?.token, track: nil)
-    }
+//    func updateToken(new token: UserToken?) {
+//        latestToken = token
+//        http.updateToken(token: token?.token)
+//        socket.close()
+//        socket = BoatSocket(token: token?.token, track: nil)
+//    }
     
     func open(track: TrackName, delegate: BoatSocketDelegate) {
         socket.delegate = nil

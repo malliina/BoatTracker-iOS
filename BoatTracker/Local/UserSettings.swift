@@ -14,6 +14,16 @@ protocol LanguageChangedDelegate {
     func onLanguage(changed: Lang)
 }
 
+enum AuthProvider: String {
+    case google = "google"
+    case microsoft = "microsoft"
+    case none = "none"
+    
+    static func parse(s: String) -> AuthProvider {
+        AuthProvider(rawValue: s) ?? none
+    }
+}
+
 class UserSettings {
     static let shared = UserSettings()
     

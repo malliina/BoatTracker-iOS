@@ -12,6 +12,7 @@ class BoatPrefs {
     static let shared = BoatPrefs()
     let prefs = UserDefaults.standard
 
+    let authProviderKey = "authProvider"
     let welcomeKey = "welcome"
     let pushTokenKey = "pushToken"
     let notificationsAllowedKey = "notificationsAllowed"
@@ -59,6 +60,16 @@ class BoatPrefs {
         }
         set(newValue) {
             prefs.set(!newValue, forKey: aisKey)
+        }
+    }
+    
+    var authProvider: AuthProvider {
+        get {
+            guard let str = prefs.string(forKey: authProviderKey) else { return .none }
+            return AuthProvider(rawValue: str) ?? .none
+        }
+        set(newValue) {
+            prefs.set(newValue.rawValue, forKey: authProviderKey)
         }
     }
 }

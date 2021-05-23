@@ -33,7 +33,7 @@ class ProfileTableVC: BaseTableVC {
     let summaryRow = 0
     let summarySection = 0
     
-    let delegate: TokenDelegate
+//    let delegate: TokenDelegate
     let tracksDelegate: TracksDelegate
     let user: UserToken
     let current: TrackName?
@@ -60,8 +60,8 @@ class ProfileTableVC: BaseTableVC {
         }
     }
     
-    init(tokenDelegate: TokenDelegate, tracksDelegate: TracksDelegate, current: TrackName?, user: UserToken, lang: Lang) {
-        self.delegate = tokenDelegate
+    init(tracksDelegate: TracksDelegate, current: TrackName?, user: UserToken, lang: Lang) {
+//        self.delegate = tokenDelegate
         self.tracksDelegate = tracksDelegate
         self.current = current
         self.user = user
@@ -274,8 +274,9 @@ class ProfileTableVC: BaseTableVC {
     }
     
     func logout() {
-        GoogleAuth.shared.signOut()
-        delegate.onToken(token: nil)
+        Auth.shared.signOut()
+//        GoogleAuth.shared.signOut()
+//        delegate.onToken(token: nil)
         goBack()
     }
     

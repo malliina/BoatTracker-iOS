@@ -14,7 +14,7 @@ import RxCocoa
 class MicrosoftAuth {
     let kGraphEndpoint = "https://graph.microsoft.com/"
     let kAuthority = "https://login.microsoftonline.com/common"
-    let scopes = ["openid", "email"]
+    let scopes: [String] = ["email"]
     let clientId = "d55eafcb-e3a5-4ee0-ba5c-03a6c887b6db"
     private let applicationContext: MSALPublicClientApplication
     let log = LoggerFactory.shared.system(MicrosoftAuth.self)
@@ -25,6 +25,32 @@ class MicrosoftAuth {
         // redirectUri: The redirect URI of the application. You can pass 'nil' to use the default value, or your custom redirect URI.
         let msalConfiguration = MSALPublicClientApplicationConfig(clientId: clientId, redirectUri: nil, authority: authority)
         self.applicationContext = try! MSALPublicClientApplication(configuration: msalConfiguration)
+    }
+    
+    func obtainToken(from: UIViewController?) -> Single<UserToken> {
+        let webViewParameters = from.map { vc in
+            MSALWebviewParameters(authPresentationViewController: vc)
+        }
+        return loadAccount(webViewParameter: webViewParameters).flatMap { result in
+            if let claims = result.account.accountClaims, let email = claims["email"] as? String, let idToken = result.idToken {
+                self.log.info("Email is \(email)")
+                return Single.just(UserToken(email: email, token: AccessToken(idToken)))
+            } else {
+                return Single.error(AppError.simple("Unable to extract email and ID token from Microsoft auth response."))
+            }
+        }
+    }
+    
+    func loadAccount(webViewParameter: MSALWebviewParameters?) -> Single<MSALResult> {
+        return loadCurrentAccount().flatMap { account in
+            if let account = account {
+                return self.acquireTokenSilently(account, webViewParameters: webViewParameter)
+            } else if let webViewParameter = webViewParameter {
+                return self.acquireTokenInteractively(webViewParameters: webViewParameter)
+            } else {
+                return Single.error(AppError.simple("Account signed out and no interaction available."))
+            }
+        }
     }
 
     func loadCurrentAccount() -> Single<MSALAccount?> {
@@ -39,13 +65,10 @@ class MicrosoftAuth {
                 }
                 if let currentAccount = currentAccount {
                     self.log.info("Found a signed in account \(String(describing: currentAccount.username)). Updating data for that account...")
-    //                self.updateCurrentAccount(account: currentAccount)
                     observer.onNext(currentAccount)
                     observer.onCompleted()
                 } else {
                     self.log.info("Account signed out.")
-        //            self.accessToken = ""
-        //            self.updateCurrentAccount(account: nil)
                     observer.onNext(nil)
                     observer.onCompleted()
                 }
@@ -55,28 +78,36 @@ class MicrosoftAuth {
         return observable.asSingle()
     }
     
-    func acquireTokenInteractively(webViewParameters: MSALWebviewParameters) {
+    func acquireTokenInteractively(webViewParameters: MSALWebviewParameters) -> Single<MSALResult> {
+        let observable = Observable<MSALResult>.create { (observer) -> Disposable in
+            self.acquireTokenInteractively(webViewParameters: webViewParameters, with: observer)
+            return Disposables.create()
+        }
+        return observable.asSingle()
+    }
+    
+    private func acquireTokenInteractively(webViewParameters: MSALWebviewParameters, with: AnyObserver<MSALResult>) {
         let parameters = MSALInteractiveTokenParameters(scopes: scopes, webviewParameters: webViewParameters)
         parameters.promptType = .selectAccount
-
-        applicationContext.acquireToken(with: parameters) { (result, error) in
+        self.applicationContext.acquireToken(with: parameters) { (result, error) in
             if let error = error {
                 self.log.error("Could not acquire token: \(error)")
-                return
-            }
-
-            guard let result = result else {
+                with.onError(error)
+            } else if let result = result {
+                if let claims = result.account.accountClaims, let email = claims["email"] {
+                    self.log.info("Email is \(email)")
+                }
+                self.log.info("Access token is \(result.accessToken)")
+                with.onNext(result)
+                with.onCompleted()
+            } else {
                 self.log.error("Could not acquire token: No result returned")
-                return
+                with.onError(AppError.simple("No result from Microsoft auth."))
             }
-//            self.accessToken = result.accessToken
-            self.log.info("Access token is \(result.accessToken)")
-//            self.updateCurrentAccount(account: result.account)
-//            self.getContentWithToken()
         }
     }
     
-    func acquireTokenSilently(_ account : MSALAccount, webViewParameters: MSALWebviewParameters) {
+    func acquireTokenSilently(_ account : MSALAccount, webViewParameters: MSALWebviewParameters?) -> Single<MSALResult> {
             /**
 
              Acquire a token for an existing account silently
@@ -92,33 +123,41 @@ class MicrosoftAuth {
 
             let parameters = MSALSilentTokenParameters(scopes: scopes, account: account)
 
-            applicationContext.acquireTokenSilent(with: parameters) { (result, error) in
+        let observable = Observable<MSALResult>.create { (observer) -> Disposable in
+            self.applicationContext.acquireTokenSilent(with: parameters) { (result, error) in
                 if let error = error {
                     let nsError = error as NSError
                     // interactionRequired means we need to ask the user to sign-in. This usually happens
                     // when the user's Refresh Token is expired or if the user has changed their password
                     // among other possible reasons.
-                    if (nsError.domain == MSALErrorDomain) {
-                        if (nsError.code == MSALError.interactionRequired.rawValue) {
+                    if (nsError.domain == MSALErrorDomain && nsError.code == MSALError.interactionRequired.rawValue) {
+                        if let webViewParameters = webViewParameters {
                             DispatchQueue.main.async {
-                                self.acquireTokenInteractively(webViewParameters: webViewParameters)
+                                self.acquireTokenInteractively(webViewParameters: webViewParameters, with: observer)
                             }
-                            return
+                        } else {
+                            observer.onError(AppError.simple("Interaction required to complete Microsoft auth, but not in an interactive context."))
                         }
+                    } else {
+                        self.log.warn("Could not acquire token silently: \(error)")
+                        observer.onError(error)
                     }
-                    self.log.warn("Could not acquire token silently: \(error)")
-                    return
+                } else {
+                    if let result = result {
+                        if let claims = result.account.accountClaims, let email = claims["email"] {
+                            self.log.info("Email is \(email)")
+                        }
+                        self.log.info("Refreshed Access token is \(result.accessToken)")
+                        observer.onNext(result)
+                        observer.onCompleted()
+                    } else {
+                        self.log.warn("Could not acquire token: No result returned")
+                        observer.onError(AppError.simple("No result from silent Microsoft auth."))
+                    }
                 }
-
-                guard let result = result else {
-                    self.log.warn("Could not acquire token: No result returned")
-                    return
-                }
-
-//                self.accessToken = result.accessToken
-                self.log.info("Refreshed Access token is \(result.accessToken)")
-//                self.updateSignOutButton(enabled: true)
-//                self.getContentWithToken()
             }
+            return Disposables.create()
         }
+        return observable.asSingle()
+    }
 }

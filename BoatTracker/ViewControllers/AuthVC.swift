@@ -9,33 +9,35 @@
 import Foundation
 import UIKit
 import GoogleSignIn
+import MSAL
 
-protocol TokenDelegate {
-    func onToken(token: UserToken?)
-}
+//protocol TokenDelegate {
+//    func onToken(token: UserToken?)
+//}
 
 protocol WelcomeDelegate {
     func showWelcome(token: UserToken?)
 }
 
-class AuthVC: BaseTableVC, TokenDelegate {
+class AuthVC: BaseTableVC {
     let log = LoggerFactory.shared.vc(AuthVC.self)
     
     let chooseIdentifier = "ChooseIdentifier"
     let googleIdentifier = "GoogleIdentifier"
+    let microsoftIdentifier = "MicrosoftIdentifier"
     let attributionsIdentifier = "AttributionsIdentifier"
     let basicIdentifier = "BasicIdentifier"
     let linkIdentifier = "LinkIdentifier"
-    let attributionsIndex = 6
+    let attributionsIndex = 7
     
-    let delegate: TokenDelegate
+//    let delegate: TokenDelegate
     let welcomeDelegate: WelcomeDelegate
     let lang: Lang
-    var settingsLang: SettingsLang { return lang.settings }
+    var settingsLang: SettingsLang { lang.settings }
     
-    init(tokenDelegate: TokenDelegate, welcome: WelcomeDelegate, lang: Lang) {
+    init(welcome: WelcomeDelegate, lang: Lang) {
         self.lang = lang
-        self.delegate = tokenDelegate
+//        self.delegate = tokenDelegate
         self.welcomeDelegate = welcome
         super.init(nibName: nil, bundle: nil)
     }
@@ -46,7 +48,7 @@ class AuthVC: BaseTableVC, TokenDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        [chooseIdentifier, googleIdentifier, attributionsIdentifier, basicIdentifier, linkIdentifier].forEach { (identifier) in
+        [chooseIdentifier, googleIdentifier, microsoftIdentifier, attributionsIdentifier, basicIdentifier, linkIdentifier].forEach { (identifier) in
             tableView?.register(UITableViewCell.self, forCellReuseIdentifier: identifier)
         }
         tableView?.separatorStyle = .none
@@ -55,8 +57,9 @@ class AuthVC: BaseTableVC, TokenDelegate {
         
         view.backgroundColor = .white
         
-        GoogleAuth.shared.uiDelegate = self
-        GIDSignIn.sharedInstance().presentingViewController = self
+//        GoogleAuth.shared.uiDelegate = self
+//        GIDSignIn.sharedInstance().presentingViewController = self
+        RxGoogleAuth.shared.google.presentingViewController = self
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -77,15 +80,25 @@ class AuthVC: BaseTableVC, TokenDelegate {
                 make.trailing.equalTo(cell.contentView.snp.trailingMargin)
             }
         case 2:
+            let microsoftButton = BoatButton.create(title: "Sign in with Microsoft")
+            cell.contentView.addSubview(microsoftButton)
+            microsoftButton.snp.makeConstraints { make in
+                make.top.equalToSuperview().offset(12)
+                make.bottom.equalToSuperview().inset(12)
+                make.leading.equalTo(cell.contentView.snp.leadingMargin)
+                make.trailing.equalTo(cell.contentView.snp.trailingMargin)
+            }
+            microsoftButton.addTarget(self, action: #selector(microsoftClicked(_:)), for: .touchUpInside)
+        case 3:
             cell.textLabel?.text = settingsLang.signInText
             cell.textLabel?.numberOfLines = 0
             cell.selectionStyle = .none
-        case 3:
+        case 4:
             cell.textLabel?.text = settingsLang.howItWorks
             cell.textLabel?.textColor = colors.secondaryText
             cell.textLabel?.numberOfLines = 0
             cell.selectionStyle = .none
-        case 4:
+        case 5:
             let textView = BoatTextView(text: lang.settings.tokenTextLong, font: UIFont.systemFont(ofSize: 17))
             textView.textContainer.lineFragmentPadding = 0
             textView.contentInset = .zero
@@ -106,6 +119,11 @@ class AuthVC: BaseTableVC, TokenDelegate {
         return cell
     }
     
+    @objc func microsoftClicked(_ sender: UIButton) {
+        BoatPrefs.shared.authProvider = .microsoft
+        Auth.shared.signIn(from: self)
+    }
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch indexPath.row {
         case attributionsIndex: nav(to: AttributionsVC(info: lang.attributions))
@@ -117,6 +135,7 @@ class AuthVC: BaseTableVC, TokenDelegate {
         switch row.row {
         case 0: return chooseIdentifier
         case 1: return googleIdentifier
+        case 2: return microsoftIdentifier
         case attributionsIndex: return attributionsIdentifier
         default: return basicIdentifier
         }
