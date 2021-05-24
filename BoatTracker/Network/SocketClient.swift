@@ -104,6 +104,7 @@ class SocketClient: NSObject, SRWebSocketDelegate {
     func close() {
         // disposes of any previous socket
         if let socket = socket {
+            log.info("Closing connection to \(baseURL.absoluteString)...")
             socket.delegate = nil
             socket.close()
             self.socket = nil

@@ -38,16 +38,17 @@ class Auth {
         return obtainToken(from: nil)
     }
     
-    func signOut() {
+    func signOut(from: UIViewController) {
         switch prefs.authProvider {
         case .google:
             google.google.signOut()
         case .microsoft:
-            log.info("Todo")
+            microsoft.signOut(from: from)
         case .none:
             log.info("Nothing to sign out from.")
         }
         prefs.authProvider = .none
+        subject.onNext(nil)
     }
     
     private func obtainToken(from: UIViewController?) -> Single<UserToken?> {

@@ -43,9 +43,6 @@ class GoogleAuth: NSObject, GIDSignInDelegate {
 
     func open(url: URL, options: [UIApplication.OpenURLOptionsKey: Any]) -> Bool {
         google.handle(url)
-//        google.handle(url as URL?,
-//                sourceApplication: options[UIApplication.OpenURLOptionsKey.sourceApplication] as? String,
-//                annotation: options[UIApplication.OpenURLOptionsKey.annotation])
     }
 
     func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
@@ -53,12 +50,6 @@ class GoogleAuth: NSObject, GIDSignInDelegate {
             log.error("Sign in error: '\(error.localizedDescription)'.")
             onToken(token: nil)
         } else {
-            // Perform any operations on signed in user here.
-//            let userId = user.userID                  // For client-side use only!
-//            let fullName = user.profile.name
-//            let givenName = user.profile.givenName
-//            let familyName = user.profile.familyName
-//            let email = user.profile.email
             guard let idToken = user.authentication.idToken else {
                 log.error("No ID token in Google response.")
                 onToken(token: nil)

@@ -274,9 +274,7 @@ class ProfileTableVC: BaseTableVC {
     }
     
     func logout() {
-        Auth.shared.signOut()
-//        GoogleAuth.shared.signOut()
-//        delegate.onToken(token: nil)
+        Auth.shared.signOut(from: self)
         goBack()
     }
     

@@ -76,9 +76,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         swipes.delegate = self
         mapView.addGestureRecognizer(swipes)
         
-        MapEvents.shared.delegate = self
-//        GoogleAuth.shared.delegate = self
-        
+        MapEvents.shared.delegate = self   
         let _ = Auth.shared.tokens.subscribe(onNext: { token in
             self.reload(token: token)
         })
@@ -129,7 +127,8 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         }
     }
     
-    func setupUser() {
+    func setupUser(token: AccessToken?) {
+        http.updateToken(token: token)
         if isSignedIn {
             let _ = http.profile().subscribe { (profile) in
                 self.settings.profile = profile
@@ -266,16 +265,17 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
             self.removeAllTrails()
             self.followButton.isHidden = true
         }
-//        Backend.shared.updateToken(new: token)
+        socket.updateToken(token: token?.token)
         socket.delegate = self
         socket.vesselDelegate = self
         socket.open()
-        setupUser()
+        setupUser(token: token?.token)
     }
     
     func change(to track: TrackName) {
         disconnect()
         boatRenderer?.latestTrack = track
+        //log.info("Changing to \(track)...")
         Backend.shared.open(track: track, delegate: self)
     }
     
@@ -317,12 +317,6 @@ extension MapVC: VesselDelegate {
         }
     }
 }
-
-//extension MapVC: TokenDelegate {
-//    func onToken(token: UserToken?) {
-//        reload(token: token)
-//    }
-//}
 
 extension MapVC: WelcomeDelegate {
     func showWelcome(token: UserToken?) {

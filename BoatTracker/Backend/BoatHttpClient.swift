@@ -129,10 +129,6 @@ class BoatHttpClient {
                         self.updateToken(token: token?.token)
                         return self.parsed(t, uri, run: run, attempt: 2)
                     }
-//                    return RxGoogleAuth().signIn().flatMap { (token) -> Single<T> in
-//                        self.updateToken(token: token.token)
-//                        return self.parsed(t, uri, run: run, attempt: 2)
-//                    }
                 } else {
                     let decoder = JSONDecoder()
                     let errors = (try? decoder.decode(Errors.self, from: response.data))?.errors ?? []

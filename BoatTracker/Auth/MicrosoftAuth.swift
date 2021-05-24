@@ -160,4 +160,27 @@ class MicrosoftAuth {
         }
         return observable.asSingle()
     }
+    
+    func signOut(from: UIViewController) {
+        let _ = signOutFromAccount(from: from).subscribe { account in
+            self.log.info("Signed out from Microsoft.")
+        } onFailure: { err in
+            self.log.warn("Failed to sign out from Microsoft.")
+        } onDisposed: {
+        }
+    }
+    
+    func signOutFromAccount(from: UIViewController) -> Single<MSALAccount?> {
+        let params = MSALSignoutParameters(webviewParameters: MSALWebviewParameters(authPresentationViewController: from))
+        return loadCurrentAccount().flatMap { account in
+            if let account = account {
+                self.applicationContext.signout(with: account, signoutParameters: params) { isOut, error in
+                    ()
+                }
+                return Single.just(account)
+            } else {
+                return Single.just(nil)
+            }
+        }
+    }
 }

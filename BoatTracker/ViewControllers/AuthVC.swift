@@ -11,10 +11,6 @@ import UIKit
 import GoogleSignIn
 import MSAL
 
-//protocol TokenDelegate {
-//    func onToken(token: UserToken?)
-//}
-
 protocol WelcomeDelegate {
     func showWelcome(token: UserToken?)
 }
@@ -30,14 +26,12 @@ class AuthVC: BaseTableVC {
     let linkIdentifier = "LinkIdentifier"
     let attributionsIndex = 7
     
-//    let delegate: TokenDelegate
     let welcomeDelegate: WelcomeDelegate
     let lang: Lang
     var settingsLang: SettingsLang { lang.settings }
     
     init(welcome: WelcomeDelegate, lang: Lang) {
         self.lang = lang
-//        self.delegate = tokenDelegate
         self.welcomeDelegate = welcome
         super.init(nibName: nil, bundle: nil)
     }
@@ -57,9 +51,12 @@ class AuthVC: BaseTableVC {
         
         view.backgroundColor = .white
         
-//        GoogleAuth.shared.uiDelegate = self
-//        GIDSignIn.sharedInstance().presentingViewController = self
         RxGoogleAuth.shared.google.presentingViewController = self
+        let _ = Auth.shared.tokens.subscribe(onNext: { token in
+            if let token = token {
+                self.onToken(token: token)
+            }
+        })
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
