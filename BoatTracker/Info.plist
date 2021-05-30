@@ -24,12 +24,17 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>com.googleusercontent.apps.497623115973-qut66ppubk4f9mpigckfkoqqoi060bge</string>
-                <string>msauth.com.malliina.BoatTracker</string>
+				<string>msauth.com.malliina.BoatTracker</string>
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>msauthv2</string>
+		<string>msauthv3</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -65,10 +70,5 @@
 	</array>
 	<key>UIUserInterfaceStyle</key>
 	<string>Light</string>
-    <key>LSApplicationQueriesSchemes</key>
-    <array>
-        <string>msauthv2</string>
-        <string>msauthv3</string>
-    </array>
 </dict>
 </plist>

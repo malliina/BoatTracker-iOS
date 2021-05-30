@@ -25,6 +25,11 @@ class RxGoogleAuth: NSObject {
         }
     }
     
+    func signIn(from: UIViewController) {
+        google.presentingViewController = from
+        google.signIn()
+    }
+    
     func obtainToken(from: UIViewController?) -> Single<UserToken?> {
         if let from = from {
             google.presentingViewController = from

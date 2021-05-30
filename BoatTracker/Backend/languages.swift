@@ -85,7 +85,7 @@ struct FormatsLang: Codable, Hashable {
 }
 
 struct SettingsLang: Codable {
-    let welcome, welcomeText, laterText, notifications, notificationsText, howItWorks, signIn, signInText, boat, token, tokenText, tokenTextLong, rename, renameBoat, newName, edit, cancel, done, back, noTracksHelp: String
+    let welcome, welcomeText, laterText, notifications, notificationsText, howItWorks, signIn, signInText, signInWith, boat, token, tokenText, tokenTextLong, rename, renameBoat, newName, edit, cancel, done, back, noTracksHelp: String
     let formats: FormatsLang
 }
 

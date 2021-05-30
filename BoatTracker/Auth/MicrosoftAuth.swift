@@ -63,8 +63,8 @@ class MicrosoftAuth {
                     self.log.error("Couldn't query current account with error: \(error)")
                     observer.onError(error)
                 }
-                if let currentAccount = currentAccount {
-                    self.log.info("Found a signed in account \(String(describing: currentAccount.username)). Updating data for that account...")
+                if let currentAccount = currentAccount, let username = currentAccount.username, let email = currentAccount.accountClaims?["email"] as? String {
+                    self.log.info("Found a signed in account for user \(username) with email \(email). Updating data for that account...")
                     observer.onNext(currentAccount)
                     observer.onCompleted()
                 } else {
@@ -147,7 +147,7 @@ class MicrosoftAuth {
                         if let claims = result.account.accountClaims, let email = claims["email"] {
                             self.log.info("Email is \(email)")
                         }
-                        self.log.info("Refreshed Access token is \(result.accessToken)")
+                        //self.log.info("Refreshed Access token is \(result.accessToken)")
                         observer.onNext(result)
                         observer.onCompleted()
                     } else {

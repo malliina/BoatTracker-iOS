@@ -51,7 +51,6 @@ class AuthVC: BaseTableVC {
         
         view.backgroundColor = .white
         
-        RxGoogleAuth.shared.google.presentingViewController = self
         let _ = Auth.shared.tokens.subscribe(onNext: { token in
             if let token = token {
                 self.onToken(token: token)
@@ -67,24 +66,10 @@ class AuthVC: BaseTableVC {
             cell.textLabel?.textAlignment = .center
             cell.selectionStyle = .none
         case 1:
-            let googleButton = GIDSignInButton()
-            googleButton.style = .wide
-            cell.contentView.addSubview(googleButton)
-            googleButton.snp.makeConstraints { (make) in
-                make.top.equalToSuperview().offset(12)
-                make.bottom.equalToSuperview().inset(12)
-                make.leading.equalTo(cell.contentView.snp.leadingMargin)
-                make.trailing.equalTo(cell.contentView.snp.trailingMargin)
-            }
+            let googleButton = socialButton(provider: "Google", image: "LogoGoogle", target: cell.contentView)
+            googleButton.addTarget(self, action: #selector(googleClicked(_:)), for: .touchUpInside)
         case 2:
-            let microsoftButton = BoatButton.create(title: "Sign in with Microsoft")
-            cell.contentView.addSubview(microsoftButton)
-            microsoftButton.snp.makeConstraints { make in
-                make.top.equalToSuperview().offset(12)
-                make.bottom.equalToSuperview().inset(12)
-                make.leading.equalTo(cell.contentView.snp.leadingMargin)
-                make.trailing.equalTo(cell.contentView.snp.trailingMargin)
-            }
+            let microsoftButton = socialButton(provider: "Microsoft", image: "LogoMicrosoft", target: cell.contentView)
             microsoftButton.addTarget(self, action: #selector(microsoftClicked(_:)), for: .touchUpInside)
         case 3:
             cell.textLabel?.text = settingsLang.signInText
@@ -114,6 +99,30 @@ class AuthVC: BaseTableVC {
             ()
         }
         return cell
+    }
+    
+    private func socialButton(provider: String, image: String, target: UIView) -> UIButton {
+        let button = BoatButton.create(title: "\(lang.settings.signInWith) \(provider)", fontSize: 19)
+        button.contentMode = .left
+        button.contentHorizontalAlignment = .left
+        let logo = UIImage(named: image)!.withRenderingMode(.alwaysOriginal)
+        button.setImage(logo, for: .normal)
+        button.backgroundColor = BoatColors.shared.almostWhite
+        target.addSubview(button)
+        button.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(12)
+            make.bottom.equalToSuperview().inset(12)
+            make.centerX.equalToSuperview()
+            make.width.greaterThanOrEqualTo(260)
+        }
+        button.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 10)
+        button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
+        button.contentEdgeInsets = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
+        return button
+    }
+    
+    @objc func googleClicked(_ sender: UIButton) {
+        RxGoogleAuth.shared.signIn(from: self)
     }
     
     @objc func microsoftClicked(_ sender: UIButton) {
