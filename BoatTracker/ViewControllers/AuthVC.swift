@@ -122,7 +122,9 @@ class AuthVC: BaseTableVC {
     }
     
     @objc func googleClicked(_ sender: UIButton) {
-        RxGoogleAuth.shared.signIn(from: self)
+        // RxGoogleAuth.shared.signIn(from: self)
+        BoatPrefs.shared.authProvider = .google
+        Auth.shared.signIn(from: self)
     }
     
     @objc func microsoftClicked(_ sender: UIButton) {

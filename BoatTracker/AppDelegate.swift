@@ -23,8 +23,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     let notifications = BoatNotifications.shared
 
     var window: UIWindow?
-    
-    var google: GoogleAuth?
 
 //    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
 //        UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
@@ -38,10 +36,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         ])
         
         let _ = AppDelegate.initMapboxToken()
-        
-        google = GoogleAuth.shared
-
-        //return true
 
         let w = UIWindow(frame: UIScreen.main.bounds)
         window = w
@@ -72,7 +66,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-        let googleAttempt = google?.open(url: url, options: options) ?? false
+        let googleAttempt = RxGoogleAuth.shared.open(url: url, options: options)
         if googleAttempt {
             return true
         } else {
@@ -118,7 +112,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func connectSocket() {
-        google?.signInSilently()
+        Auth.shared.signInSilentlyNow()
     }
     
     func disconnectSocket() {

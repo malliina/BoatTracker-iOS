@@ -23,6 +23,10 @@ class Auth {
     private var microsoft: MicrosoftAuth { MicrosoftAuth.shared }
     
     func signIn(from: UIViewController) {
+        signInAny(from: from)
+    }
+    
+    func signInAny(from: UIViewController?) {
         let _ = obtainToken(from: from).subscribe { (event) in
             switch event {
             case .success(let token):
@@ -32,6 +36,10 @@ class Auth {
                 self.subject.onNext(nil)
             }
         }
+    }
+    
+    func signInSilentlyNow() {
+        let _ = signInAny(from: nil)
     }
     
     func signInSilently() -> Single<UserToken?> {

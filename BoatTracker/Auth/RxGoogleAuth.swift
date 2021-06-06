@@ -11,10 +11,10 @@ import RxCocoa
 import RxSwift
 
 class RxGoogleAuth: NSObject {
-    static let log = LoggerFactory.shared.system(RxGoogleAuth.self)
+    let log = LoggerFactory.shared.system(RxGoogleAuth.self)
     static let shared = RxGoogleAuth()
     let google = GIDSignIn.sharedInstance()!
-    var log = RxGoogleAuth.log
+    private var latestAttempt: GoogleSignInAttempt? = nil
     
     override init() {
         super.init()
@@ -25,9 +25,8 @@ class RxGoogleAuth: NSObject {
         }
     }
     
-    func signIn(from: UIViewController) {
-        google.presentingViewController = from
-        google.signIn()
+    func signInSilently() {
+        google.restorePreviousSignIn()
     }
     
     func obtainToken(from: UIViewController?) -> Single<UserToken?> {
@@ -35,14 +34,19 @@ class RxGoogleAuth: NSObject {
             google.presentingViewController = from
         }
         let attempt = GoogleSignInAttempt()
+        latestAttempt = attempt
         google.delegate = attempt
         google.restorePreviousSignIn()
         return attempt.result
     }
+    
+    func open(url: URL, options: [UIApplication.OpenURLOptionsKey : Any]) -> Bool {
+        return google.handle(url)
+    }
 }
 
 class GoogleSignInAttempt: NSObject, GIDSignInDelegate {
-    static let log = LoggerFactory.shared.system(GoogleSignInAttempt.self)
+    let log = LoggerFactory.shared.system(GoogleSignInAttempt.self)
     
     private let subject = ReplaySubject<UserToken?>.create(bufferSize: 1)
     var result: Single<UserToken?> { subject.asSingle() }
@@ -57,9 +61,13 @@ class GoogleSignInAttempt: NSObject, GIDSignInDelegate {
             }
             BoatPrefs.shared.authProvider = .google
             let email = user.profile.email ?? "unknown"
-            GoogleSignInAttempt.log.info("Got email '\(email)' with token '\(idToken)'.")
+            log.info("Got email '\(email)' with token '\(idToken)'.")
             subject.onNext(UserToken(email: email, token: AccessToken(idToken)))
             subject.onCompleted()
         }
+    }
+
+    func sign(_ signIn: GIDSignIn!, didDisconnectWith user: GIDGoogleUser!, withError error: Error!) {
+        log.info("Google disconnected.")
     }
 }

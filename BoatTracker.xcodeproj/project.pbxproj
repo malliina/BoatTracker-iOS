@@ -44,7 +44,6 @@
 		6173F249228CB99000A1E9B9 /* PathFinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6173F248228CB99000A1E9B9 /* PathFinder.swift */; };
 		61832AAE220B69D400413FD0 /* TapListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61832AAD220B69D400413FD0 /* TapListener.swift */; };
 		619679EB20F78B5900432672 /* MapMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619679EA20F78B5900432672 /* MapMode.swift */; };
-		619679EE20F89F6D00432672 /* GoogleAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619679ED20F89F6D00432672 /* GoogleAuth.swift */; };
 		619679F220FB39CF00432672 /* MapEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619679F120FB39CF00432672 /* MapEvents.swift */; };
 		619679F620FBBA3A00432672 /* BoatCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619679F520FBBA3A00432672 /* BoatCell.swift */; };
 		619679F820FBBB4D00432672 /* StatCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619679F720FBBB4D00432672 /* StatCell.swift */; };
@@ -155,7 +154,6 @@
 		6173F248228CB99000A1E9B9 /* PathFinder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathFinder.swift; sourceTree = "<group>"; };
 		61832AAD220B69D400413FD0 /* TapListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapListener.swift; sourceTree = "<group>"; };
 		619679EA20F78B5900432672 /* MapMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapMode.swift; sourceTree = "<group>"; };
-		619679ED20F89F6D00432672 /* GoogleAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAuth.swift; sourceTree = "<group>"; };
 		619679F120FB39CF00432672 /* MapEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapEvents.swift; sourceTree = "<group>"; };
 		619679F520FBBA3A00432672 /* BoatCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatCell.swift; sourceTree = "<group>"; };
 		619679F720FBBB4D00432672 /* StatCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatCell.swift; sourceTree = "<group>"; };
@@ -319,7 +317,6 @@
 		619679EC20F89F6300432672 /* Auth */ = {
 			isa = PBXGroup;
 			children = (
-				619679ED20F89F6D00432672 /* GoogleAuth.swift */,
 				61DCDA3B21D02693009A75EB /* RxGoogleAuth.swift */,
 				7D2CC0F2264D6EBD0091E05C /* MicrosoftAuth.swift */,
 				7D045D69265A54A300B92EE8 /* Auth.swift */,
@@ -727,7 +724,6 @@
 				613669B7216FDAD10043494A /* BoatNotifications.swift in Sources */,
 				61DE7F4B20F3ED3900C95B3F /* boatButtons.swift in Sources */,
 				61F4199D2120B39C00B1ED7D /* TrackSummaryCell.swift in Sources */,
-				619679EE20F89F6D00432672 /* GoogleAuth.swift in Sources */,
 				612F46A220F4A5CF001A3003 /* BoatHttpClient.swift in Sources */,
 				610EE3E121724CE10040FBC6 /* NSString+FontAwesome.m in Sources */,
 				619679F820FBBB4D00432672 /* StatCell.swift in Sources */,
@@ -934,7 +930,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.26.0;
+				MARKETING_VERSION = 1.27.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.malliina.BoatTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -962,7 +958,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.26.0;
+				MARKETING_VERSION = 1.27.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.malliina.BoatTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
