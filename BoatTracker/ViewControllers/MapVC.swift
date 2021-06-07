@@ -80,7 +80,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         let _ = Auth.shared.tokens.subscribe(onNext: { token in
             self.reload(token: token)
         })
-        Auth.shared.signIn(from: self)
+        Auth.shared.signIn(from: self, restore: true)
         initConf()
     }
     

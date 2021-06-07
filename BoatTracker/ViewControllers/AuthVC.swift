@@ -124,12 +124,12 @@ class AuthVC: BaseTableVC {
     @objc func googleClicked(_ sender: UIButton) {
         // RxGoogleAuth.shared.signIn(from: self)
         BoatPrefs.shared.authProvider = .google
-        Auth.shared.signIn(from: self)
+        Auth.shared.signIn(from: self, restore: false)
     }
     
     @objc func microsoftClicked(_ sender: UIButton) {
         BoatPrefs.shared.authProvider = .microsoft
-        Auth.shared.signIn(from: self)
+        Auth.shared.signIn(from: self, restore: false)
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

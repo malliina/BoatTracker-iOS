@@ -29,14 +29,18 @@ class RxGoogleAuth: NSObject {
         google.restorePreviousSignIn()
     }
     
-    func obtainToken(from: UIViewController?) -> Single<UserToken?> {
-        if let from = from {
-            google.presentingViewController = from
-        }
+    func obtainToken(from: UIViewController?, restore: Bool) -> Single<UserToken?> {
         let attempt = GoogleSignInAttempt()
         latestAttempt = attempt
         google.delegate = attempt
-        google.restorePreviousSignIn()
+        if let from = from {
+            google.presentingViewController = from
+        }
+        if restore {
+            google.restorePreviousSignIn()
+        } else {
+            google.signIn()
+        }
         return attempt.result
     }
     

@@ -22,12 +22,12 @@ class Auth {
     private var google: RxGoogleAuth { RxGoogleAuth.shared }
     private var microsoft: MicrosoftAuth { MicrosoftAuth.shared }
     
-    func signIn(from: UIViewController) {
-        signInAny(from: from)
+    func signIn(from: UIViewController, restore: Bool) {
+        signInAny(from: from, restore: restore)
     }
     
-    func signInAny(from: UIViewController?) {
-        let _ = obtainToken(from: from).subscribe { (event) in
+    func signInAny(from: UIViewController?, restore: Bool) {
+        let _ = obtainToken(from: from, restore: restore).subscribe { (event) in
             switch event {
             case .success(let token):
                 self.subject.onNext(token)
@@ -39,11 +39,11 @@ class Auth {
     }
     
     func signInSilentlyNow() {
-        let _ = signInAny(from: nil)
+        let _ = signInAny(from: nil, restore: true)
     }
     
     func signInSilently() -> Single<UserToken?> {
-        return obtainToken(from: nil)
+        return obtainToken(from: nil, restore: true)
     }
     
     func signOut(from: UIViewController) {
@@ -59,10 +59,10 @@ class Auth {
         subject.onNext(nil)
     }
     
-    private func obtainToken(from: UIViewController?) -> Single<UserToken?> {
+    private func obtainToken(from: UIViewController?, restore: Bool) -> Single<UserToken?> {
         switch prefs.authProvider {
         case .google:
-            return google.obtainToken(from: from)
+            return google.obtainToken(from: from, restore: restore)
         case .microsoft:
             return microsoft.obtainToken(from: from).map { token in
                 token
