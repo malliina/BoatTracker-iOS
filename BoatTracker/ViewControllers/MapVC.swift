@@ -320,7 +320,7 @@ extension MapVC: VesselDelegate {
 
 extension MapVC: WelcomeDelegate {
     func showWelcome(token: UserToken?) {
-        BoatPrefs.shared.isWelcomeRead = true
+        BoatPrefs.shared.showWelcome = false
         let _ = Backend.shared.http.profile().subscribe { (event) in
             switch event {
             case .success(let profile):

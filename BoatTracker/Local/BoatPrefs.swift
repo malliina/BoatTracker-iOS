@@ -19,7 +19,7 @@ class BoatPrefs {
     let noPushTokenValue = "none"
     let aisKey = "aisEnabled"
 
-    var isWelcomeRead: Bool {
+    var showWelcome: Bool {
         get {
             prefs.bool(forKey: welcomeKey)
         }

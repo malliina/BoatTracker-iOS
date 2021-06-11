@@ -29,6 +29,7 @@ class AuthVC: BaseTableVC {
     let welcomeDelegate: WelcomeDelegate
     let lang: Lang
     var settingsLang: SettingsLang { lang.settings }
+    var prefs: BoatPrefs { BoatPrefs.shared }
     
     init(welcome: WelcomeDelegate, lang: Lang) {
         self.lang = lang
@@ -122,13 +123,16 @@ class AuthVC: BaseTableVC {
     }
     
     @objc func googleClicked(_ sender: UIButton) {
-        // RxGoogleAuth.shared.signIn(from: self)
-        BoatPrefs.shared.authProvider = .google
-        Auth.shared.signIn(from: self, restore: false)
+        clicked(provider: .google)
     }
     
     @objc func microsoftClicked(_ sender: UIButton) {
-        BoatPrefs.shared.authProvider = .microsoft
+        clicked(provider: .microsoft)
+    }
+    
+    private func clicked(provider: AuthProvider) {
+        prefs.authProvider = provider
+        prefs.showWelcome = true
         Auth.shared.signIn(from: self, restore: false)
     }
     
@@ -155,7 +159,9 @@ class AuthVC: BaseTableVC {
     
     func onToken(token: UserToken?) {
         dismiss(animated: true) {
-            self.welcomeDelegate.showWelcome(token: token)
+            if BoatPrefs.shared.showWelcome {
+                self.welcomeDelegate.showWelcome(token: token)
+            }
         }
     }
     
