@@ -157,7 +157,7 @@ class BoatRenderer {
     private func initEmptyLayers(track: TrackRef, to style: MGLStyle) -> MGLShapeSource {
         let trailId = trailName(for: track.trackName)
         // Boat trail
-        let trailData = LayerSource(lineId: trailId, lineColor: Layers.trackColor)
+        let trailData = LayerSource(lineId: trailId)
         // The line width should gradually increase based on the zoom level
         //        layer.lineWidth = NSExpression(format: "mgl_interpolate:withCurveType:parameters:stops:($zoomLevel, 'linear', nil, %@)", [18: 3, 9: 10])
         trailData.install(to: style)

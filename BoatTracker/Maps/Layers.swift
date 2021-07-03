@@ -28,7 +28,7 @@ class Layers {
         39: UIColor(r: 255, g: 21, b: 0, alpha: 1),
         40: UIColor(r: 255, g: 0, b: 0, alpha: 1),
     ]
-    static let trackColor = NSExpression(format: "mgl_step:from:stops:(\(Speed.key), %@, %@)", UIColor.green, stops)
+    // static let trackColor = NSExpression(format: "mgl_step:from:stops:(\(Speed.key), %@, %@)", UIColor.green, stops)
 
     static func boatIcon(id: String, source: MGLShapeSource) -> MGLSymbolStyleLayer {
         icon(id: id, iconImageName: boatIcon, source: source)
@@ -55,7 +55,7 @@ class Layers {
         let lineLayer = MGLLineStyleLayer(identifier: id, source: source)
         lineLayer.lineJoin = NSExpression(forConstantValue: "round")
         lineLayer.lineCap = NSExpression(forConstantValue: "round")
-        log.info("Installing \(color)")
+        //log.info("Installing \(color)")
         lineLayer.lineColor = color
         lineLayer.lineWidth = NSExpression(forConstantValue: 1)
         if let minimumZoomLevel = minimumZoomLevel {
