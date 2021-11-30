@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Turf
 
 class Json {
     static let shared = Json()
@@ -20,18 +21,23 @@ class Json {
         try JSONSerialization.data(withJSONObject: dict, options: .prettyPrinted)
     }
     
+    func parse<T: Decodable>(_ t: T.Type, from: JSONObject) throws -> T {
+        let data = try JSONSerialization.data(withJSONObject: from, options: .prettyPrinted)
+        return try decoder.decode(t, from: data)
+    }
+    
     func read<T: Decodable>(_ t: T.Type, dict: [String: Any]) throws -> T {
         let json = try asData(dict: dict)
         return try decoder.decode(t, from: json)
     }
     
-    func write<T: Encodable>(from: T) throws -> [String: Any] {
+    func write<T: Encodable>(from: T) throws -> JSONObject {
         let data = try encoder.encode(from)
         let json = try JSONSerialization.jsonObject(with: data, options: [])
-        guard let dict = json as? [String: Any] else {
+        guard let obj = json as? JSONObject else {
             throw JsonError.notJson(data)
         }
-        return dict
+        return obj
     }
 }
 

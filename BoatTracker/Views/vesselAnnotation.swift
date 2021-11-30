@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-import Mapbox
+import MapboxMaps
 
 // The annotation may be updated on the go while it's added to the map, therefore the model is mutable (and also to comply with MGLAnnotation)
 class VesselAnnotation: CustomAnnotation {

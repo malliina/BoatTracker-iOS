@@ -7,23 +7,24 @@
 //
 
 import Foundation
-import Mapbox
+import MapboxMaps
 
 class RouteLayers {
     static let empty = RouteLayers(initial: LayerSource(lineId: "route-initial"),
                                    fairways: LayerSource(lineId: "route-fairways"),
                                    tail: LayerSource(lineId: "route-tail"))
     
-    let initial: LayerSource<MGLLineStyleLayer>
-    let fairways: LayerSource<MGLLineStyleLayer>
-    let tail: LayerSource<MGLLineStyleLayer>
+    let initial: LayerSource<LineLayer>
+    let fairways: LayerSource<LineLayer>
+    let tail: LayerSource<LineLayer>
     
-    init(initial: LayerSource<MGLLineStyleLayer>,fairways: LayerSource<MGLLineStyleLayer>, tail: LayerSource<MGLLineStyleLayer>) {
+    init(initial: LayerSource<LineLayer>,fairways: LayerSource<LineLayer>, tail: LayerSource<LineLayer>) {
         self.initial = initial
-        self.initial.layer.lineDashPattern = NSExpression(forConstantValue: [2, 4])
+        self.initial.layer.lineDasharray = .constant([2, 4])
+        // self.initial.layer.lineDashPattern = NSExpression(forConstantValue: [2, 4])
         self.fairways = fairways
         self.tail = tail
-        self.tail.layer.lineDashPattern = NSExpression(forConstantValue: [2, 4])
+        self.tail.layer.lineDasharray = .constant([2, 4])
     }
     
     func update(initial: [CLLocationCoordinate2D], fairways: [CLLocationCoordinate2D], tail: [CLLocationCoordinate2D]) {
@@ -32,12 +33,12 @@ class RouteLayers {
         update(self.tail, tail)
     }
     
-    func update(_ src: LayerSource<MGLLineStyleLayer>, _ coords: [CLLocationCoordinate2D]) {
+    func update(_ src: LayerSource<LineLayer>, _ coords: [CLLocationCoordinate2D]) {
         var data = coords
-        src.source.shape = MGLPolylineFeature(coordinates: &data, count: UInt(data.count))
+        src.source.shape = PointFeature(coordinates: &data, count: UInt(data.count))
     }
     
-    func install(to: MGLStyle) {
+    func install(to: Style) {
         initial.install(to: to)
         fairways.install(to: to)
         tail.install(to: to)
@@ -47,8 +48,8 @@ class RouteLayers {
 class PathFinder: NSObject, UIGestureRecognizerDelegate {
     let log = LoggerFactory.shared.vc(PathFinder.self)
     
-    private let mapView: MGLMapView
-    private let style: MGLStyle
+    private let mapView: MapView
+    private let style: Style
     
     private let edgePadding = UIEdgeInsets(top: 40, left: 40, bottom: 40, right: 40)
     
@@ -57,7 +58,7 @@ class PathFinder: NSObject, UIGestureRecognizerDelegate {
     
     private var current: RouteLayers? = nil
     
-    init(mapView: MGLMapView, style: MGLStyle) {
+    init(mapView: MapView, style: Style) {
         self.mapView = mapView
         self.style = style
         super.init()
@@ -70,10 +71,12 @@ class PathFinder: NSObject, UIGestureRecognizerDelegate {
         if sender.state == .began {
             guard let senderView = sender.view else { return }
             let point = sender.location(in: senderView)
-            let coord = mapView.convert(point, toCoordinateFrom: nil)
+            // let coord = mapView.convert(point, from: nil)
+            // let coord = mapView.convert(point, toCoordinateFrom: nil)
+            let coord = mapView.mapboxMap.coordinate(for: point)
             if let start = start, let end = end {
-                mapView.removeAnnotation(start)
-                mapView.removeAnnotation(end)
+                // mapView.removeAnnotation(start)
+                // mapView.removeAnnotation(end)
                 drawEndpoint(start: end.coordinate)
                 drawEndpoint(end: coord)
                 shortest(from: end.coordinate, to: coord)
@@ -89,13 +92,13 @@ class PathFinder: NSObject, UIGestureRecognizerDelegate {
     func drawEndpoint(start: CLLocationCoordinate2D) {
         let s = RouteAnnotation(at: start, isEnd: false)
         self.start = s
-        mapView.addAnnotation(s)
+        // mapView.addAnnotation(s)
     }
     
     func drawEndpoint(end: CLLocationCoordinate2D) {
         let e = RouteAnnotation(at: end, isEnd: true)
         self.end = e
-        mapView.addAnnotation(e)
+        // mapView.addAnnotation(e)
     }
     
     func shortest(from: CLLocationCoordinate2D, to: CLLocationCoordinate2D) {
@@ -119,9 +122,10 @@ class PathFinder: NSObject, UIGestureRecognizerDelegate {
                           fairways: fairwayPath,
                           tail: [fairwayPath.last ?? route.from, route.to])
             let coords = fairwayPath + [ route.from, route.to ]
-            let bounds = MGLPolylineFeature(coordinates: coords, count: UInt(coords.count)).overlayBounds
-            let camera = self.mapView.cameraThatFitsCoordinateBounds(bounds, edgePadding: self.edgePadding)
-            self.mapView.fly(to: camera, completionHandler: nil)
+            //let bounds = Feature(geometry: Geometry.multiPoint(coords)).overlayBounds
+            let camera = self.mapView.mapboxMap.camera(for: coords, padding: self.edgePadding, bearing: nil, pitch: nil)
+            // let camera = self.mapView.cameraThatFitsCoordinateBounds(bounds, edgePadding: self.edgePadding)
+            self.mapView.camera.fly(to: camera, duration: nil, completion: nil)
         }
     }
 
@@ -138,10 +142,10 @@ class PathFinder: NSObject, UIGestureRecognizerDelegate {
     
     func clear() {
         if let end = end {
-            mapView.removeAnnotation(end)
+            // mapView.removeAnnotation(end)
         }
         if let start = start {
-            mapView.removeAnnotation(start)
+            // mapView.removeAnnotation(start)
         }
         if let current = current {
             [current.initial, current.fairways, current.tail].forEach { (layerSource) in

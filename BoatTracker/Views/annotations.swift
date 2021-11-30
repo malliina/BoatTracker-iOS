@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-import Mapbox
+import MapboxMaps
 
 class FairwayAreaAnnotation: CustomAnnotation {
     let info: FairwayArea
@@ -45,7 +45,7 @@ class FairwayAreaCallout: BoatCallout {
         self.info = annotation
         self.limits = limits
         self.lang = lang
-        super.init(representedObject: annotation)
+//        super.init(representedObject: annotation)
         setup(annotation.info)
     }
     
@@ -160,7 +160,7 @@ class TrackedBoatCallout: BoatCallout {
     required init(annotation: BoatAnnotation, lang: Lang) {
         self.boat = annotation
         self.lang = lang
-        super.init(representedObject: annotation)
+//        super.init(representedObject: annotation)
         setup(boat: annotation)
     }
     
@@ -203,7 +203,7 @@ class TrackedBoatCallout: BoatCallout {
 }
 
 // The iOS SDK uses the title and subtitle properties to render an inbuilt callout
-class TrophyAnnotation: NSObject, MGLAnnotation {
+class TrophyAnnotation: NSObject {
     var title: String?
     var subtitle: String?
     var coordinate: CLLocationCoordinate2D
@@ -224,7 +224,7 @@ class TrophyAnnotation: NSObject, MGLAnnotation {
     }
 }
 
-class RouteAnnotation: NSObject, MGLAnnotation {
+class RouteAnnotation: NSObject {
     var title: String?
     var subtitle: String?
     var coordinate: CLLocationCoordinate2D
@@ -238,7 +238,7 @@ class RouteAnnotation: NSObject, MGLAnnotation {
     }
 }
 
-class CustomAnnotation: NSObject, MGLAnnotation {
+class CustomAnnotation: NSObject {
     // Insane hack: the MGLAnnotation object requires a title property, otherwise the callout is never shown.
     // Best source I could find is https://github.com/mapbox/react-native-mapbox-gl/issues/1278.
     var title: String? = ""

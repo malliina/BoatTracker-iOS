@@ -1,5 +1,5 @@
 import GoogleSignIn
-import Mapbox
+import MapboxMaps
 import MSAL
 import RxSwift
 import SnapKit
@@ -10,7 +10,7 @@ struct ActiveMarker {
     let coord: CoordBody
 }
 
-class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
+class MapVC: UIViewController, UIGestureRecognizerDelegate {
     let log = LoggerFactory.shared.vc(MapVC.self)
     
     let profileButton = BoatButton.map(icon: #imageLiteral(resourceName: "SettingsSlider"))
@@ -21,8 +21,8 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     private var socket: BoatSocket { Backend.shared.socket }
     private var http: BoatHttpClient { Backend.shared.http }
     
-    private var mapView: MGLMapView?
-    private var style: MGLStyle?
+    private var mapView: MapView?
+    private var style: Style?
     
     private var latestToken: UserToken? = nil
     private var isSignedIn: Bool { latestToken != nil }
@@ -40,13 +40,22 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let url = URL(string: "mapbox://styles/malliina/cjgny1fjc008p2so90sbz8nbv")
-        let mapView = MGLMapView(frame: view.bounds, styleURL: url)
+        let url = URL(string: "mapbox://styles/malliina/cjgny1fjc008p2so90sbz8nbv")!
+        let styleUri = StyleURI(url: url)!
+        let camera = CameraOptions(center: defaultCenter, zoom: 10)
+        let mapView = MapView(frame: view.bounds, mapInitOptions: MapInitOptions(cameraOptions: camera, styleURI: nil))
         self.mapView = mapView
+        mapView.mapboxMap.loadStyleURI(styleUri) { result in
+            switch result {
+            case .success(let style):
+                self.log.info("The map has finished loading the style")
+                self.onStyleLoaded(mapView, didFinishLoading: style)
+            case let .failure(error):
+                self.log.warn("The map failed to load the style: \(error)")
+            }
+        }
         mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        mapView.setCenter(defaultCenter, zoomLevel: 10, animated: false)
         view.addSubview(mapView)
-        mapView.delegate = self
         
         let buttonSize = 40
         mapView.addSubview(profileButton)
@@ -84,12 +93,13 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         initConf()
     }
     
-    func mapViewDidFinishLoadingMap(_ mapView: MGLMapView) {
+    func mapViewDidFinishLoadingMap(_ mapView: MapView) {
         
     }
     
-    func mapView(_ mapView: MGLMapView, didFinishLoading style: MGLStyle) {
+    func onStyleLoaded(_ mapView: MapView, didFinishLoading style: Style) {
         self.style = style
+//        mapView.annotations.makePointAnnotationManager()
         let boats = BoatRenderer(mapView: mapView, style: style, followButton: followButton)
         self.boatRenderer = boats
         self.pathFinder = PathFinder(mapView: mapView, style: style)
@@ -103,7 +113,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         }
     }
     
-    func initInteractive(mapView: MGLMapView, style: MGLStyle, layers: MapboxLayers, boats: BoatRenderer) {
+    func initInteractive(mapView: MapView, style: Style, layers: MapboxLayers, boats: BoatRenderer) {
         if firstInit {
             firstInit = false
             if BoatPrefs.shared.isAisEnabled {
@@ -141,7 +151,7 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         }
     }
     
-    func installTapListener(mapView: MGLMapView) {
+    func installTapListener(mapView: MapView) {
         // Tap: See code in https://docs.mapbox.com/ios/maps/examples/runtime-multiple-annotations/
         // Adds a single tap gesture recognizer. This gesture requires the built-in MGLMapView tap gestures (such as those for zoom and annotation selection) to fail.
         let singleTap = UITapGestureRecognizer(target: self, action: #selector(handleMapTap(sender:)))
@@ -160,67 +170,68 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
             let point = sender.location(in: senderView)
             let handledByTaps = taps?.onTap(point: point) ?? false
             if !handledByTaps {
-                mapView.deselectAnnotation(mapView.selectedAnnotations.first, animated: true)
+//                mapView.annotations.remo
+//                mapView.deselectAnnotation(mapView.selectedAnnotations.first, animated: true)
             }
         }
     }
     
-    func mapView(_ mapView: MGLMapView, viewFor annotation: MGLAnnotation) -> MGLAnnotationView? {
-        if let annotation = annotation as? TrophyAnnotation, let renderer = boatRenderer {
-            return renderer.trophyAnnotationView(annotation: annotation)
-        } else if let annotation = annotation as? RouteAnnotation {
-            let (id, faIcon) = annotation.isEnd ? ("route-end", "fa-flag-checkered") : ("route-start", "fa-flag")
-            return routeAnnotationView(id: id, faIcon: faIcon, of: annotation, mapView: mapView)
-        } else {
-            // This is for custom annotation views, which we display manually in handleMapTap, I think
-            return MGLAnnotationView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
-        }
-    }
+//    func mapView(_ mapView: MapView, viewFor annotation: MGLAnnotation) -> MGLAnnotationView? {
+//        if let annotation = annotation as? TrophyAnnotation, let renderer = boatRenderer {
+//            return renderer.trophyAnnotationView(annotation: annotation)
+//        } else if let annotation = annotation as? RouteAnnotation {
+//            let (id, faIcon) = annotation.isEnd ? ("route-end", "fa-flag-checkered") : ("route-start", "fa-flag")
+//            return routeAnnotationView(id: id, faIcon: faIcon, of: annotation, mapView: mapView)
+//        } else {
+//            // This is for custom annotation views, which we display manually in handleMapTap, I think
+//            return MGLAnnotationView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
+//        }
+//    }
     
-    func routeAnnotationView(id: String, faIcon: String,  of annotation: MGLAnnotation, mapView: MGLMapView) -> MGLAnnotationView {
-        let view = mapView.dequeueReusableAnnotationView(withIdentifier: id) ?? MGLAnnotationView(annotation: annotation, reuseIdentifier: id)
-        if let image = UIImage(icon: faIcon, backgroundColor: .clear, iconColor: UIColor.black, fontSize: 14) {
-            let imageView = UIImageView(image: image)
-            view.frame = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
-            view.addSubview(imageView)
-        }
-        return view
-    }
+//    func routeAnnotationView(id: String, faIcon: String,  of annotation: MGLAnnotation, mapView: MapView) -> MGLAnnotationView {
+//        let view = mapView.dequeueReusableAnnotationView(withIdentifier: id) ?? MGLAnnotationView(annotation: annotation, reuseIdentifier: id)
+//        if let image = UIImage(icon: faIcon, backgroundColor: .clear, iconColor: UIColor.black, fontSize: 14) {
+//            let imageView = UIImageView(image: image)
+//            view.frame = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
+//            view.addSubview(imageView)
+//        }
+//        return view
+//    }
     
-    func mapView(_ mapView: MGLMapView, calloutViewFor annotation: MGLAnnotation) -> MGLCalloutView? {
-        guard let language = settings.lang else { return nil }
-        if let boat = annotation as? BoatAnnotation {
-            return TrackedBoatCallout(annotation: boat, lang: language)
-        } else if let vessel = annotation as? VesselAnnotation {
-            return VesselCallout(annotation: vessel, lang: language)
-        } else if let mark = annotation as? MarkAnnotation, let finnishSpecials = settings.languages?.finnish.specialWords {
-            return MarkCallout(annotation: mark, lang: language, finnishWords: finnishSpecials)
-        } else if let mark = annotation as? MinimalMarkAnnotation, let finnishSpecials = settings.languages?.finnish.specialWords {
-            return MinimalMarkCallout(annotation: mark, lang: language, finnishWords: finnishSpecials)
-        } else if let limit = annotation as? LimitAnnotation {
-            return limit.callout(lang: language)
-        } else if let area = annotation as? FairwayAreaAnnotation {
-            return area.callout(lang: language)
-        } else {
-            // Default callout view
-            return nil
-        }
-    }
+//    func mapView(_ mapView: MapView, calloutViewFor annotation: MGLAnnotation) -> MGLCalloutView? {
+//        guard let language = settings.lang else { return nil }
+//        if let boat = annotation as? BoatAnnotation {
+//            return TrackedBoatCallout(annotation: boat, lang: language)
+//        } else if let vessel = annotation as? VesselAnnotation {
+//            return VesselCallout(annotation: vessel, lang: language)
+//        } else if let mark = annotation as? MarkAnnotation, let finnishSpecials = settings.languages?.finnish.specialWords {
+//            return MarkCallout(annotation: mark, lang: language, finnishWords: finnishSpecials)
+//        } else if let mark = annotation as? MinimalMarkAnnotation, let finnishSpecials = settings.languages?.finnish.specialWords {
+//            return MinimalMarkCallout(annotation: mark, lang: language, finnishWords: finnishSpecials)
+//        } else if let limit = annotation as? LimitAnnotation {
+//            return limit.callout(lang: language)
+//        } else if let area = annotation as? FairwayAreaAnnotation {
+//            return area.callout(lang: language)
+//        } else {
+//            // Default callout view
+//            return nil
+//        }
+//    }
     
-    func mapView(_ mapView: MGLMapView, annotationCanShowCallout annotation: MGLAnnotation) -> Bool {
-        true
-    }
+//    func mapView(_ mapView: MapView, annotationCanShowCallout annotation: MGLAnnotation) -> Bool {
+//        true
+//    }
     
-    func mapView(_ mapView: MGLMapView, tapOnCalloutFor annotation: MGLAnnotation) {
-        mapView.deselectAnnotation(annotation, animated: true)
-    }
+//    func mapView(_ mapView: MapView, tapOnCalloutFor annotation: MGLAnnotation) {
+//        mapView.deselectAnnotation(annotation, animated: true)
+//    }
     
-    func mapView(_ mapView: MGLMapView, didDeselect annotation: MGLAnnotation) {
-        let isTrophy = annotation as? TrophyAnnotation
-        if isTrophy == nil {
-            mapView.removeAnnotation(annotation)
-        }
-    }
+//    func mapView(_ mapView: MapView, didDeselect annotation: MGLAnnotation) {
+//        let isTrophy = annotation as? TrophyAnnotation
+//        if isTrophy == nil {
+//            mapView.removeAnnotation(annotation)
+//        }
+//    }
     
     @objc func onSwipe(_ sender: UIPanGestureRecognizer) {
         if sender.state == .began {

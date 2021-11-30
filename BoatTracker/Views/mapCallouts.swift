@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import Mapbox
+import MapboxMaps
 
 class LimitAnnotation: CustomAnnotation {
     let limit: LimitArea
@@ -110,7 +110,7 @@ class LimitCallout: BoatCallout {
     required init(annotation: LimitAnnotation, lang: Lang) {
         self.limit = annotation
         self.lang = lang
-        super.init(representedObject: annotation)
+//        super.init(representedObject: annotation)
         setup(limit: annotation.limit)
     }
     
@@ -157,7 +157,7 @@ class MinimalMarkCallout: BoatCallout {
         self.markAnnoation = annotation
         self.lang = lang
         self.finnishWords = finnishWords
-        super.init(representedObject: annotation)
+//        super.init(representedObject: annotation)
         setup(mark: annotation.mark)
     }
     
@@ -247,7 +247,7 @@ class MarkCallout: BoatCallout {
         self.markAnnoation = annotation
         self.lang = lang
         self.finnishWords = finnishWords
-        super.init(representedObject: annotation)
+//        super.init(representedObject: annotation)
         setup(mark: annotation.mark)
     }
     

@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import Mapbox
+import MapboxMaps
 
 enum MarkType: Decodable {
     case unknown
@@ -550,6 +550,12 @@ struct Vessel: Codable {
     let time: Timing
 
     var speed: Speed { return sog }
+}
+
+struct VesselMeta: Codable {
+    let mmsi: Mmsi
+    let name: String
+    let heading: Double
 }
 
 extension CLLocationCoordinate2D: Codable {
