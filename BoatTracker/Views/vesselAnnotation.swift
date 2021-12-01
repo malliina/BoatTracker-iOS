@@ -58,7 +58,7 @@ class VesselCallout: BoatCallout {
     required init(annotation: VesselAnnotation, lang: Lang) {
         self.vessel = annotation
         self.lang = lang
-        super.init(representedObject: annotation)
+        super.init()
         setup(vessel: annotation)
     }
     

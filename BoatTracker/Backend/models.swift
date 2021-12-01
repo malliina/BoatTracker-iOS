@@ -558,6 +558,10 @@ struct VesselMeta: Codable {
     let heading: Double
 }
 
+struct VesselProps: Codable {
+    let mmsi: Mmsi
+}
+
 extension CLLocationCoordinate2D: Codable {
     private enum CodingKeys: CodingKey {
         case lng

@@ -45,7 +45,7 @@ class FairwayAreaCallout: BoatCallout {
         self.info = annotation
         self.limits = limits
         self.lang = lang
-//        super.init(representedObject: annotation)
+        super.init()
         setup(annotation.info)
     }
     
@@ -160,7 +160,7 @@ class TrackedBoatCallout: BoatCallout {
     required init(annotation: BoatAnnotation, lang: Lang) {
         self.boat = annotation
         self.lang = lang
-//        super.init(representedObject: annotation)
+        super.init()
         setup(boat: annotation)
     }
     

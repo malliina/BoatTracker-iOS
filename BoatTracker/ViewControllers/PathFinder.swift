@@ -34,14 +34,13 @@ class RouteLayers {
     }
     
     func update(_ src: LayerSource<LineLayer>, _ coords: [CLLocationCoordinate2D]) {
-        var data = coords
-        src.source.shape = PointFeature(coordinates: &data, count: UInt(data.count))
+        src.source.data = .feature(Feature(geometry: .multiPoint(.init(coords))))
     }
     
-    func install(to: Style) {
-        initial.install(to: to)
-        fairways.install(to: to)
-        tail.install(to: to)
+    func install(to: Style) throws {
+        try initial.install(to: to, id: initial.sourceId)
+        try fairways.install(to: to, id: fairways.sourceId)
+        try tail.install(to: to, id: tail.sourceId)
     }
 }
 
@@ -134,7 +133,7 @@ class PathFinder: NSObject, UIGestureRecognizerDelegate {
             return current
         } else {
             let layers = RouteLayers.empty
-            layers.install(to: style)
+            try? layers.install(to: style)
             current = layers
             return layers
         }
@@ -149,7 +148,7 @@ class PathFinder: NSObject, UIGestureRecognizerDelegate {
         }
         if let current = current {
             [current.initial, current.fairways, current.tail].forEach { (layerSource) in
-                style.removeSourceAndLayer(id: layerSource.layer.identifier)
+                style.removeSourceAndLayer(id: layerSource.layer.id)
             }
         }
         start = nil

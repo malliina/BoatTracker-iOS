@@ -30,30 +30,31 @@ class Layers {
     ]
     // static let trackColor = NSExpression(format: "mgl_step:from:stops:(\(Speed.key), %@, %@)", UIColor.green, stops)
 
-    static func boatIcon(id: String, source: Source) -> SymbolLayer {
-        icon(id: id, iconImageName: boatIcon, source: source)
+    static func boatIcon(id: String) -> SymbolLayer {
+        icon(id: id, iconImageName: boatIcon)
     }
     
-    static func icon(id: String, iconImageName: String, source: Source) -> SymbolLayer {
+    static func icon(id: String, iconImageName: String) -> SymbolLayer {
         var iconLayer = SymbolLayer(id: id)
         // let iconLayer = SymbolLayer(identifier: id, source: source)
         iconLayer.iconImage = .constant(.name(iconImageName))
         // iconLayer.iconScale = NSExpression(forConstantValue: 0.7)
+        iconLayer.iconSize = .constant(0.7)
         iconLayer.iconHaloColor = .constant(StyleColor(.white))
         iconLayer.iconRotationAlignment = .constant(.map)
-        // iconLayer.source =
+        iconLayer.source = id
         return iconLayer
     }
     
-    static func line(id: String, source: Source, color: UIColor = .black, minimumZoomLevel: Double? = nil) -> LineLayer {
-        customLine(id: id, source: source, color: StyleColor(color), minimumZoomLevel: minimumZoomLevel)
+    static func line(id: String, color: UIColor = .black, minimumZoomLevel: Double? = nil) -> LineLayer {
+        customLine(id: id, color: StyleColor(color), minimumZoomLevel: minimumZoomLevel)
     }
 
 //    static func trackLine(id: String, source: MGLShapeSource) -> MGLLineStyleLayer {
 //        customLine(id: id, source: source, color: trackColor)
 //    }
 
-    static func customLine(id: String, source: Source, color: StyleColor, minimumZoomLevel: Double? = nil) -> LineLayer {
+    static func customLine(id: String, color: StyleColor, minimumZoomLevel: Double? = nil) -> LineLayer {
         var lineLayer = LineLayer(id: id)
 //        let lineLayer = LineLayer(identifier: id, source: source)
         lineLayer.lineJoin = .constant(.round)
@@ -64,18 +65,18 @@ class Layers {
         if let minimumZoomLevel = minimumZoomLevel {
             lineLayer.minZoom = minimumZoomLevel
         }
+        lineLayer.source = id
         return lineLayer
     }
 }
 
 class LayerSource<L: Layer> {
-    let source: GeoJSONSource
-    let sourceId: String
+    var source: GeoJSONSource
     var layer: L
+    var sourceId: String { layer.id }
     
-    init(_ source: GeoJSONSource, layer: L, sourceId: String) {
-        self.source = source
-        self.sourceId = sourceId
+    init(layer: L) {
+        self.source = GeoJSONSource()
         self.layer = layer
     }
     
@@ -85,34 +86,31 @@ class LayerSource<L: Layer> {
 }
 
 extension LayerSource where L == LineLayer {
-    convenience init(lineId: String, lineColor: UIColor = .black, minimumZoomLevel: Float? = nil) {
-        let source = Source(identifier: lineId, shape: nil, options: nil)
-        let layer = Layers.line(id: lineId, source: source, color: lineColor, minimumZoomLevel: minimumZoomLevel)
-        self.init(source, layer: layer)
+    convenience init(lineId: String, lineColor: UIColor = .black, minimumZoomLevel: Double? = nil) {
+        let layer = Layers.line(id: lineId, color: lineColor, minimumZoomLevel: minimumZoomLevel)
+        self.init(layer: layer)
     }
     
-    convenience init(lineId: String, lineColor: NSExpression, minimumZoomLevel: Float? = nil) {
-        let source = Source(identifier: lineId, shape: nil, options: nil)
-        let layer = Layers.customLine(id: lineId, source: source, color: lineColor, minimumZoomLevel: minimumZoomLevel)
-        self.init(source, layer: layer)
+    convenience init(lineId: String, lineColor: StyleColor, minimumZoomLevel: Double? = nil) {
+        let layer = Layers.customLine(id: lineId, color: lineColor, minimumZoomLevel: minimumZoomLevel)
+        self.init(layer: layer)
     }
 }
 
 extension LayerSource where L == SymbolLayer {
     convenience init(iconId: String, iconImageName: String) {
-        let source = Source(identifier: iconId, shape: nil, options: nil)
-        let layer = Layers.icon(id: iconId, iconImageName: iconImageName, source: source)
-        self.init(source, layer: layer)
+        let layer = Layers.icon(id: iconId, iconImageName: iconImageName)
+        self.init(layer: layer)
     }
 }
 
 extension Style {
     func removeSourceAndLayer(id: String) {
-        if let layer = self.layer(withIdentifier: id) {
-            self.removeLayer(layer)
+        if let layer = try? self.layer(withId: id) {
+            try? self.removeLayer(withId: layer.id)
         }
-        if let source = self.source(withIdentifier: id) {
-            self.removeSource(source)
+        if let source = try? self.source(withId: id) {
+            try? self.removeSource(withId: id)
         }
     }
 }
