@@ -205,6 +205,8 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, UIPopoverPresentatio
             return MarkCallout(annotation: mark, lang: lang, finnishWords: finnishSpecials)
         } else if let mark = tapped as? MinimalMarkAnnotation {
             return MinimalMarkCallout(annotation: mark, lang: lang, finnishWords: finnishSpecials)
+        } else if let area = tapped as? FairwayAreaAnnotation {
+            return area.callout(lang: lang)
         } else {
             return nil
         }

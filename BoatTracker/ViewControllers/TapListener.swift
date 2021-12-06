@@ -35,7 +35,7 @@ class TapListener {
     func onTap(point: CGPoint) -> Single<CustomAnnotation?> {
         // Preference: boats > ais > marks > fairway info > limits
         // Fairway info includes any limits
-        let _: Single<CustomAnnotation?> = handleBoatTap(point).flatMap { r1 in
+        return handleBoatTap(point).flatMap { r1 in
             guard r1 == nil else { return Single.just(r1) }
             return self.handleAisTap(point).flatMap { r2 in
                 guard r2 == nil else { return Single.just(r2) }
@@ -48,7 +48,7 @@ class TapListener {
                 }
             }
         }
-        return self.handleMarksTap(point)
+        //return self.handleMarksTap(point)
     }
     
     private func handleMarksTap(_ point: CGPoint) -> Single<CustomAnnotation?> {
@@ -74,7 +74,7 @@ class TapListener {
         }
     }
     
-    private func handleBoatTap(_ point: CGPoint) -> Single<BoatAnnotation?> {
+    private func handleBoatTap(_ point: CGPoint) -> Single<CustomAnnotation?> {
         queryVisibleFeatureProps(point, layers: Array(boats.layers()), t: BoatPoint.self).map { result in
             result.map { boatPoint in
                 BoatAnnotation(info: boatPoint)
@@ -92,7 +92,7 @@ class TapListener {
         }
     }
     
-    private func handleAreaTap(_ point: CGPoint) -> Single<FairwayAreaAnnotation?> {
+    private func handleAreaTap(_ point: CGPoint) -> Single<CustomAnnotation?> {
         log.info("Searching tapped areas...")
         return queryVisibleFeatureProps(point, layers: layers.fairwayAreas, t: FairwayArea.self).flatMap { result1 in
             self.queryLimitAreaInfo(point).map { result2 in

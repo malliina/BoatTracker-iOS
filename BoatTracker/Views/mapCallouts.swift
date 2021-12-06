@@ -221,11 +221,13 @@ class MarkAnnotation: CustomAnnotation {
     }
 }
 
-class MarkCallout: UIView {
+class PopoverView: UIView {
     let spacing = 8
     let largeSpacing = 16
     let inset = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
-    
+}
+
+class MarkCallout: PopoverView {
     let log = LoggerFactory.shared.view(MarkCallout.self)
     let markAnnoation: MarkAnnotation
     let lang: Lang
@@ -268,7 +270,6 @@ class MarkCallout: UIView {
         
         nameValue.text = mark.name(lang: lang.language)?.value
         nameValue.snp.makeConstraints { (make) in
-            //make.topMargin.equalToSuperview()
             make.topMargin.equalToSuperview().offset(largeSpacing)
             make.leadingMargin.trailingMargin.equalToSuperview().inset(inset)
         }

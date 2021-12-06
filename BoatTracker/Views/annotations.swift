@@ -23,13 +23,13 @@ class FairwayAreaAnnotation: CustomAnnotation {
     func callout(lang: Lang) -> FairwayAreaCallout { return FairwayAreaCallout(annotation: self, limits: limits, lang: lang) }
 }
 
-class FairwayAreaCallout: BoatCallout {
+class FairwayAreaCallout: PopoverView {
     let log = LoggerFactory.shared.view(FairwayAreaAnnotation.self)
     
     let info: FairwayAreaAnnotation
     let limits: LimitArea?
     let lang: Lang
-    var fairwayLang: FairwayLang { return lang.fairway }
+    var fairwayLang: FairwayLang { lang.fairway }
     
     let ownerLabel = BoatLabel.centeredTitle()
     let typeLabel = BoatLabel.smallSubtitle()
@@ -45,11 +45,12 @@ class FairwayAreaCallout: BoatCallout {
         self.info = annotation
         self.limits = limits
         self.lang = lang
-        super.init()
+        super.init(frame: .zero)
         setup(annotation.info)
     }
     
     private func setup(_ info: FairwayArea) {
+        let container = self
         let hasMark = info.markType != nil
         let markLabels = hasMark ? [ markLabel, markValue ] : []
         let limitsView = limits.map { LimitInfoView(limit: $0, lang: lang) }
@@ -61,12 +62,13 @@ class FairwayAreaCallout: BoatCallout {
         }
         ownerLabel.text = info.owner
         ownerLabel.snp.makeConstraints { (make) in
-            make.leading.trailing.top.equalToSuperview().inset(inset)
+            make.topMargin.equalToSuperview().offset(largeSpacing)
+            make.leadingMargin.trailingMargin.equalToSuperview().inset(inset)
         }
         typeLabel.text = fairwayLang.fairwayType
         typeLabel.snp.makeConstraints { (make) in
             make.top.equalTo(ownerLabel.snp.bottom).offset(spacing)
-            make.leading.equalToSuperview().inset(inset)
+            make.leadingMargin.equalToSuperview().inset(inset)
             make.width.equalTo(depthLabel)
             make.width.equalTo(harrowDepthLabel)
             if let limitsView = limitsView {
@@ -80,46 +82,46 @@ class FairwayAreaCallout: BoatCallout {
         typeValue.snp.makeConstraints { (make) in
             make.top.equalTo(typeLabel)
             make.leading.equalTo(typeLabel.snp.trailing).offset(spacing)
-            make.trailing.equalToSuperview().inset(inset)
+            make.trailingMargin.equalToSuperview().inset(inset)
         }
         depthLabel.text = fairwayLang.fairwayDepth
         depthLabel.snp.makeConstraints { (make) in
             make.top.equalTo(typeLabel.snp.bottom).offset(spacing)
-            make.leading.equalToSuperview().inset(inset)
+            make.leadingMargin.equalToSuperview().inset(inset)
         }
         depthValue.text = info.fairwayDepth.formatMeters
         depthValue.snp.makeConstraints { (make) in
             make.top.equalTo(depthLabel)
             make.leading.equalTo(depthLabel.snp.trailing).offset(spacing)
-            make.trailing.equalToSuperview().inset(inset)
+            make.trailingMargin.equalToSuperview().inset(inset)
         }
         harrowDepthLabel.text = fairwayLang.harrowDepth
         harrowDepthLabel.snp.makeConstraints { (make) in
             make.top.equalTo(depthValue.snp.bottom).offset(spacing)
-            make.leading.equalToSuperview().inset(inset)
+            make.leadingMargin.equalToSuperview().inset(inset)
         }
         harrowDepthValue.text = info.harrowDepth.formatMeters
         harrowDepthValue.snp.makeConstraints { (make) in
             make.top.equalTo(harrowDepthLabel)
             make.leading.equalTo(harrowDepthLabel.snp.trailing).offset(spacing)
-            make.trailing.equalToSuperview().inset(inset)
+            make.trailingMargin.equalToSuperview().inset(inset)
             if !hasMark && limits == nil {
-                make.bottom.equalToSuperview().inset(inset)
+                make.bottomMargin.equalToSuperview().inset(inset)
             }
         }
         if hasMark {
             markLabel.text = lang.mark.markType
             markLabel.snp.makeConstraints { (make) in
                 make.top.equalTo(harrowDepthLabel.snp.bottom).offset(spacing)
-                make.leading.equalToSuperview().inset(inset)
+                make.leadingMargin.equalToSuperview().inset(inset)
             }
             markValue.text = info.markType?.translate(lang: lang.mark.types)
             markValue.snp.makeConstraints { (make) in
                 make.top.equalTo(markLabel)
                 make.leading.equalTo(markLabel.snp.trailing).offset(spacing)
-                make.trailing.equalToSuperview().inset(inset)
+                make.trailingMargin.equalToSuperview().inset(inset)
                 if limits == nil {
-                    make.bottom.equalToSuperview().inset(inset)
+                    make.bottomMargin.equalToSuperview().inset(inset)
                 }
             }
         }
@@ -127,7 +129,7 @@ class FairwayAreaCallout: BoatCallout {
             limitsView.snp.makeConstraints { (make) in
                 make.top.equalTo((hasMark ? markValue : harrowDepthValue).snp.bottom).offset(spacing)
                 make.leading.trailing.equalToSuperview()
-                make.bottom.equalToSuperview().inset(inset)
+                make.bottomMargin.equalToSuperview().inset(inset)
             }
         }
     }

@@ -284,7 +284,7 @@ enum ConstructionInfo: Decodable {
         self = try ConstructionInfo.parse(code: code)
     }
     
-    static func parse(code: Int) throws -> ConstructionInfo {
+    private static func parse(code: Int) throws -> ConstructionInfo {
         switch code {
         case 1: return .buoyBeacon
         case 2: return .iceBuoy
@@ -501,8 +501,8 @@ class MarineSymbol: NSObject, BaseSymbol, Decodable {
                   state: try container.decode(String.self, forKey: .state),
                   lit: try container.decode(StringBool.self, forKey: .lit),
                   aidType: (try? container.decode(AidType.self, forKey: .aidType)) ?? .unknown,
-                  navMark: (try? try container.decode(NavMark.self, forKey: .navMark)) ?? .unknown,
-                  construction: try container.decodeIfPresent(ConstructionInfo.self, forKey: .construction)
+                  navMark: (try? container.decode(NavMark.self, forKey: .navMark)) ?? .unknown,
+                  construction: try? container.decodeIfPresent(ConstructionInfo.self, forKey: .construction)
         )
     }
 }
