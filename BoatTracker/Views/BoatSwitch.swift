@@ -15,7 +15,7 @@ class BoatSwitch: UISwitch {
     
     init(onClick: @escaping (UISwitch) -> Void) {
         self.onClick = onClick
-        super.init(frame: CGRect.zero)
+        super.init(frame: .zero)
         addTarget(nil, action: #selector(runOnClick(_:)), for: .valueChanged)
     }
     

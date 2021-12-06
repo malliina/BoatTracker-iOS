@@ -100,17 +100,11 @@ class BoatSocket: SocketDelegate {
         guard let socket = client.socket else {
             return failWith("Unable to send payload, socket not available.")
         }
-        let encoder = JSONEncoder()
-        do {
-            let data = try encoder.encode(t)
-            guard let asString = String(data: data, encoding: .utf8) else {
-                return failWith("Unable to send data, cannot stringify payload.")
-            }
-            socket.send(asString)
-            return nil
-        } catch {
-            return failWith("Unable to send payload, encoding error.")
+        guard let asString = try? Json.shared.stringify(t) else {
+            return failWith("Unable to send data, cannot stringify payload.")
         }
+        socket.send(asString)
+        return nil
     }
     
     func failWith(_ message: String) -> SingleError {

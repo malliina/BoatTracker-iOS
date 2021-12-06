@@ -11,13 +11,14 @@ import UIKit
 
 class BoatLabel {
     static func smallSubtitle(numberOfLines: Int = 1) -> UILabel {
-        let label = smallTitle(textColor: .darkGray, numberOfLines: numberOfLines)
+        let label = smallTitle(textColor: .darkGray, numberOfLines: numberOfLines, fontSize: 14)
         label.setContentCompressionResistancePriority(.required, for: .horizontal)
+        label.setContentHuggingPriority(.defaultLow, for: .horizontal)
         return label
     }
     
-    static func smallTitle(textColor: UIColor = .black, numberOfLines: Int = 1) -> UILabel {
-        build(text: "", alignment: .left, numberOfLines: numberOfLines, fontSize: 12, textColor: textColor)
+    static func smallTitle(textColor: UIColor = .black, numberOfLines: Int = 1, fontSize: CGFloat = 14) -> UILabel {
+        build(text: "", alignment: .left, numberOfLines: numberOfLines, fontSize: fontSize, textColor: textColor)
     }
     
     static func centeredTitle() -> UILabel {

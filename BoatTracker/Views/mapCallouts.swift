@@ -8,6 +8,7 @@
 
 import Foundation
 import MapboxMaps
+import UIKit
 
 class LimitAnnotation: CustomAnnotation {
     let limit: LimitArea
@@ -220,11 +221,15 @@ class MarkAnnotation: CustomAnnotation {
     }
 }
 
-class MarkCallout: BoatCallout {
+class MarkCallout: UIView {
+    let spacing = 8
+    let largeSpacing = 16
+    let inset = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+    
     let log = LoggerFactory.shared.view(MarkCallout.self)
     let markAnnoation: MarkAnnotation
     let lang: Lang
-    var markLang: MarkLang { return lang.mark }
+    var markLang: MarkLang { lang.mark }
     let finnishWords: SpecialWords
     
     let nameValue = BoatLabel.centeredTitle()
@@ -239,15 +244,15 @@ class MarkCallout: BoatCallout {
     let ownerLabel = BoatLabel.smallSubtitle()
     let ownerValue = BoatLabel.smallTitle()
 
-    var hasConstruction: Bool { return markAnnoation.mark.construction != nil }
-    var hasLocation: Bool { return markAnnoation.mark.hasLocation }
-    var hasNav: Bool { return markAnnoation.mark.navMark != .notApplicable }
+    var hasConstruction: Bool { markAnnoation.mark.construction != nil }
+    var hasLocation: Bool { markAnnoation.mark.hasLocation }
+    var hasNav: Bool { markAnnoation.mark.navMark != .notApplicable }
   
     required init(annotation: MarkAnnotation, lang: Lang, finnishWords: SpecialWords) {
         self.markAnnoation = annotation
         self.lang = lang
         self.finnishWords = finnishWords
-        super.init()
+        super.init(frame: .zero)
         setup(mark: annotation.mark)
     }
     
@@ -256,19 +261,22 @@ class MarkCallout: BoatCallout {
     }
     
     func setup(mark: MarineSymbol) {
+        let container = self
         [ nameValue, typeLabel, typeValue, constructionLabel, constructionValue, navigationLabel, navigationValue, locationLabel, locationValue, ownerLabel, ownerValue ].forEach { label in
             container.addSubview(label)
         }
         
         nameValue.text = mark.name(lang: lang.language)?.value
         nameValue.snp.makeConstraints { (make) in
-            make.leading.trailing.top.equalToSuperview().inset(inset)
+            //make.topMargin.equalToSuperview()
+            make.topMargin.equalToSuperview().offset(largeSpacing)
+            make.leadingMargin.trailingMargin.equalToSuperview().inset(inset)
         }
         
         typeLabel.text = markLang.aidType
         typeLabel.snp.makeConstraints { (make) in
             make.top.equalTo(nameValue.snp.bottom).offset(spacing)
-            make.leading.equalToSuperview().inset(inset)
+            make.leadingMargin.equalToSuperview().inset(inset)
             make.width.greaterThanOrEqualTo(constructionLabel)
             make.width.greaterThanOrEqualTo(navigationLabel)
             make.width.greaterThanOrEqualTo(locationLabel)
@@ -279,21 +287,21 @@ class MarkCallout: BoatCallout {
         typeValue.snp.makeConstraints { (make) in
             make.top.equalTo(typeLabel)
             make.leading.equalTo(typeLabel.snp.trailing).offset(spacing)
-            make.trailing.equalToSuperview().inset(inset)
+            make.trailingMargin.equalToSuperview().inset(inset)
         }
         
         if let construction = mark.construction {
             constructionLabel.text = markLang.construction
             constructionLabel.snp.makeConstraints { (make) in
                 make.top.equalTo(typeValue.snp.bottom).offset(spacing)
-                make.leading.equalToSuperview().inset(inset)
+                make.leadingMargin.equalToSuperview().inset(inset)
                 make.width.equalTo(typeLabel)
             }
             constructionValue.text = construction.translate(lang: markLang.structures)
             constructionValue.snp.makeConstraints { (make) in
                 make.top.equalTo(constructionLabel)
                 make.leading.equalTo(constructionLabel.snp.trailing).offset(spacing)
-                make.trailing.equalToSuperview().inset(inset)
+                make.trailingMargin.equalToSuperview().inset(inset)
             }
         }
         
@@ -301,7 +309,7 @@ class MarkCallout: BoatCallout {
             navigationLabel.text = markLang.navigation
             navigationLabel.snp.makeConstraints { (make) in
                 make.top.equalTo((hasConstruction ? constructionValue : typeValue).snp.bottom).offset(spacing)
-                make.leading.equalToSuperview().inset(inset)
+                make.leadingMargin.equalToSuperview().inset(inset)
                 make.width.equalTo(typeLabel)
             }
             
@@ -309,7 +317,7 @@ class MarkCallout: BoatCallout {
             navigationValue.snp.makeConstraints { (make) in
                 make.top.equalTo(navigationLabel)
                 make.leading.equalTo(navigationLabel.snp.trailing).offset(spacing)
-                make.trailing.equalToSuperview().inset(inset)
+                make.trailingMargin.equalToSuperview().inset(inset)
             }
         }
         
@@ -317,7 +325,7 @@ class MarkCallout: BoatCallout {
             locationLabel.text = markLang.location
             locationLabel.snp.makeConstraints { (make) in
                 make.top.equalTo((hasNav ? navigationLabel : hasConstruction ? constructionLabel : typeLabel).snp.bottom).offset(spacing)
-                make.leading.equalToSuperview().inset(inset)
+                make.leadingMargin.equalToSuperview().inset(inset)
                 make.width.equalTo(typeLabel)
             }
             
@@ -325,24 +333,24 @@ class MarkCallout: BoatCallout {
             locationValue.snp.makeConstraints { (make) in
                 make.top.equalTo(locationLabel)
                 make.leading.equalTo(locationLabel.snp.trailing).offset(spacing)
-                make.trailing.equalToSuperview().inset(inset)
+                make.trailingMargin.equalToSuperview().inset(inset)
             }
         }
         
         ownerLabel.text = markLang.owner
         ownerLabel.snp.makeConstraints { (make) in
             make.top.equalTo((hasLocation ? locationValue : hasNav ? navigationLabel : hasConstruction ? constructionLabel : typeLabel).snp.bottom).offset(spacing)
-            make.leading.equalToSuperview().inset(inset)
+            make.leadingMargin.equalToSuperview().inset(inset)
             make.width.equalTo(typeLabel)
-            make.bottom.equalToSuperview().inset(inset)
+            make.bottomMargin.equalToSuperview().inset(inset)
         }
         
         ownerValue.text = mark.translatedOwner(finnish: finnishWords, translated: lang.specialWords)
         ownerValue.snp.makeConstraints { (make) in
             make.top.equalTo(ownerLabel)
             make.leading.equalTo(ownerLabel.snp.trailing).offset(spacing)
-            make.trailing.equalToSuperview().inset(inset)
-            make.bottom.equalToSuperview().inset(inset)
+            make.trailingMargin.equalToSuperview().inset(inset)
+            make.bottomMargin.equalToSuperview().inset(inset)
         }
     }
 }

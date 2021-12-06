@@ -22,7 +22,11 @@ class Json {
     }
     
     func parse<T: Decodable>(_ t: T.Type, from: JSONObject) throws -> T {
-        let data = try JSONSerialization.data(withJSONObject: from, options: .prettyPrinted)
+        let data = try JSONSerialization.data(withJSONObject: from.rawValue, options: .prettyPrinted)
+        return try parse(t, data: data)
+    }
+    
+    func parse<T: Decodable>(_ t: T.Type, data: Data) throws -> T {
         return try decoder.decode(t, from: data)
     }
     
@@ -38,6 +42,12 @@ class Json {
             throw JsonError.notJson(data)
         }
         return obj
+    }
+    
+    func stringify<T: Encodable>(_ t: T) throws -> String {
+        let data = try encoder.encode(t)
+        guard let asString = String(data: data, encoding: .utf8) else { throw JsonError.notJson(data) }
+        return asString
     }
 }
 

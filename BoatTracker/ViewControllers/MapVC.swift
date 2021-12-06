@@ -10,7 +10,7 @@ struct ActiveMarker {
     let coord: CoordBody
 }
 
-class MapVC: UIViewController, UIGestureRecognizerDelegate {
+class MapVC: UIViewController, UIGestureRecognizerDelegate, UIPopoverPresentationControllerDelegate {
     let log = LoggerFactory.shared.vc(MapVC.self)
     
     let profileButton = BoatButton.map(icon: #imageLiteral(resourceName: "SettingsSlider"))
@@ -98,6 +98,7 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate {
     }
     
     func onStyleLoaded(_ mapView: MapView, didFinishLoading style: Style) {
+        log.info("Style loaded.")
         self.style = style
 //        mapView.annotations.makePointAnnotationManager()
         let boats = BoatRenderer(mapView: mapView, style: style, followButton: followButton)
@@ -152,28 +153,77 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate {
     }
     
     func installTapListener(mapView: MapView) {
+        log.info("Installing tap listener...")
         // Tap: See code in https://docs.mapbox.com/ios/maps/examples/runtime-multiple-annotations/
         // Adds a single tap gesture recognizer. This gesture requires the built-in MGLMapView tap gestures (such as those for zoom and annotation selection) to fail.
-        let singleTap = UITapGestureRecognizer(target: self, action: #selector(handleMapTap(sender:)))
-        for recognizer in mapView.gestureRecognizers! where recognizer is UITapGestureRecognizer {
-            singleTap.require(toFail: recognizer)
-        }
-        mapView.addGestureRecognizer(singleTap)
+        //let singleTap = UITapGestureRecognizer(target: self, action: #selector(handleMapTap(sender:)))
+        mapView.gestures.singleTapGestureRecognizer.addTarget(self, action: #selector(handleMapTap(sender:)))
+        //let existing = mapView.gestureRecognizers ?? []
+        //for recognizer in existing where recognizer is UITapGestureRecognizer {
+            //log.info("Require \(recognizer) to fail...")
+        //    singleTap.require(toFail: recognizer)
+        //}
+        //log.info("Install recognizer...")
+        //mapView.addGestureRecognizer(singleTap)
     }
     
     @objc func handleMapTap(sender: UITapGestureRecognizer) {
+        log.info("Handling tap...")
         guard let mapView = mapView else { return }
         // https://docs.mapbox.com/ios/maps/examples/runtime-multiple-annotations/
+        log.info("Checking state...")
         if sender.state == .ended {
             // Tries matching the exact point first
             guard let senderView = sender.view else { return }
             let point = sender.location(in: senderView)
-            let handledByTaps = taps?.onTap(point: point) ?? false
-            if !handledByTaps {
+            log.info("Handling tap at \(point)...")
+            let handledByTaps = taps?.onTap(point: point).subscribe { event in
+                switch event {
+                case .success(let annotation):
+                    if let tapped = annotation {
+                        self.log.info("Tapped \(tapped) at \(tapped.coordinate).")
+                        guard let popoverContent = self.popoverView(tapped) else { return }
+                        self.displayDetails(child: popoverContent, senderView: senderView, point: point)
+                    } else {
+                        self.log.info("Tapped nothing of interest.")
+                        self.dismiss(animated: true, completion: nil)
+                    }
+                case .failure(let error):
+                    self.log.info("Failed to handle tap. \(error)")
+                }
+            }
+            //if !handledByTaps {
 //                mapView.annotations.remo
 //                mapView.deselectAnnotation(mapView.selectedAnnotations.first, animated: true)
-            }
+            //}
         }
+    }
+    
+    private func popoverView(_ tapped: CustomAnnotation) -> UIView? {
+        guard let lang = self.settings.lang, let finnishSpecials = self.settings.languages?.finnish.specialWords else { return nil }
+        if let mark = tapped as? MarkAnnotation {
+            return MarkCallout(annotation: mark, lang: lang, finnishWords: finnishSpecials)
+        } else if let mark = tapped as? MinimalMarkAnnotation {
+            return MinimalMarkCallout(annotation: mark, lang: lang, finnishWords: finnishSpecials)
+        } else {
+            return nil
+        }
+    }
+    
+    func displayDetails(child: UIView, senderView: UIView, point: CGPoint) {
+        let popup = MapPopup(child: child)
+        popup.modalPresentationStyle = .popover
+        if let popover = popup.popoverPresentationController {
+            popover.delegate = self
+            popover.sourceView = senderView
+            self.log.info("Set sourceView to \(senderView)")
+            popover.sourceRect = CGRect(origin: point, size: .zero)
+        }
+        self.present(popup, animated: true, completion: nil)
+    }
+    
+    func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
+        return .none
     }
     
 //    func mapView(_ mapView: MapView, viewFor annotation: MGLAnnotation) -> MGLAnnotationView? {
