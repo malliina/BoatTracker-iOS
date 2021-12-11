@@ -20,12 +20,13 @@ class LimitAnnotation: CustomAnnotation {
     
     func callout(lang: Lang) -> LimitCallout {
         return LimitCallout(annotation: self, lang: lang)
+        // return LimitInfoView(limit: limit, lang: lang)
     }
 }
 
-class LimitInfoView: UIView {
+class LimitInfoView: PopoverView {
     let limitsLabel = BoatLabel.smallSubtitle()
-    let limitsValue = BoatLabel.smallTitle(numberOfLines: 0)
+    let limitsValue = BoatLabel.smallTitle()
     
     let speedLabel = BoatLabel.smallSubtitle()
     let speedValue = BoatLabel.smallTitle()
@@ -36,16 +37,13 @@ class LimitInfoView: UIView {
     let fairwayLabel = BoatLabel.smallSubtitle()
     let fairwayValue = BoatLabel.smallTitle()
     
-    let spacing = BoatCallout.spacing
-    let inset = BoatCallout.inset
-    
     let limit: LimitArea
     let lang: Lang
     
     init(limit: LimitArea, lang: Lang) {
         self.limit = limit
         self.lang = lang
-        super.init(frame: CGRect.zero)
+        super.init(frame: .zero)
         setup(limit)
     }
     
@@ -57,8 +55,8 @@ class LimitInfoView: UIView {
         }
         limitsLabel.text = lang.limits.limit
         limitsLabel.snp.makeConstraints { (make) in
-            make.top.equalToSuperview()
-            make.leading.equalToSuperview().inset(inset)
+            make.topMargin.equalToSuperview()
+            make.leadingMargin.equalToSuperview().inset(inset)
             make.width.equalTo(fairwayLabel)
             if hasSpeed {
                 make.width.equalTo(speedLabel)
@@ -68,34 +66,34 @@ class LimitInfoView: UIView {
         limitsValue.snp.makeConstraints { (make) in
             make.top.equalTo(limitsLabel)
             make.leading.equalTo(limitsLabel.snp.trailing).offset(spacing)
-            make.trailing.equalToSuperview().inset(inset)
+            make.trailingMargin.equalToSuperview().inset(inset)
         }
         if hasSpeed {
             speedLabel.text = lang.limits.magnitude
             speedLabel.snp.makeConstraints { (make) in
                 make.top.equalTo(limitsValue.snp.bottom).offset(spacing)
-                make.leading.equalToSuperview().inset(inset)
+                make.leadingMargin.equalToSuperview().inset(inset)
                 make.width.equalTo(limitsLabel)
             }
             speedValue.text = limit.limit?.formattedKmh
             speedValue.snp.makeConstraints { (make) in
                 make.top.equalTo(speedLabel)
                 make.leading.equalTo(speedLabel.snp.trailing).offset(spacing)
-                make.trailing.equalToSuperview().inset(inset)
+                make.trailingMargin.equalToSuperview().inset(inset)
             }
         }
         fairwayLabel.text = lang.limits.fairwayName
         fairwayLabel.snp.makeConstraints { (make) in
             make.top.equalTo((hasSpeed ? speedLabel : limitsLabel).snp.bottom).offset(spacing)
-            make.leading.equalToSuperview().inset(inset)
+            make.leadingMargin.equalToSuperview().inset(inset)
             make.width.equalTo(limitsLabel)
         }
         fairwayValue.text = limit.fairwayName
         fairwayValue.snp.makeConstraints { (make) in
             make.top.equalTo(fairwayLabel)
             make.leading.equalTo(fairwayLabel.snp.trailing).offset(spacing)
-            make.trailing.equalToSuperview().inset(inset)
-            make.bottom.equalToSuperview()
+            make.trailingMargin.equalToSuperview().inset(inset)
+            make.bottomMargin.equalToSuperview()
         }
     }
     
@@ -104,24 +102,25 @@ class LimitInfoView: UIView {
     }
 }
 
-class LimitCallout: BoatCallout {
+class LimitCallout: PopoverView {
     let limit: LimitAnnotation
     let lang: Lang
     
     required init(annotation: LimitAnnotation, lang: Lang) {
         self.limit = annotation
         self.lang = lang
-        super.init()
+        super.init(frame: .zero)
         setup(limit: annotation.limit)
     }
     
     func setup(limit: LimitArea) {
         let table = LimitInfoView(limit: limit, lang: lang)
+        let container = self
         container.addSubview(table)
         table.snp.makeConstraints { (make) in
-            make.top.equalToSuperview().offset(spacing)
-            make.leading.trailing.equalToSuperview()
-            make.bottom.equalToSuperview().inset(inset)
+            make.topMargin.equalToSuperview().offset(largeSpacing)
+            make.leadingMargin.trailingMargin.equalToSuperview()
+            make.bottomMargin.equalToSuperview().inset(inset)
         }
     }
     
@@ -139,7 +138,7 @@ class MinimalMarkAnnotation: CustomAnnotation {
     }
 }
 
-class MinimalMarkCallout: BoatCallout {
+class MinimalMarkCallout: PopoverView {
     let log = LoggerFactory.shared.view(MinimalMarkCallout.self)
     let markAnnoation: MinimalMarkAnnotation
     let lang: Lang
@@ -158,7 +157,7 @@ class MinimalMarkCallout: BoatCallout {
         self.markAnnoation = annotation
         self.lang = lang
         self.finnishWords = finnishWords
-        super.init()
+        super.init(frame: .zero)
         setup(mark: annotation.mark)
     }
     
@@ -167,20 +166,22 @@ class MinimalMarkCallout: BoatCallout {
     }
     
     func setup(mark: MinimalMarineSymbol) {
+        let container = self
         [ nameValue, locationLabel, locationValue, ownerLabel, ownerValue ].forEach { label in
             container.addSubview(label)
         }
         
         nameValue.text = mark.name(lang: lang.language)?.value
         nameValue.snp.makeConstraints { (make) in
-            make.leading.trailing.top.equalToSuperview().inset(inset)
+            make.topMargin.equalToSuperview().offset(largeSpacing)
+            make.leadingMargin.trailingMargin.top.equalToSuperview().inset(inset)
         }
         
         if hasLocation {
             locationLabel.text = markLang.location
             locationLabel.snp.makeConstraints { (make) in
                 make.top.equalTo(nameValue.snp.bottom).offset(spacing)
-                make.leading.equalToSuperview().inset(inset)
+                make.leadingMargin.equalToSuperview().inset(inset)
                 make.width.equalTo(ownerLabel)
             }
             
@@ -188,14 +189,14 @@ class MinimalMarkCallout: BoatCallout {
             locationValue.snp.makeConstraints { (make) in
                 make.top.equalTo(locationLabel)
                 make.leading.equalTo(locationLabel.snp.trailing).offset(spacing)
-                make.trailing.equalToSuperview().inset(inset)
+                make.trailingMargin.equalToSuperview().inset(inset)
             }
         }
         
         ownerLabel.text = markLang.owner
         ownerLabel.snp.makeConstraints { (make) in
             make.top.equalTo((hasLocation ? locationValue : nameValue).snp.bottom).offset(spacing)
-            make.leading.equalToSuperview().inset(inset)
+            make.leadingMargin.equalToSuperview().inset(inset)
             if hasLocation {
                 make.width.greaterThanOrEqualTo(locationLabel)
             }
@@ -206,8 +207,8 @@ class MinimalMarkCallout: BoatCallout {
         ownerValue.snp.makeConstraints { (make) in
             make.top.equalTo(ownerLabel)
             make.leading.equalTo(ownerLabel.snp.trailing).offset(spacing)
-            make.trailing.equalToSuperview().inset(inset)
-            make.bottom.equalToSuperview().inset(inset)
+            make.trailingMargin.equalToSuperview().inset(inset)
+            make.bottomMargin.equalToSuperview().inset(inset)
         }
     }
 }
@@ -242,7 +243,7 @@ class MarkCallout: PopoverView {
     let navigationLabel = BoatLabel.smallSubtitle()
     let navigationValue = BoatLabel.smallTitle()
     let locationLabel = BoatLabel.smallSubtitle()
-    let locationValue = BoatLabel.smallTitle(numberOfLines: 0)
+    let locationValue = BoatLabel.smallTitle()
     let ownerLabel = BoatLabel.smallSubtitle()
     let ownerValue = BoatLabel.smallTitle()
 

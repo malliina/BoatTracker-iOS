@@ -201,12 +201,18 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, UIPopoverPresentatio
     
     private func popoverView(_ tapped: CustomAnnotation) -> UIView? {
         guard let lang = self.settings.lang, let finnishSpecials = self.settings.languages?.finnish.specialWords else { return nil }
-        if let mark = tapped as? MarkAnnotation {
+        if let boat = tapped as? BoatAnnotation {
+            return TrackedBoatCallout(annotation: boat, lang: lang)
+        } else if let vessel = tapped as? VesselAnnotation {
+            return VesselCallout(annotation: vessel, lang: lang)
+        } else if let mark = tapped as? MarkAnnotation {
             return MarkCallout(annotation: mark, lang: lang, finnishWords: finnishSpecials)
         } else if let mark = tapped as? MinimalMarkAnnotation {
             return MinimalMarkCallout(annotation: mark, lang: lang, finnishWords: finnishSpecials)
         } else if let area = tapped as? FairwayAreaAnnotation {
             return area.callout(lang: lang)
+        } else if let limit = tapped as? LimitAnnotation {
+            return limit.callout(lang: lang)
         } else {
             return nil
         }

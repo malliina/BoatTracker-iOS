@@ -30,10 +30,7 @@ class MapPopup: UIViewController {
             make.size.equalToSuperview()
         }
         let size = view.systemLayoutSizeFitting(UIView.layoutFittingExpandedSize)
-        // Hack to make content fit in the compressed popover size even when some text content takes more than one line.
-        // Looks quite good also when all text is on one line since the title is then separated from the rest of the content.
-        let extraHeight: CGFloat = 30
-        preferredContentSize = CGSize(width: size.width, height: size.height + extraHeight)
+        preferredContentSize = CGSize(width: size.width, height: size.height)
     }
     
     @objc func cancelClicked(_ sender: UIBarButtonItem) {

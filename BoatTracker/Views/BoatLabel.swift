@@ -18,7 +18,7 @@ class BoatLabel {
     }
     
     static func smallTitle(textColor: UIColor = .black, numberOfLines: Int = 1, fontSize: CGFloat = 14) -> UILabel {
-        build(text: "", alignment: .left, numberOfLines: numberOfLines, fontSize: fontSize, textColor: textColor)
+        return build(text: "", alignment: .left, numberOfLines: numberOfLines, fontSize: fontSize, textColor: textColor)
     }
     
     static func centeredTitle() -> UILabel {
