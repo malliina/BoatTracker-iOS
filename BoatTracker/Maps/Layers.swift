@@ -12,6 +12,7 @@ import MapboxMaps
 class Layers {
     static let log = LoggerFactory.shared.boat(Layers.self)
     static let boatIcon: String = "boat-resized-opt-30"
+    static let trophyIcon: String = "trophy-gold-path"
     static let stops: [NSNumber: UIColor] = [
         5: UIColor(r: 0, g: 255, b: 150, alpha: 1),
         10: UIColor(r: 50, g: 150, b: 50, alpha: 1),

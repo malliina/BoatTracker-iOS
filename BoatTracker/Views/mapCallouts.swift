@@ -147,7 +147,7 @@ class MinimalMarkCallout: PopoverView {
     
     let nameValue = BoatLabel.centeredTitle()
     let locationLabel = BoatLabel.smallSubtitle()
-    let locationValue = BoatLabel.smallTitle(numberOfLines: 0)
+    let locationValue = BoatLabel.smallTitle()
     let ownerLabel = BoatLabel.smallSubtitle()
     let ownerValue = BoatLabel.smallTitle()
     
@@ -226,6 +226,40 @@ class PopoverView: UIView {
     let spacing = 8
     let largeSpacing = 16
     let inset = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+}
+
+class TrophyPopover: PopoverView {
+    let info: CoordBody
+    let lang: Lang
+    
+    let speedValue = BoatLabel.centeredTitle()
+    let timeValue = BoatLabel.smallCenteredTitle()
+    
+    required init(info: CoordBody, lang: Lang) {
+        self.info = info
+        self.lang = lang
+        super.init(frame: .zero)
+        setup()
+    }
+    
+    func setup() {
+        [speedValue, timeValue].forEach(addSubview)
+        speedValue.text = info.speed.formattedKnots
+        speedValue.snp.makeConstraints { make in
+            make.topMargin.equalToSuperview().offset(largeSpacing)
+            make.leadingMargin.trailingMargin.equalToSuperview().inset(inset)
+        }
+        timeValue.text = info.time.dateTime
+        timeValue.snp.makeConstraints { make in
+            make.top.equalTo(speedValue.snp.bottom).offset(spacing)
+            make.leadingMargin.trailingMargin.equalToSuperview().inset(inset)
+            make.bottomMargin.equalToSuperview().inset(inset)
+        }
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 }
 
 class MarkCallout: PopoverView {

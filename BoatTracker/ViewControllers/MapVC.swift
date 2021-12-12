@@ -95,8 +95,9 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, UIPopoverPresentatio
     func onStyleLoaded(_ mapView: MapView, didFinishLoading style: Style) {
         log.info("Style loaded.")
         self.style = style
-//        mapView.annotations.makePointAnnotationManager()
-        let boats = BoatRenderer(mapView: mapView, style: style, followButton: followButton)
+        let pam = mapView.annotations.makePointAnnotationManager()
+        let boats = BoatRenderer(mapView: mapView, style: style, followButton: followButton, pam: pam)
+        // pam.delegate = self
         self.boatRenderer = boats
         self.pathFinder = PathFinder(mapView: mapView, style: style)
         installTapListener(mapView: mapView)
@@ -109,7 +110,8 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, UIPopoverPresentatio
                     self.profileButton.isHidden = false
                 }
                 self.initInteractive(mapView: mapView, style: style, layers: conf.layers, boats: boats)
-            case .failure(let err): self.log.error("Failed to load conf: '\(err.describe)'.")
+            case .failure(let err):
+                self.log.error("Failed to load conf: '\(err.describe)'.")
             }
         }
     }
@@ -168,14 +170,12 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, UIPopoverPresentatio
     @objc func handleMapTap(sender: UITapGestureRecognizer) {
         log.info("Handling tap...")
         guard let mapView = mapView else { return }
-        // https://docs.mapbox.com/ios/maps/examples/runtime-multiple-annotations/
-        log.info("Checking state...")
         if sender.state == .ended {
             // Tries matching the exact point first
-            guard let senderView = sender.view else { return }
+            guard let senderView = sender.view, let taps = taps else { return }
             let point = sender.location(in: senderView)
             log.info("Handling tap at \(point)...")
-            let handledByTaps = taps?.onTap(point: point).subscribe { event in
+            let handledByTaps = taps.onTap(point: point).subscribe { event in
                 switch event {
                 case .success(let annotation):
                     if let tapped = annotation {
@@ -211,12 +211,15 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, UIPopoverPresentatio
             return area.callout(lang: lang)
         } else if let limit = tapped as? LimitAnnotation {
             return limit.callout(lang: lang)
+        } else if let trophy = tapped as? TrophyAnnotation {
+            return trophy.callout(lang: lang)
         } else {
             return nil
         }
     }
     
     func displayDetails(child: UIView, senderView: UIView, point: CGPoint) {
+        log.info("Sender \(senderView) point \(point)")
         let popup = MapPopup(child: child)
         popup.modalPresentationStyle = .popover
         if let popover = popup.popoverPresentationController {

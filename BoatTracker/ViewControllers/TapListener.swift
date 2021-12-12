@@ -33,19 +33,23 @@ class TapListener {
     }
     
     func onTap(point: CGPoint) -> Single<CustomAnnotation?> {
-        // Preference: boats > ais > marks > fairway info > limits
+        // Preference: boats > ais > trophy > marks > fairway info > limits
         // Fairway info includes any limits
         return handleBoatTap(point).flatMap { r1 in
             guard r1 == nil else { return Single.just(r1) }
             return self.handleAisTap(point).flatMap { r2 in
                 guard r2 == nil else { return Single.just(r2) }
-                return self.handleMarksTap(point).flatMap { r3 in
-                    guard r3 == nil else { return Single.just(r3) }
-                    return self.handleAreaTap(point).flatMap { r4 in
-                        guard r4 == nil else { return Single.just(r4) }
-                        return self.handleLimitsTap(point)
+                return self.handleTrophyTap(point).flatMap { tt in
+                    guard tt == nil else { return Single.just(tt) }
+                    return self.handleMarksTap(point).flatMap { r3 in
+                        guard r3 == nil else { return Single.just(r3) }
+                        return self.handleAreaTap(point).flatMap { r4 in
+                            guard r4 == nil else { return Single.just(r4) }
+                            return self.handleLimitsTap(point)
+                        }
                     }
                 }
+                
             }
         }
         //return self.handleMarksTap(point)
@@ -78,6 +82,14 @@ class TapListener {
         queryVisibleFeatureProps(point, layers: Array(boats.layers()), t: BoatPoint.self).map { result in
             result.map { boatPoint in
                 BoatAnnotation(info: boatPoint)
+            }
+        }
+    }
+    
+    private func handleTrophyTap(_ point: CGPoint) -> Single<CustomAnnotation?> {
+        queryVisibleFeatureProps(point, layers: Array(boats.trophyLayers()), t: TrophyPoint.self).map { result in
+            result.map { point in
+                TrophyAnnotation(top: point.top)
             }
         }
     }

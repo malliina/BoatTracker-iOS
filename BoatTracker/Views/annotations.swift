@@ -140,7 +140,7 @@ class FairwayAreaCallout: PopoverView {
 }
 
 class BoatAnnotation: CustomAnnotation {
-    var info: BoatPoint
+    let info: BoatPoint
     
     init(info: BoatPoint) {
         self.info = info
@@ -208,26 +208,19 @@ class TrackedBoatCallout: PopoverView {
     }
 }
 
-// The iOS SDK uses the title and subtitle properties to render an inbuilt callout
-class TrophyAnnotation: NSObject {
-    var title: String?
-    var subtitle: String?
-    var coordinate: CLLocationCoordinate2D
-    var top: CoordBody
+class TrophyAnnotation: CustomAnnotation {
+    let top: CoordBody
     
     init(top: CoordBody) {
         self.top = top
-        self.title = top.speed.description
-        self.subtitle = top.time.dateTime
-        self.coordinate = top.coord
+        super.init(coord: top.coord)
     }
     
-    func update(top: CoordBody) {
-        self.top = top
-        self.title = top.speed.description
-        self.subtitle = top.time.dateTime
-        self.coordinate = top.coord
-    }
+    func callout(lang: Lang) -> TrophyPopover { .init(info: top, lang: lang) }
+}
+
+struct TrophyPoint: Codable {
+    let top: CoordBody
 }
 
 class RouteAnnotation: NSObject {
@@ -244,15 +237,12 @@ class RouteAnnotation: NSObject {
     }
 }
 
-class CustomAnnotation: NSObject {
-    // Insane hack: the MGLAnnotation object requires a title property, otherwise the callout is never shown.
-    // Best source I could find is https://github.com/mapbox/react-native-mapbox-gl/issues/1278.
-    var title: String? = ""
+class CustomAnnotation {
     var coordinate: CLLocationCoordinate2D
     
     init(coord: CLLocationCoordinate2D) {
-        // The title value must also be defined
-        self.title = ""
         self.coordinate = coord
     }
+    
+    // func popover(lang: Lang, finnish: SpecialWords)
 }

@@ -19,8 +19,9 @@ public struct Speed: Comparable, CustomStringConvertible, DoubleCodable {
     var rounded: String { String(format: "%.2f", knots) }
     var roundedKmh: String { String(format: "%.0f", kmh) }
     
-    public var description: String { "\(rounded) kn" }
+    public var description: String { formattedKnots }
     var formattedKmh: String { "\(roundedKmh) km/h" }
+    var formattedKnots: String { "\(rounded) kn" }
     
     init(_ knots: Double) {
         self.knots = knots

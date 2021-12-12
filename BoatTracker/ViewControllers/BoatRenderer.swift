@@ -19,13 +19,16 @@ class BoatRenderer {
     // The history data is in the above trails also because it is difficult to read an MGLShapeSource. This is more suitable for our purposes.
     private var history: [TrackName: [MeasuredCoord]] = [:]
     private var boatIcons: [TrackName: SymbolLayer] = [:]
-    private var topSpeedMarkers: [TrackName: ActiveMarker] = [:]
+    private var trophyIcons: [TrackName: SymbolLayer] = [:]
+    // private var topSpeedMarkers: [TrackName: ActiveMarker] = [:]
+    // var trophyMarkers: [String: TrophyInfo] = [:]
     var latestTrack: TrackName? = nil
     private var hasBeenFollowing: Bool = false
     
     private let followButton: UIButton
     private let mapView: MapView
     private let style: Style
+    private let pam: PointAnnotationManager
     
     var mapMode: MapMode = .fit {
         didSet {
@@ -43,27 +46,20 @@ class BoatRenderer {
         }
     }
     
-    init(mapView: MapView, style: Style, followButton: UIButton) {
+    init(mapView: MapView, style: Style, followButton: UIButton, pam: PointAnnotationManager) {
         self.mapView = mapView
         self.style = style
         self.followButton = followButton
+        self.pam = pam
     }
     
     func layers() -> Set<String> {
         Set(boatIcons.map { (track, layer) -> String in iconName(for: track) })
     }
     
-//    func trophyAnnotationView(annotation: TrophyAnnotation) -> MGLAnnotationView {
-//        let id = "trophy"
-//        let gold = UIColor(r: 255, g: 215, b: 0, alpha: 1.0)
-//        let view = mapView.dequeueReusableAnnotationView(withIdentifier: id) ?? MGLAnnotationView(annotation: annotation, reuseIdentifier: id)
-//        if let image = UIImage(icon: "fa-trophy", backgroundColor: .clear, iconColor: gold, fontSize: 14) {
-//            let imageView = UIImageView(image: image)
-//            view.frame = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
-//            view.addSubview(imageView)
-//        }
-//        return view
-//    }
+    func trophyLayers() -> Set<String> {
+        Set(trophyIcons.map { (track, layer) -> String in trophyName(for: track) })
+    }
     
     func toggleFollow() {
         if mapMode == .stay {
@@ -119,10 +115,11 @@ class BoatRenderer {
         }
         // Updates trophy
         let top = from.topPoint
-        if let old = topSpeedMarkers[from.trackName], old.coord.speed < top.speed {
-            let marker = old.annotation
-            marker.update(top: top)
-            topSpeedMarkers[from.trackName] = ActiveMarker(annotation: marker, coord: top)
+        guard let trophyLayer = trophyIcons[track] else { return }
+        var trophyFeature = Feature(geometry: .point(.init(top.coord)))
+        trophyFeature.properties = try Json.shared.write(from: TrophyPoint(top: top))
+        if let trophySourceId = trophyLayer.source {
+            try style.updateGeoJSONSource(withId: trophySourceId, geoJSON: .feature(trophyFeature))
         }
         // Updates map position
         switch mapMode {
@@ -159,25 +156,26 @@ class BoatRenderer {
     
     // https://www.mapbox.com/ios-sdk/examples/runtime-animate-line/
     private func initEmptyLayers(track: TrackRef, to style: Style) throws -> GeoJSONSource {
-        let trailId = trailName(for: track.trackName)
+        let trackName = track.trackName
+        let trailId = trailName(for: trackName)
         // Boat trail
         let trailData = LayerSource(lineId: trailId)
         // The line width should gradually increase based on the zoom level
         //        layer.lineWidth = NSExpression(format: "mgl_interpolate:withCurveType:parameters:stops:($zoomLevel, 'linear', nil, %@)", [18: 3, 9: 10])
         try trailData.install(to: style, id: trailId)
-        trails.updateValue(trailData.source, forKey: track.trackName)
+        trails.updateValue(trailData.source, forKey: trackName)
         
         // Boat icon
-        let iconId = iconName(for: track.trackName)
+        let iconId = iconName(for: trackName)
         let iconData = LayerSource(iconId: iconId, iconImageName: Layers.boatIcon)
         try iconData.install(to: style, id: iconId)
-        boatIcons.updateValue(iconData.layer, forKey: track.trackName)
+        boatIcons.updateValue(iconData.layer, forKey: trackName)
         
         // Trophy icon
-        let top = track.topPoint
-        let marker = TrophyAnnotation(top: top)
-        topSpeedMarkers[track.trackName] = ActiveMarker(annotation: marker, coord: top)
-        // mapView.addAnnotation(marker)
+        let trophyId = trophyName(for: trackName)
+        let trophyData = LayerSource(iconId: trophyId, iconImageName: Layers.trophyIcon)
+        try trophyData.install(to: style, id: trophyId)
+        trophyIcons.updateValue(trophyData.layer, forKey: trackName)
         
         return trailData.source
     }
@@ -193,15 +191,12 @@ class BoatRenderer {
         }
         return FeatureCollection(features: features)
     }
-
     
-    private func trailName(for track: TrackName) -> String {
-        "\(track)-trail"
-    }
+    private func trailName(for track: TrackName) -> String { "\(track)-trail" }
     
-    private func iconName(for track: TrackName) -> String {
-        "\(track)-icon"
-    }
+    private func iconName(for track: TrackName) -> String { "\(track)-icon" }
+    
+    private func trophyName(for track: TrackName) -> String { "\(track)-trophy" }
     
     func clear() {
         trails.forEach { (track, _) in
@@ -210,16 +205,14 @@ class BoatRenderer {
         trails = [:]
         history = [:]
         boatIcons = [:]
-        topSpeedMarkers = [:]
+        trophyIcons = [:]
+        // topSpeedMarkers = [:]
         latestTrack = nil
     }
     
     private func removeTrack(track: TrackName) {
         style.removeSourceAndLayer(id: trailName(for: track))
         style.removeSourceAndLayer(id: iconName(for: track))
-        if let marker = topSpeedMarkers[track]?.annotation {
-            //mapView.deselectAnnotation(marker, animated: false)
-            // mapView.removeAnnotation(marker)
-        }
+        style.removeSourceAndLayer(id: trophyName(for: track))
     }
 }
