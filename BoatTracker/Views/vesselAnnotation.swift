@@ -39,7 +39,7 @@ class VesselAnnotation: CustomAnnotation {
 
 // https://stackoverflow.com/a/51906338
 // https://docs.mapbox.com/ios/maps/examples/custom-callout/
-class VesselCallout: BoatCallout {
+class VesselCallout: PopoverView {
     let log = LoggerFactory.shared.view(VesselCallout.self)
     let vessel: VesselAnnotation
     let lang: Lang
@@ -58,7 +58,7 @@ class VesselCallout: BoatCallout {
     required init(annotation: VesselAnnotation, lang: Lang) {
         self.vessel = annotation
         self.lang = lang
-        super.init()
+        super.init(frame: .zero)
         setup(vessel: annotation)
     }
     
@@ -67,20 +67,22 @@ class VesselCallout: BoatCallout {
     }
     
     func setup(vessel: VesselAnnotation) {
+        let container = self
         [ nameLabel, destinationLabel, destinationValue, speedLabel, speedValue, draftLabel, draftValue, boatTimeValue ].forEach { label in
             container.addSubview(label)
         }
         
         nameLabel.text = vessel.name
         nameLabel.snp.makeConstraints { (make) in
-            make.leading.trailing.top.equalToSuperview().inset(inset)
+            make.topMargin.equalToSuperview().offset(largeSpacing)
+            make.leadingMargin.trailingMargin.equalToSuperview().inset(inset)
         }
         
         if hasDestination {
             destinationLabel.text = lang.ais.destination
             destinationLabel.snp.makeConstraints { (make) in
                 make.top.equalTo(nameLabel.snp.bottom).offset(spacing)
-                make.leading.equalToSuperview().inset(inset)
+                make.leadingMargin.equalToSuperview().inset(inset)
                 make.width.equalTo(speedLabel)
             }
             
@@ -88,14 +90,14 @@ class VesselCallout: BoatCallout {
             destinationValue.snp.makeConstraints { (make) in
                 make.top.equalTo(destinationLabel)
                 make.leading.equalTo(destinationLabel.snp.trailing).offset(spacing)
-                make.trailing.equalToSuperview().inset(inset)
+                make.trailingMargin.equalToSuperview().inset(inset)
             }
         }
         
         speedLabel.text = lang.track.speed
         speedLabel.snp.makeConstraints { (make) in
             make.top.equalTo((hasDestination ? destinationLabel : nameLabel).snp.bottom).offset(spacing)
-            make.leading.equalToSuperview().inset(inset)
+            make.leadingMargin.equalToSuperview().inset(inset)
             if hasDestination {
                 make.width.greaterThanOrEqualTo(destinationLabel)
             }
@@ -106,13 +108,13 @@ class VesselCallout: BoatCallout {
         speedValue.snp.makeConstraints { (make) in
             make.top.equalTo(speedLabel)
             make.leading.equalTo(speedLabel.snp.trailing).offset(spacing)
-            make.trailing.equalToSuperview().inset(inset)
+            make.trailingMargin.equalToSuperview().inset(inset)
         }
         
         draftLabel.text = lang.ais.draft
         draftLabel.snp.makeConstraints { (make) in
             make.top.equalTo(speedValue.snp.bottom).offset(spacing)
-            make.leading.equalToSuperview().inset(inset)
+            make.leadingMargin.equalToSuperview().inset(inset)
             make.width.equalTo(speedLabel)
         }
         
@@ -120,14 +122,13 @@ class VesselCallout: BoatCallout {
         draftValue.snp.makeConstraints { (make) in
             make.top.equalTo(draftLabel)
             make.leading.equalTo(draftLabel.snp.trailing).offset(spacing)
-            make.trailing.equalToSuperview().inset(inset)
+            make.trailingMargin.equalToSuperview().inset(inset)
         }
         
         boatTimeValue.text = vessel.time.dateTime
         boatTimeValue.snp.makeConstraints { (make) in
             make.top.equalTo(draftValue.snp.bottom).offset(spacing)
-            make.leading.trailing.bottom.equalToSuperview().inset(inset)
-            make.bottom.equalToSuperview().inset(inset)
+            make.leadingMargin.trailingMargin.bottomMargin.equalToSuperview().inset(inset)
         }
     }
 }

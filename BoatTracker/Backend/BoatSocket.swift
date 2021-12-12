@@ -58,12 +58,14 @@ class BoatSocket: SocketDelegate {
         let decoder = JSONDecoder()
         do {
             let event = try decoder.decode(BoatEvent.self, from: json)
+            log.info("Got \(event)")
             switch event.event {
             case "ping":
                 ()
             case "coords":
                 let data = try decoder.decode(CoordsBody.self, from: json)
                 if let delegate = delegate {
+                    log.info("Passing \(data.body.coords.count) coords to delegate.")
                     delegate.onCoords(event: data.body)
                 } else {
                     log.warn("No delegate for coords. This is probably an error.")

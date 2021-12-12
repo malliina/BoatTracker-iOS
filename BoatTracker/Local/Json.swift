@@ -38,7 +38,7 @@ class Json {
     func write<T: Encodable>(from: T) throws -> JSONObject {
         let data = try encoder.encode(from)
         let json = try JSONSerialization.jsonObject(with: data, options: [])
-        guard let obj = json as? JSONObject else {
+        guard let dict = json as? [String: Any?], let obj = JSONObject(rawValue: dict) else {
             throw JsonError.notJson(data)
         }
         return obj

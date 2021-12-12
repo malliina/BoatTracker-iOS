@@ -36,13 +36,10 @@ class Layers {
     
     static func icon(id: String, iconImageName: String) -> SymbolLayer {
         var iconLayer = SymbolLayer(id: id)
-        // let iconLayer = SymbolLayer(identifier: id, source: source)
         iconLayer.iconImage = .constant(.name(iconImageName))
-        // iconLayer.iconScale = NSExpression(forConstantValue: 0.7)
         iconLayer.iconSize = .constant(0.7)
         iconLayer.iconHaloColor = .constant(StyleColor(.white))
         iconLayer.iconRotationAlignment = .constant(.map)
-        iconLayer.source = id
         return iconLayer
     }
     
@@ -50,16 +47,10 @@ class Layers {
         customLine(id: id, color: StyleColor(color), minimumZoomLevel: minimumZoomLevel)
     }
 
-//    static func trackLine(id: String, source: MGLShapeSource) -> MGLLineStyleLayer {
-//        customLine(id: id, source: source, color: trackColor)
-//    }
-
     static func customLine(id: String, color: StyleColor, minimumZoomLevel: Double? = nil) -> LineLayer {
         var lineLayer = LineLayer(id: id)
-//        let lineLayer = LineLayer(identifier: id, source: source)
         lineLayer.lineJoin = .constant(.round)
         lineLayer.lineCap = .constant(.round)
-        //log.info("Installing \(color)")
         lineLayer.lineColor = .constant(color)
         lineLayer.lineWidth = .constant(1)
         if let minimumZoomLevel = minimumZoomLevel {
@@ -71,17 +62,22 @@ class Layers {
 }
 
 class LayerSource<L: Layer> {
+    let log = LoggerFactory.shared.vc(LayerSource.self)
     var source: GeoJSONSource
     var layer: L
     var sourceId: String { layer.id }
     
     init(layer: L) {
         self.source = GeoJSONSource()
+        self.source.data = .empty
         self.layer = layer
     }
     
     func install(to style: Style, id: String) throws {
         try style.addSource(source, id: id)
+        layer.source = id
+        try style.addLayer(layer)
+        log.info("Added source \(id) and layer to style.")
     }
 }
 

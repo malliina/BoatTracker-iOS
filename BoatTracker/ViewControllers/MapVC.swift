@@ -85,12 +85,8 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, UIPopoverPresentatio
         swipes.delegate = self
         mapView.addGestureRecognizer(swipes)
         
-        MapEvents.shared.delegate = self   
-        let _ = Auth.shared.tokens.subscribe(onNext: { token in
-            self.reload(token: token)
-        })
-        Auth.shared.signIn(from: self, restore: true)
-        initConf()
+        MapEvents.shared.delegate = self
+        // initConf()
     }
     
     func mapViewDidFinishLoadingMap(_ mapView: MapView) {
@@ -108,7 +104,12 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, UIPopoverPresentatio
         // Maybe the conf should be cached in a file?
         let _ = http.conf().subscribe { (event) in
             switch event {
-            case .success(let conf): self.initInteractive(mapView: mapView, style: style, layers: conf.layers, boats: boats)
+            case .success(let conf):
+                self.settings.conf = conf
+                self.onUiThread {
+                    self.profileButton.isHidden = false
+                }
+                self.initInteractive(mapView: mapView, style: style, layers: conf.layers, boats: boats)
             case .failure(let err): self.log.error("Failed to load conf: '\(err.describe)'.")
             }
         }
@@ -118,10 +119,18 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, UIPopoverPresentatio
         if firstInit {
             firstInit = false
             if BoatPrefs.shared.isAisEnabled {
-                let ais = AISRenderer(mapView: mapView, style: style, conf: layers.ais)
-                self.aisRenderer = ais
+                do {
+                    let ais = try AISRenderer(mapView: mapView, style: style, conf: layers.ais)
+                    self.aisRenderer = ais
+                } catch {
+                    log.warn("Failed to init AIS. \(error)")
+                }
             }
             self.taps = TapListener(mapView: mapView, layers: layers, ais: self.aisRenderer, boats: boats)
+            let _ = Auth.shared.tokens.subscribe(onNext: { token in
+                self.reload(token: token)
+            })
+            Auth.shared.signIn(from: self, restore: true)
         }
     }
     
@@ -154,17 +163,8 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, UIPopoverPresentatio
     
     func installTapListener(mapView: MapView) {
         log.info("Installing tap listener...")
-        // Tap: See code in https://docs.mapbox.com/ios/maps/examples/runtime-multiple-annotations/
-        // Adds a single tap gesture recognizer. This gesture requires the built-in MGLMapView tap gestures (such as those for zoom and annotation selection) to fail.
-        //let singleTap = UITapGestureRecognizer(target: self, action: #selector(handleMapTap(sender:)))
         mapView.gestures.singleTapGestureRecognizer.addTarget(self, action: #selector(handleMapTap(sender:)))
-        //let existing = mapView.gestureRecognizers ?? []
-        //for recognizer in existing where recognizer is UITapGestureRecognizer {
-            //log.info("Require \(recognizer) to fail...")
-        //    singleTap.require(toFail: recognizer)
-        //}
-        //log.info("Install recognizer...")
-        //mapView.addGestureRecognizer(singleTap)
+        mapView.gestures.singleTapGestureRecognizer.require(toFail: mapView.gestures.doubleTapToZoomInGestureRecognizer)
     }
     
     @objc func handleMapTap(sender: UITapGestureRecognizer) {
@@ -370,8 +370,16 @@ extension MapVC: TracksDelegate {
 extension MapVC: BoatSocketDelegate {
     func onCoords(event: CoordsData) {
         onUiThread {
-            self.boatRenderer?.addCoords(event: event)
-            let isTrailsEmpty = self.boatRenderer?.isEmpty ?? true
+            guard let renderer = self.boatRenderer else {
+                self.log.info("Got \(event.coords.count) coords but no handler has been installed.")
+                return
+            }
+            do {
+                try renderer.addCoords(event: event)
+            } catch {
+                self.log.warn("Failed to handle coords. \(error)")
+            }
+            let isTrailsEmpty = renderer.isEmpty
             if !isTrailsEmpty && self.followButton.isHidden {
                 self.followButton.isHidden = false
             }
@@ -382,7 +390,16 @@ extension MapVC: BoatSocketDelegate {
 extension MapVC: VesselDelegate {
     func on(vessels: [Vessel]) {
         onUiThread {
-            self.aisRenderer?.update(vessels: vessels)
+            do {
+                guard let renderer = self.aisRenderer else {
+                    self.log.info("Got \(vessels.count) vessel updates but no handler has been installed.")
+                    return
+                }
+                try renderer.update(vessels: vessels)
+            } catch {
+                self.log.warn("Failed to update vessels. \(error)")
+            }
+            
         }
     }
 }

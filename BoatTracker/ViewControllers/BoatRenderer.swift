@@ -80,14 +80,12 @@ class BoatRenderer {
     
     private func flyToLatest() {
         guard let last = history.first?.value.last else { return }
-//        let current = mapView.camera
         let options = CameraOptions(center: last.coord)
-//        current.mapboxMap.setCamera(to: CameraOptions(center: last.coord))
         mapView.camera?.fly(to: options)
     }
 
-    func addCoords(event: CoordsData) {
-//        log.info("Got coords \(event)")
+    func addCoords(event: CoordsData) throws {
+        log.info("Got \(event.coords.count) coords.")
         let from = event.from
         let track = from.trackName
         latestTrack = track
@@ -98,22 +96,19 @@ class BoatRenderer {
         let isUpdate = previousTrail != nil && !coords.isEmpty
         history.updateValue(newTrail, forKey: track)
         let polyline: FeatureCollection = speedFeatures(coords: newTrail)
-        var trail: GeoJSONSource = trails[track] ?? initEmptyLayers(track: event.from, to: style)
-        // trail
-        trail.data = .featureCollection(polyline)
+        var trail: GeoJSONSource = try trails[track] ?? initEmptyLayers(track: event.from, to: style)
+        let coll = GeoJSONSourceData.featureCollection(polyline)
+        trail.data = coll
+        try style.updateGeoJSONSource(withId: trailName(for: event.from.trackName), geoJSON: .featureCollection(polyline))
         // Updates boat icon position
         guard let lastCoord = coords.last, var iconLayer = boatIcons[track] else { return }
-        do {
-            let dict = try Json.shared.write(from: BoatPoint(from: from, coord: lastCoord))
-            let geo = Geometry.point(.init(lastCoord.coord))
-            var feature = Feature(geometry: geo)
-            feature.properties = dict
-            if let iconSourceId = iconLayer.source,
-               var iconSource = try? style.source(withId: iconSourceId, type: GeoJSONSource.self) {
-                iconSource.data = .feature(feature)
-            }
-        } catch let err {
-            log.error("Failed to encode JSON. \(err.describe)")
+        let dict = try Json.shared.write(from: BoatPoint(from: from, coord: lastCoord))
+        let geo = Geometry.point(.init(lastCoord.coord))
+        var feature = Feature(geometry: geo)
+        feature.properties = dict
+        if let iconSourceId = iconLayer.source,
+           var iconSource = try? style.source(withId: iconSourceId, type: GeoJSONSource.self) {
+            iconSource.data = .feature(feature)
         }
         // Updates boat icon bearing
         let lastTwo = Array(newTrail.suffix(2)).map { $0.coord }
@@ -162,19 +157,19 @@ class BoatRenderer {
     }
     
     // https://www.mapbox.com/ios-sdk/examples/runtime-animate-line/
-    private func initEmptyLayers(track: TrackRef, to style: Style) -> GeoJSONSource {
+    private func initEmptyLayers(track: TrackRef, to style: Style) throws -> GeoJSONSource {
         let trailId = trailName(for: track.trackName)
         // Boat trail
         let trailData = LayerSource(lineId: trailId)
         // The line width should gradually increase based on the zoom level
         //        layer.lineWidth = NSExpression(format: "mgl_interpolate:withCurveType:parameters:stops:($zoomLevel, 'linear', nil, %@)", [18: 3, 9: 10])
-        try? trailData.install(to: style, id: trailId)
+        try trailData.install(to: style, id: trailId)
         trails.updateValue(trailData.source, forKey: track.trackName)
         
         // Boat icon
         let iconId = iconName(for: track.trackName)
         let iconData = LayerSource(iconId: iconId, iconImageName: Layers.boatIcon)
-        try? iconData.install(to: style, id: iconId)
+        try iconData.install(to: style, id: iconId)
         boatIcons.updateValue(iconData.layer, forKey: track.trackName)
         
         // Trophy icon

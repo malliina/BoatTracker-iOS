@@ -23,7 +23,7 @@ class AISRenderer {
     private let style: Style
     private let conf: AisConf
     
-    init(mapView: MapView, style: Style, conf: AisConf) {
+    init(mapView: MapView, style: Style, conf: AisConf) throws {
         self.mapView = mapView
         self.style = style
         self.conf = conf
@@ -32,12 +32,12 @@ class AISRenderer {
         vessels.layer.iconRotate = .expression(Exp(.get) {
             Vessel.headingKey
         })
-        try? vessels.install(to: style, id: "ais-vessels")
+        try vessels.install(to: style, id: "ais-vessels")
         vesselShape = vessels.source
         
         // Trails
         let trails = LayerSource(lineId: conf.trail, lineColor: .darkGray, minimumZoomLevel: 11.0)
-        try? trails.install(to: style, id: "ais-trails")
+        try trails.install(to: style, id: "ais-trails")
         vesselTrails = trails.source
     }
     
@@ -45,7 +45,7 @@ class AISRenderer {
         vesselHistory[mmsi]?.first
     }
     
-    func update(vessels: [Vessel]) {
+    func update(vessels: [Vessel]) throws {
         vessels.forEach { v in
             vesselHistory.updateValue(([v] + (vesselHistory[v.mmsi] ?? [])).take(maxTrailLength), forKey: v.mmsi)
         }
@@ -53,16 +53,24 @@ class AISRenderer {
             guard let latest: Vessel = v.first else { return nil }
             let geo = Geometry.point(.init(latest.coord))
             var feature = Feature(geometry: geo)
-            guard let props = try? Json.shared.write(from: VesselMeta(mmsi: latest.mmsi, name: latest.name, heading: latest.heading ?? latest.cog)) else { return nil }
-            feature.properties = props
-            return feature
+            do {
+                let props = try Json.shared.write(from: VesselMeta(mmsi: latest.mmsi, name: latest.name, heading: latest.heading ?? latest.cog))
+                feature.properties = props
+                return feature
+            } catch {
+                log.warn("Failed to write JSON. \(error)")
+                return nil
+            }
         }
+        
+        try style.updateGeoJSONSource(withId: "ais-vessels", geoJSON: .featureCollection(FeatureCollection(features: updatedVessels)))
         vesselShape.data = .featureCollection(FeatureCollection(features: updatedVessels))
         let updatedTrails: [Feature] = vesselHistory.values.compactMap { v in
             let tail = v.dropFirst()
             guard !tail.isEmpty else { return nil }
             return Feature(geometry: Geometry.lineString(.init(tail.map { $0.coord })))
         }
+        try style.updateGeoJSONSource(withId: "ais-trails", geoJSON: .featureCollection(FeatureCollection(features: updatedTrails)))
         vesselTrails.data = .featureCollection(FeatureCollection(features: updatedTrails))
         log.info("Updated vessel source which now has \(updatedVessels.count) locations.")
     }
@@ -81,7 +89,7 @@ class AISRenderer {
         log.info("Clearing vessels")
         vesselHistory.removeAll()
         vesselIcons.removeAll()
-        vesselTrails.data = .featureCollection(FeatureCollection(features: []))
-        vesselShape.data = .featureCollection(FeatureCollection(features: []))
+        vesselTrails.data = .empty
+        vesselShape.data = .empty
     }
 }
