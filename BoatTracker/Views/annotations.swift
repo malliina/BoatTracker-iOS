@@ -146,9 +146,11 @@ class BoatAnnotation: CustomAnnotation {
         self.info = info
         super.init(coord: info.coord.coord)
     }
+    
+    func callout(lang: Lang) -> TrackedBoatCallout { .init(annotation: self, lang: lang) }
 }
 
-class TrackedBoatCallout: BoatCallout {
+class TrackedBoatCallout: PopoverView {
     let log = LoggerFactory.shared.view(TrackedBoatCallout.self)
     
     let boat: BoatAnnotation
@@ -162,17 +164,19 @@ class TrackedBoatCallout: BoatCallout {
     required init(annotation: BoatAnnotation, lang: Lang) {
         self.boat = annotation
         self.lang = lang
-        super.init()
+        super.init(frame: .zero)
         setup(boat: annotation)
     }
     
     private func setup(boat: BoatAnnotation) {
         let info = boat.info
         let from = info.from
+        let container = self
         container.addSubview(nameLabel)
         nameLabel.text = from.boatName.name
         nameLabel.snp.makeConstraints { (make) in
-            make.leading.trailing.top.equalToSuperview().inset(inset)
+            make.topMargin.equalToSuperview().offset(largeSpacing)
+            make.leadingMargin.trailingMargin.equalToSuperview().inset(inset)
         }
         let hasTitle = from.trackTitle != nil
         if hasTitle {
@@ -180,22 +184,22 @@ class TrackedBoatCallout: BoatCallout {
             trackTitleLabel.text = lang.name
             trackTitleLabel.snp.makeConstraints { (make) in
                 make.top.equalTo(nameLabel.snp.bottom).offset(spacing)
-                make.leading.equalToSuperview().inset(inset)
+                make.leadingMargin.equalToSuperview().inset(inset)
             }
             container.addSubview(trackTitleValue)
             trackTitleValue.text = from.trackTitle?.title
             trackTitleValue.snp.makeConstraints { (make) in
                 make.top.bottom.equalTo(trackTitleLabel)
                 make.leading.equalTo(trackTitleLabel.snp.trailing).offset(spacing)
-                make.trailing.equalToSuperview().inset(inset)
+                make.trailingMargin.equalToSuperview().inset(inset)
             }
         }
         container.addSubview(dateTimeLabel)
         dateTimeLabel.text = info.coord.time.dateTime
         dateTimeLabel.snp.makeConstraints { (make) in
             make.top.equalTo(hasTitle ? trackTitleLabel.snp.bottom : nameLabel.snp.bottom).offset(spacing)
-            make.leading.trailing.equalToSuperview().inset(inset)
-            make.bottom.equalToSuperview().inset(inset)
+            make.leadingMargin.trailingMargin.equalToSuperview().inset(inset)
+            make.bottomMargin.equalToSuperview().inset(inset)
         }
     }
     

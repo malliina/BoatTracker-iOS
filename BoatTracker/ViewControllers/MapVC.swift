@@ -86,7 +86,6 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, UIPopoverPresentatio
         mapView.addGestureRecognizer(swipes)
         
         MapEvents.shared.delegate = self
-        // initConf()
     }
     
     func mapViewDidFinishLoadingMap(_ mapView: MapView) {
@@ -162,7 +161,6 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, UIPopoverPresentatio
     }
     
     func installTapListener(mapView: MapView) {
-        log.info("Installing tap listener...")
         mapView.gestures.singleTapGestureRecognizer.addTarget(self, action: #selector(handleMapTap(sender:)))
         mapView.gestures.singleTapGestureRecognizer.require(toFail: mapView.gestures.doubleTapToZoomInGestureRecognizer)
     }
@@ -202,9 +200,9 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, UIPopoverPresentatio
     private func popoverView(_ tapped: CustomAnnotation) -> UIView? {
         guard let lang = self.settings.lang, let finnishSpecials = self.settings.languages?.finnish.specialWords else { return nil }
         if let boat = tapped as? BoatAnnotation {
-            return TrackedBoatCallout(annotation: boat, lang: lang)
+            return boat.callout(lang: lang)
         } else if let vessel = tapped as? VesselAnnotation {
-            return VesselCallout(annotation: vessel, lang: lang)
+            return vessel.callout(lang: lang)
         } else if let mark = tapped as? MarkAnnotation {
             return MarkCallout(annotation: mark, lang: lang, finnishWords: finnishSpecials)
         } else if let mark = tapped as? MinimalMarkAnnotation {

@@ -101,20 +101,21 @@ class BoatRenderer {
         trail.data = coll
         try style.updateGeoJSONSource(withId: trailName(for: event.from.trackName), geoJSON: .featureCollection(polyline))
         // Updates boat icon position
-        guard let lastCoord = coords.last, var iconLayer = boatIcons[track] else { return }
+        guard let lastCoord = coords.last, let iconLayer = boatIcons[track] else { return }
         let dict = try Json.shared.write(from: BoatPoint(from: from, coord: lastCoord))
         let geo = Geometry.point(.init(lastCoord.coord))
         var feature = Feature(geometry: geo)
         feature.properties = dict
-        if let iconSourceId = iconLayer.source,
-           var iconSource = try? style.source(withId: iconSourceId, type: GeoJSONSource.self) {
-            iconSource.data = .feature(feature)
+        if let iconSourceId = iconLayer.source {
+            try style.updateGeoJSONSource(withId: iconSourceId, geoJSON: .feature(feature))
         }
         // Updates boat icon bearing
         let lastTwo = Array(newTrail.suffix(2)).map { $0.coord }
         let bearing = lastTwo.count == 2 ? Geo.shared.bearing(from: lastTwo[0], to: lastTwo[1]) : nil
         if let bearing = bearing {
-            iconLayer.iconRotate = .constant(bearing)
+            try style.updateLayer(withId: iconLayer.id, type: SymbolLayer.self) { layer in
+                layer.iconRotate = .constant(bearing)
+            }
         }
         // Updates trophy
         let top = from.topPoint

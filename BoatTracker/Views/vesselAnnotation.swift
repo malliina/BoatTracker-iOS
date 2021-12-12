@@ -35,6 +35,8 @@ class VesselAnnotation: CustomAnnotation {
         self.time = vessel.time
         self.coordinate = vessel.coord
     }
+    
+    func callout(lang: Lang) -> VesselCallout { .init(annotation: self, lang: lang) }
 }
 
 // https://stackoverflow.com/a/51906338
