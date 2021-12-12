@@ -88,16 +88,10 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, UIPopoverPresentatio
         MapEvents.shared.delegate = self
     }
     
-    func mapViewDidFinishLoadingMap(_ mapView: MapView) {
-        
-    }
-    
     func onStyleLoaded(_ mapView: MapView, didFinishLoading style: Style) {
         log.info("Style loaded.")
         self.style = style
-        let pam = mapView.annotations.makePointAnnotationManager()
-        let boats = BoatRenderer(mapView: mapView, style: style, followButton: followButton, pam: pam)
-        // pam.delegate = self
+        let boats = BoatRenderer(mapView: mapView, style: style, followButton: followButton)
         self.boatRenderer = boats
         self.pathFinder = PathFinder(mapView: mapView, style: style)
         installTapListener(mapView: mapView)
@@ -168,13 +162,10 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, UIPopoverPresentatio
     }
     
     @objc func handleMapTap(sender: UITapGestureRecognizer) {
-        log.info("Handling tap...")
-        guard let mapView = mapView else { return }
         if sender.state == .ended {
             // Tries matching the exact point first
             guard let senderView = sender.view, let taps = taps else { return }
             let point = sender.location(in: senderView)
-            log.info("Handling tap at \(point)...")
             let handledByTaps = taps.onTap(point: point).subscribe { event in
                 switch event {
                 case .success(let annotation):
@@ -190,10 +181,6 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, UIPopoverPresentatio
                     self.log.info("Failed to handle tap. \(error)")
                 }
             }
-            //if !handledByTaps {
-//                mapView.annotations.remo
-//                mapView.deselectAnnotation(mapView.selectedAnnotations.first, animated: true)
-            //}
         }
     }
     
@@ -247,7 +234,7 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, UIPopoverPresentatio
 //        }
 //    }
     
-//    func routeAnnotationView(id: String, faIcon: String,  of annotation: MGLAnnotation, mapView: MapView) -> MGLAnnotationView {
+//    func routeAnnotationView(id: String, faIcon: String, of annotation: MGLAnnotation, mapView: MapView) -> MGLAnnotationView {
 //        let view = mapView.dequeueReusableAnnotationView(withIdentifier: id) ?? MGLAnnotationView(annotation: annotation, reuseIdentifier: id)
 //        if let image = UIImage(icon: faIcon, backgroundColor: .clear, iconColor: UIColor.black, fontSize: 14) {
 //            let imageView = UIImageView(image: image)
@@ -255,41 +242,6 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, UIPopoverPresentatio
 //            view.addSubview(imageView)
 //        }
 //        return view
-//    }
-    
-//    func mapView(_ mapView: MapView, calloutViewFor annotation: MGLAnnotation) -> MGLCalloutView? {
-//        guard let language = settings.lang else { return nil }
-//        if let boat = annotation as? BoatAnnotation {
-//            return TrackedBoatCallout(annotation: boat, lang: language)
-//        } else if let vessel = annotation as? VesselAnnotation {
-//            return VesselCallout(annotation: vessel, lang: language)
-//        } else if let mark = annotation as? MarkAnnotation, let finnishSpecials = settings.languages?.finnish.specialWords {
-//            return MarkCallout(annotation: mark, lang: language, finnishWords: finnishSpecials)
-//        } else if let mark = annotation as? MinimalMarkAnnotation, let finnishSpecials = settings.languages?.finnish.specialWords {
-//            return MinimalMarkCallout(annotation: mark, lang: language, finnishWords: finnishSpecials)
-//        } else if let limit = annotation as? LimitAnnotation {
-//            return limit.callout(lang: language)
-//        } else if let area = annotation as? FairwayAreaAnnotation {
-//            return area.callout(lang: language)
-//        } else {
-//            // Default callout view
-//            return nil
-//        }
-//    }
-    
-//    func mapView(_ mapView: MapView, annotationCanShowCallout annotation: MGLAnnotation) -> Bool {
-//        true
-//    }
-    
-//    func mapView(_ mapView: MapView, tapOnCalloutFor annotation: MGLAnnotation) {
-//        mapView.deselectAnnotation(annotation, animated: true)
-//    }
-    
-//    func mapView(_ mapView: MapView, didDeselect annotation: MGLAnnotation) {
-//        let isTrophy = annotation as? TrophyAnnotation
-//        if isTrophy == nil {
-//            mapView.removeAnnotation(annotation)
-//        }
 //    }
     
     @objc func onSwipe(_ sender: UIPanGestureRecognizer) {

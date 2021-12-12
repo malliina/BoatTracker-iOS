@@ -10,37 +10,42 @@ import Foundation
 import MapboxMaps
 
 class RouteLayers {
-    static let empty = RouteLayers(initial: LayerSource(lineId: "route-initial"),
-                                   fairways: LayerSource(lineId: "route-fairways"),
-                                   tail: LayerSource(lineId: "route-tail"))
+    static func empty(style: Style) -> RouteLayers {
+        RouteLayers(initial: LayerSource(lineId: "route-initial"),
+                    fairways: LayerSource(lineId: "route-fairways"),
+                    tail: LayerSource(lineId: "route-tail"),
+                    style: style)
+    }
     
     let initial: LayerSource<LineLayer>
     let fairways: LayerSource<LineLayer>
     let tail: LayerSource<LineLayer>
+    let style: Style
     
-    init(initial: LayerSource<LineLayer>,fairways: LayerSource<LineLayer>, tail: LayerSource<LineLayer>) {
+    init(initial: LayerSource<LineLayer>, fairways: LayerSource<LineLayer>, tail: LayerSource<LineLayer>, style: Style) {
         self.initial = initial
         self.initial.layer.lineDasharray = .constant([2, 4])
-        // self.initial.layer.lineDashPattern = NSExpression(forConstantValue: [2, 4])
         self.fairways = fairways
         self.tail = tail
         self.tail.layer.lineDasharray = .constant([2, 4])
+        self.style = style
     }
     
-    func update(initial: [CLLocationCoordinate2D], fairways: [CLLocationCoordinate2D], tail: [CLLocationCoordinate2D]) {
-        update(self.initial, initial)
-        update(self.fairways, fairways)
-        update(self.tail, tail)
+    func update(initial: [CLLocationCoordinate2D], fairways: [CLLocationCoordinate2D], tail: [CLLocationCoordinate2D]) throws {
+        try update(self.initial, initial)
+        try update(self.fairways, fairways)
+        try update(self.tail, tail)
     }
     
-    func update(_ src: LayerSource<LineLayer>, _ coords: [CLLocationCoordinate2D]) {
-        src.source.data = .feature(Feature(geometry: .multiPoint(.init(coords))))
+    func update(_ src: LayerSource<LineLayer>, _ coords: [CLLocationCoordinate2D]) throws {
+        try style.updateGeoJSONSource(withId: src.sourceId, geoJSON: .feature(Feature(geometry: .multiPoint(.init(coords)))))
+        // src.source.data = .feature(Feature(geometry: .multiPoint(.init(coords))))
     }
     
-    func install(to: Style) throws {
-        try initial.install(to: to, id: initial.sourceId)
-        try fairways.install(to: to, id: fairways.sourceId)
-        try tail.install(to: to, id: tail.sourceId)
+    func install() throws {
+        try initial.install(to: style, id: initial.sourceId)
+        try fairways.install(to: style, id: fairways.sourceId)
+        try tail.install(to: style, id: tail.sourceId)
     }
 }
 
@@ -117,14 +122,18 @@ class PathFinder: NSObject, UIGestureRecognizerDelegate {
         DispatchQueue.main.async {
             let layers = self.currentLayers()
             let fairwayPath = route.route.links.map { $0.to }
-            layers.update(initial: [route.from, fairwayPath.first ?? route.to],
-                          fairways: fairwayPath,
-                          tail: [fairwayPath.last ?? route.from, route.to])
-            let coords = fairwayPath + [ route.from, route.to ]
-            //let bounds = Feature(geometry: Geometry.multiPoint(coords)).overlayBounds
-            let camera = self.mapView.mapboxMap.camera(for: coords, padding: self.edgePadding, bearing: nil, pitch: nil)
-            // let camera = self.mapView.cameraThatFitsCoordinateBounds(bounds, edgePadding: self.edgePadding)
-            self.mapView.camera.fly(to: camera, duration: nil, completion: nil)
+            do {
+                try layers.update(initial: [route.from, fairwayPath.first ?? route.to],
+                              fairways: fairwayPath,
+                              tail: [fairwayPath.last ?? route.from, route.to])
+                let coords = fairwayPath + [ route.from, route.to ]
+                //let bounds = Feature(geometry: Geometry.multiPoint(coords)).overlayBounds
+                let camera = self.mapView.mapboxMap.camera(for: coords, padding: self.edgePadding, bearing: nil, pitch: nil)
+                // let camera = self.mapView.cameraThatFitsCoordinateBounds(bounds, edgePadding: self.edgePadding)
+                self.mapView.camera.fly(to: camera, duration: nil, completion: nil)
+            } catch {
+                self.log.warn("Failed to update route. \(error)")
+            }
         }
     }
 
@@ -132,8 +141,8 @@ class PathFinder: NSObject, UIGestureRecognizerDelegate {
         if let current = current {
             return current
         } else {
-            let layers = RouteLayers.empty
-            try? layers.install(to: style)
+            let layers = RouteLayers.empty(style: style)
+            try? layers.install()
             current = layers
             return layers
         }
@@ -147,7 +156,7 @@ class PathFinder: NSObject, UIGestureRecognizerDelegate {
             // mapView.removeAnnotation(start)
         }
         if let current = current {
-            [current.initial, current.fairways, current.tail].forEach { (layerSource) in
+            [current.initial, current.fairways, current.tail].forEach { layerSource in
                 style.removeSourceAndLayer(id: layerSource.layer.id)
             }
         }

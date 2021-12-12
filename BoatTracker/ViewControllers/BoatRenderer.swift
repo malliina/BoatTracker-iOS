@@ -20,15 +20,12 @@ class BoatRenderer {
     private var history: [TrackName: [MeasuredCoord]] = [:]
     private var boatIcons: [TrackName: SymbolLayer] = [:]
     private var trophyIcons: [TrackName: SymbolLayer] = [:]
-    // private var topSpeedMarkers: [TrackName: ActiveMarker] = [:]
-    // var trophyMarkers: [String: TrophyInfo] = [:]
     var latestTrack: TrackName? = nil
     private var hasBeenFollowing: Bool = false
     
     private let followButton: UIButton
     private let mapView: MapView
     private let style: Style
-    private let pam: PointAnnotationManager
     
     var mapMode: MapMode = .fit {
         didSet {
@@ -46,11 +43,10 @@ class BoatRenderer {
         }
     }
     
-    init(mapView: MapView, style: Style, followButton: UIButton, pam: PointAnnotationManager) {
+    init(mapView: MapView, style: Style, followButton: UIButton) {
         self.mapView = mapView
         self.style = style
         self.followButton = followButton
-        self.pam = pam
     }
     
     func layers() -> Set<String> {
@@ -81,7 +77,6 @@ class BoatRenderer {
     }
 
     func addCoords(event: CoordsData) throws {
-        log.info("Got \(event.coords.count) coords.")
         let from = event.from
         let track = from.trackName
         latestTrack = track
@@ -128,8 +123,6 @@ class BoatRenderer {
                 let edgePadding = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
                 let allCoords = newTrail.map { $0.coord }
                 let camera = mapView.mapboxMap.camera(for: allCoords, padding: edgePadding, bearing: nil, pitch: nil)
-                // Could try this also
-//                mapView.camera.ease(to: camera, duration: 0.2)
                 mapView.camera.fly(to: camera, duration: nil, completion: nil)
                 if isUpdate {
                     mapMode = .follow
@@ -142,9 +135,7 @@ class BoatRenderer {
                 let pitch = hasBeenFollowing ? mapView.cameraState.pitch : initialFollowPitch
                 hasBeenFollowing = true
                 let camera = mapView.mapboxMap.camera(for: [lastCoord.coord], padding: .zero, bearing: bearing, pitch: pitch)
-                // let camera = MGLMapCamera(lookingAtCenter: lastCoord.coord, altitude: mapView.camera.altitude, pitch: pitch, heading: bearing)
                 mapView.camera.fly(to: camera, duration: 0.8, completion: nil)
-                //mapView.fly(to: camera, withDuration: 0.8, completionHandler: nil)
             } else {
                 let camera = CameraOptions(center: lastCoord.coord)
                 mapView.camera.fly(to: camera, duration: nil, completion: nil)
@@ -193,9 +184,7 @@ class BoatRenderer {
     }
     
     private func trailName(for track: TrackName) -> String { "\(track)-trail" }
-    
     private func iconName(for track: TrackName) -> String { "\(track)-icon" }
-    
     private func trophyName(for track: TrackName) -> String { "\(track)-trophy" }
     
     func clear() {
@@ -206,7 +195,6 @@ class BoatRenderer {
         history = [:]
         boatIcons = [:]
         trophyIcons = [:]
-        // topSpeedMarkers = [:]
         latestTrack = nil
     }
     

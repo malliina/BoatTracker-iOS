@@ -52,7 +52,6 @@ class TapListener {
                 
             }
         }
-        //return self.handleMarksTap(point)
     }
     
     private func handleMarksTap(_ point: CGPoint) -> Single<CustomAnnotation?> {
@@ -105,7 +104,6 @@ class TapListener {
     }
     
     private func handleAreaTap(_ point: CGPoint) -> Single<CustomAnnotation?> {
-        log.info("Searching tapped areas...")
         return queryVisibleFeatureProps(point, layers: layers.fairwayAreas, t: FairwayArea.self).flatMap { result1 in
             self.queryLimitAreaInfo(point).map { result2 in
                 result1.map { area in
@@ -117,7 +115,6 @@ class TapListener {
     }
     
     private func handleLimitsTap(_ point: CGPoint) -> Single<CustomAnnotation?> {
-        log.info("Searching limit areas...")
         return queryLimitAreaInfo(point).map { result in
             result.map { area in
                 LimitAnnotation(limit: area, coord: self.mapView.mapboxMap.coordinate(for: point))
