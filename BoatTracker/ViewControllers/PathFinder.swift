@@ -11,30 +11,43 @@ import MapboxMaps
 
 class RouteLayers {
     static func empty(style: Style) -> RouteLayers {
-        RouteLayers(initial: LayerSource(lineId: "route-initial"),
+        RouteLayers(start: LayerSource(iconId: "route-start", iconImageName: Layers.routeStartIcon),
+                    initial: LayerSource(lineId: "route-initial"),
                     fairways: LayerSource(lineId: "route-fairways"),
                     tail: LayerSource(lineId: "route-tail"),
+                    finish: LayerSource(iconId: "route-finish", iconImageName: Layers.routeEndIcon),
                     style: style)
     }
     
+    let start: LayerSource<SymbolLayer>
     let initial: LayerSource<LineLayer>
     let fairways: LayerSource<LineLayer>
     let tail: LayerSource<LineLayer>
+    let finish: LayerSource<SymbolLayer>
     let style: Style
     
-    init(initial: LayerSource<LineLayer>, fairways: LayerSource<LineLayer>, tail: LayerSource<LineLayer>, style: Style) {
+    init(start: LayerSource<SymbolLayer>, initial: LayerSource<LineLayer>, fairways: LayerSource<LineLayer>, tail: LayerSource<LineLayer>, finish: LayerSource<SymbolLayer>, style: Style) {
+        self.start = start
         self.initial = initial
         self.initial.layer.lineDasharray = .constant([2, 4])
         self.fairways = fairways
         self.tail = tail
         self.tail.layer.lineDasharray = .constant([2, 4])
+        self.finish = finish
         self.style = style
     }
     
     func update(initial: [CLLocationCoordinate2D], fairways: [CLLocationCoordinate2D], tail: [CLLocationCoordinate2D]) throws {
+        let route = initial + fairways + tail
+        if let first = route.first {
+            try style.updateGeoJSONSource(withId: start.sourceId, geoJSON: .feature(.init(geometry: .point(.init(first)))))
+        }
         try update(self.initial, initial)
         try update(self.fairways, fairways)
         try update(self.tail, tail)
+        if let last = route.last {
+            try style.updateGeoJSONSource(withId: finish.sourceId, geoJSON: .feature(.init(geometry: .point(.init(last)))))
+        }
     }
     
     func update(_ src: LayerSource<LineLayer>, _ coords: [CLLocationCoordinate2D]) throws {
@@ -124,8 +137,8 @@ class PathFinder: NSObject, UIGestureRecognizerDelegate {
             let fairwayPath = route.route.links.map { $0.to }
             do {
                 try layers.update(initial: [route.from, fairwayPath.first ?? route.to],
-                              fairways: fairwayPath,
-                              tail: [fairwayPath.last ?? route.from, route.to])
+                                  fairways: fairwayPath,
+                                  tail: [fairwayPath.last ?? route.from, route.to])
                 let coords = fairwayPath + [ route.from, route.to ]
                 //let bounds = Feature(geometry: Geometry.multiPoint(coords)).overlayBounds
                 let camera = self.mapView.mapboxMap.camera(for: coords, padding: self.edgePadding, bearing: nil, pitch: nil)
