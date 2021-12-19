@@ -6,21 +6,21 @@
 //  Copyright © 2018 Michael Skogberg. All rights reserved.
 //
 
-import XCTest
-import BoatTracker
+//import XCTest
+//import BoatTracker
 
-@testable import BoatTracker
+//@testable import BoatTracker
 
-class BoatTrackerTests: XCTestCase {
-    override func setUp() {
-        super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
-    
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-        super.tearDown()
-    }
+//class BoatTrackerTests: XCTestCase {
+//    override func setUp() {
+//        super.setUp()
+//        // Put setup code here. This method is called before the invocation of each test method in the class.
+//    }
+//
+//    override func tearDown() {
+//        // Put teardown code here. This method is called after the invocation of each test method in the class.
+//        super.tearDown()
+//    }
     
 //    func testInitToken() throws {
 //        let isSuccess = AppDelegate.initMapboxToken()
@@ -51,4 +51,4 @@ class BoatTrackerTests: XCTestCase {
 //            // Put the code you want to measure the time of here.
 //        }
 //    }
-}
+//}
