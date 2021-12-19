@@ -108,8 +108,6 @@ extension Style {
         if let layer = try? self.layer(withId: id) {
             try? self.removeLayer(withId: layer.id)
         }
-        if let source = try? self.source(withId: id) {
-            try? self.removeSource(withId: id)
-        }
+        try? self.removeSource(withId: id)
     }
 }

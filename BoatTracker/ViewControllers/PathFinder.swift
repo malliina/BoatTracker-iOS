@@ -90,7 +90,7 @@ class PathFinder: NSObject, UIGestureRecognizerDelegate {
             guard let senderView = sender.view else { return }
             let point = sender.location(in: senderView)
             let coord = mapView.mapboxMap.coordinate(for: point)
-            if let start = start, let end = end {
+            if let _ = start, let end = end {
                 self.start = end
                 self.end = coord
                 shortest(from: end, to: coord)

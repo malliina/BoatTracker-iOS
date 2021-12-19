@@ -16,10 +16,9 @@ import GoogleSignIn
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-    static let logger = LoggerFactory.shared.system(AppDelegate.self)
-    var log: Logger {
-        AppDelegate.logger
-    }
+    static let log = LoggerFactory.shared.system(AppDelegate.self)
+    
+    var log: Logger { AppDelegate.log }
     let notifications = BoatNotifications.shared
 
     var window: UIWindow?
@@ -60,7 +59,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             ResourceOptionsManager.default.resourceOptions.accessToken = token
             return true
         } catch let err {
-            AppDelegate.logger.error(err.describe)
+            log.error("Failed to initialize token. \(err.describe)")
             return false
         }
     }

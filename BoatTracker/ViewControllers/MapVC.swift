@@ -166,7 +166,7 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, UIPopoverPresentatio
             // Tries matching the exact point first
             guard let senderView = sender.view, let taps = taps else { return }
             let point = sender.location(in: senderView)
-            let handledByTaps = taps.onTap(point: point).subscribe { event in
+            let _ = taps.onTap(point: point).subscribe { event in
                 switch event {
                 case .success(let annotation):
                     if let tapped = annotation {
