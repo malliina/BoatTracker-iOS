@@ -71,7 +71,6 @@
 		61B07C6720F21DC400D8B7E0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 61B07C6620F21DC400D8B7E0 /* Assets.xcassets */; };
 		61B07C6A20F21DC400D8B7E0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 61B07C6820F21DC400D8B7E0 /* LaunchScreen.storyboard */; };
 		61B07C7520F21DC400D8B7E0 /* BoatTrackerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61B07C7420F21DC400D8B7E0 /* BoatTrackerTests.swift */; };
-		61BCBE792207667F00EE74EB /* annotations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61BCBE782207667F00EE74EB /* annotations.swift */; };
 		61BCBE7B220768AB00EE74EB /* AISRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61BCBE7A220768AB00EE74EB /* AISRenderer.swift */; };
 		61BCBE7D2207730400EE74EB /* BoatRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61BCBE7C2207730400EE74EB /* BoatRenderer.swift */; };
 		61BCBE7F2208CC1C00EE74EB /* Layers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61BCBE7E2208CC1C00EE74EB /* Layers.swift */; };
@@ -93,6 +92,7 @@
 		61F4199D2120B39C00B1ED7D /* TrackSummaryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61F4199C2120B39C00B1ED7D /* TrackSummaryCell.swift */; };
 		7D045D6A265A54A300B92EE8 /* Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D045D69265A54A300B92EE8 /* Auth.swift */; };
 		7D2CC0F3264D6EBD0091E05C /* MicrosoftAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D2CC0F2264D6EBD0091E05C /* MicrosoftAuth.swift */; };
+		7D998D30275D38E3001064A6 /* MapPopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D998D2F275D38E3001064A6 /* MapPopup.swift */; };
 		AAB8A21EDC02BA022080687C /* Pods_BoatTracker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E9C3E7946D9FC63B43AD3F4 /* Pods_BoatTracker.framework */; };
 		C8EAA866251260BDB1F3018A /* Pods_BoatTrackerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC06A72AF5F57EEAD7E60DC3 /* Pods_BoatTrackerTests.framework */; };
 /* End PBXBuildFile section */
@@ -185,7 +185,6 @@
 		61B07C7020F21DC400D8B7E0 /* BoatTrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BoatTrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		61B07C7420F21DC400D8B7E0 /* BoatTrackerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatTrackerTests.swift; sourceTree = "<group>"; };
 		61B07C7620F21DC400D8B7E0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		61BCBE782207667F00EE74EB /* annotations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = annotations.swift; sourceTree = "<group>"; };
 		61BCBE7A220768AB00EE74EB /* AISRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AISRenderer.swift; sourceTree = "<group>"; };
 		61BCBE7C2207730400EE74EB /* BoatRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatRenderer.swift; sourceTree = "<group>"; };
 		61BCBE7E2208CC1C00EE74EB /* Layers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Layers.swift; sourceTree = "<group>"; };
@@ -207,6 +206,7 @@
 		61F4199C2120B39C00B1ED7D /* TrackSummaryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackSummaryCell.swift; sourceTree = "<group>"; };
 		7D045D69265A54A300B92EE8 /* Auth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Auth.swift; sourceTree = "<group>"; };
 		7D2CC0F2264D6EBD0091E05C /* MicrosoftAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrosoftAuth.swift; sourceTree = "<group>"; };
+		7D998D2F275D38E3001064A6 /* MapPopup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapPopup.swift; sourceTree = "<group>"; };
 		CC06A72AF5F57EEAD7E60DC3 /* Pods_BoatTrackerTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BoatTrackerTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E056F09FFE2FB53F39CDBB89 /* Pods-BoatTrackerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BoatTrackerTests.debug.xcconfig"; path = "Target Support Files/Pods-BoatTrackerTests/Pods-BoatTrackerTests.debug.xcconfig"; sourceTree = "<group>"; };
 		F02A86D7A8C81DBA5B27933E /* Pods-BoatTracker-BoatTrackerUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BoatTracker-BoatTrackerUITests.release.xcconfig"; path = "Target Support Files/Pods-BoatTracker-BoatTrackerUITests/Pods-BoatTracker-BoatTrackerUITests.release.xcconfig"; sourceTree = "<group>"; };
@@ -351,6 +351,7 @@
 				619679F920FBCDB100432672 /* TrackListVC.swift */,
 				612F46AF20F551CB001A3003 /* viewControllerExt.swift */,
 				61ACE5C62130956A00925265 /* WelcomeSignedIn.swift */,
+				7D998D2F275D38E3001064A6 /* MapPopup.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -358,7 +359,6 @@
 		6199E0E720F2324400A4009A /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				61BCBE782207667F00EE74EB /* annotations.swift */,
 				61F4199221206C4C00B1ED7D /* AppAttributionCell.swift */,
 				61DE7F4A20F3ED3900C95B3F /* boatButtons.swift */,
 				6101D54C221057530051A427 /* BoatCallout.swift */,
@@ -717,7 +717,6 @@
 				6199E0E920F2325100A4009A /* BoatLabel.swift in Sources */,
 				61CD40CF211635FD00F31AA5 /* Dummy.swift in Sources */,
 				61967A002103BCCF00432672 /* TrackCell.swift in Sources */,
-				61BCBE792207667F00EE74EB /* annotations.swift in Sources */,
 				61B07C6220F21DC300D8B7E0 /* MapVC.swift in Sources */,
 				61F4199521206F9200B1ED7D /* Arrays.swift in Sources */,
 				61BCBE7B220768AB00EE74EB /* AISRenderer.swift in Sources */,
@@ -732,6 +731,7 @@
 				6199E0F720F254FB00A4009A /* SocketClient.swift in Sources */,
 				619679FA20FBCDB100432672 /* TrackListVC.swift in Sources */,
 				61BCBE7D2207730400EE74EB /* BoatRenderer.swift in Sources */,
+				7D998D30275D38E3001064A6 /* MapPopup.swift in Sources */,
 				61BCBE7F2208CC1C00EE74EB /* Layers.swift in Sources */,
 				6199E0EF20F24EC300A4009A /* Log.swift in Sources */,
 				613669BC216FDB3E0043494A /* notificationModels.swift in Sources */,

@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import Mapbox
+import MapboxMaps
 
 class Geo {
     static let shared = Geo()

@@ -8,34 +8,36 @@
 
 import Foundation
 import UIKit
-import Mapbox
+import MapboxMaps
 
 class AISRenderer {
     let log = LoggerFactory.shared.vc(AISRenderer.self)
     
     private let maxTrailLength = 200
-    private let vesselTrails: MGLShapeSource
-    private let vesselShape: MGLShapeSource
+    private var vesselTrails: GeoJSONSource
+    private var vesselShape: GeoJSONSource
     private var vesselHistory: [Mmsi: [Vessel]] = [:]
-    private var vesselIcons: [Mmsi: MGLSymbolStyleLayer] = [:]
+    private var vesselIcons: [Mmsi: Layer] = [:]
     
-    private let mapView: MGLMapView
-    private let style: MGLStyle
+    private let mapView: MapView
+    private let style: Style
     private let conf: AisConf
     
-    init(mapView: MGLMapView, style: MGLStyle, conf: AisConf) {
+    init(mapView: MapView, style: Style, conf: AisConf) throws {
         self.mapView = mapView
         self.style = style
         self.conf = conf
         // Icons
-        let vessels = LayerSource(iconId: conf.vessel, iconImageName: conf.vesselIcon)
-        vessels.layer.iconRotation = NSExpression(forKeyPath: Vessel.headingKey)
-        vessels.install(to: style)
+        let vessels = LayerSource(iconId: conf.vessel, iconImageName: conf.vesselIcon, iconSize: 0.7)
+        vessels.layer.iconRotate = .expression(Exp(.get) {
+            Vessel.headingKey
+        })
+        try vessels.install(to: style, id: "ais-vessels")
         vesselShape = vessels.source
         
         // Trails
         let trails = LayerSource(lineId: conf.trail, lineColor: .darkGray, minimumZoomLevel: 11.0)
-        trails.install(to: style)
+        try trails.install(to: style, id: "ais-trails")
         vesselTrails = trails.source
     }
     
@@ -43,29 +45,34 @@ class AISRenderer {
         vesselHistory[mmsi]?.first
     }
     
-    func update(vessels: [Vessel]) {
+    func update(vessels: [Vessel]) throws {
         vessels.forEach { v in
             vesselHistory.updateValue(([v] + (vesselHistory[v.mmsi] ?? [])).take(maxTrailLength), forKey: v.mmsi)
         }
-        let updatedVessels: [MGLPointFeature] = vesselHistory.values.compactMap { v in
+        let updatedVessels: [Feature] = vesselHistory.values.compactMap { v in
             guard let latest: Vessel = v.first else { return nil }
-            let point = MGLPointFeature()
-            point.coordinate = latest.coord
-            point.attributes = [
-                Mmsi.key: latest.mmsi.mmsi,
-                Vessel.nameKey: latest.name,
-                Vessel.headingKey: latest.heading ?? latest.cog
-            ]
-            return point
+            let geo = Geometry.point(.init(latest.coord))
+            var feature = Feature(geometry: geo)
+            do {
+                let props = try Json.shared.write(from: VesselMeta(mmsi: latest.mmsi, name: latest.name, heading: latest.heading ?? latest.cog))
+                feature.properties = props
+                return feature
+            } catch {
+                log.warn("Failed to write JSON. \(error)")
+                return nil
+            }
         }
-        vesselShape.shape = MGLShapeCollectionFeature(shapes: updatedVessels)
-        let updatedTrails: [MGLPolylineFeature] = vesselHistory.values.compactMap { v in
+        
+        try style.updateGeoJSONSource(withId: "ais-vessels", geoJSON: .featureCollection(FeatureCollection(features: updatedVessels)))
+        vesselShape.data = .featureCollection(FeatureCollection(features: updatedVessels))
+        let updatedTrails: [Feature] = vesselHistory.values.compactMap { v in
             let tail = v.dropFirst()
             guard !tail.isEmpty else { return nil }
-            return MGLPolylineFeature(coordinates: tail.map { $0.coord }, count: UInt(tail.count))
+            return Feature(geometry: Geometry.lineString(.init(tail.map { $0.coord })))
         }
-        vesselTrails.shape = MGLMultiPolylineFeature(polylines: updatedTrails)
-        //        log.info("Updated vessel source which now has \(updatedVessels.count) locations.")
+        try style.updateGeoJSONSource(withId: "ais-trails", geoJSON: .featureCollection(FeatureCollection(features: updatedTrails)))
+        vesselTrails.data = .featureCollection(FeatureCollection(features: updatedTrails))
+        log.info("Updated vessel source which now has \(updatedVessels.count) locations.")
     }
     
     /// Clears the map to avoid discontinuities in AIS trails.
@@ -82,7 +89,7 @@ class AISRenderer {
         log.info("Clearing vessels")
         vesselHistory.removeAll()
         vesselIcons.removeAll()
-        vesselTrails.shape = MGLMultiPolylineFeature(polylines: [])
-        vesselShape.shape = MGLShapeCollectionFeature(shapes: [])
+        vesselTrails.data = .empty
+        vesselShape.data = .empty
     }
 }

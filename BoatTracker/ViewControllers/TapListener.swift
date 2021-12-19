@@ -7,12 +7,14 @@
 //
 
 import Foundation
-import Mapbox
+import MapboxMaps
+import RxSwift
+import RxCocoa
 
 class TapListener {
     let log = LoggerFactory.shared.vc(TapListener.self)
     
-    let mapView: MGLMapView
+    let mapView: MapView
     let layers: MapboxLayers
     let marksLayers: Set<String>
     let limitsLayers: Set<String>
@@ -20,7 +22,7 @@ class TapListener {
     let ais: AISRenderer?
     let boats: BoatRenderer
     
-    init(mapView: MGLMapView, layers: MapboxLayers, ais: AISRenderer?, boats: BoatRenderer) {
+    init(mapView: MapView, layers: MapboxLayers, ais: AISRenderer?, boats: BoatRenderer) {
         self.mapView = mapView
         self.layers = layers
         self.marksLayers = Set(layers.marks)
@@ -30,98 +32,131 @@ class TapListener {
         self.boats = boats
     }
     
-    func onTap(point: CGPoint) -> Bool {
-        // Preference: boats > ais > marks > fairway info > limits
+    func onTap(point: CGPoint) -> Single<CustomAnnotation?> {
+        // Preference: boats > ais > trophy > marks > fairway info > limits
         // Fairway info includes any limits
-        do {
-            guard let annotation = try
-                (handleBoatTap(point: point)) ??
-                (try handleAisTap(point: point)) ??
-                (try handleMarksTap(point: point)) ??
-                (try handleAreaTap(point: point)) ??
-                (try handleLimitsTap(point: point)) else { return false}
-            mapView.selectAnnotation(annotation, animated: true, completionHandler: nil)
-            return true
-        } catch let err {
-            log.error(err.describe)
-            return false
-        }
-    }
-    
-    private func handleMarksTap(point: CGPoint) throws -> MGLAnnotation? {
-        guard let selected = mapView.visibleFeatures(at: point, styleLayerIdentifiers: marksLayers).first else { return nil }
-        do {
-            let json = try selected.properties()
-            do {
-                let mark = try json.validate(MarineSymbol.self)
-                return MarkAnnotation(mark: mark, coord: selected.coordinate)
-            } catch {
-                let mark = try json.validate(MinimalMarineSymbol.self)
-                return MinimalMarkAnnotation(mark: mark, coord: selected.coordinate)
+        return handleBoatTap(point).flatMap { r1 in
+            guard r1 == nil else { return Single.just(r1) }
+            return self.handleAisTap(point).flatMap { r2 in
+                guard r2 == nil else { return Single.just(r2) }
+                return self.handleTrophyTap(point).flatMap { tt in
+                    guard tt == nil else { return Single.just(tt) }
+                    return self.handleMarksTap(point).flatMap { r3 in
+                        guard r3 == nil else { return Single.just(r3) }
+                        return self.handleAreaTap(point).flatMap { r4 in
+                            guard r4 == nil else { return Single.just(r4) }
+                            return self.handleLimitsTap(point)
+                        }
+                    }
+                }
+                
             }
-        } catch let err {
-            log.info("Failed to parse marine symbol: \(err.describe).")
         }
-        return nil
     }
     
-    private func handleBoatTap(point: CGPoint) -> MGLAnnotation? {
-        do {
-            if let selected = mapView.visibleFeatures(at: point, styleLayerIdentifiers: boats.layers()).find({ $0 is MGLPointFeature }) {
-                let info = try Json.shared.read(BoatPoint.self, dict: selected.attributes)
-                return BoatAnnotation(info: info)
-            } else {
-                return nil
+    private func handleMarksTap(_ point: CGPoint) -> Single<CustomAnnotation?> {
+        return queryFeatures(at: point, layerIds: Array(marksLayers)).map { features in
+            guard let coordinate = self.markCoordinate(features.first) else { return nil }
+            return features.first.flatMap { feature in
+                let props = feature.feature.properties ?? [:]
+                let full: MarkAnnotation? = (try? Json.shared.parse(MarineSymbol.self, from: props)).map { symbol in
+                    MarkAnnotation(mark: symbol, coord: coordinate)
+                }
+                let minimal: MinimalMarkAnnotation? = (try? Json.shared.parse(MinimalMarineSymbol.self, from: props)).map { symbol in
+                    MinimalMarkAnnotation(mark: symbol, coord: coordinate)
+                }
+                return full ?? minimal
             }
-        } catch let err {
-            log.error("Unable to handle boat tap. \(err.describe)")
-            return nil
         }
     }
     
-    private func handleAisTap(point: CGPoint) throws -> MGLAnnotation? {
+    private func markCoordinate(_ feature: QueriedFeature?) -> CLLocationCoordinate2D? {
+        switch feature?.feature.geometry {
+        case .point(let point): return point.coordinates
+        default: return nil
+        }
+    }
+    
+    private func handleBoatTap(_ point: CGPoint) -> Single<CustomAnnotation?> {
+        queryVisibleFeatureProps(point, layers: Array(boats.layers()), t: BoatPoint.self).map { result in
+            result.map { boatPoint in
+                BoatAnnotation(info: boatPoint)
+            }
+        }
+    }
+    
+    private func handleTrophyTap(_ point: CGPoint) -> Single<CustomAnnotation?> {
+        queryVisibleFeatureProps(point, layers: Array(boats.trophyLayers()), t: TrophyPoint.self).map { result in
+            result.map { point in
+                TrophyAnnotation(top: point.top)
+            }
+        }
+    }
+    
+    private func handleAisTap(_ point: CGPoint) -> Single<CustomAnnotation?> {
         // Limits feature selection to just the following layer identifiers
-        if let selected = mapView.visibleFeatures(at: point, styleLayerIdentifiers: aisLayers).find({ $0 is MGLPointFeature }),
-            let mmsi = selected.attribute(forKey: Mmsi.key) as? String,
-            let ais = ais,
-            let vessel = ais.info(Mmsi(mmsi)) {
-            return VesselAnnotation(vessel: vessel)
-        } else {
-            return nil
+        return queryVisibleFeatureProps(point, layers: Array(aisLayers), t: VesselProps.self).map { result in
+            guard let props = result, let ais = self.ais else { return nil }
+            return ais.info(props.mmsi).map { vessel in
+                VesselAnnotation(vessel: vessel)
+            }
         }
     }
     
-    private func handleAreaTap(point: CGPoint) throws -> MGLAnnotation? {
-        guard let selected = mapView.visibleFeatures(at: point, styleLayerIdentifiers: Set(layers.fairwayAreas)).first else { return nil }
-        return FairwayAreaAnnotation(
-            info: try selected.properties().validate(FairwayArea.self),
-            limits: try limitAreaInfo(point: point),
-            coord: mapView.convert(point, toCoordinateFrom: nil)
-        )
+    private func handleAreaTap(_ point: CGPoint) -> Single<CustomAnnotation?> {
+        return queryVisibleFeatureProps(point, layers: layers.fairwayAreas, t: FairwayArea.self).flatMap { result1 in
+            self.queryLimitAreaInfo(point).map { result2 in
+                result1.map { area in
+                    FairwayAreaAnnotation(info: area, limits: result2, coord: self.mapView.mapboxMap.coordinate(for: point))
+                }
+            }
+            
+        }
     }
     
-    private func handleLimitsTap(point: CGPoint) throws -> MGLAnnotation? {
-        guard let limitArea = try limitAreaInfo(point: point) else { return nil }
-        return LimitAnnotation(limit: limitArea, coord: mapView.convert(point, toCoordinateFrom: nil))
+    private func handleLimitsTap(_ point: CGPoint) -> Single<CustomAnnotation?> {
+        return queryLimitAreaInfo(point).map { result in
+            result.map { area in
+                LimitAnnotation(limit: area, coord: self.mapView.mapboxMap.coordinate(for: point))
+            }
+        }
     }
     
-    private func limitAreaInfo(point: CGPoint) throws -> LimitArea? {
-        guard let selected = mapView.visibleFeatures(at: point, styleLayerIdentifiers: limitsLayers).first else { return nil }
-        return try selected.properties().validate(RawLimitArea.self).validate()
+    private func queryLimitAreaInfo(_ point: CGPoint) -> Single<LimitArea?> {
+        return queryVisibleFeatureProps(point, layers: Array(limitsLayers), t: RawLimitArea.self).map { raw in
+            return try? raw?.validate()
+        }
     }
     
-    func featureData(point: CGPoint, layers: [String]) throws -> Data? {
-        guard let selected = visibleFeature(at: point, layers: marksLayers) else { return nil }
-        return try Json.shared.asData(dict: selected.attributes)
+    func queryVisibleFeatureProps<T: Decodable>(_ point: CGPoint, layers: [String], t: T.Type) -> Single<T?> {
+        return queryFeatures(at: point, layerIds: layers).map { features in
+            self.log.info("Found \(features.count) features with layers \(layers.mkString(", ")).")
+            return features.first.flatMap { feature in
+                let props = feature.feature.properties ?? [:]
+                do {
+                    return try Json.shared.parse(t, from: props)
+                } catch {
+                    let str = try! Json.shared.stringify(props)
+                    self.log.warn("Failed to parse \(str). \(error)")
+                    return nil
+                }
+            }
+        }
     }
     
-    func visibleFeature(at: CGPoint, layers: Set<String>) -> MGLFeature? {
-        mapView.visibleFeatures(at: at, styleLayerIdentifiers: layers).first
-    }
-}
-
-extension MGLFeature {
-    func properties() throws -> Data {
-        try Json.shared.asData(dict: self.attributes)
+    func queryFeatures(at: CGPoint, layerIds: [String]) -> Single<[QueriedFeature]> {
+        return Observable.create { observer in
+            self.mapView.mapboxMap.queryRenderedFeatures(at: at, options: RenderedQueryOptions(layerIds: layerIds, filter: nil)) { result in
+                switch result {
+                case .success(let features):
+                    observer.on(.next(features))
+                    observer.on(.completed)
+                case .failure(let error):
+                    self.log.warn("Failed to query rendered features. \(error)")
+                    observer.on(.error(error))
+                }
+            }
+            return Disposables.create()
+        }.asSingle()
     }
 }

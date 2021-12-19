@@ -7,18 +7,18 @@
 //
 
 import Foundation
-import Mapbox
+import MapboxMaps
 import UIKit
 
-class BoatCallout: UIView, MGLCalloutView {
+class BoatCallout: UIView {
     static let log = LoggerFactory.shared.view(BoatCallout.self)
     
     static let spacing = 8
     static let inset = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
     
-    weak var delegate: MGLCalloutViewDelegate?
+//    weak var delegate: MGLCalloutViewDelegate?
     
-    var representedObject: MGLAnnotation
+//    var representedObject: MGLAnnotation
     var leftAccessoryView: UIView = UIView()
     var rightAccessoryView: UIView = UIView()
     
@@ -49,8 +49,7 @@ class BoatCallout: UIView, MGLCalloutView {
         }
     }
     
-    init(representedObject: MGLAnnotation) {
-        self.representedObject = representedObject
+    init() {
         super.init(frame: .zero)
         setupContainer()
     }

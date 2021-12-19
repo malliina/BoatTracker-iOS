@@ -1,5 +1,5 @@
 import GoogleSignIn
-import Mapbox
+import MapboxMaps
 import MSAL
 import RxSwift
 import SnapKit
@@ -10,7 +10,7 @@ struct ActiveMarker {
     let coord: CoordBody
 }
 
-class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
+class MapVC: UIViewController, UIGestureRecognizerDelegate, UIPopoverPresentationControllerDelegate {
     let log = LoggerFactory.shared.vc(MapVC.self)
     
     let profileButton = BoatButton.map(icon: #imageLiteral(resourceName: "SettingsSlider"))
@@ -21,8 +21,8 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     private var socket: BoatSocket { Backend.shared.socket }
     private var http: BoatHttpClient { Backend.shared.http }
     
-    private var mapView: MGLMapView?
-    private var style: MGLStyle?
+    private var mapView: MapView?
+    private var style: Style?
     
     private var latestToken: UserToken? = nil
     private var isSignedIn: Bool { latestToken != nil }
@@ -40,13 +40,22 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let url = URL(string: "mapbox://styles/malliina/cjgny1fjc008p2so90sbz8nbv")
-        let mapView = MGLMapView(frame: view.bounds, styleURL: url)
+        let url = URL(string: "mapbox://styles/malliina/cjgny1fjc008p2so90sbz8nbv")!
+        let styleUri = StyleURI(url: url)!
+        let camera = CameraOptions(center: defaultCenter, zoom: 10)
+        let mapView = MapView(frame: view.bounds, mapInitOptions: MapInitOptions(cameraOptions: camera, styleURI: nil))
         self.mapView = mapView
+        mapView.mapboxMap.loadStyleURI(styleUri) { result in
+            switch result {
+            case .success(let style):
+                self.log.info("The map has finished loading the style")
+                self.onStyleLoaded(mapView, didFinishLoading: style)
+            case let .failure(error):
+                self.log.warn("The map failed to load the style: \(error)")
+            }
+        }
         mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        mapView.setCenter(defaultCenter, zoomLevel: 10, animated: false)
         view.addSubview(mapView)
-        mapView.delegate = self
         
         let buttonSize = 40
         mapView.addSubview(profileButton)
@@ -76,19 +85,11 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         swipes.delegate = self
         mapView.addGestureRecognizer(swipes)
         
-        MapEvents.shared.delegate = self   
-        let _ = Auth.shared.tokens.subscribe(onNext: { token in
-            self.reload(token: token)
-        })
-        Auth.shared.signIn(from: self, restore: true)
-        initConf()
+        MapEvents.shared.delegate = self
     }
     
-    func mapViewDidFinishLoadingMap(_ mapView: MGLMapView) {
-        
-    }
-    
-    func mapView(_ mapView: MGLMapView, didFinishLoading style: MGLStyle) {
+    func onStyleLoaded(_ mapView: MapView, didFinishLoading style: Style) {
+        log.info("Style loaded.")
         self.style = style
         let boats = BoatRenderer(mapView: mapView, style: style, followButton: followButton)
         self.boatRenderer = boats
@@ -97,20 +98,34 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         // Maybe the conf should be cached in a file?
         let _ = http.conf().subscribe { (event) in
             switch event {
-            case .success(let conf): self.initInteractive(mapView: mapView, style: style, layers: conf.layers, boats: boats)
-            case .failure(let err): self.log.error("Failed to load conf: '\(err.describe)'.")
+            case .success(let conf):
+                self.settings.conf = conf
+                self.onUiThread {
+                    self.profileButton.isHidden = false
+                }
+                self.initInteractive(mapView: mapView, style: style, layers: conf.layers, boats: boats)
+            case .failure(let err):
+                self.log.error("Failed to load conf: '\(err.describe)'.")
             }
         }
     }
     
-    func initInteractive(mapView: MGLMapView, style: MGLStyle, layers: MapboxLayers, boats: BoatRenderer) {
+    func initInteractive(mapView: MapView, style: Style, layers: MapboxLayers, boats: BoatRenderer) {
         if firstInit {
             firstInit = false
             if BoatPrefs.shared.isAisEnabled {
-                let ais = AISRenderer(mapView: mapView, style: style, conf: layers.ais)
-                self.aisRenderer = ais
+                do {
+                    let ais = try AISRenderer(mapView: mapView, style: style, conf: layers.ais)
+                    self.aisRenderer = ais
+                } catch {
+                    log.warn("Failed to init AIS. \(error)")
+                }
             }
             self.taps = TapListener(mapView: mapView, layers: layers, ais: self.aisRenderer, boats: boats)
+            let _ = Auth.shared.tokens.subscribe(onNext: { token in
+                self.reload(token: token)
+            })
+            Auth.shared.signIn(from: self, restore: true)
         }
     }
     
@@ -141,85 +156,54 @@ class MapVC: UIViewController, MGLMapViewDelegate, UIGestureRecognizerDelegate {
         }
     }
     
-    func installTapListener(mapView: MGLMapView) {
-        // Tap: See code in https://docs.mapbox.com/ios/maps/examples/runtime-multiple-annotations/
-        // Adds a single tap gesture recognizer. This gesture requires the built-in MGLMapView tap gestures (such as those for zoom and annotation selection) to fail.
-        let singleTap = UITapGestureRecognizer(target: self, action: #selector(handleMapTap(sender:)))
-        for recognizer in mapView.gestureRecognizers! where recognizer is UITapGestureRecognizer {
-            singleTap.require(toFail: recognizer)
-        }
-        mapView.addGestureRecognizer(singleTap)
+    func installTapListener(mapView: MapView) {
+        mapView.gestures.singleTapGestureRecognizer.addTarget(self, action: #selector(handleMapTap(sender:)))
+        mapView.gestures.singleTapGestureRecognizer.require(toFail: mapView.gestures.doubleTapToZoomInGestureRecognizer)
     }
     
     @objc func handleMapTap(sender: UITapGestureRecognizer) {
-        guard let mapView = mapView else { return }
-        // https://docs.mapbox.com/ios/maps/examples/runtime-multiple-annotations/
         if sender.state == .ended {
             // Tries matching the exact point first
-            guard let senderView = sender.view else { return }
+            guard let senderView = sender.view, let taps = taps else { return }
             let point = sender.location(in: senderView)
-            let handledByTaps = taps?.onTap(point: point) ?? false
-            if !handledByTaps {
-                mapView.deselectAnnotation(mapView.selectedAnnotations.first, animated: true)
+            let handledByTaps = taps.onTap(point: point).subscribe { event in
+                switch event {
+                case .success(let annotation):
+                    if let tapped = annotation {
+                        // self.log.info("Tapped \(tapped) at \(tapped.coordinate).")
+                        guard let popoverContent = self.popoverView(tapped) else { return }
+                        self.displayDetails(child: popoverContent, senderView: senderView, point: point)
+                    } else {
+                        self.log.info("Tapped nothing of interest.")
+                        self.dismiss(animated: true, completion: nil)
+                    }
+                case .failure(let error):
+                    self.log.info("Failed to handle tap. \(error)")
+                }
             }
         }
     }
     
-    func mapView(_ mapView: MGLMapView, viewFor annotation: MGLAnnotation) -> MGLAnnotationView? {
-        if let annotation = annotation as? TrophyAnnotation, let renderer = boatRenderer {
-            return renderer.trophyAnnotationView(annotation: annotation)
-        } else if let annotation = annotation as? RouteAnnotation {
-            let (id, faIcon) = annotation.isEnd ? ("route-end", "fa-flag-checkered") : ("route-start", "fa-flag")
-            return routeAnnotationView(id: id, faIcon: faIcon, of: annotation, mapView: mapView)
-        } else {
-            // This is for custom annotation views, which we display manually in handleMapTap, I think
-            return MGLAnnotationView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
+    private func popoverView(_ tapped: CustomAnnotation) -> UIView? {
+        guard let lang = self.settings.lang, let finnishSpecials = self.settings.languages?.finnish.specialWords else { return nil }
+        return tapped.callout(lang: lang, finnishSpecials: finnishSpecials)
+    }
+    
+    func displayDetails(child: UIView, senderView: UIView, point: CGPoint) {
+        // log.info("Sender \(senderView) point \(point)")
+        let popup = MapPopup(child: child)
+        popup.modalPresentationStyle = .popover
+        if let popover = popup.popoverPresentationController {
+            popover.delegate = self
+            popover.sourceView = senderView
+            // self.log.info("Set sourceView to \(senderView)")
+            popover.sourceRect = CGRect(origin: point, size: .zero)
         }
+        self.present(popup, animated: true, completion: nil)
     }
     
-    func routeAnnotationView(id: String, faIcon: String,  of annotation: MGLAnnotation, mapView: MGLMapView) -> MGLAnnotationView {
-        let view = mapView.dequeueReusableAnnotationView(withIdentifier: id) ?? MGLAnnotationView(annotation: annotation, reuseIdentifier: id)
-        if let image = UIImage(icon: faIcon, backgroundColor: .clear, iconColor: UIColor.black, fontSize: 14) {
-            let imageView = UIImageView(image: image)
-            view.frame = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
-            view.addSubview(imageView)
-        }
-        return view
-    }
-    
-    func mapView(_ mapView: MGLMapView, calloutViewFor annotation: MGLAnnotation) -> MGLCalloutView? {
-        guard let language = settings.lang else { return nil }
-        if let boat = annotation as? BoatAnnotation {
-            return TrackedBoatCallout(annotation: boat, lang: language)
-        } else if let vessel = annotation as? VesselAnnotation {
-            return VesselCallout(annotation: vessel, lang: language)
-        } else if let mark = annotation as? MarkAnnotation, let finnishSpecials = settings.languages?.finnish.specialWords {
-            return MarkCallout(annotation: mark, lang: language, finnishWords: finnishSpecials)
-        } else if let mark = annotation as? MinimalMarkAnnotation, let finnishSpecials = settings.languages?.finnish.specialWords {
-            return MinimalMarkCallout(annotation: mark, lang: language, finnishWords: finnishSpecials)
-        } else if let limit = annotation as? LimitAnnotation {
-            return limit.callout(lang: language)
-        } else if let area = annotation as? FairwayAreaAnnotation {
-            return area.callout(lang: language)
-        } else {
-            // Default callout view
-            return nil
-        }
-    }
-    
-    func mapView(_ mapView: MGLMapView, annotationCanShowCallout annotation: MGLAnnotation) -> Bool {
-        true
-    }
-    
-    func mapView(_ mapView: MGLMapView, tapOnCalloutFor annotation: MGLAnnotation) {
-        mapView.deselectAnnotation(annotation, animated: true)
-    }
-    
-    func mapView(_ mapView: MGLMapView, didDeselect annotation: MGLAnnotation) {
-        let isTrophy = annotation as? TrophyAnnotation
-        if isTrophy == nil {
-            mapView.removeAnnotation(annotation)
-        }
+    func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
+        .none
     }
     
     @objc func onSwipe(_ sender: UIPanGestureRecognizer) {
@@ -301,8 +285,16 @@ extension MapVC: TracksDelegate {
 extension MapVC: BoatSocketDelegate {
     func onCoords(event: CoordsData) {
         onUiThread {
-            self.boatRenderer?.addCoords(event: event)
-            let isTrailsEmpty = self.boatRenderer?.isEmpty ?? true
+            guard let renderer = self.boatRenderer else {
+                self.log.info("Got \(event.coords.count) coords but no handler has been installed.")
+                return
+            }
+            do {
+                try renderer.addCoords(event: event)
+            } catch {
+                self.log.warn("Failed to handle coords. \(error)")
+            }
+            let isTrailsEmpty = renderer.isEmpty
             if !isTrailsEmpty && self.followButton.isHidden {
                 self.followButton.isHidden = false
             }
@@ -313,7 +305,16 @@ extension MapVC: BoatSocketDelegate {
 extension MapVC: VesselDelegate {
     func on(vessels: [Vessel]) {
         onUiThread {
-            self.aisRenderer?.update(vessels: vessels)
+            do {
+                guard let renderer = self.aisRenderer else {
+                    self.log.info("Got \(vessels.count) vessel updates but no handler has been installed.")
+                    return
+                }
+                try renderer.update(vessels: vessels)
+            } catch {
+                self.log.warn("Failed to update vessels. \(error)")
+            }
+            
         }
     }
 }

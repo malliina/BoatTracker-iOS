@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import Mapbox
+import MapboxMaps
 import RxSwift
 
 class BoatHttpClient {

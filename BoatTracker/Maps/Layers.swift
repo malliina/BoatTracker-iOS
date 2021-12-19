@@ -7,11 +7,14 @@
 //
 
 import Foundation
-import Mapbox
+import MapboxMaps
 
 class Layers {
     static let log = LoggerFactory.shared.boat(Layers.self)
     static let boatIcon: String = "boat-resized-opt-30"
+    static let trophyIcon: String = "trophy-gold-path"
+    static let routeStartIcon: String = "flag"
+    static let routeEndIcon: String = "flag-checkered"
     static let stops: [NSNumber: UIColor] = [
         5: UIColor(r: 0, g: 255, b: 150, alpha: 1),
         10: UIColor(r: 50, g: 150, b: 50, alpha: 1),
@@ -30,85 +33,83 @@ class Layers {
     ]
     // static let trackColor = NSExpression(format: "mgl_step:from:stops:(\(Speed.key), %@, %@)", UIColor.green, stops)
 
-    static func boatIcon(id: String, source: MGLShapeSource) -> MGLSymbolStyleLayer {
-        icon(id: id, iconImageName: boatIcon, source: source)
+    static func boatIcon(id: String) -> SymbolLayer {
+        icon(id: id, iconImageName: boatIcon)
     }
     
-    static func icon(id: String, iconImageName: String, source: MGLShapeSource) -> MGLSymbolStyleLayer {
-        let iconLayer = MGLSymbolStyleLayer(identifier: id, source: source)
-        iconLayer.iconImageName = NSExpression(forConstantValue: iconImageName)
-        iconLayer.iconScale = NSExpression(forConstantValue: 0.7)
-        iconLayer.iconHaloColor = NSExpression(forConstantValue: UIColor.white)
-        iconLayer.iconRotationAlignment = NSExpression(forConstantValue: "map")
+    static func icon(id: String, iconImageName: String, iconSize: Double = 0.7) -> SymbolLayer {
+        var iconLayer = SymbolLayer(id: id)
+        iconLayer.iconImage = .constant(.name(iconImageName))
+        iconLayer.iconSize = .constant(iconSize)
+        iconLayer.iconHaloColor = .constant(StyleColor(.white))
+        iconLayer.iconRotationAlignment = .constant(.map)
         return iconLayer
     }
     
-    static func line(id: String, source: MGLShapeSource, color: UIColor = .black, minimumZoomLevel: Float? = nil) -> MGLLineStyleLayer {
-        customLine(id: id, source: source, color: NSExpression(forConstantValue: color), minimumZoomLevel: minimumZoomLevel)
+    static func line(id: String, color: UIColor = .black, minimumZoomLevel: Double? = nil) -> LineLayer {
+        customLine(id: id, color: StyleColor(color), minimumZoomLevel: minimumZoomLevel)
     }
 
-//    static func trackLine(id: String, source: MGLShapeSource) -> MGLLineStyleLayer {
-//        customLine(id: id, source: source, color: trackColor)
-//    }
-
-    static func customLine(id: String, source: MGLShapeSource, color: NSExpression, minimumZoomLevel: Float? = nil) -> MGLLineStyleLayer {
-        let lineLayer = MGLLineStyleLayer(identifier: id, source: source)
-        lineLayer.lineJoin = NSExpression(forConstantValue: "round")
-        lineLayer.lineCap = NSExpression(forConstantValue: "round")
-        //log.info("Installing \(color)")
-        lineLayer.lineColor = color
-        lineLayer.lineWidth = NSExpression(forConstantValue: 1)
+    static func customLine(id: String, color: StyleColor, minimumZoomLevel: Double? = nil) -> LineLayer {
+        var lineLayer = LineLayer(id: id)
+        lineLayer.lineJoin = .constant(.round)
+        lineLayer.lineCap = .constant(.round)
+        lineLayer.lineColor = .constant(color)
+        lineLayer.lineWidth = .constant(1)
         if let minimumZoomLevel = minimumZoomLevel {
-            lineLayer.minimumZoomLevel = minimumZoomLevel
+            lineLayer.minZoom = minimumZoomLevel
         }
+        lineLayer.source = id
         return lineLayer
     }
 }
 
-class LayerSource<L: MGLStyleLayer> {
-    let source: MGLShapeSource
-    let layer: L
+class LayerSource<L: Layer> {
+    let log = LoggerFactory.shared.vc(LayerSource.self)
+    var source: GeoJSONSource
+    var layer: L
+    var sourceId: String { layer.id }
     
-    init(_ source: MGLShapeSource, layer: L) {
-        self.source = source
+    init(layer: L) {
+        self.source = GeoJSONSource()
+        self.source.data = .empty
         self.layer = layer
     }
     
-    func install(to style: MGLStyle) {
-        style.addSource(source)
-        style.addLayer(layer)
+    func install(to style: Style, id: String) throws {
+        try style.addSource(source, id: id)
+        layer.source = id
+        try style.addLayer(layer)
+        log.info("Added source \(id) and layer to style.")
     }
 }
 
-extension LayerSource where L == MGLLineStyleLayer {
-    convenience init(lineId: String, lineColor: UIColor = .black, minimumZoomLevel: Float? = nil) {
-        let source = MGLShapeSource(identifier: lineId, shape: nil, options: nil)
-        let layer = Layers.line(id: lineId, source: source, color: lineColor, minimumZoomLevel: minimumZoomLevel)
-        self.init(source, layer: layer)
+extension LayerSource where L == LineLayer {
+    convenience init(lineId: String, lineColor: UIColor = .black, minimumZoomLevel: Double? = nil) {
+        let layer = Layers.line(id: lineId, color: lineColor, minimumZoomLevel: minimumZoomLevel)
+        self.init(layer: layer)
     }
     
-    convenience init(lineId: String, lineColor: NSExpression, minimumZoomLevel: Float? = nil) {
-        let source = MGLShapeSource(identifier: lineId, shape: nil, options: nil)
-        let layer = Layers.customLine(id: lineId, source: source, color: lineColor, minimumZoomLevel: minimumZoomLevel)
-        self.init(source, layer: layer)
+    convenience init(lineId: String, lineColor: StyleColor, minimumZoomLevel: Double? = nil) {
+        let layer = Layers.customLine(id: lineId, color: lineColor, minimumZoomLevel: minimumZoomLevel)
+        self.init(layer: layer)
     }
 }
 
-extension LayerSource where L == MGLSymbolStyleLayer {
-    convenience init(iconId: String, iconImageName: String) {
-        let source = MGLShapeSource(identifier: iconId, shape: nil, options: nil)
-        let layer = Layers.icon(id: iconId, iconImageName: iconImageName, source: source)
-        self.init(source, layer: layer)
+extension LayerSource where L == SymbolLayer {
+    convenience init(iconId: String, iconImageName: String, iconSize: Double) {
+        let layer = Layers.icon(id: iconId, iconImageName: iconImageName, iconSize: iconSize)
+        self.init(layer: layer)
     }
 }
 
-extension MGLStyle {
+extension Style {
     func removeSourceAndLayer(id: String) {
-        if let layer = self.layer(withIdentifier: id) {
-            self.removeLayer(layer)
+        if let layer = try? self.layer(withId: id) {
+            try? self.removeLayer(withId: layer.id)
         }
-        if let source = self.source(withIdentifier: id) {
-            self.removeSource(source)
+        if let source = try? self.source(withId: id) {
+            try? self.removeSource(withId: id)
         }
     }
 }

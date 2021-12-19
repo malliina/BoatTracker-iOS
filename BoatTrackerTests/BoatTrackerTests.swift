@@ -27,6 +27,10 @@ class BoatTrackerTests: XCTestCase {
         XCTAssert(isSuccess)
     }
     
+    func testWriteJson() throws {
+        try Json.shared.write(from: VesselMeta(mmsi: Mmsi("boat"), name: "Na", heading: 12))
+    }
+    
     func testKeychain() throws {
         let kc = Keychain.shared
         XCTAssertNil(try kc.findToken())

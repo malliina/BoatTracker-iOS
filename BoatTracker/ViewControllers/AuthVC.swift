@@ -24,7 +24,9 @@ class AuthVC: BaseTableVC {
     let attributionsIdentifier = "AttributionsIdentifier"
     let basicIdentifier = "BasicIdentifier"
     let linkIdentifier = "LinkIdentifier"
-    let attributionsIndex = 7
+    let googleIndex = 0
+    let microsoftIndex = 1
+    let attributionsIndex = 6
     
     let welcomeDelegate: WelcomeDelegate
     let lang: Lang
@@ -62,26 +64,22 @@ class AuthVC: BaseTableVC {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: identifier(for: indexPath), for: indexPath)
         switch indexPath.row {
-        case 0:
-            cell.textLabel?.text = lang.profile.chooseIdentityProvider
-            cell.textLabel?.textAlignment = .center
-            cell.selectionStyle = .none
-        case 1:
+        case googleIndex:
             let googleButton = socialButton(provider: "Google", image: "LogoGoogle", target: cell.contentView)
             googleButton.addTarget(self, action: #selector(googleClicked(_:)), for: .touchUpInside)
-        case 2:
+        case microsoftIndex:
             let microsoftButton = socialButton(provider: "Microsoft", image: "LogoMicrosoft", target: cell.contentView)
             microsoftButton.addTarget(self, action: #selector(microsoftClicked(_:)), for: .touchUpInside)
-        case 3:
+        case 2:
             cell.textLabel?.text = settingsLang.signInText
             cell.textLabel?.numberOfLines = 0
             cell.selectionStyle = .none
-        case 4:
+        case 3:
             cell.textLabel?.text = settingsLang.howItWorks
             cell.textLabel?.textColor = colors.secondaryText
             cell.textLabel?.numberOfLines = 0
             cell.selectionStyle = .none
-        case 5:
+        case 4:
             let textView = BoatTextView(text: lang.settings.tokenTextLong, font: UIFont.systemFont(ofSize: 17))
             textView.textContainer.lineFragmentPadding = 0
             textView.contentInset = .zero
@@ -145,9 +143,8 @@ class AuthVC: BaseTableVC {
     
     func identifier(for row: IndexPath) -> String {
         switch row.row {
-        case 0: return chooseIdentifier
-        case 1: return googleIdentifier
-        case 2: return microsoftIdentifier
+        case googleIndex: return googleIdentifier
+        case microsoftIndex: return microsoftIdentifier
         case attributionsIndex: return attributionsIdentifier
         default: return basicIdentifier
         }

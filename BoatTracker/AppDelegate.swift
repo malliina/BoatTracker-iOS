@@ -10,7 +10,7 @@ import UIKit
 import AppCenter
 import AppCenterAnalytics
 import AppCenterCrashes
-import Mapbox
+import MapboxMaps
 import MSAL
 import GoogleSignIn
 
@@ -57,7 +57,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     static func initMapboxToken(key: String = "MapboxAccessToken") -> Bool {
         do {
             let token = try Credentials.read(key: key)
-            MGLAccountManager.accessToken = token
+            ResourceOptionsManager.default.resourceOptions.accessToken = token
             return true
         } catch let err {
             AppDelegate.logger.error(err.describe)

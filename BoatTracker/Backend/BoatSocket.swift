@@ -58,12 +58,14 @@ class BoatSocket: SocketDelegate {
         let decoder = JSONDecoder()
         do {
             let event = try decoder.decode(BoatEvent.self, from: json)
+            log.info("Got \(event)")
             switch event.event {
             case "ping":
                 ()
             case "coords":
                 let data = try decoder.decode(CoordsBody.self, from: json)
                 if let delegate = delegate {
+                    log.info("Passing \(data.body.coords.count) coords to delegate.")
                     delegate.onCoords(event: data.body)
                 } else {
                     log.warn("No delegate for coords. This is probably an error.")
@@ -100,17 +102,11 @@ class BoatSocket: SocketDelegate {
         guard let socket = client.socket else {
             return failWith("Unable to send payload, socket not available.")
         }
-        let encoder = JSONEncoder()
-        do {
-            let data = try encoder.encode(t)
-            guard let asString = String(data: data, encoding: .utf8) else {
-                return failWith("Unable to send data, cannot stringify payload.")
-            }
-            socket.send(asString)
-            return nil
-        } catch {
-            return failWith("Unable to send payload, encoding error.")
+        guard let asString = try? Json.shared.stringify(t) else {
+            return failWith("Unable to send data, cannot stringify payload.")
         }
+        socket.send(asString)
+        return nil
     }
     
     func failWith(_ message: String) -> SingleError {

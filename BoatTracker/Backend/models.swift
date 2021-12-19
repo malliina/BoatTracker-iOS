@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import Mapbox
+import MapboxMaps
 
 enum MarkType: Decodable {
     case unknown
@@ -52,11 +52,16 @@ enum FairwayType: Decodable {
     case confirmedExtra
     case helcom
     case pilot
+    case unknown
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
-        let code = try container.decode(Int.self)
-        self = try FairwayType.parse(code: code)
+        do {
+            let code = try container.decode(Int.self)
+            self = try FairwayType.parse(code: code)
+        } catch {
+            self = .unknown
+        }
     }
     
     func translate(lang: FairwayTypesLang) -> String {
@@ -74,6 +79,7 @@ enum FairwayType: Decodable {
         case .confirmedExtra: return lang.confirmedExtra
         case .helcom: return lang.helcom
         case .pilot: return lang.pilot
+        case .unknown: return lang.navigation
         }
     }
     
@@ -278,7 +284,7 @@ enum ConstructionInfo: Decodable {
         self = try ConstructionInfo.parse(code: code)
     }
     
-    static func parse(code: Int) throws -> ConstructionInfo {
+    private static func parse(code: Int) throws -> ConstructionInfo {
         switch code {
         case 1: return .buoyBeacon
         case 2: return .iceBuoy
@@ -485,8 +491,8 @@ class MarineSymbol: NSObject, BaseSymbol, Decodable {
     required convenience init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.init(owner: try container.decode(String.self, forKey: .owner),
-                  exteriorLight: try MarineSymbol.boolNum(i: try container.decode(Int.self, forKey: .exteriorLight)),
-                  topSign: try MarineSymbol.boolNum(i: try container.decode(Int.self, forKey: .topSign)),
+                  exteriorLight: try container.decode(Bool.self, forKey: .exteriorLight),
+                  topSign: try container.decode(Bool.self, forKey: .topSign),
                   nameFi: try container.decodeIfPresent(NonEmptyString.self, forKey: .nameFi),
                   nameSe: try container.decodeIfPresent(NonEmptyString.self, forKey: .nameSe),
                   locationFi: try container.decodeIfPresent(NonEmptyString.self, forKey: .locationFi),
@@ -494,9 +500,9 @@ class MarineSymbol: NSObject, BaseSymbol, Decodable {
                   flotation: Flotation.parse(input: try container.decode(String.self, forKey: .flotation)),
                   state: try container.decode(String.self, forKey: .state),
                   lit: try container.decode(StringBool.self, forKey: .lit),
-                  aidType: try container.decode(AidType.self, forKey: .aidType),
-                  navMark: try container.decode(NavMark.self, forKey: .navMark),
-                  construction: try container.decodeIfPresent(ConstructionInfo.self, forKey: .construction)
+                  aidType: (try? container.decode(AidType.self, forKey: .aidType)) ?? .unknown,
+                  navMark: (try? container.decode(NavMark.self, forKey: .navMark)) ?? .unknown,
+                  construction: try? container.decodeIfPresent(ConstructionInfo.self, forKey: .construction)
         )
     }
 }
@@ -550,6 +556,16 @@ struct Vessel: Codable {
     let time: Timing
 
     var speed: Speed { return sog }
+}
+
+struct VesselMeta: Codable {
+    let mmsi: Mmsi
+    let name: String
+    let heading: Double
+}
+
+struct VesselProps: Codable {
+    let mmsi: Mmsi
 }
 
 extension CLLocationCoordinate2D: Codable {

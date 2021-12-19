@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import Mapbox
+import MapboxMaps
 
 struct RouteLink: Codable {
     let to: CLLocationCoordinate2D
