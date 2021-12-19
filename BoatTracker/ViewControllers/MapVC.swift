@@ -170,7 +170,7 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, UIPopoverPresentatio
                 switch event {
                 case .success(let annotation):
                     if let tapped = annotation {
-                        self.log.info("Tapped \(tapped) at \(tapped.coordinate).")
+                        // self.log.info("Tapped \(tapped) at \(tapped.coordinate).")
                         guard let popoverContent = self.popoverView(tapped) else { return }
                         self.displayDetails(child: popoverContent, senderView: senderView, point: point)
                     } else {
@@ -186,63 +186,25 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, UIPopoverPresentatio
     
     private func popoverView(_ tapped: CustomAnnotation) -> UIView? {
         guard let lang = self.settings.lang, let finnishSpecials = self.settings.languages?.finnish.specialWords else { return nil }
-        if let boat = tapped as? BoatAnnotation {
-            return boat.callout(lang: lang)
-        } else if let vessel = tapped as? VesselAnnotation {
-            return vessel.callout(lang: lang)
-        } else if let mark = tapped as? MarkAnnotation {
-            return MarkCallout(annotation: mark, lang: lang, finnishWords: finnishSpecials)
-        } else if let mark = tapped as? MinimalMarkAnnotation {
-            return MinimalMarkCallout(annotation: mark, lang: lang, finnishWords: finnishSpecials)
-        } else if let area = tapped as? FairwayAreaAnnotation {
-            return area.callout(lang: lang)
-        } else if let limit = tapped as? LimitAnnotation {
-            return limit.callout(lang: lang)
-        } else if let trophy = tapped as? TrophyAnnotation {
-            return trophy.callout(lang: lang)
-        } else {
-            return nil
-        }
+        return tapped.callout(lang: lang, finnishSpecials: finnishSpecials)
     }
     
     func displayDetails(child: UIView, senderView: UIView, point: CGPoint) {
-        log.info("Sender \(senderView) point \(point)")
+        // log.info("Sender \(senderView) point \(point)")
         let popup = MapPopup(child: child)
         popup.modalPresentationStyle = .popover
         if let popover = popup.popoverPresentationController {
             popover.delegate = self
             popover.sourceView = senderView
-            self.log.info("Set sourceView to \(senderView)")
+            // self.log.info("Set sourceView to \(senderView)")
             popover.sourceRect = CGRect(origin: point, size: .zero)
         }
         self.present(popup, animated: true, completion: nil)
     }
     
     func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
-        return .none
+        .none
     }
-    
-//    func mapView(_ mapView: MapView, viewFor annotation: MGLAnnotation) -> MGLAnnotationView? {
-//        if let annotation = annotation as? TrophyAnnotation, let renderer = boatRenderer {
-//            return renderer.trophyAnnotationView(annotation: annotation)
-//        } else if let annotation = annotation as? RouteAnnotation {
-//            let (id, faIcon) = annotation.isEnd ? ("route-end", "fa-flag-checkered") : ("route-start", "fa-flag")
-//            return routeAnnotationView(id: id, faIcon: faIcon, of: annotation, mapView: mapView)
-//        } else {
-//            // This is for custom annotation views, which we display manually in handleMapTap, I think
-//            return MGLAnnotationView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
-//        }
-//    }
-    
-//    func routeAnnotationView(id: String, faIcon: String, of annotation: MGLAnnotation, mapView: MapView) -> MGLAnnotationView {
-//        let view = mapView.dequeueReusableAnnotationView(withIdentifier: id) ?? MGLAnnotationView(annotation: annotation, reuseIdentifier: id)
-//        if let image = UIImage(icon: faIcon, backgroundColor: .clear, iconColor: UIColor.black, fontSize: 14) {
-//            let imageView = UIImageView(image: image)
-//            view.frame = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
-//            view.addSubview(imageView)
-//        }
-//        return view
-//    }
     
     @objc func onSwipe(_ sender: UIPanGestureRecognizer) {
         if sender.state == .began {

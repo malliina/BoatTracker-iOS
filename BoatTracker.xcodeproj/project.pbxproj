@@ -71,7 +71,6 @@
 		61B07C6720F21DC400D8B7E0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 61B07C6620F21DC400D8B7E0 /* Assets.xcassets */; };
 		61B07C6A20F21DC400D8B7E0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 61B07C6820F21DC400D8B7E0 /* LaunchScreen.storyboard */; };
 		61B07C7520F21DC400D8B7E0 /* BoatTrackerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61B07C7420F21DC400D8B7E0 /* BoatTrackerTests.swift */; };
-		61BCBE792207667F00EE74EB /* annotations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61BCBE782207667F00EE74EB /* annotations.swift */; };
 		61BCBE7B220768AB00EE74EB /* AISRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61BCBE7A220768AB00EE74EB /* AISRenderer.swift */; };
 		61BCBE7D2207730400EE74EB /* BoatRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61BCBE7C2207730400EE74EB /* BoatRenderer.swift */; };
 		61BCBE7F2208CC1C00EE74EB /* Layers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61BCBE7E2208CC1C00EE74EB /* Layers.swift */; };
@@ -186,7 +185,6 @@
 		61B07C7020F21DC400D8B7E0 /* BoatTrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BoatTrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		61B07C7420F21DC400D8B7E0 /* BoatTrackerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatTrackerTests.swift; sourceTree = "<group>"; };
 		61B07C7620F21DC400D8B7E0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		61BCBE782207667F00EE74EB /* annotations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = annotations.swift; sourceTree = "<group>"; };
 		61BCBE7A220768AB00EE74EB /* AISRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AISRenderer.swift; sourceTree = "<group>"; };
 		61BCBE7C2207730400EE74EB /* BoatRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatRenderer.swift; sourceTree = "<group>"; };
 		61BCBE7E2208CC1C00EE74EB /* Layers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Layers.swift; sourceTree = "<group>"; };
@@ -361,7 +359,6 @@
 		6199E0E720F2324400A4009A /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				61BCBE782207667F00EE74EB /* annotations.swift */,
 				61F4199221206C4C00B1ED7D /* AppAttributionCell.swift */,
 				61DE7F4A20F3ED3900C95B3F /* boatButtons.swift */,
 				6101D54C221057530051A427 /* BoatCallout.swift */,
@@ -720,7 +717,6 @@
 				6199E0E920F2325100A4009A /* BoatLabel.swift in Sources */,
 				61CD40CF211635FD00F31AA5 /* Dummy.swift in Sources */,
 				61967A002103BCCF00432672 /* TrackCell.swift in Sources */,
-				61BCBE792207667F00EE74EB /* annotations.swift in Sources */,
 				61B07C6220F21DC300D8B7E0 /* MapVC.swift in Sources */,
 				61F4199521206F9200B1ED7D /* Arrays.swift in Sources */,
 				61BCBE7B220768AB00EE74EB /* AISRenderer.swift in Sources */,

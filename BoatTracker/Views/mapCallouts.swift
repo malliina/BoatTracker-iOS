@@ -9,18 +9,20 @@
 import Foundation
 import MapboxMaps
 import UIKit
+import CoreLocation
 
 class LimitAnnotation: CustomAnnotation {
     let limit: LimitArea
+    let coord: CLLocationCoordinate2D
+    var coordinate: CLLocationCoordinate2D { coord }
     
     init(limit: LimitArea, coord: CLLocationCoordinate2D) {
         self.limit = limit
-        super.init(coord: coord)
+        self.coord = coord
     }
     
-    func callout(lang: Lang) -> LimitCallout {
-        return LimitCallout(annotation: self, lang: lang)
-        // return LimitInfoView(limit: limit, lang: lang)
+    func callout(lang: Lang, finnishSpecials: SpecialWords) -> PopoverView {
+        LimitCallout(annotation: self, lang: lang)
     }
 }
 
@@ -131,10 +133,16 @@ class LimitCallout: PopoverView {
 
 class MinimalMarkAnnotation: CustomAnnotation {
     let mark: MinimalMarineSymbol
+    let coord: CLLocationCoordinate2D
+    var coordinate: CLLocationCoordinate2D { coord }
     
     init(mark: MinimalMarineSymbol, coord: CLLocationCoordinate2D) {
         self.mark = mark
-        super.init(coord: coord)
+        self.coord = coord
+    }
+    
+    func callout(lang: Lang, finnishSpecials: SpecialWords) -> PopoverView {
+        MinimalMarkCallout(annotation: self, lang: lang, finnishWords: finnishSpecials)
     }
 }
 
@@ -215,10 +223,16 @@ class MinimalMarkCallout: PopoverView {
 
 class MarkAnnotation: CustomAnnotation {
     let mark: MarineSymbol
+    let coord: CLLocationCoordinate2D
+    var coordinate: CLLocationCoordinate2D { coord }
     
     init(mark: MarineSymbol, coord: CLLocationCoordinate2D) {
         self.mark = mark
-        super.init(coord: coord)
+        self.coord = coord
+    }
+    
+    func callout(lang: Lang, finnishSpecials: SpecialWords) -> PopoverView {
+        MarkCallout(annotation: self, lang: lang, finnishWords: finnishSpecials)
     }
 }
 
@@ -389,4 +403,225 @@ class MarkCallout: PopoverView {
             make.bottomMargin.equalToSuperview().inset(inset)
         }
     }
+}
+
+class FairwayAreaAnnotation: CustomAnnotation {
+    let info: FairwayArea
+    let limits: LimitArea?
+    let coord: CLLocationCoordinate2D
+    var coordinate: CLLocationCoordinate2D { coord }
+    
+    required init(info: FairwayArea, limits: LimitArea?, coord: CLLocationCoordinate2D) {
+        self.info = info
+        self.limits = limits
+        self.coord = coord
+    }
+    
+    func callout(lang: Lang, finnishSpecials: SpecialWords) -> PopoverView { FairwayAreaCallout(annotation: self, limits: limits, lang: lang) }
+}
+
+class FairwayAreaCallout: PopoverView {
+    let log = LoggerFactory.shared.view(FairwayAreaAnnotation.self)
+    
+    let info: FairwayAreaAnnotation
+    let limits: LimitArea?
+    let lang: Lang
+    var fairwayLang: FairwayLang { lang.fairway }
+    
+    let ownerLabel = BoatLabel.centeredTitle()
+    let typeLabel = BoatLabel.smallSubtitle()
+    let typeValue = BoatLabel.smallTitle()
+    let depthLabel = BoatLabel.smallSubtitle()
+    let depthValue = BoatLabel.smallTitle()
+    let harrowDepthLabel = BoatLabel.smallSubtitle()
+    let harrowDepthValue = BoatLabel.smallTitle()
+    let markLabel = BoatLabel.smallSubtitle()
+    let markValue = BoatLabel.smallTitle()
+    
+    required init(annotation: FairwayAreaAnnotation, limits: LimitArea?, lang: Lang) {
+        self.info = annotation
+        self.limits = limits
+        self.lang = lang
+        super.init(frame: .zero)
+        setup(annotation.info)
+    }
+    
+    private func setup(_ info: FairwayArea) {
+        let container = self
+        let hasMark = info.markType != nil
+        let markLabels = hasMark ? [ markLabel, markValue ] : []
+        let limitsView = limits.map { LimitInfoView(limit: $0, lang: lang) }
+        if let limitsView = limitsView {
+            container.addSubview(limitsView)
+        }
+        ([ownerLabel, typeLabel, typeValue, depthLabel, depthValue, harrowDepthLabel, harrowDepthValue] + markLabels).forEach { (label) in
+            container.addSubview(label)
+        }
+        ownerLabel.text = info.owner
+        ownerLabel.snp.makeConstraints { (make) in
+            make.topMargin.equalToSuperview().offset(largeSpacing)
+            make.leadingMargin.trailingMargin.equalToSuperview().inset(inset)
+        }
+        typeLabel.text = fairwayLang.fairwayType
+        typeLabel.snp.makeConstraints { (make) in
+            make.top.equalTo(ownerLabel.snp.bottom).offset(spacing)
+            make.leadingMargin.equalToSuperview().inset(inset)
+            make.width.equalTo(depthLabel)
+            make.width.equalTo(harrowDepthLabel)
+            if let limitsView = limitsView {
+                make.width.equalTo(limitsView.fairwayLabel)
+            }
+            if hasMark {
+                make.width.equalTo(markLabel)
+            }
+        }
+        typeValue.text = info.fairwayType.translate(lang: fairwayLang.types)
+        typeValue.snp.makeConstraints { (make) in
+            make.top.equalTo(typeLabel)
+            make.leading.equalTo(typeLabel.snp.trailing).offset(spacing)
+            make.trailingMargin.equalToSuperview().inset(inset)
+        }
+        depthLabel.text = fairwayLang.fairwayDepth
+        depthLabel.snp.makeConstraints { (make) in
+            make.top.equalTo(typeLabel.snp.bottom).offset(spacing)
+            make.leadingMargin.equalToSuperview().inset(inset)
+        }
+        depthValue.text = info.fairwayDepth.formatMeters
+        depthValue.snp.makeConstraints { (make) in
+            make.top.equalTo(depthLabel)
+            make.leading.equalTo(depthLabel.snp.trailing).offset(spacing)
+            make.trailingMargin.equalToSuperview().inset(inset)
+        }
+        harrowDepthLabel.text = fairwayLang.harrowDepth
+        harrowDepthLabel.snp.makeConstraints { (make) in
+            make.top.equalTo(depthValue.snp.bottom).offset(spacing)
+            make.leadingMargin.equalToSuperview().inset(inset)
+        }
+        harrowDepthValue.text = info.harrowDepth.formatMeters
+        harrowDepthValue.snp.makeConstraints { (make) in
+            make.top.equalTo(harrowDepthLabel)
+            make.leading.equalTo(harrowDepthLabel.snp.trailing).offset(spacing)
+            make.trailingMargin.equalToSuperview().inset(inset)
+            if !hasMark && limits == nil {
+                make.bottomMargin.equalToSuperview().inset(inset)
+            }
+        }
+        if hasMark {
+            markLabel.text = lang.mark.markType
+            markLabel.snp.makeConstraints { (make) in
+                make.top.equalTo(harrowDepthLabel.snp.bottom).offset(spacing)
+                make.leadingMargin.equalToSuperview().inset(inset)
+            }
+            markValue.text = info.markType?.translate(lang: lang.mark.types)
+            markValue.snp.makeConstraints { (make) in
+                make.top.equalTo(markLabel)
+                make.leading.equalTo(markLabel.snp.trailing).offset(spacing)
+                make.trailingMargin.equalToSuperview().inset(inset)
+                if limits == nil {
+                    make.bottomMargin.equalToSuperview().inset(inset)
+                }
+            }
+        }
+        if let limitsView = limitsView {
+            limitsView.snp.makeConstraints { (make) in
+                make.top.equalTo((hasMark ? markValue : harrowDepthValue).snp.bottom).offset(spacing)
+                make.leading.trailing.equalToSuperview()
+                make.bottomMargin.equalToSuperview().inset(inset)
+            }
+        }
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+class BoatAnnotation: CustomAnnotation {
+    let info: BoatPoint
+    var coordinate: CLLocationCoordinate2D { info.coord.coord }
+    
+    init(info: BoatPoint) {
+        self.info = info
+    }
+    
+    func callout(lang: Lang, finnishSpecials: SpecialWords) -> PopoverView { TrackedBoatCallout(annotation: self, lang: lang) }
+}
+
+class TrackedBoatCallout: PopoverView {
+    let log = LoggerFactory.shared.view(TrackedBoatCallout.self)
+    
+    let boat: BoatAnnotation
+    let lang: Lang
+    
+    let nameLabel = BoatLabel.centeredTitle()
+    let trackTitleLabel = BoatLabel.smallSubtitle()
+    let trackTitleValue = BoatLabel.smallTitle()
+    let dateTimeLabel = BoatLabel.smallCenteredTitle()
+    
+    required init(annotation: BoatAnnotation, lang: Lang) {
+        self.boat = annotation
+        self.lang = lang
+        super.init(frame: .zero)
+        setup(boat: annotation)
+    }
+    
+    private func setup(boat: BoatAnnotation) {
+        let info = boat.info
+        let from = info.from
+        let container = self
+        container.addSubview(nameLabel)
+        nameLabel.text = from.boatName.name
+        nameLabel.snp.makeConstraints { (make) in
+            make.topMargin.equalToSuperview().offset(largeSpacing)
+            make.leadingMargin.trailingMargin.equalToSuperview().inset(inset)
+        }
+        let hasTitle = from.trackTitle != nil
+        if hasTitle {
+            container.addSubview(trackTitleLabel)
+            trackTitleLabel.text = lang.name
+            trackTitleLabel.snp.makeConstraints { (make) in
+                make.top.equalTo(nameLabel.snp.bottom).offset(spacing)
+                make.leadingMargin.equalToSuperview().inset(inset)
+            }
+            container.addSubview(trackTitleValue)
+            trackTitleValue.text = from.trackTitle?.title
+            trackTitleValue.snp.makeConstraints { (make) in
+                make.top.bottom.equalTo(trackTitleLabel)
+                make.leading.equalTo(trackTitleLabel.snp.trailing).offset(spacing)
+                make.trailingMargin.equalToSuperview().inset(inset)
+            }
+        }
+        container.addSubview(dateTimeLabel)
+        dateTimeLabel.text = info.coord.time.dateTime
+        dateTimeLabel.snp.makeConstraints { (make) in
+            make.top.equalTo(hasTitle ? trackTitleLabel.snp.bottom : nameLabel.snp.bottom).offset(spacing)
+            make.leadingMargin.trailingMargin.equalToSuperview().inset(inset)
+            make.bottomMargin.equalToSuperview().inset(inset)
+        }
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+class TrophyAnnotation: CustomAnnotation {
+    let top: CoordBody
+    var coordinate: CLLocationCoordinate2D { top.coord }
+    
+    init(top: CoordBody) {
+        self.top = top
+    }
+    
+    func callout(lang: Lang, finnishSpecials: SpecialWords) -> PopoverView { TrophyPopover(info: top, lang: lang) }
+}
+
+struct TrophyPoint: Codable {
+    let top: CoordBody
+}
+
+protocol CustomAnnotation {
+    var coordinate: CLLocationCoordinate2D { get }
+    
+    func callout(lang: Lang, finnishSpecials: SpecialWords) -> PopoverView
 }

@@ -17,6 +17,8 @@ class VesselAnnotation: CustomAnnotation {
     var speed: Speed
     var draft: Distance
     var time: Timing
+    var coord: CLLocationCoordinate2D
+    var coordinate: CLLocationCoordinate2D { coord }
     
     init(vessel: Vessel) {
         self.name = vessel.name
@@ -24,7 +26,7 @@ class VesselAnnotation: CustomAnnotation {
         self.speed = vessel.speed
         self.draft = vessel.draft
         self.time = vessel.time
-        super.init(coord: vessel.coord)
+        self.coord = vessel.coord
     }
     
     func update(with vessel: Vessel) {
@@ -33,10 +35,10 @@ class VesselAnnotation: CustomAnnotation {
         self.speed = vessel.speed
         self.draft = vessel.draft
         self.time = vessel.time
-        self.coordinate = vessel.coord
+        self.coord = vessel.coord
     }
     
-    func callout(lang: Lang) -> VesselCallout { .init(annotation: self, lang: lang) }
+    func callout(lang: Lang, finnishSpecials: SpecialWords) -> PopoverView { VesselCallout(annotation: self, lang: lang) }
 }
 
 // https://stackoverflow.com/a/51906338
