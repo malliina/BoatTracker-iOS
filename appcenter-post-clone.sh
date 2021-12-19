@@ -14,4 +14,5 @@ then
     echo "login mapbox" >> ~/.netrc
     echo "password $MapboxCocoapodsToken" >> ~/.netrc
     echo "Wrote ~/.netrc"
+    chmod 600 ~/.netrc
 fi
