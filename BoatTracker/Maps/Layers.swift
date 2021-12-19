@@ -37,10 +37,10 @@ class Layers {
         icon(id: id, iconImageName: boatIcon)
     }
     
-    static func icon(id: String, iconImageName: String) -> SymbolLayer {
+    static func icon(id: String, iconImageName: String, iconSize: Double = 0.7) -> SymbolLayer {
         var iconLayer = SymbolLayer(id: id)
         iconLayer.iconImage = .constant(.name(iconImageName))
-        iconLayer.iconSize = .constant(0.7)
+        iconLayer.iconSize = .constant(iconSize)
         iconLayer.iconHaloColor = .constant(StyleColor(.white))
         iconLayer.iconRotationAlignment = .constant(.map)
         return iconLayer
@@ -97,8 +97,8 @@ extension LayerSource where L == LineLayer {
 }
 
 extension LayerSource where L == SymbolLayer {
-    convenience init(iconId: String, iconImageName: String) {
-        let layer = Layers.icon(id: iconId, iconImageName: iconImageName)
+    convenience init(iconId: String, iconImageName: String, iconSize: Double) {
+        let layer = Layers.icon(id: iconId, iconImageName: iconImageName, iconSize: iconSize)
         self.init(layer: layer)
     }
 }

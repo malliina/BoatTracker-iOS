@@ -158,13 +158,13 @@ class BoatRenderer {
         
         // Boat icon
         let iconId = iconName(for: trackName)
-        let iconData = LayerSource(iconId: iconId, iconImageName: Layers.boatIcon)
+        let iconData = LayerSource(iconId: iconId, iconImageName: Layers.boatIcon, iconSize: 0.7)
         try iconData.install(to: style, id: iconId)
         boatIcons.updateValue(iconData.layer, forKey: trackName)
         
         // Trophy icon
         let trophyId = trophyName(for: trackName)
-        let trophyData = LayerSource(iconId: trophyId, iconImageName: Layers.trophyIcon)
+        let trophyData = LayerSource(iconId: trophyId, iconImageName: Layers.trophyIcon, iconSize: 1.0)
         try trophyData.install(to: style, id: trophyId)
         trophyIcons.updateValue(trophyData.layer, forKey: trackName)
         

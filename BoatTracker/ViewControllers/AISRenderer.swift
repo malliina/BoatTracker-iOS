@@ -28,7 +28,7 @@ class AISRenderer {
         self.style = style
         self.conf = conf
         // Icons
-        let vessels = LayerSource(iconId: conf.vessel, iconImageName: conf.vesselIcon)
+        let vessels = LayerSource(iconId: conf.vessel, iconImageName: conf.vesselIcon, iconSize: 0.7)
         vessels.layer.iconRotate = .expression(Exp(.get) {
             Vessel.headingKey
         })

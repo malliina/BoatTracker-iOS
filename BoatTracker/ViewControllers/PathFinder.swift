@@ -11,11 +11,11 @@ import MapboxMaps
 
 class RouteLayers {
     static func empty(style: Style) -> RouteLayers {
-        RouteLayers(start: LayerSource(iconId: "route-start", iconImageName: Layers.routeStartIcon),
+        RouteLayers(start: LayerSource(iconId: "route-start", iconImageName: Layers.routeStartIcon, iconSize: 0.04),
                     initial: LayerSource(lineId: "route-initial"),
                     fairways: LayerSource(lineId: "route-fairways"),
                     tail: LayerSource(lineId: "route-tail"),
-                    finish: LayerSource(iconId: "route-finish", iconImageName: Layers.routeEndIcon),
+                    finish: LayerSource(iconId: "route-finish", iconImageName: Layers.routeEndIcon, iconSize: 0.04),
                     style: style)
     }
     
@@ -52,13 +52,14 @@ class RouteLayers {
     
     func update(_ src: LayerSource<LineLayer>, _ coords: [CLLocationCoordinate2D]) throws {
         try style.updateGeoJSONSource(withId: src.sourceId, geoJSON: .feature(Feature(geometry: .multiPoint(.init(coords)))))
-        // src.source.data = .feature(Feature(geometry: .multiPoint(.init(coords))))
     }
     
     func install() throws {
+        try start.install(to: style, id: start.sourceId)
         try initial.install(to: style, id: initial.sourceId)
         try fairways.install(to: style, id: fairways.sourceId)
         try tail.install(to: style, id: tail.sourceId)
+        try finish.install(to: style, id: finish.sourceId)
     }
 }
 
@@ -70,8 +71,8 @@ class PathFinder: NSObject, UIGestureRecognizerDelegate {
     
     private let edgePadding = UIEdgeInsets(top: 40, left: 40, bottom: 40, right: 40)
     
-    private var start: RouteAnnotation? = nil
-    private var end: RouteAnnotation? = nil
+    private var start: CLLocationCoordinate2D? = nil
+    private var end: CLLocationCoordinate2D? = nil
     
     private var current: RouteLayers? = nil
     
@@ -88,34 +89,19 @@ class PathFinder: NSObject, UIGestureRecognizerDelegate {
         if sender.state == .began {
             guard let senderView = sender.view else { return }
             let point = sender.location(in: senderView)
-            // let coord = mapView.convert(point, from: nil)
-            // let coord = mapView.convert(point, toCoordinateFrom: nil)
             let coord = mapView.mapboxMap.coordinate(for: point)
             if let start = start, let end = end {
-                // mapView.removeAnnotation(start)
-                // mapView.removeAnnotation(end)
-                drawEndpoint(start: end.coordinate)
-                drawEndpoint(end: coord)
-                shortest(from: end.coordinate, to: coord)
+                self.start = end
+                self.end = coord
+                shortest(from: end, to: coord)
             } else if let start = start {
-                drawEndpoint(end: coord)
-                shortest(from: start.coordinate, to: coord)
+                self.end = coord
+                shortest(from: start, to: coord)
             } else {
-                drawEndpoint(start: coord)
+                // TODO render start icon
+                self.start = coord
             }
         }
-    }
-    
-    func drawEndpoint(start: CLLocationCoordinate2D) {
-        let s = RouteAnnotation(at: start, isEnd: false)
-        self.start = s
-        // mapView.addAnnotation(s)
-    }
-    
-    func drawEndpoint(end: CLLocationCoordinate2D) {
-        let e = RouteAnnotation(at: end, isEnd: true)
-        self.end = e
-        // mapView.addAnnotation(e)
     }
     
     func shortest(from: CLLocationCoordinate2D, to: CLLocationCoordinate2D) {
@@ -140,9 +126,7 @@ class PathFinder: NSObject, UIGestureRecognizerDelegate {
                                   fairways: fairwayPath,
                                   tail: [fairwayPath.last ?? route.from, route.to])
                 let coords = fairwayPath + [ route.from, route.to ]
-                //let bounds = Feature(geometry: Geometry.multiPoint(coords)).overlayBounds
                 let camera = self.mapView.mapboxMap.camera(for: coords, padding: self.edgePadding, bearing: nil, pitch: nil)
-                // let camera = self.mapView.cameraThatFitsCoordinateBounds(bounds, edgePadding: self.edgePadding)
                 self.mapView.camera.fly(to: camera, duration: nil, completion: nil)
             } catch {
                 self.log.warn("Failed to update route. \(error)")
@@ -162,12 +146,6 @@ class PathFinder: NSObject, UIGestureRecognizerDelegate {
     }
     
     func clear() {
-        if let end = end {
-            // mapView.removeAnnotation(end)
-        }
-        if let start = start {
-            // mapView.removeAnnotation(start)
-        }
         if let current = current {
             [current.initial, current.fairways, current.tail].forEach { layerSource in
                 style.removeSourceAndLayer(id: layerSource.layer.id)
