@@ -22,33 +22,33 @@ class BoatTrackerTests: XCTestCase {
         super.tearDown()
     }
     
-    func testInitToken() throws {
-        let isSuccess = AppDelegate.initMapboxToken()
-        XCTAssert(isSuccess)
-    }
-    
-    func testWriteJson() throws {
-        let _ = try Json.shared.write(from: VesselMeta(mmsi: Mmsi("boat"), name: "Na", heading: 12))
-        XCTAssert(true)
-    }
-    
-    func testKeychain() throws {
-        let kc = Keychain.shared
-        XCTAssertNil(try kc.findToken())
-        let initial = AccessToken("abc")
-        try kc.use(token: initial)
-        XCTAssertEqual(try kc.readToken(), initial)
-        let updated = AccessToken("def")
-        try kc.use(token: updated)
-        XCTAssertEqual(try kc.readToken(), updated)
-        try kc.delete()
-        XCTAssertNil(try kc.findToken())
-    }
-    
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
-    }
+//    func testInitToken() throws {
+//        let isSuccess = AppDelegate.initMapboxToken()
+//        XCTAssert(isSuccess)
+//    }
+//
+//    func testWriteJson() throws {
+//        let _ = try Json.shared.write(from: VesselMeta(mmsi: Mmsi("boat"), name: "Na", heading: 12))
+//        XCTAssert(true)
+//    }
+//
+//    func testKeychain() throws {
+//        let kc = Keychain.shared
+//        XCTAssertNil(try kc.findToken())
+//        let initial = AccessToken("abc")
+//        try kc.use(token: initial)
+//        XCTAssertEqual(try kc.readToken(), initial)
+//        let updated = AccessToken("def")
+//        try kc.use(token: updated)
+//        XCTAssertEqual(try kc.readToken(), updated)
+//        try kc.delete()
+//        XCTAssertNil(try kc.findToken())
+//    }
+//
+//    func testPerformanceExample() {
+//        // This is an example of a performance test case.
+//        self.measure {
+//            // Put the code you want to measure the time of here.
+//        }
+//    }
 }
