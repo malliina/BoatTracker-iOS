@@ -17,6 +17,7 @@ protocol LanguageChangedDelegate {
 enum AuthProvider: String {
     case google = "google"
     case microsoft = "microsoft"
+    case apple = "apple"
     case none = "none"
     
     static func parse(s: String) -> AuthProvider {

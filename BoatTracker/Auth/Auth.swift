@@ -21,6 +21,7 @@ class Auth {
     
     private var google: RxGoogleAuth { RxGoogleAuth.shared }
     private var microsoft: MicrosoftAuth { MicrosoftAuth.shared }
+    private var apple: AppleAuth { AppleAuth.shared }
     
     func signIn(from: UIViewController, restore: Bool) {
         signInAny(from: from, restore: restore)
@@ -52,6 +53,8 @@ class Auth {
             google.google.signOut()
         case .microsoft:
             microsoft.signOut(from: from)
+        case .apple:
+            apple.signOut(from: from)
         case .none:
             log.info("Nothing to sign out from.")
         }
@@ -67,6 +70,8 @@ class Auth {
             return microsoft.obtainToken(from: from).map { token in
                 token
             }
+        case .apple:
+            return apple.obtainToken(from: from)
         case .none:
             log.info("No auth provider.")
             return Single.just(nil)

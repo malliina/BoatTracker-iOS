@@ -93,6 +93,7 @@
 		7D045D6A265A54A300B92EE8 /* Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D045D69265A54A300B92EE8 /* Auth.swift */; };
 		7D2CC0F3264D6EBD0091E05C /* MicrosoftAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D2CC0F2264D6EBD0091E05C /* MicrosoftAuth.swift */; };
 		7D998D30275D38E3001064A6 /* MapPopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D998D2F275D38E3001064A6 /* MapPopup.swift */; };
+		7DDBA9A727773D3900108B24 /* AppleAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DDBA9A627773D3900108B24 /* AppleAuth.swift */; };
 		AAB8A21EDC02BA022080687C /* Pods_BoatTracker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E9C3E7946D9FC63B43AD3F4 /* Pods_BoatTracker.framework */; };
 		C8EAA866251260BDB1F3018A /* Pods_BoatTrackerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC06A72AF5F57EEAD7E60DC3 /* Pods_BoatTrackerTests.framework */; };
 /* End PBXBuildFile section */
@@ -207,6 +208,7 @@
 		7D045D69265A54A300B92EE8 /* Auth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Auth.swift; sourceTree = "<group>"; };
 		7D2CC0F2264D6EBD0091E05C /* MicrosoftAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrosoftAuth.swift; sourceTree = "<group>"; };
 		7D998D2F275D38E3001064A6 /* MapPopup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapPopup.swift; sourceTree = "<group>"; };
+		7DDBA9A627773D3900108B24 /* AppleAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleAuth.swift; sourceTree = "<group>"; };
 		CC06A72AF5F57EEAD7E60DC3 /* Pods_BoatTrackerTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BoatTrackerTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E056F09FFE2FB53F39CDBB89 /* Pods-BoatTrackerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BoatTrackerTests.debug.xcconfig"; path = "Target Support Files/Pods-BoatTrackerTests/Pods-BoatTrackerTests.debug.xcconfig"; sourceTree = "<group>"; };
 		F02A86D7A8C81DBA5B27933E /* Pods-BoatTracker-BoatTrackerUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BoatTracker-BoatTrackerUITests.release.xcconfig"; path = "Target Support Files/Pods-BoatTracker-BoatTrackerUITests/Pods-BoatTracker-BoatTrackerUITests.release.xcconfig"; sourceTree = "<group>"; };
@@ -320,6 +322,7 @@
 				61DCDA3B21D02693009A75EB /* RxGoogleAuth.swift */,
 				7D2CC0F2264D6EBD0091E05C /* MicrosoftAuth.swift */,
 				7D045D69265A54A300B92EE8 /* Auth.swift */,
+				7DDBA9A627773D3900108B24 /* AppleAuth.swift */,
 			);
 			path = Auth;
 			sourceTree = "<group>";
@@ -721,6 +724,7 @@
 				61F4199521206F9200B1ED7D /* Arrays.swift in Sources */,
 				61BCBE7B220768AB00EE74EB /* AISRenderer.swift in Sources */,
 				613669B7216FDAD10043494A /* BoatNotifications.swift in Sources */,
+				7DDBA9A727773D3900108B24 /* AppleAuth.swift in Sources */,
 				61DE7F4B20F3ED3900C95B3F /* boatButtons.swift in Sources */,
 				61F4199D2120B39C00B1ED7D /* TrackSummaryCell.swift in Sources */,
 				612F46A220F4A5CF001A3003 /* BoatHttpClient.swift in Sources */,
@@ -925,7 +929,7 @@
 				CURRENT_PROJECT_VERSION = 13;
 				DEVELOPMENT_TEAM = D2T2QC36Z9;
 				INFOPLIST_FILE = BoatTracker/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -953,7 +957,7 @@
 				CURRENT_PROJECT_VERSION = 13;
 				DEVELOPMENT_TEAM = D2T2QC36Z9;
 				INFOPLIST_FILE = BoatTracker/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
