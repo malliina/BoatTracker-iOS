@@ -655,8 +655,8 @@ struct TrackRef: Codable {
     let topPoint: CoordBody
     let times: Times
     
-    var start: Date { return Date(timeIntervalSince1970: Double(times.start.millis) / 1000) }
-    var startDate: String { return times.start.date }
+    var start: Date { Date(timeIntervalSince1970: Double(times.start.millis) / 1000) }
+    var startDate: String { times.start.date }
 }
 
 struct TrackResponse: Codable {
@@ -675,7 +675,18 @@ struct AccessToken: Equatable, Hashable, CustomStringConvertible, StringCodable 
         self.token = value
     }
     
-    static func == (lhs: AccessToken, rhs: AccessToken) -> Bool { return lhs.token == rhs.token }
+    static func == (lhs: AccessToken, rhs: AccessToken) -> Bool { lhs.token == rhs.token }
+}
+
+struct AuthorizationCode: Equatable, Hashable, CustomStringConvertible, StringCodable {
+    let code: String
+    var description: String { return code }
+    
+    init(_ value: String) {
+        self.code = value
+    }
+    
+    static func == (lhs: AuthorizationCode, rhs: AuthorizationCode) -> Bool { lhs.code == rhs.code }
 }
 
 struct BoatName: Equatable, Hashable, CustomStringConvertible, StringCodable {
@@ -687,7 +698,7 @@ struct BoatName: Equatable, Hashable, CustomStringConvertible, StringCodable {
         self.name = name
     }
     
-    static func == (lhs: BoatName, rhs: BoatName) -> Bool { return lhs.name == rhs.name }
+    static func == (lhs: BoatName, rhs: BoatName) -> Bool { lhs.name == rhs.name }
 }
 
 struct TrackName: Hashable, CustomStringConvertible, StringCodable {
@@ -699,7 +710,7 @@ struct TrackName: Hashable, CustomStringConvertible, StringCodable {
         self.name = name
     }
     
-    static func == (lhs: TrackName, rhs: TrackName) -> Bool { return lhs.name == rhs.name }
+    static func == (lhs: TrackName, rhs: TrackName) -> Bool { lhs.name == rhs.name }
 }
 
 struct TrackTitle: Hashable, CustomStringConvertible, StringCodable {
@@ -711,7 +722,7 @@ struct TrackTitle: Hashable, CustomStringConvertible, StringCodable {
         self.title = name
     }
     
-    static func == (lhs: TrackTitle, rhs: TrackTitle) -> Bool { return lhs.title == rhs.title }
+    static func == (lhs: TrackTitle, rhs: TrackTitle) -> Bool { lhs.title == rhs.title }
 }
 
 struct Username: Hashable, CustomStringConvertible, StringCodable {
@@ -722,7 +733,7 @@ struct Username: Hashable, CustomStringConvertible, StringCodable {
         self.name = name
     }
     
-    static func == (lhs: Username, rhs: Username) -> Bool { return lhs.name == rhs.name }
+    static func == (lhs: Username, rhs: Username) -> Bool { lhs.name == rhs.name }
 }
 
 // Marker trait
@@ -738,7 +749,7 @@ struct NonEmptyString: Equatable, Hashable, CustomStringConvertible, Codable, No
         self.value = value
     }
     
-    static func == (lhs: NonEmptyString, rhs: NonEmptyString) -> Bool { return lhs.value == rhs.value }
+    static func == (lhs: NonEmptyString, rhs: NonEmptyString) -> Bool { lhs.value == rhs.value }
     
     static func transform(raw: String) -> String? {
         return validate(raw)?.value
@@ -839,9 +850,9 @@ struct Mmsi: Hashable, CustomStringConvertible, Codable {
         self.mmsi = mmsi
     }
     
-    static func == (lhs: Mmsi, rhs: Mmsi) -> Bool { return lhs.mmsi == rhs.mmsi }
+    static func == (lhs: Mmsi, rhs: Mmsi) -> Bool { lhs.mmsi == rhs.mmsi }
     
-    static func from(number: UInt64) -> Mmsi { return Mmsi("\(number)") }
+    static func from(number: UInt64) -> Mmsi { Mmsi("\(number)") }
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
@@ -915,7 +926,7 @@ struct TrackedBoat: Codable {
 
 struct DateVal: StringCodable {
     let value: String
-    var description: String { return value }
+    var description: String { value }
     
     init(_ value: String) {
         self.value = value
@@ -924,7 +935,7 @@ struct DateVal: StringCodable {
 
 struct MonthVal: NormalIntCodable {
     let value: Int
-    var description: String { return "\(value)" }
+    var description: String { "\(value)" }
     
     init(_ value: Int) {
         self.value = value
@@ -967,5 +978,14 @@ struct StatsResponse: Codable {
     let allTime: Stats
     let yearly: [YearlyStats]
     
-    var isEmpty: Bool { return allTime.trackCount == 0 }
+    var isEmpty: Bool { allTime.trackCount == 0 }
+}
+
+struct TokenResponse: Codable {
+    let email: String
+    let idToken: AccessToken
+}
+
+struct RegisterCode: Codable {
+    let code: AuthorizationCode
 }

@@ -61,6 +61,21 @@ class BoatHttpClient {
         getParsed(BackendInfo.self, "/pingAuth")
     }
     
+    // Call after UI sign in completes
+    func register(code: AuthorizationCode) -> Single<TokenResponse> {
+        parsed(TokenResponse.self, "/users/me") { url in
+            self.client.postJSON(url, payload: RegisterCode(code: code))
+        }
+    }
+    
+    // Call on app startup
+    func obtainValidToken(token: AccessToken) -> Single<TokenResponse> {
+        updateToken(token: token)
+        return parsed(TokenResponse.self, "/users/me/tokens") { url in
+            self.client.postEmpty(url, headers: self.postHeaders)
+        }
+    }
+    
     func profile() -> Single<UserProfile> {
         getParsed(UserContainer.self, "/users/me").map { $0.user }
     }

@@ -10,6 +10,7 @@ import Foundation
 
 open class Keychain {
     static let shared = Keychain()
+    let log = LoggerFactory.shared.system(Keychain.self)
 
     let server = EnvConf.shared.server
 
@@ -33,8 +34,10 @@ open class Keychain {
         saveQuery.updateValue(encodedToken, forKey: kSecValueData as String)
         let status = SecItemAdd(saveQuery as CFDictionary, nil)
         guard status == errSecSuccess else {
+            log.info("Non-success save of token.")
             throw KeychainError.unhandledError(status: status)
         }
+        log.info("Saved token to keychain.")
     }
 
     func update(token: AccessToken) throws {
@@ -54,6 +57,7 @@ open class Keychain {
         guard status == errSecSuccess || status == errSecItemNotFound else {
             throw KeychainError.unhandledError(status: status)
         }
+        log.info("Deleted token from keychain.")
     }
 
     func findToken() throws -> AccessToken? {

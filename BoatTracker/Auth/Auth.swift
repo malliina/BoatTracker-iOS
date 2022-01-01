@@ -23,6 +23,7 @@ class Auth {
     private var microsoft: MicrosoftAuth { MicrosoftAuth.shared }
     private var apple: AppleAuth { AppleAuth.shared }
     
+    // Called on app startup
     func signIn(from: UIViewController, restore: Bool) {
         signInAny(from: from, restore: restore)
     }
@@ -71,7 +72,7 @@ class Auth {
                 token
             }
         case .apple:
-            return apple.obtainToken(from: from)
+            return apple.obtainToken(from: from, restore: restore)
         case .none:
             log.info("No auth provider.")
             return Single.just(nil)

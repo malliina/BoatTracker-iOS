@@ -19,7 +19,30 @@ class AppleAuth: NSObject {
     
     private var subject = ReplaySubject<UserToken?>.create(bufferSize: 1)
     
-    func obtainToken(from: UIViewController?) -> Single<UserToken?> {
+    func obtainToken(from: UIViewController?, restore: Bool) -> Single<UserToken?> {
+        return signInSilently().map { $0 }.catch { err in
+            self.log.info("Failed to obtain token silently. \(err)")
+            if let from = from {
+                return self.signInInteractive(from: from)
+            } else {
+                return Single.just(nil)
+            }
+        }
+    }
+    
+    func signInSilently() -> Single<UserToken> {
+        do {
+            let latest = try Keychain.shared.readToken()
+            return Backend.shared.http.obtainValidToken(token: latest).map { res in
+                self.log.info("Obtained Apple token for '\(res.email)'.")
+                return UserToken(email: res.email, token: res.idToken)
+            }
+        } catch {
+            return Single.error(error)
+        }
+    }
+    
+    func signInInteractive(from: UIViewController) -> Single<UserToken?> {
         subject = ReplaySubject<UserToken?>.create(bufferSize: 1)
         self.from = from
         let appleIDProvider = ASAuthorizationAppleIDProvider()
@@ -29,10 +52,8 @@ class AppleAuth: NSObject {
         let authorizationController = ASAuthorizationController(authorizationRequests: [request])
         onUiThread {
             authorizationController.delegate = self
-            if from != nil {
-                self.log.info("Installing presentation delegate...")
-                authorizationController.presentationContextProvider = self
-            }
+            self.log.info("Installing presentation delegate...")
+            authorizationController.presentationContextProvider = self
             authorizationController.performRequests()
         }
         return subject.asSingle()
@@ -62,12 +83,22 @@ extension AppleAuth: ASAuthorizationControllerDelegate {
 //            let givenName = idCredential.fullName?.givenName ?? "unknown"
 //            return subject.onError(AppError.simple("No email in credential. Given name \(givenName). Token was '\(idToken)'. \(idCredential)"))
 //        }
-        guard let authCodeData = idCredential.authorizationCode, let authCode = String(data: authCodeData, encoding: .utf8) else {
+        guard let authCodeData = idCredential.authorizationCode, let authCodeStr = String(data: authCodeData, encoding: .utf8) else {
             return subject.onError(AppError.simple("No auth code string. \(idCredential)"))
         }
+        let authCode = AuthorizationCode(authCodeStr)
         log.info("Auth complete, authorization code '\(authCode)' token '\(idToken)'.")
-        subject.onNext(UserToken(email: "todo@hmm.com", token: AccessToken(idToken)))
-        subject.onCompleted()
+        let _ = Backend.shared.http.register(code: authCode).subscribe { e in
+            switch(e) {
+            case .success(let res):
+                self.log.info("Obtained server token for \(res.email) from backend.")
+//                try? Keychain.shared.save(token: res.idToken)
+                self.subject.onNext(UserToken(email: res.email, token: res.idToken))
+                self.subject.onCompleted()
+            case .failure(let err):
+                self.subject.onError(err)
+            }
+        }
     }
 
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {

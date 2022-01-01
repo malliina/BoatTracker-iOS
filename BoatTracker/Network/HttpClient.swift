@@ -52,11 +52,16 @@ class HttpClient {
         return sendData(url, headers: headers, payload: payload, httpMethod: HttpClient.post)
     }
     
+    func postEmpty(_ url: URL, headers: [String: String] = [:]) -> Single<HttpResponse> {
+        let req = buildRequest(url: url, httpMethod: HttpClient.post, headers: headers)
+        return executeHttp(req)
+    }
+    
     func putJSON<T: Encodable>(_ url: URL, headers: [String: String] = [:], payload: T) -> Single<HttpResponse> {
         return sendData(url, headers: headers, payload: payload, httpMethod: HttpClient.put)
     }
     
-    func sendData<T: Encodable>(_ url: URL, headers: [String: String] = [:], payload: T, httpMethod: String) -> Single<HttpResponse> {
+    func sendData<T: Encodable>(_ url: URL, headers: [String: String] = [:], payload: T?, httpMethod: String) -> Single<HttpResponse> {
         let req = buildRequestWithBody(url: url, httpMethod: httpMethod, headers: headers, body: payload)
         return executeHttp(req)
     }

@@ -163,9 +163,11 @@ class AuthVC: BaseTableVC {
     }
     
     func onToken(token: UserToken?) {
-        dismiss(animated: true) {
-            if BoatPrefs.shared.showWelcome {
-                self.welcomeDelegate.showWelcome(token: token)
+        onUiThread {
+            self.dismiss(animated: true) {
+                if BoatPrefs.shared.showWelcome {
+                    self.welcomeDelegate.showWelcome(token: token)
+                }
             }
         }
     }
