@@ -26,7 +26,8 @@ class AuthVC: BaseTableVC {
     let linkIdentifier = "LinkIdentifier"
     let googleIndex = 0
     let microsoftIndex = 1
-    let attributionsIndex = 6
+    let appleIndex = 2
+    let attributionsIndex = 7
     
     let welcomeDelegate: WelcomeDelegate
     let lang: Lang
@@ -70,16 +71,19 @@ class AuthVC: BaseTableVC {
         case microsoftIndex:
             let microsoftButton = socialButton(provider: "Microsoft", image: "LogoMicrosoft", target: cell.contentView)
             microsoftButton.addTarget(self, action: #selector(microsoftClicked(_:)), for: .touchUpInside)
-        case 2:
+        case appleIndex:
+            let microsoftButton = socialButton(provider: "Apple", image: "LogoApple", target: cell.contentView)
+            microsoftButton.addTarget(self, action: #selector(appleClicked(_:)), for: .touchUpInside)
+        case 3:
             cell.textLabel?.text = settingsLang.signInText
             cell.textLabel?.numberOfLines = 0
             cell.selectionStyle = .none
-        case 3:
+        case 4:
             cell.textLabel?.text = settingsLang.howItWorks
             cell.textLabel?.textColor = colors.secondaryText
             cell.textLabel?.numberOfLines = 0
             cell.selectionStyle = .none
-        case 4:
+        case 5:
             let textView = BoatTextView(text: lang.settings.tokenTextLong, font: UIFont.systemFont(ofSize: 17))
             textView.textContainer.lineFragmentPadding = 0
             textView.contentInset = .zero
@@ -128,6 +132,10 @@ class AuthVC: BaseTableVC {
         clicked(provider: .microsoft)
     }
     
+    @objc func appleClicked(_ sender: UIButton) {
+        clicked(provider: .apple)
+    }
+    
     private func clicked(provider: AuthProvider) {
         prefs.authProvider = provider
         prefs.showWelcome = true
@@ -155,9 +163,11 @@ class AuthVC: BaseTableVC {
     }
     
     func onToken(token: UserToken?) {
-        dismiss(animated: true) {
-            if BoatPrefs.shared.showWelcome {
-                self.welcomeDelegate.showWelcome(token: token)
+        onUiThread {
+            self.dismiss(animated: true) {
+                if BoatPrefs.shared.showWelcome {
+                    self.welcomeDelegate.showWelcome(token: token)
+                }
             }
         }
     }

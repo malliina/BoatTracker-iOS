@@ -33,6 +33,17 @@ class Backend {
         latestToken = token
         http.updateToken(token: token?.token)
         socket.updateToken(token: token?.token)
+        let keychain = Keychain.shared
+        do {
+            if let token = token?.token {
+                try keychain.use(token: token)
+            } else {
+                try keychain.delete()
+            }
+        } catch {
+            log.error("Keychain failure. \(error)")
+        }
+        
         //let d = socket.delegate
         //socket.close()
         //socket = BoatSocket(token: token?.token, track: nil)
