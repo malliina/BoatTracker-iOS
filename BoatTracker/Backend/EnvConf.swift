@@ -12,7 +12,7 @@ class EnvConf {
     static let shared = EnvConf()
 
     var server: String {
-        "www.boat-tracker.com"
+        "api.boat-tracker.com"
     }
     private var devBaseUrl: URL {
         URL(string: "http://localhost:9000")!

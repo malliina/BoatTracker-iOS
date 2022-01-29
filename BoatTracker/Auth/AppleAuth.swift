@@ -18,6 +18,7 @@ class AppleAuth: NSObject {
     var from: UIViewController? = nil
     
     private var subject = ReplaySubject<UserToken?>.create(bufferSize: 1)
+    private var currentNonce: String? = nil
     
     func obtainToken(from: UIViewController?, restore: Bool) -> Single<UserToken?> {
         return signInSilently().map { $0 }.catch { err in
@@ -47,6 +48,9 @@ class AppleAuth: NSObject {
         self.from = from
         let appleIDProvider = ASAuthorizationAppleIDProvider()
         let request = appleIDProvider.createRequest()
+        let nonce = Randoms.shared.randomNonceString()
+        currentNonce = nonce
+        request.nonce = Randoms.shared.sha256(nonce)
         request.requestedScopes = [.fullName, .email]
         log.info("Attempting to login...")
         let authorizationController = ASAuthorizationController(authorizationRequests: [request])
@@ -70,6 +74,9 @@ class AppleAuth: NSObject {
 
 extension AppleAuth: ASAuthorizationControllerDelegate {
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+        guard let nonce = currentNonce else {
+            return subject.onError(AppError.simple("No nonce."))
+        }
         guard let idCredential = authorization.credential as? ASAuthorizationAppleIDCredential else {
             return subject.onError(AppError.simple("Credential is not an ASAuthorizationAppleIDCredential. \(authorization.credential)"))
         }
@@ -86,9 +93,9 @@ extension AppleAuth: ASAuthorizationControllerDelegate {
         guard let authCodeData = idCredential.authorizationCode, let authCodeStr = String(data: authCodeData, encoding: .utf8) else {
             return subject.onError(AppError.simple("No auth code string. \(idCredential)"))
         }
-        let authCode = AuthorizationCode(authCodeStr)
-        log.info("Auth complete, authorization code '\(authCode)' token '\(idToken)'.")
-        let _ = Backend.shared.http.register(code: authCode).subscribe { e in
+        let reg = RegisterCode(code: AuthorizationCode(authCodeStr), nonce: nonce)
+        log.info("Auth complete, authorization code '\(reg.code)' token '\(idToken)'.")
+        let _ = Backend.shared.http.register(code: reg).subscribe { e in
             switch(e) {
             case .success(let res):
                 self.log.info("Obtained server token for \(res.email) from backend.")

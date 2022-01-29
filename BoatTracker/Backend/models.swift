@@ -988,4 +988,5 @@ struct TokenResponse: Codable {
 
 struct RegisterCode: Codable {
     let code: AuthorizationCode
+    let nonce: String
 }

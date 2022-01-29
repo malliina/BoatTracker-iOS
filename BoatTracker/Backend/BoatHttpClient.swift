@@ -62,9 +62,9 @@ class BoatHttpClient {
     }
     
     // Call after UI sign in completes
-    func register(code: AuthorizationCode) -> Single<TokenResponse> {
+    func register(code: RegisterCode) -> Single<TokenResponse> {
         parsed(TokenResponse.self, "/users/me") { url in
-            self.client.postJSON(url, payload: RegisterCode(code: code))
+            self.client.postJSON(url, payload: code)
         }
     }
     

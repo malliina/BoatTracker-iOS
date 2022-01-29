@@ -11,7 +11,7 @@ The iOS app for BoatTracker. See [www.boat-tracker.com](https://www.boat-tracker
 To run tests from the command line:
 
     pod install
-    xcodebuild test -workspace BoatTracker.xcworkspace -scheme BoatTracker -destination 'platform=iOS Simulator,name=iPhone 11,OS=13.3'
+    xcodebuild test -workspace BoatTracker.xcworkspace -scheme BoatTracker -destination 'platform=iOS Simulator,name=iPhone 12 mini,OS=15.2'
 
 ## Releasing
 
