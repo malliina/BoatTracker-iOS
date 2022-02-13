@@ -12,7 +12,6 @@ import AppCenterAnalytics
 import AppCenterCrashes
 import MapboxMaps
 import MSAL
-import GoogleSignIn
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {

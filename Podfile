@@ -5,7 +5,7 @@ ENV['COCOAPODS_DISABLE_STATS'] = "true"
 def app_pods
   pod 'AppCenter', '4.1.0'
   pod 'Charts', '3.6.0'
-  pod 'GoogleSignIn', '5.0.2'
+  pod 'GoogleSignIn', '6.1.0'
   # pod 'Mapbox-iOS-SDK', '6.3.0'
   pod 'MapboxMaps', '10.1.0'
   pod 'MSAL', '1.1.17'

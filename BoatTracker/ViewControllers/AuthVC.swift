@@ -8,7 +8,6 @@
 
 import Foundation
 import UIKit
-import GoogleSignIn
 import MSAL
 
 protocol WelcomeDelegate {

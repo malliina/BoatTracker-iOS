@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import GoogleSignIn
+//import GoogleSignIn
 import RxSwift
 
 class Auth {
@@ -66,7 +66,9 @@ class Auth {
     private func obtainToken(from: UIViewController?, restore: Bool) -> Single<UserToken?> {
         switch prefs.authProvider {
         case .google:
-            return google.obtainToken(from: from, restore: restore)
+            return google.obtainToken(from: from, restore: restore).map { token in
+                token
+            }
         case .microsoft:
             return microsoft.obtainToken(from: from).map { token in
                 token
