@@ -26,9 +26,6 @@ class RxGoogleAuth: NSObject {
     }
     
     func signInSilently() {
-//        google.restorePreviousSignIn { user, error in
-//
-//        }
         google.restorePreviousSignIn()
     }
     

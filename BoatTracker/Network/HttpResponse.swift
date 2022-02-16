@@ -14,8 +14,8 @@ class HttpResponse {
     let http: HTTPURLResponse
     let data: Data
     
-    var statusCode: Int { return http.statusCode }
-    var isStatusOK: Bool { return statusCode >= 200 && statusCode < 300 }
+    var statusCode: Int { http.statusCode }
+    var isStatusOK: Bool { statusCode >= 200 && statusCode < 300 }
 
     var errors: [SingleError] {
         get {

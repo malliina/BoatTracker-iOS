@@ -42,7 +42,6 @@ PODS:
     - RxSwift (= 6.0.0)
   - RxSwift (6.0.0)
   - SnapKit (5.0.1)
-  - SocketRocket (0.5.1)
   - Turf (2.1.0)
 
 DEPENDENCIES:
@@ -54,7 +53,6 @@ DEPENDENCIES:
   - RxCocoa (= 6.0.0)
   - RxSwift (= 6.0.0)
   - SnapKit (= 5.0.1)
-  - SocketRocket (= 0.5.1)
 
 SPEC REPOS:
   trunk:
@@ -73,7 +71,6 @@ SPEC REPOS:
     - RxRelay
     - RxSwift
     - SnapKit
-    - SocketRocket
     - Turf
 
 SPEC CHECKSUMS:
@@ -92,9 +89,8 @@ SPEC CHECKSUMS:
   RxRelay: 8d593be109c06ea850df027351beba614b012ffb
   RxSwift: c14e798c59b9f6e9a2df8fd235602e85cc044295
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
-  SocketRocket: d57c7159b83c3c6655745cd15302aa24b6bae531
   Turf: d1220730a00b50a9fb5862c1fb6a5dd698c9e367
 
-PODFILE CHECKSUM: 155b5432cdbb76afe8e7f2a2ef76958c17de1212
+PODFILE CHECKSUM: 2c38d56863d54f611d17766feb57cc0ec0487229
 
 COCOAPODS: 1.11.2
