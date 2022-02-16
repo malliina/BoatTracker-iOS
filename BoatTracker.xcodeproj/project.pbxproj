@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -90,12 +90,19 @@
 		61F4199B2120B2F700B1ED7D /* ProfileTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61F4199A2120B2F700B1ED7D /* ProfileTableVC.swift */; };
 		61F4199D2120B39C00B1ED7D /* TrackSummaryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61F4199C2120B39C00B1ED7D /* TrackSummaryCell.swift */; };
 		7D045D6A265A54A300B92EE8 /* Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D045D69265A54A300B92EE8 /* Auth.swift */; };
+		7D175C3D27BD80930050E29B /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 7D175C3C27BD80930050E29B /* SnapKit */; };
+		7D175C4027BD842C0050E29B /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = 7D175C3F27BD842C0050E29B /* RxCocoa */; };
+		7D175C4227BD842C0050E29B /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 7D175C4127BD842C0050E29B /* RxSwift */; };
+		7D175C4527BD84990050E29B /* AppCenterAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 7D175C4427BD84990050E29B /* AppCenterAnalytics */; };
+		7D175C4727BD84990050E29B /* AppCenterCrashes in Frameworks */ = {isa = PBXBuildFile; productRef = 7D175C4627BD84990050E29B /* AppCenterCrashes */; };
+		7D175C4A27BD85300050E29B /* MapboxMaps in Frameworks */ = {isa = PBXBuildFile; productRef = 7D175C4927BD85300050E29B /* MapboxMaps */; };
+		7D175C4D27BD85AE0050E29B /* MSAL in Frameworks */ = {isa = PBXBuildFile; productRef = 7D175C4C27BD85AE0050E29B /* MSAL */; };
+		7D175C5027BD87110050E29B /* Charts in Frameworks */ = {isa = PBXBuildFile; productRef = 7D175C4F27BD87110050E29B /* Charts */; };
+		7D175C5327BD876F0050E29B /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 7D175C5227BD876F0050E29B /* GoogleSignIn */; };
 		7D2CC0F3264D6EBD0091E05C /* MicrosoftAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D2CC0F2264D6EBD0091E05C /* MicrosoftAuth.swift */; };
 		7D528E6227B9682F00C55F06 /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D528E6127B9682F00C55F06 /* WebSocket.swift */; };
 		7D998D30275D38E3001064A6 /* MapPopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D998D2F275D38E3001064A6 /* MapPopup.swift */; };
 		7DDBA9A727773D3900108B24 /* AppleAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DDBA9A627773D3900108B24 /* AppleAuth.swift */; };
-		AAB8A21EDC02BA022080687C /* Pods_BoatTracker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E9C3E7946D9FC63B43AD3F4 /* Pods_BoatTracker.framework */; };
-		C8EAA866251260BDB1F3018A /* Pods_BoatTrackerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC06A72AF5F57EEAD7E60DC3 /* Pods_BoatTrackerTests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -109,13 +116,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0110E83036854B50B7D9D484 /* Pods-BoatTrackerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BoatTrackerTests.release.xcconfig"; path = "Target Support Files/Pods-BoatTrackerTests/Pods-BoatTrackerTests.release.xcconfig"; sourceTree = "<group>"; };
-		0E9C3E7946D9FC63B43AD3F4 /* Pods_BoatTracker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BoatTracker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		18EAC7F1D1F6BB188ECC2D6E /* Pods-BoatTracker-BoatTrackerUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BoatTracker-BoatTrackerUITests.debug.xcconfig"; path = "Target Support Files/Pods-BoatTracker-BoatTrackerUITests/Pods-BoatTracker-BoatTrackerUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		1A6A633812206E4A035E56A6 /* Credentials.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Credentials.plist; sourceTree = "<group>"; };
 		1A6A693739B80A86DFB4EBF9 /* Files.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Files.swift; sourceTree = "<group>"; };
 		1A6A6F29FF0942BF01A10434 /* SelectLanguageUI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectLanguageUI.swift; sourceTree = "<group>"; };
-		4A560643C79AD3677BCB7028 /* Pods-BoatTracker.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BoatTracker.debug.xcconfig"; path = "Target Support Files/Pods-BoatTracker/Pods-BoatTracker.debug.xcconfig"; sourceTree = "<group>"; };
 		6101D548220F75200051A427 /* languages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = languages.swift; sourceTree = "<group>"; };
 		6101D54A221057340051A427 /* mapCallouts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = mapCallouts.swift; sourceTree = "<group>"; };
 		6101D54C221057530051A427 /* BoatCallout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatCallout.swift; sourceTree = "<group>"; };
@@ -209,10 +212,6 @@
 		7D528E6127B9682F00C55F06 /* WebSocket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocket.swift; sourceTree = "<group>"; };
 		7D998D2F275D38E3001064A6 /* MapPopup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapPopup.swift; sourceTree = "<group>"; };
 		7DDBA9A627773D3900108B24 /* AppleAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleAuth.swift; sourceTree = "<group>"; };
-		CC06A72AF5F57EEAD7E60DC3 /* Pods_BoatTrackerTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BoatTrackerTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E056F09FFE2FB53F39CDBB89 /* Pods-BoatTrackerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BoatTrackerTests.debug.xcconfig"; path = "Target Support Files/Pods-BoatTrackerTests/Pods-BoatTrackerTests.debug.xcconfig"; sourceTree = "<group>"; };
-		F02A86D7A8C81DBA5B27933E /* Pods-BoatTracker-BoatTrackerUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BoatTracker-BoatTrackerUITests.release.xcconfig"; path = "Target Support Files/Pods-BoatTracker-BoatTrackerUITests/Pods-BoatTracker-BoatTrackerUITests.release.xcconfig"; sourceTree = "<group>"; };
-		FE1B68AA24218E381FD3644C /* Pods-BoatTracker.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BoatTracker.release.xcconfig"; path = "Target Support Files/Pods-BoatTracker/Pods-BoatTracker.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -220,7 +219,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AAB8A21EDC02BA022080687C /* Pods_BoatTracker.framework in Frameworks */,
+				7D175C4A27BD85300050E29B /* MapboxMaps in Frameworks */,
+				7D175C4527BD84990050E29B /* AppCenterAnalytics in Frameworks */,
+				7D175C4727BD84990050E29B /* AppCenterCrashes in Frameworks */,
+				7D175C5027BD87110050E29B /* Charts in Frameworks */,
+				7D175C4227BD842C0050E29B /* RxSwift in Frameworks */,
+				7D175C4027BD842C0050E29B /* RxCocoa in Frameworks */,
+				7D175C4D27BD85AE0050E29B /* MSAL in Frameworks */,
+				7D175C3D27BD80930050E29B /* SnapKit in Frameworks */,
+				7D175C5327BD876F0050E29B /* GoogleSignIn in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -228,7 +235,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C8EAA866251260BDB1F3018A /* Pods_BoatTrackerTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -246,12 +252,6 @@
 		27FEB864E06B7B008493F665 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				4A560643C79AD3677BCB7028 /* Pods-BoatTracker.debug.xcconfig */,
-				FE1B68AA24218E381FD3644C /* Pods-BoatTracker.release.xcconfig */,
-				E056F09FFE2FB53F39CDBB89 /* Pods-BoatTrackerTests.debug.xcconfig */,
-				0110E83036854B50B7D9D484 /* Pods-BoatTrackerTests.release.xcconfig */,
-				18EAC7F1D1F6BB188ECC2D6E /* Pods-BoatTracker-BoatTrackerUITests.debug.xcconfig */,
-				F02A86D7A8C81DBA5B27933E /* Pods-BoatTracker-BoatTrackerUITests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -415,7 +415,6 @@
 				61B07C7320F21DC400D8B7E0 /* BoatTrackerTests */,
 				61B07C5D20F21DC300D8B7E0 /* Products */,
 				27FEB864E06B7B008493F665 /* Pods */,
-				646FF44FEC594148FBDA3010 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -480,15 +479,6 @@
 			path = Backend;
 			sourceTree = "<group>";
 		};
-		646FF44FEC594148FBDA3010 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				0E9C3E7946D9FC63B43AD3F4 /* Pods_BoatTracker.framework */,
-				CC06A72AF5F57EEAD7E60DC3 /* Pods_BoatTrackerTests.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -496,17 +486,26 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 61B07C8420F21DC500D8B7E0 /* Build configuration list for PBXNativeTarget "BoatTracker" */;
 			buildPhases = (
-				C786167F00F16BFF7C81B4ED /* [CP] Check Pods Manifest.lock */,
 				61B07C5820F21DC300D8B7E0 /* Sources */,
 				61B07C5920F21DC300D8B7E0 /* Frameworks */,
 				61B07C5A20F21DC300D8B7E0 /* Resources */,
-				B9FE5E1B6A4754EA8DD7B3D4 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = BoatTracker;
+			packageProductDependencies = (
+				7D175C3C27BD80930050E29B /* SnapKit */,
+				7D175C3F27BD842C0050E29B /* RxCocoa */,
+				7D175C4127BD842C0050E29B /* RxSwift */,
+				7D175C4427BD84990050E29B /* AppCenterAnalytics */,
+				7D175C4627BD84990050E29B /* AppCenterCrashes */,
+				7D175C4927BD85300050E29B /* MapboxMaps */,
+				7D175C4C27BD85AE0050E29B /* MSAL */,
+				7D175C4F27BD87110050E29B /* Charts */,
+				7D175C5227BD876F0050E29B /* GoogleSignIn */,
+			);
 			productName = BoatTracker;
 			productReference = 61B07C5C20F21DC300D8B7E0 /* BoatTracker.app */;
 			productType = "com.apple.product-type.application";
@@ -515,7 +514,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 61B07C8720F21DC500D8B7E0 /* Build configuration list for PBXNativeTarget "BoatTrackerTests" */;
 			buildPhases = (
-				49613FBCB63C78DEB9F72CBF /* [CP] Check Pods Manifest.lock */,
 				61B07C6C20F21DC400D8B7E0 /* Sources */,
 				61B07C6D20F21DC400D8B7E0 /* Frameworks */,
 				61B07C6E20F21DC400D8B7E0 /* Resources */,
@@ -568,6 +566,15 @@
 				Base,
 			);
 			mainGroup = 61B07C5320F21DC300D8B7E0;
+			packageReferences = (
+				7D175C3B27BD80930050E29B /* XCRemoteSwiftPackageReference "SnapKit" */,
+				7D175C3E27BD842B0050E29B /* XCRemoteSwiftPackageReference "RxSwift" */,
+				7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */,
+				7D175C4827BD85300050E29B /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */,
+				7D175C4B27BD85AE0050E29B /* XCRemoteSwiftPackageReference "microsoft-authentication-library-for-objc" */,
+				7D175C4E27BD87110050E29B /* XCRemoteSwiftPackageReference "Charts" */,
+				7D175C5127BD876F0050E29B /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+			);
 			productRefGroup = 61B07C5D20F21DC300D8B7E0 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -598,70 +605,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		49613FBCB63C78DEB9F72CBF /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-BoatTrackerTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		B9FE5E1B6A4754EA8DD7B3D4 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-BoatTracker/Pods-BoatTracker-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-BoatTracker/Pods-BoatTracker-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BoatTracker/Pods-BoatTracker-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		C786167F00F16BFF7C81B4ED /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-BoatTracker-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		61B07C5820F21DC300D8B7E0 /* Sources */ = {
@@ -901,7 +844,6 @@
 		};
 		61B07C8520F21DC500D8B7E0 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4A560643C79AD3677BCB7028 /* Pods-BoatTracker.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -929,7 +871,6 @@
 		};
 		61B07C8620F21DC500D8B7E0 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FE1B68AA24218E381FD3644C /* Pods-BoatTracker.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -956,7 +897,6 @@
 		};
 		61B07C8820F21DC500D8B7E0 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E056F09FFE2FB53F39CDBB89 /* Pods-BoatTrackerTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -978,7 +918,6 @@
 		};
 		61B07C8920F21DC500D8B7E0 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0110E83036854B50B7D9D484 /* Pods-BoatTrackerTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -1029,6 +968,113 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		7D175C3B27BD80930050E29B /* XCRemoteSwiftPackageReference "SnapKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
+			requirement = {
+				kind = exactVersion;
+				version = 5.0.1;
+			};
+		};
+		7D175C3E27BD842B0050E29B /* XCRemoteSwiftPackageReference "RxSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ReactiveX/RxSwift.git";
+			requirement = {
+				kind = exactVersion;
+				version = 6.5.0;
+			};
+		};
+		7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/microsoft/appcenter-sdk-apple.git";
+			requirement = {
+				kind = exactVersion;
+				version = 4.4.1;
+			};
+		};
+		7D175C4827BD85300050E29B /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mapbox/mapbox-maps-ios.git";
+			requirement = {
+				kind = exactVersion;
+				version = 10.3.0;
+			};
+		};
+		7D175C4B27BD85AE0050E29B /* XCRemoteSwiftPackageReference "microsoft-authentication-library-for-objc" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/AzureAD/microsoft-authentication-library-for-objc";
+			requirement = {
+				kind = exactVersion;
+				version = 1.1.17;
+			};
+		};
+		7D175C4E27BD87110050E29B /* XCRemoteSwiftPackageReference "Charts" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/danielgindi/Charts.git";
+			requirement = {
+				kind = exactVersion;
+				version = 4.0.1;
+			};
+		};
+		7D175C5127BD876F0050E29B /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
+			requirement = {
+				kind = exactVersion;
+				version = 6.1.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		7D175C3C27BD80930050E29B /* SnapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7D175C3B27BD80930050E29B /* XCRemoteSwiftPackageReference "SnapKit" */;
+			productName = SnapKit;
+		};
+		7D175C3F27BD842C0050E29B /* RxCocoa */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7D175C3E27BD842B0050E29B /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxCocoa;
+		};
+		7D175C4127BD842C0050E29B /* RxSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7D175C3E27BD842B0050E29B /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxSwift;
+		};
+		7D175C4427BD84990050E29B /* AppCenterAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */;
+			productName = AppCenterAnalytics;
+		};
+		7D175C4627BD84990050E29B /* AppCenterCrashes */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */;
+			productName = AppCenterCrashes;
+		};
+		7D175C4927BD85300050E29B /* MapboxMaps */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7D175C4827BD85300050E29B /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */;
+			productName = MapboxMaps;
+		};
+		7D175C4C27BD85AE0050E29B /* MSAL */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7D175C4B27BD85AE0050E29B /* XCRemoteSwiftPackageReference "microsoft-authentication-library-for-objc" */;
+			productName = MSAL;
+		};
+		7D175C4F27BD87110050E29B /* Charts */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7D175C4E27BD87110050E29B /* XCRemoteSwiftPackageReference "Charts" */;
+			productName = Charts;
+		};
+		7D175C5227BD876F0050E29B /* GoogleSignIn */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7D175C5127BD876F0050E29B /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignIn;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 61B07C5420F21DC300D8B7E0 /* Project object */;
 }

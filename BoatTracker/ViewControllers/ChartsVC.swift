@@ -103,7 +103,7 @@ extension ChartsVC: ChartViewDelegate {
     }
 }
 
-class TimeFormatter: IAxisValueFormatter {
+class TimeFormatter: AxisValueFormatter {
     let formatter: DateFormatter
 
     init(formatting: FormatsLang) {
