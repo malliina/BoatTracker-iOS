@@ -63,8 +63,8 @@ class ChartsVC: UIViewController {
         view.addSubview(chart)
         chart.snp.makeConstraints { (make) in
             make.leadingMargin.trailingMargin.equalToSuperview()
-            make.top.equalToSuperview()
-            make.bottom.equalToSuperview()
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
+            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
         }
         connect(track: track)
     }

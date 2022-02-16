@@ -249,13 +249,6 @@
 			path = UI;
 			sourceTree = "<group>";
 		};
-		27FEB864E06B7B008493F665 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Pods;
-			sourceTree = "<group>";
-		};
 		610EE3D821724C7C0040FBC6 /* FontAwesome */ = {
 			isa = PBXGroup;
 			children = (
@@ -414,7 +407,6 @@
 				61B07C5E20F21DC300D8B7E0 /* BoatTracker */,
 				61B07C7320F21DC400D8B7E0 /* BoatTrackerTests */,
 				61B07C5D20F21DC300D8B7E0 /* Products */,
-				27FEB864E06B7B008493F665 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -858,7 +850,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.44.0;
+				MARKETING_VERSION = 1.45.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.malliina.BoatTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -885,7 +877,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.44.0;
+				MARKETING_VERSION = 1.45.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.malliina.BoatTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
