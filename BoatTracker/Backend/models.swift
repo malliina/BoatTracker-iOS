@@ -716,7 +716,7 @@ struct TrackName: Hashable, CustomStringConvertible, StringCodable {
 struct TrackTitle: Hashable, CustomStringConvertible, StringCodable {
     static let key = "trackTitle"
     let title: String
-    var description: String { return title }
+    var description: String { title }
     
     init(_ name: String) {
         self.title = name
@@ -727,7 +727,7 @@ struct TrackTitle: Hashable, CustomStringConvertible, StringCodable {
 
 struct Username: Hashable, CustomStringConvertible, StringCodable {
     let name: String
-    var description: String { return name }
+    var description: String { name }
     
     init(_ name: String) {
         self.name = name
@@ -743,7 +743,7 @@ public protocol NonEmpty {
 
 struct NonEmptyString: Equatable, Hashable, CustomStringConvertible, Codable, NonEmpty {
     let value: String
-    var description: String { return value }
+    var description: String { value }
     
     init(_ value: String) {
         self.value = value

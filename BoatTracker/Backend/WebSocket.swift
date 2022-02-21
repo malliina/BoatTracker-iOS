@@ -92,6 +92,8 @@ class WebSocket: NSObject, URLSessionWebSocketDelegate {
 //            self.log.debug("Text received \(text)")
             self.delegate?.on(message: text)
             self.receive()
+          default:
+              self.log.info("Received something.")
           }
         case .failure(let error):
             self.log.error("Error when receiving \(error)")

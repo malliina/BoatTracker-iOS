@@ -15,7 +15,8 @@ import RxCocoa
 class ChartsVC: UIViewController {
     let log = LoggerFactory.shared.vc(ChartsVC.self)
     
-    let seaBlue = UIColor(hex: "#006994", alpha: 1.0)
+    let seaBlue = UIColor(red: 0x00, green: 0x69, blue: 0x94)
+    //let seaBlue = UIColor(hex: "#006994", alpha: 1.0)
     private var socket: BoatSocket? = nil
     let chart = LineChartView(frame: CGRect.zero)
     // Inits empty datasets whose data will be filled when coordinate events arrive
@@ -119,20 +120,7 @@ class TimeFormatter: AxisValueFormatter {
 }
 
 extension UIColor {
-    // I have copy-pasted this from a gist but forgotten the source
-    convenience init(hex: String, alpha: CGFloat = 1) {
-        assert(hex[hex.startIndex] == "#", "Expected hex string of format #RRGGBB")
-        
-        let scanner = Scanner(string: hex)
-        scanner.scanLocation = 1  // skip #
-        
-        var rgb: UInt32 = 0
-        scanner.scanHexInt32(&rgb)
-        
-        self.init(
-            red:   CGFloat((rgb & 0xFF0000) >> 16)/255.0,
-            green: CGFloat((rgb &   0xFF00) >>  8)/255.0,
-            blue:  CGFloat((rgb &     0xFF)      )/255.0,
-            alpha: alpha)
-    }
+   convenience init(red: Int, green: Int, blue: Int) {
+       self.init(red: CGFloat(red) / 255.0, green: CGFloat(green) / 255.0, blue: CGFloat(blue) / 255.0, alpha: 1.0)
+   }
 }

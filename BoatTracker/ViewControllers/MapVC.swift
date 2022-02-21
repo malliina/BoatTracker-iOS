@@ -17,8 +17,9 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, UIPopoverPresentatio
     let buttonInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
     let defaultCenter = CLLocationCoordinate2D(latitude: 60.14, longitude: 24.9)
     
-    private var socket: BoatSocket { Backend.shared.socket }
-    private var http: BoatHttpClient { Backend.shared.http }
+    private var backend: Backend { Backend.shared }
+    private var socket: BoatSocket { backend.socket }
+    private var http: BoatHttpClient { backend.http }
     
     private var mapView: MapView?
     private var style: Style?
@@ -259,7 +260,7 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, UIPopoverPresentatio
         disconnect()
         boatRenderer?.latestTrack = track
         //log.info("Changing to \(track)...")
-        Backend.shared.open(track: track, delegate: self)
+        backend.open(track: track, delegate: self)
     }
     
     func disconnect() {
@@ -321,7 +322,7 @@ extension MapVC: VesselDelegate {
 extension MapVC: WelcomeDelegate {
     func showWelcome(token: UserToken?) {
         BoatPrefs.shared.showWelcome = false
-        let _ = Backend.shared.http.profile().subscribe { (event) in
+        let _ = backend.http.profile().subscribe { (event) in
             switch event {
             case .success(let profile):
                 if let boatToken = profile.boats.headOption()?.token, let lang = self.settings.lang {

@@ -11,6 +11,7 @@ import UIKit
 
 class BaseTableVC: UITableViewController {
     var settings: UserSettings { UserSettings.shared }
+    var backend: Backend { Backend.shared }
     
     override func viewDidLoad() {
         super.viewDidLoad()

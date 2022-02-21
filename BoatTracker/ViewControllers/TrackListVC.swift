@@ -56,21 +56,22 @@ class TrackListVC: BaseTableVC {
         return cell
     }
     
-    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-        return [
-            UITableViewRowAction(style: .default, title: settingsLang.edit, handler: { (action, indexPath) in
-                self.showEditTitlePopup(tableView, at: indexPath, track: self.tracks[indexPath.row])
-            })
-        ]
+    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let item = UIContextualAction(style: .normal, title: settingsLang.edit) { (action, view, bool) in
+            self.showEditTitlePopup(tableView, at: indexPath, track: self.tracks[indexPath.row])
+        }
+        return UISwipeActionsConfiguration(actions: [item])
     }
     
     func showEditTitlePopup(_ tableView: UITableView, at indexPath: IndexPath, track: TrackRef) {
         let popup = UIAlertController(title: settingsLang.rename, message: settingsLang.newName, preferredStyle: .alert)
-        popup.addTextField(configurationHandler: nil)
+        popup.addTextField { textField in
+            textField.text = track.trackTitle?.title
+        }
         let okAction = UIAlertAction(title: settingsLang.rename, style: .default) { (a) in
             guard let textField = (popup.textFields ?? []).headOption(),
                 let newName = textField.text, !newName.isEmpty else { return }
-            let _ = Backend.shared.http.changeTrackTitle(name: track.trackName, title: TrackTitle(newName)).observe(on: MainScheduler.instance).subscribe { (single) in
+            let _ = self.backend.http.changeTrackTitle(name: track.trackName, title: TrackTitle(newName)).observe(on: MainScheduler.instance).subscribe { (single) in
                 switch single {
                 case .success(let updatedTrack):
                     self.tracks[indexPath.row] = updatedTrack.track
@@ -91,14 +92,9 @@ class TrackListVC: BaseTableVC {
         goBack()
     }
     
-//    func onToken(token: UserToken?) {
-//        Backend.shared.updateToken(new: token)
-//        loadTracks()
-//    }
-    
     func loadTracks() {
         display(text: lang.messages.loading)
-        let _ = Backend.shared.http.tracks().subscribe { (single) in
+        let _ = backend.http.tracks().subscribe { (single) in
             switch single {
             case .success(let ts):
                 self.log.info("Got \(ts.count) tracks.")
