@@ -134,10 +134,10 @@ class BoatRenderer {
                 let initialFollowPitch: CGFloat = 60
                 let pitch = hasBeenFollowing ? mapView.cameraState.pitch : initialFollowPitch
                 hasBeenFollowing = true
-                let camera = mapView.mapboxMap.camera(for: [lastCoord.coord], padding: .zero, bearing: bearing, pitch: pitch)
+                let camera = CameraOptions(center: lastCoord.coord, padding: .zero, zoom: mapView.cameraState.zoom, bearing: bearing, pitch: pitch)
                 mapView.camera.fly(to: camera, duration: 0.8, completion: nil)
             } else {
-                let camera = CameraOptions(center: lastCoord.coord)
+                let camera = CameraOptions(center: lastCoord.coord, zoom: mapView.cameraState.zoom)
                 mapView.camera.fly(to: camera, duration: nil, completion: nil)
             }
         case .stay:
