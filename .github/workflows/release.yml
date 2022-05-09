@@ -21,13 +21,16 @@ jobs:
           base64 -d -i ~/.apple/Credentials.plist.b64 > BoatTracker/Credentials.plist
           echo "$NETRC" > ~/.apple/netrc.b64
           base64 -d -i ~/.apple/netrc.b64 > ~/.netrc
+          ls -al ~/.apple/
         env:
           APPSTORE_CONNECT_API_KEY: ${{ secrets.APPSTORE_CONNECT_API_KEY }}
           CERTIFICATE_P12: ${{ secrets.CERTIFICATE_P12 }}
           CREDENTIALS_PLIST: ${{ secrets.CREDENTIALS_PLIST }}
           NETRC: ${{ secrets.NETRC }}
       - name: Release
-        run: fastlane release
+        run: |
+          ls -al ~/.apple/
+          fastlane release
         env:
           CERTIFICATE_PASSWORD: ${{ secrets.CERTIFICATE_PASSWORD }}
           FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}
