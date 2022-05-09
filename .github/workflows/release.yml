@@ -23,6 +23,8 @@ jobs:
         env:
           APPSTORE_CONNECT_API_KEY: ${{ secrets.APPSTORE_CONNECT_API_KEY }}
           CERTIFICATE_P12: ${{ secrets.CERTIFICATE_P12 }}
+          CREDENTIALS_PLIST: ${{ secrets.CREDENTIALS_PLIST }}
+          NETRC: ${{ secrets.NETRC }}
       - name: Release
         run: fastlane release
         env:
