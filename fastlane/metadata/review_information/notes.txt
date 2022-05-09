@@ -1,8 +1,0 @@
-Demo video: https://files.boat-tracker.com/boat-apple-480.mov
-
-Sign-in is optional, but you may sign in using this Google account (or your own):
-
-Email: boat.app.test@gmail.com
-Password: boat1234
-
-Sign in with Apple is also supported.
