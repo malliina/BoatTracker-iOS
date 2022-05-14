@@ -1,0 +1,7 @@
+Free nautical charts for Finnish waters.
+
+Includes live tracking of vessels in Finnish waters. Tap on a vessel icon to view further information.
+
+When used together with the Boat-Tracker agent software installed in a boat, routes driven with the boat are shown on the chart.
+
+Uses navigational markers from Finnish Transport Agency and public vessel identification data.
