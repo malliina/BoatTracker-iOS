@@ -1,18 +1,3 @@
-# This file contains the fastlane.tools configuration
-# You can find the documentation at https://docs.fastlane.tools
-#
-# For a list of all available actions, check out
-#
-#     https://docs.fastlane.tools/actions
-#
-# For a list of all available plugins, check out
-#
-#     https://docs.fastlane.tools/plugins/available-plugins
-#
-
-# Uncomment the line if you want fastlane to automatically update itself
-# update_fastlane
-
 opt_out_usage
 
 default_platform(:ios)
@@ -35,7 +20,7 @@ platform :ios do
     push_to_git_remote(tags: true)
   end
 
-  desc "Build and upload to TestFlight"
+  desc "Build and upload"
   lane :upload do
     setup_ci if ENV['CI']
     unlock_keychain(
@@ -59,7 +44,17 @@ platform :ios do
     )
     get_provisioning_profile(filename: "App.mobileprovision")
     build_app(scheme: "BoatTracker")
-    upload_to_testflight
+    # upload_to_testflight
+    upload_to_app_store(
+      force: true, 
+      submit_for_review: true, 
+      automatic_release: true, 
+      precheck_include_in_app_purchases: false,
+      submission_information: {
+        export_compliance_uses_encryption: false,
+        add_id_info_uses_idfa: false
+      }
+    )
   end
 
   lane :tests do

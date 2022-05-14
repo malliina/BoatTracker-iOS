@@ -19,5 +19,10 @@ Pods
 
 BoatTracker/Credentials.plist
 BoatTracker.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
-certificate*
+
+fastlane/report.xml
+fastlane/test_output
+fastlane/Preview.html
+
 AuthKey*
+certificate*
