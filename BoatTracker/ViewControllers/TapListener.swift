@@ -56,7 +56,10 @@ class TapListener {
     
     private func handleMarksTap(_ point: CGPoint) -> Single<CustomAnnotation?> {
         return queryFeatures(at: point, layerIds: Array(marksLayers)).map { features in
-            guard let coordinate = self.markCoordinate(features.first) else { return nil }
+            guard let coordinate = self.markCoordinate(features.first) else {
+                self.log.warn("No coordinate for mark feature.")
+                return nil
+            }
             return features.first.flatMap { feature in
                 let props = feature.feature.properties ?? [:]
                 let full: MarkAnnotation? = (try? Json.shared.parse(MarineSymbol.self, from: props)).map { symbol in
@@ -78,18 +81,28 @@ class TapListener {
     }
     
     private func handleBoatTap(_ point: CGPoint) -> Single<CustomAnnotation?> {
-        queryVisibleFeatureProps(point, layers: Array(boats.layers()), t: BoatPoint.self).map { result in
-            result.map { boatPoint in
-                BoatAnnotation(info: boatPoint)
+        let boatLayers = boats.layers()
+        if !boatLayers.isEmpty {
+            return queryVisibleFeatureProps(point, layers: Array(boats.layers()), t: BoatPoint.self).map { result in
+                result.map { boatPoint in
+                    BoatAnnotation(info: boatPoint)
+                }
             }
+        } else {
+            return .just(nil)
         }
     }
     
     private func handleTrophyTap(_ point: CGPoint) -> Single<CustomAnnotation?> {
-        queryVisibleFeatureProps(point, layers: Array(boats.trophyLayers()), t: TrophyPoint.self).map { result in
-            result.map { point in
-                TrophyAnnotation(top: point.top)
+        let layers = boats.trophyLayers()
+        if !layers.isEmpty {
+            return queryVisibleFeatureProps(point, layers: Array(boats.trophyLayers()), t: TrophyPoint.self).map { result in
+                result.map { point in
+                    TrophyAnnotation(top: point.top)
+                }
             }
+        } else {
+            return .just(nil)
         }
     }
     
@@ -146,7 +159,7 @@ class TapListener {
     
     func queryFeatures(at: CGPoint, layerIds: [String]) -> Single<[QueriedFeature]> {
         return Observable.create { observer in
-            self.mapView.mapboxMap.queryRenderedFeatures(at: at, options: RenderedQueryOptions(layerIds: layerIds, filter: nil)) { result in
+            self.mapView.mapboxMap.queryRenderedFeatures(with: at, options: RenderedQueryOptions(layerIds: layerIds, filter: nil)) { result in
                 switch result {
                 case .success(let features):
                     observer.on(.next(features))

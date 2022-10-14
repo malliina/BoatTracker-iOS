@@ -491,8 +491,8 @@ class MarineSymbol: NSObject, BaseSymbol, Decodable {
     required convenience init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.init(owner: try container.decode(String.self, forKey: .owner),
-                  exteriorLight: try container.decode(Bool.self, forKey: .exteriorLight),
-                  topSign: try container.decode(Bool.self, forKey: .topSign),
+                  exteriorLight: try container.decode(IntBool.self, forKey: .exteriorLight).value,
+                  topSign: try container.decode(IntBool.self, forKey: .topSign).value,
                   nameFi: try container.decodeIfPresent(NonEmptyString.self, forKey: .nameFi),
                   nameSe: try container.decodeIfPresent(NonEmptyString.self, forKey: .nameSe),
                   locationFi: try container.decodeIfPresent(NonEmptyString.self, forKey: .locationFi),
