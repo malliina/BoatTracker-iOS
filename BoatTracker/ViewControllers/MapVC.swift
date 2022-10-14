@@ -166,19 +166,14 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, UIPopoverPresentatio
             // Tries matching the exact point first
             guard let senderView = sender.view, let taps = taps else { return }
             let point = sender.location(in: senderView)
-            let _ = taps.onTap(point: point).subscribe { event in
-                switch event {
-                case .success(let annotation):
-                    if let tapped = annotation {
-                        // self.log.info("Tapped \(tapped) at \(tapped.coordinate).")
-                        guard let popoverContent = self.popoverView(tapped) else { return }
-                        self.displayDetails(child: popoverContent, senderView: senderView, point: point)
-                    } else {
-                        self.log.info("Tapped nothing of interest.")
-                        self.dismiss(animated: true, completion: nil)
-                    }
-                case .failure(let error):
-                    self.log.info("Failed to handle tap. \(error)")
+            Task {
+                if let tapped = await taps.onTap(point: point) {
+                    // self.log.info("Tapped \(tapped) at \(tapped.coordinate).")
+                    guard let popoverContent = self.popoverView(tapped) else { return }
+                    self.displayDetails(child: popoverContent, senderView: senderView, point: point)
+                } else {
+                    self.log.info("Tapped nothing of interest.")
+                    self.dismiss(animated: true, completion: nil)
                 }
             }
         }
