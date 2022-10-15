@@ -27,6 +27,8 @@ class LimitAnnotation: CustomAnnotation {
 }
 
 class LimitInfoView: PopoverView {
+    let log = LoggerFactory.shared.vc(TapListener.self)
+    
     let limitsLabel = BoatLabel.smallSubtitle()
     let limitsValue = BoatLabel.smallTitle()
     
@@ -150,7 +152,7 @@ class MinimalMarkCallout: PopoverView {
     let log = LoggerFactory.shared.view(MinimalMarkCallout.self)
     let markAnnoation: MinimalMarkAnnotation
     let lang: Lang
-    var markLang: MarkLang { return lang.mark }
+    var markLang: MarkLang { lang.mark }
     let finnishWords: SpecialWords
     
     let nameValue = BoatLabel.centeredTitle()
@@ -159,7 +161,7 @@ class MinimalMarkCallout: PopoverView {
     let ownerLabel = BoatLabel.smallSubtitle()
     let ownerValue = BoatLabel.smallTitle()
     
-    var hasLocation: Bool { return markAnnoation.mark.hasLocation }
+    var hasLocation: Bool { markAnnoation.mark.hasLocation }
  
     required init(annotation: MinimalMarkAnnotation, lang: Lang, finnishWords: SpecialWords) {
         self.markAnnoation = annotation
@@ -182,7 +184,7 @@ class MinimalMarkCallout: PopoverView {
         nameValue.text = mark.name(lang: lang.language)?.value
         nameValue.snp.makeConstraints { (make) in
             make.topMargin.equalToSuperview().offset(largeSpacing)
-            make.leadingMargin.trailingMargin.top.equalToSuperview().inset(inset)
+            make.leadingMargin.trailingMargin.equalToSuperview().inset(inset)
         }
         
         if hasLocation {
@@ -208,7 +210,7 @@ class MinimalMarkCallout: PopoverView {
             if hasLocation {
                 make.width.greaterThanOrEqualTo(locationLabel)
             }
-            make.bottom.equalToSuperview().inset(inset)
+            make.bottomMargin.equalToSuperview().inset(inset)
         }
         
         ownerValue.text = mark.translatedOwner(finnish: finnishWords, translated: lang.specialWords)

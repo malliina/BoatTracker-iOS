@@ -40,7 +40,7 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, UIPopoverPresentatio
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let url = URL(string: "mapbox://styles/malliina/cjgny1fjc008p2so90sbz8nbv")!
+        let url = URL(string: "mapbox://styles/malliina/ck8lhls0r0obm1ilkvglk0ulr")!
         let styleUri = StyleURI(url: url)!
         let camera = CameraOptions(center: defaultCenter, zoom: 10)
         let mapView = MapView(frame: view.bounds, mapInitOptions: MapInitOptions(cameraOptions: camera, styleURI: nil))

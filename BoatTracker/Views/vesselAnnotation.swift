@@ -1,11 +1,3 @@
-//
-//  TrophyCallout.swift
-//  BoatTracker
-//
-//  Created by Michael Skogberg on 27/01/2019.
-//  Copyright © 2019 Michael Skogberg. All rights reserved.
-//
-
 import Foundation
 import UIKit
 import MapboxMaps
