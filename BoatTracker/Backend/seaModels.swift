@@ -62,21 +62,21 @@ enum LimitType: Decodable {
 
 struct RawLimitArea: Decodable {
     let types: String
-    let limit: String?
+    let limit: Double?
     let length: String?
     let responsible: String?
     let location: String?
-    let fairwayName: String
+    let fairwayName: String?
     let publishDate: String
     
     func validate() throws -> LimitArea {
-        return LimitArea(
+        LimitArea(
             types: try types.components(separatedBy: ", ").map { try LimitType.parse(input: $0) },
-            limit: limit.flatMap { Double($0)?.kmh },
+            limit: limit.flatMap { $0.kmh },
             length: length.flatMap { Double($0)?.meters },
             responsible: responsible.flatMap { NonEmptyString.validate($0) },
             location: location.flatMap { NonEmptyString.validate($0) },
-            fairwayName: fairwayName,
+            fairwayName: fairwayName.flatMap { NonEmptyString.validate($0) },
             publishDate: publishDate
         )
     }
@@ -98,6 +98,6 @@ struct LimitArea {
     let length: Distance?
     let responsible: NonEmptyString?
     let location: NonEmptyString?
-    let fairwayName: String
+    let fairwayName: NonEmptyString?
     let publishDate: String
 }

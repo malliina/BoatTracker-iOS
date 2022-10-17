@@ -53,15 +53,19 @@ class LimitInfoView: PopoverView {
     
     private func setup(_ limit: LimitArea) {
         let hasSpeed = limit.limit != nil
+        let hasFairwayName = limit.fairwayName != nil
         let speedLabels = hasSpeed ? [speedLabel, speedValue] : []
-        ([limitsLabel, limitsValue, fairwayLabel, fairwayValue] + speedLabels).forEach { (label) in
+        let fairwayLabels = hasFairwayName ? [ fairwayLabel, fairwayValue ] : []
+        ([limitsLabel, limitsValue] + fairwayLabels + speedLabels).forEach { (label) in
             addSubview(label)
         }
         limitsLabel.text = lang.limits.limit
         limitsLabel.snp.makeConstraints { (make) in
             make.topMargin.equalToSuperview()
             make.leadingMargin.equalToSuperview().inset(inset)
-            make.width.equalTo(fairwayLabel)
+            if hasFairwayName {
+                make.width.equalTo(fairwayLabel)
+            }
             if hasSpeed {
                 make.width.equalTo(speedLabel)
             }
@@ -71,6 +75,9 @@ class LimitInfoView: PopoverView {
             make.top.equalTo(limitsLabel)
             make.leading.equalTo(limitsLabel.snp.trailing).offset(spacing)
             make.trailingMargin.equalToSuperview().inset(inset)
+            if !hasSpeed && !hasFairwayName {
+                make.bottomMargin.equalToSuperview()
+            }
         }
         if hasSpeed {
             speedLabel.text = lang.limits.magnitude
@@ -84,20 +91,25 @@ class LimitInfoView: PopoverView {
                 make.top.equalTo(speedLabel)
                 make.leading.equalTo(speedLabel.snp.trailing).offset(spacing)
                 make.trailingMargin.equalToSuperview().inset(inset)
+                if !hasFairwayName {
+                    make.bottomMargin.equalToSuperview()
+                }
             }
         }
-        fairwayLabel.text = lang.limits.fairwayName
-        fairwayLabel.snp.makeConstraints { (make) in
-            make.top.equalTo((hasSpeed ? speedLabel : limitsLabel).snp.bottom).offset(spacing)
-            make.leadingMargin.equalToSuperview().inset(inset)
-            make.width.equalTo(limitsLabel)
-        }
-        fairwayValue.text = limit.fairwayName
-        fairwayValue.snp.makeConstraints { (make) in
-            make.top.equalTo(fairwayLabel)
-            make.leading.equalTo(fairwayLabel.snp.trailing).offset(spacing)
-            make.trailingMargin.equalToSuperview().inset(inset)
-            make.bottomMargin.equalToSuperview()
+        if hasFairwayName {
+            fairwayLabel.text = lang.limits.fairwayName
+            fairwayLabel.snp.makeConstraints { (make) in
+                make.top.equalTo((hasSpeed ? speedLabel : limitsLabel).snp.bottom).offset(spacing)
+                make.leadingMargin.equalToSuperview().inset(inset)
+                make.width.equalTo(limitsLabel)
+            }
+            fairwayValue.text = limit.fairwayName?.value
+            fairwayValue.snp.makeConstraints { (make) in
+                make.top.equalTo(fairwayLabel)
+                make.leading.equalTo(fairwayLabel.snp.trailing).offset(spacing)
+                make.trailingMargin.equalToSuperview().inset(inset)
+                make.bottomMargin.equalToSuperview()
+            }
         }
     }
     
@@ -453,6 +465,7 @@ class FairwayAreaCallout: PopoverView {
         let hasMark = info.markType != nil
         let markLabels = hasMark ? [ markLabel, markValue ] : []
         let limitsView = limits.map { LimitInfoView(limit: $0, lang: lang) }
+        let hasLimits  = limitsView != nil
         if let limitsView = limitsView {
             container.addSubview(limitsView)
         }
@@ -471,7 +484,7 @@ class FairwayAreaCallout: PopoverView {
             make.width.equalTo(depthLabel)
             make.width.equalTo(harrowDepthLabel)
             if let limitsView = limitsView {
-                make.width.equalTo(limitsView.fairwayLabel)
+                make.width.equalTo(limitsView.limitsLabel)
             }
             if hasMark {
                 make.width.equalTo(markLabel)

@@ -156,7 +156,12 @@ struct MapboxLayers: Codable {
     let ais: AisConf
 }
 
+struct MapConf: Codable {
+    let styleUrl: String
+}
+
 struct ClientConf: Codable {
+    let map: MapConf
     let languages: Languages
     let layers: MapboxLayers
 }

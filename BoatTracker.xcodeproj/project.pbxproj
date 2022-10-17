@@ -338,6 +338,7 @@
 				61BCBE7C2207730400EE74EB /* BoatRenderer.swift */,
 				61F4198E211F7CBB00B1ED7D /* BoatsTokensVC.swift */,
 				613E82CF21A0789000D3C412 /* ChartsVC.swift */,
+				7D998D2F275D38E3001064A6 /* MapPopup.swift */,
 				61B07C6120F21DC300D8B7E0 /* MapVC.swift */,
 				6173F248228CB99000A1E9B9 /* PathFinder.swift */,
 				61F4199A2120B2F700B1ED7D /* ProfileTableVC.swift */,
@@ -347,7 +348,6 @@
 				619679F920FBCDB100432672 /* TrackListVC.swift */,
 				612F46AF20F551CB001A3003 /* viewControllerExt.swift */,
 				61ACE5C62130956A00925265 /* WelcomeSignedIn.swift */,
-				7D998D2F275D38E3001064A6 /* MapPopup.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -995,7 +995,7 @@
 			repositoryURL = "https://github.com/mapbox/mapbox-maps-ios.git";
 			requirement = {
 				kind = exactVersion;
-				version = 10.7.0;
+				version = 10.8.1;
 			};
 		};
 		7D175C4B27BD85AE0050E29B /* XCRemoteSwiftPackageReference "microsoft-authentication-library-for-objc" */ = {
@@ -1003,7 +1003,7 @@
 			repositoryURL = "https://github.com/AzureAD/microsoft-authentication-library-for-objc";
 			requirement = {
 				kind = exactVersion;
-				version = 1.1.17;
+				version = 1.2.5;
 			};
 		};
 		7D175C4E27BD87110050E29B /* XCRemoteSwiftPackageReference "Charts" */ = {
@@ -1019,7 +1019,7 @@
 			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
 			requirement = {
 				kind = exactVersion;
-				version = 6.1.0;
+				version = 6.2.4;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

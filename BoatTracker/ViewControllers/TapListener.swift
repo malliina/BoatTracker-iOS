@@ -122,7 +122,7 @@ class TapListener {
     private func handleLimitsTap(_ point: CGPoint) async -> CustomAnnotation? {
         let result = await queryLimitAreaInfo(point)
         return result.map { area in
-            LimitAnnotation(limit: area, coord: mapView.mapboxMap.coordinate(for: point))
+            return LimitAnnotation(limit: area, coord: mapView.mapboxMap.coordinate(for: point))
         }
     }
     
@@ -134,7 +134,6 @@ class TapListener {
     func queryVisibleFeatureProps<T: Decodable>(_ point: CGPoint, layers: [String], t: T.Type) async -> T? {
         do {
             let features = try await queryFeatures(at: point, layerIds: layers)
-            self.log.info("Found \(features.count) features with layers \(layers.mkString(", ")).")
             return try features.first.flatMap { feature in
                 let props = feature.feature.properties ?? [:]
                 return try Json.shared.parse(t, from: props)

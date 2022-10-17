@@ -40,20 +40,11 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, UIPopoverPresentatio
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let url = URL(string: "mapbox://styles/malliina/ck8lhls0r0obm1ilkvglk0ulr")!
-        let styleUri = StyleURI(url: url)!
+        
         let camera = CameraOptions(center: defaultCenter, zoom: 10)
         let mapView = MapView(frame: view.bounds, mapInitOptions: MapInitOptions(cameraOptions: camera, styleURI: nil))
         self.mapView = mapView
-        mapView.mapboxMap.loadStyleURI(styleUri) { result in
-            switch result {
-            case .success(let style):
-                self.log.info("The map has finished loading the style")
-                self.onStyleLoaded(mapView, didFinishLoading: style)
-            case let .failure(error):
-                self.log.warn("The map failed to load the style: \(error)")
-            }
-        }
+        
         mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         view.addSubview(mapView)
         
@@ -85,6 +76,29 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, UIPopoverPresentatio
         swipes.delegate = self
         mapView.addGestureRecognizer(swipes)
         
+//        let url = URL(string: "mapbox://styles/malliina/ck8lhls0r0obm1ilkvglk0ulr")!
+//        let styleUri = StyleURI(url: url)!
+        let _ = http.conf().subscribe { event in
+            switch event {
+            case .success(let conf):
+                self.settings.conf = conf
+                self.onUiThread {
+                    self.profileButton.isHidden = false
+                    mapView.mapboxMap.loadStyleURI(StyleURI(rawValue: conf.map.styleUrl)!) { result in
+                        switch result {
+                        case .success(let style):
+                            self.log.info("The map has finished loading the style")
+                            self.onStyleLoaded(mapView, didFinishLoading: style)
+                        case let .failure(error):
+                            self.log.warn("The map failed to load the style: \(error)")
+                        }
+                    }
+                }
+            case .failure(let err):
+                self.log.error("Failed to load conf: '\(err.describe)'.")
+            }
+        }
+        
         MapEvents.shared.delegate = self
     }
     
@@ -95,19 +109,9 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, UIPopoverPresentatio
         self.boatRenderer = boats
         self.pathFinder = PathFinder(mapView: mapView, style: style)
         installTapListener(mapView: mapView)
+        guard let conf = settings.conf else { return }
         // Maybe the conf should be cached in a file?
-        let _ = http.conf().subscribe { (event) in
-            switch event {
-            case .success(let conf):
-                self.settings.conf = conf
-                self.onUiThread {
-                    self.profileButton.isHidden = false
-                }
-                self.initInteractive(mapView: mapView, style: style, layers: conf.layers, boats: boats)
-            case .failure(let err):
-                self.log.error("Failed to load conf: '\(err.describe)'.")
-            }
-        }
+        self.initInteractive(mapView: mapView, style: style, layers: conf.layers, boats: boats)
     }
     
     func initInteractive(mapView: MapView, style: Style, layers: MapboxLayers, boats: BoatRenderer) {
