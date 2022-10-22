@@ -91,8 +91,6 @@
 		61F4199D2120B39C00B1ED7D /* TrackSummaryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61F4199C2120B39C00B1ED7D /* TrackSummaryCell.swift */; };
 		7D045D6A265A54A300B92EE8 /* Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D045D69265A54A300B92EE8 /* Auth.swift */; };
 		7D175C3D27BD80930050E29B /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 7D175C3C27BD80930050E29B /* SnapKit */; };
-		7D175C4027BD842C0050E29B /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = 7D175C3F27BD842C0050E29B /* RxCocoa */; };
-		7D175C4227BD842C0050E29B /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 7D175C4127BD842C0050E29B /* RxSwift */; };
 		7D175C4527BD84990050E29B /* AppCenterAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 7D175C4427BD84990050E29B /* AppCenterAnalytics */; };
 		7D175C4727BD84990050E29B /* AppCenterCrashes in Frameworks */ = {isa = PBXBuildFile; productRef = 7D175C4627BD84990050E29B /* AppCenterCrashes */; };
 		7D175C4A27BD85300050E29B /* MapboxMaps in Frameworks */ = {isa = PBXBuildFile; productRef = 7D175C4927BD85300050E29B /* MapboxMaps */; };
@@ -223,8 +221,6 @@
 				7D175C4527BD84990050E29B /* AppCenterAnalytics in Frameworks */,
 				7D175C4727BD84990050E29B /* AppCenterCrashes in Frameworks */,
 				7D175C5027BD87110050E29B /* Charts in Frameworks */,
-				7D175C4227BD842C0050E29B /* RxSwift in Frameworks */,
-				7D175C4027BD842C0050E29B /* RxCocoa in Frameworks */,
 				7D175C4D27BD85AE0050E29B /* MSAL in Frameworks */,
 				7D175C3D27BD80930050E29B /* SnapKit in Frameworks */,
 				7D175C5327BD876F0050E29B /* GoogleSignIn in Frameworks */,
@@ -489,8 +485,6 @@
 			name = BoatTracker;
 			packageProductDependencies = (
 				7D175C3C27BD80930050E29B /* SnapKit */,
-				7D175C3F27BD842C0050E29B /* RxCocoa */,
-				7D175C4127BD842C0050E29B /* RxSwift */,
 				7D175C4427BD84990050E29B /* AppCenterAnalytics */,
 				7D175C4627BD84990050E29B /* AppCenterCrashes */,
 				7D175C4927BD85300050E29B /* MapboxMaps */,
@@ -560,7 +554,6 @@
 			mainGroup = 61B07C5320F21DC300D8B7E0;
 			packageReferences = (
 				7D175C3B27BD80930050E29B /* XCRemoteSwiftPackageReference "SnapKit" */,
-				7D175C3E27BD842B0050E29B /* XCRemoteSwiftPackageReference "RxSwift" */,
 				7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */,
 				7D175C4827BD85300050E29B /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */,
 				7D175C4B27BD85AE0050E29B /* XCRemoteSwiftPackageReference "microsoft-authentication-library-for-objc" */,
@@ -974,14 +967,6 @@
 				version = 5.0.1;
 			};
 		};
-		7D175C3E27BD842B0050E29B /* XCRemoteSwiftPackageReference "RxSwift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/ReactiveX/RxSwift.git";
-			requirement = {
-				kind = exactVersion;
-				version = 6.5.0;
-			};
-		};
 		7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/microsoft/appcenter-sdk-apple.git";
@@ -1029,16 +1014,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 7D175C3B27BD80930050E29B /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
-		};
-		7D175C3F27BD842C0050E29B /* RxCocoa */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 7D175C3E27BD842B0050E29B /* XCRemoteSwiftPackageReference "RxSwift" */;
-			productName = RxCocoa;
-		};
-		7D175C4127BD842C0050E29B /* RxSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 7D175C3E27BD842B0050E29B /* XCRemoteSwiftPackageReference "RxSwift" */;
-			productName = RxSwift;
 		};
 		7D175C4427BD84990050E29B /* AppCenterAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
