@@ -1,8 +1,8 @@
 import MapboxMaps
 import MSAL
-import RxSwift
 import SnapKit
 import UIKit
+import Combine
 
 struct ActiveMarker {
     let annotation: TrophyAnnotation
@@ -36,13 +36,21 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, UIPopoverPresentatio
     private var clientConf: ClientConf? { settings.conf }
     
     private var firstInit: Bool = true
+    private var cancellable: AnyCancellable? = nil
+    
+    static func readMapboxToken(key: String = "MapboxAccessToken") throws -> ResourceOptions {
+        let token = try Credentials.read(key: key)
+//        log.info("Using token \(token)")
+        return ResourceOptions(accessToken: token)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        
         let camera = CameraOptions(center: defaultCenter, zoom: 10)
-        let mapView = MapView(frame: view.bounds, mapInitOptions: MapInitOptions(cameraOptions: camera, styleURI: nil))
+        let token = try! MapVC.readMapboxToken()
+        let options = MapInitOptions(resourceOptions: token, cameraOptions: camera, styleURI: nil)
+        let mapView = MapView(frame: view.bounds, mapInitOptions: options)
         self.mapView = mapView
         
         mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -75,35 +83,31 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, UIPopoverPresentatio
         swipes.maximumNumberOfTouches = 1
         swipes.delegate = self
         mapView.addGestureRecognizer(swipes)
-        
-//        let url = URL(string: "mapbox://styles/malliina/ck8lhls0r0obm1ilkvglk0ulr")!
-//        let styleUri = StyleURI(url: url)!
-        let _ = http.conf().subscribe { event in
-            switch event {
-            case .success(let conf):
-                self.settings.conf = conf
-                self.onUiThread {
-                    self.profileButton.isHidden = false
-                    mapView.mapboxMap.loadStyleURI(StyleURI(rawValue: conf.map.styleUrl)!) { result in
-                        switch result {
-                        case .success(let style):
-                            self.log.info("The map has finished loading the style")
-                            self.onStyleLoaded(mapView, didFinishLoading: style)
-                        case let .failure(error):
-                            self.log.warn("The map failed to load the style: \(error)")
+        Task {
+            do {
+                let conf = try await self.http.conf()
+                settings.conf = conf
+                self.profileButton.isHidden = false
+                let url = conf.map.styleUrl
+                mapView.mapboxMap.loadStyleURI(StyleURI(rawValue: url)!) { result in
+                    switch result {
+                    case .success(let style):
+                        self.log.info("Style '\(url)' loaded.")
+                        Task {
+                            await self.onStyleLoaded(mapView, didFinishLoading: style)
                         }
+                    case let .failure(error):
+                        self.log.error("Failed to load style \(url). \(error)")
                     }
                 }
-            case .failure(let err):
-                self.log.error("Failed to load conf: '\(err.describe)'.")
+            } catch {
+                log.error("Failed to load conf and style: '\(error.describe)'.")
             }
         }
-        
         MapEvents.shared.delegate = self
     }
     
-    func onStyleLoaded(_ mapView: MapView, didFinishLoading style: Style) {
-        log.info("Style loaded.")
+    func onStyleLoaded(_ mapView: MapView, didFinishLoading style: Style) async {
         self.style = style
         let boats = BoatRenderer(mapView: mapView, style: style, followButton: followButton)
         self.boatRenderer = boats
@@ -111,10 +115,10 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, UIPopoverPresentatio
         installTapListener(mapView: mapView)
         guard let conf = settings.conf else { return }
         // Maybe the conf should be cached in a file?
-        self.initInteractive(mapView: mapView, style: style, layers: conf.layers, boats: boats)
+        await initInteractive(mapView: mapView, style: style, layers: conf.layers, boats: boats)
     }
     
-    func initInteractive(mapView: MapView, style: Style, layers: MapboxLayers, boats: BoatRenderer) {
+    func initInteractive(mapView: MapView, style: Style, layers: MapboxLayers, boats: BoatRenderer) async {
         if firstInit {
             firstInit = false
             if BoatPrefs.shared.isAisEnabled {
@@ -126,34 +130,23 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, UIPopoverPresentatio
                 }
             }
             self.taps = TapListener(mapView: mapView, layers: layers, ais: self.aisRenderer, boats: boats)
-            let _ = Auth.shared.tokens.subscribe(onNext: { token in
-                self.reload(token: token)
-            })
-            Auth.shared.signIn(from: self, restore: true)
-        }
-    }
-    
-    func initConf() {
-        let _ = http.conf().subscribe { (conf) in
-            self.settings.conf = conf
-            self.onUiThread {
-                self.profileButton.isHidden = false
+            cancellable = Auth.shared.$tokens.sink { token in
+                Task {
+                    await self.reload(token: token)
+                }
             }
-        } onFailure: { (err) in
-            self.log.error("Unable to load configuration: '\(err.describe)'.")
-        } onDisposed: {
-            ()
+            _ = await Auth.shared.signIn(from: self, restore: true)
         }
     }
     
-    func setupUser(token: AccessToken?) {
+    func setupUser(token: AccessToken?) async {
         http.updateToken(token: token)
         if isSignedIn {
-            let _ = http.profile().subscribe { (profile) in
-                self.settings.profile = profile
-            } onFailure: { (err) in
-                self.log.error("Unable to load profile: '\(err.describe)'.")
-            } onDisposed: {
+            do {
+                let profile = try await http.profile()
+                settings.profile = profile
+            } catch {
+                log.error("Unable to load profile: '\(error.describe)'.")
             }
         } else {
             settings.profile = nil
@@ -240,7 +233,7 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, UIPopoverPresentatio
     }
     
     /// Called at least once
-    func reload(token: UserToken?) {
+    func reload(token: UserToken?) async {
         latestToken = token
         socket.delegate = nil
         socket.close()
@@ -252,7 +245,7 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, UIPopoverPresentatio
         socket.delegate = self
         socket.vesselDelegate = self
         socket.open()
-        setupUser(token: token?.token)
+        await setupUser(token: token?.token)
     }
     
     func change(to track: TrackName) {
@@ -319,22 +312,22 @@ extension MapVC: VesselDelegate {
 }
 
 extension MapVC: WelcomeDelegate {
-    func showWelcome(token: UserToken?) {
+    func showWelcome(token: UserToken?) async {
         BoatPrefs.shared.showWelcome = false
-        let _ = backend.http.profile().subscribe { (event) in
-            switch event {
-            case .success(let profile):
-                if let boatToken = profile.boats.headOption()?.token, let lang = self.settings.lang {
-                    self.onUiThread {
-                        self.navigate(to: WelcomeSignedIn(boatToken: boatToken, lang: lang.settings))
-                    }
-                } else {
-                    self.log.warn("Signed in but user has no boats.")
-                }
-            case .failure(let err):
-                self.log.error(err.describe)
+        do {
+            let profile = try await backend.http.profile()
+            if let boatToken = profile.boats.headOption()?.token, let lang = self.settings.lang {
+                on(token: boatToken, lang: lang)
+            } else {
+                log.warn("Signed in but user has no boats.")
             }
+        } catch {
+            log.error(error.describe)
         }
+    }
+    
+    @MainActor private func on(token: String, lang: Lang) {
+        navigate(to: WelcomeSignedIn(boatToken: token, lang: lang.settings))
     }
 }
 

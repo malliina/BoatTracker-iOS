@@ -56,24 +56,26 @@ class StatsVC: BaseTableVC {
     }
     
     func loadStats() {
-        display(text: lang.messages.loading)
-        let _ = Backend.shared.http.stats().subscribe { (single) in
-            switch single {
-            case .success(let ss):
-                self.log.info("Got stats.")
-                self.onUiThread {
-                    if ss.isEmpty {
-                        self.tableView.backgroundView = self.feedbackView(text: "")
-                    } else {
-                        self.tableView.backgroundView = nil
-                        self.stats = ss
-                    }
-                    self.tableView.reloadData()
-                }
-            case .failure(let err):
-                self.onError(err)
+        Task {
+            display(text: lang.messages.loading)
+            do {
+                let stats = try await Backend.shared.http.stats()
+                log.info("Got stats.")
+                update(ss: stats)
+            } catch {
+                onError(error)
             }
         }
+    }
+    
+    @MainActor private func update(ss: StatsResponse) {
+        if ss.isEmpty {
+            tableView.backgroundView = self.feedbackView(text: "")
+        } else {
+            tableView.backgroundView = nil
+            stats = ss
+        }
+        tableView.reloadData()
     }
     
     func onError(_ err: Error) {
@@ -81,14 +83,12 @@ class StatsVC: BaseTableVC {
         display(text: err.describe)
     }
     
-    func display(text: String) {
-        onUiThread {
-            let feedbackLabel = BoatLabel.build(text: text, alignment: .center, numberOfLines: 0)
-            feedbackLabel.textColor = BoatColors.shared.feedback
-            self.tableView.backgroundView = feedbackLabel
-            self.stats = nil
-            self.tableView.reloadData()
-        }
+    @MainActor func display(text: String) {
+        let feedbackLabel = BoatLabel.build(text: text, alignment: .center, numberOfLines: 0)
+        feedbackLabel.textColor = BoatColors.shared.feedback
+        self.tableView.backgroundView = feedbackLabel
+        self.stats = nil
+        self.tableView.reloadData()
     }
     
     required init?(coder aDecoder: NSCoder) {

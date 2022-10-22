@@ -1,14 +1,4 @@
-//
-//  Auth.swift
-//  BoatTracker
-//
-//  Created by Michael Skogberg on 23.5.2021.
-//  Copyright © 2021 Michael Skogberg. All rights reserved.
-//
-
 import Foundation
-//import GoogleSignIn
-import RxSwift
 
 class Auth {
     static let shared = Auth()
@@ -16,68 +6,63 @@ class Auth {
     
     private var prefs: BoatPrefs { BoatPrefs.shared }
     
-    private let subject = ReplaySubject<UserToken?>.create(bufferSize: 1)
-    var tokens: Observable<UserToken?> { subject }
+    @Published var tokens: UserToken? = nil
     
     private var google: RxGoogleAuth { RxGoogleAuth.shared }
     private var microsoft: MicrosoftAuth { MicrosoftAuth.shared }
     private var apple: AppleAuth { AppleAuth.shared }
     
     // Called on app startup
-    func signIn(from: UIViewController, restore: Bool) {
-        signInAny(from: from, restore: restore)
+    func signIn(from: UIViewController, restore: Bool) async -> UserToken? {
+        await signInAny(from: from, restore: restore)
     }
     
-    func signInAny(from: UIViewController?, restore: Bool) {
-        let _ = obtainToken(from: from, restore: restore).subscribe { (event) in
-            switch event {
-            case .success(let token):
-                self.subject.onNext(token)
-            case .failure(let err):
-                self.log.error("Failed to authenticate: '\(err.describe)'.")
-                self.subject.onNext(nil)
-            }
+    func signInAny(from: UIViewController?, restore: Bool) async -> UserToken? {
+        do {
+            let token = try await obtainToken(from: from, restore: restore)
+            tokens = token
+            return token
+        } catch let error {
+            log.error("Failed to authenticate: '\(error.describe)'.")
+            tokens = nil
+            return nil
         }
     }
     
-    func signInSilentlyNow() {
-        let _ = signInAny(from: nil, restore: true)
+    func signInSilentlyNow() async {
+        _ = await signInAny(from: nil, restore: true)
     }
     
-    func signInSilently() -> Single<UserToken?> {
-        return obtainToken(from: nil, restore: true)
+    func signInSilently() async throws -> UserToken? {
+        try await obtainToken(from: nil, restore: true)
     }
     
-    func signOut(from: UIViewController) {
+    func signOut(from: UIViewController) async {
         switch prefs.authProvider {
         case .google:
             google.google.signOut()
         case .microsoft:
-            microsoft.signOut(from: from)
+            await microsoft.signOut(from: from)
         case .apple:
             apple.signOut(from: from)
         case .none:
             log.info("Nothing to sign out from.")
         }
         prefs.authProvider = .none
-        subject.onNext(nil)
+        tokens = nil
     }
     
-    private func obtainToken(from: UIViewController?, restore: Bool) -> Single<UserToken?> {
+    private func obtainToken(from: UIViewController?, restore: Bool) async throws -> UserToken? {
         switch prefs.authProvider {
         case .google:
-            return google.obtainToken(from: from, restore: restore).map { token in
-                token
-            }
+            return try await google.obtainToken(from: from, restore: restore)
         case .microsoft:
-            return microsoft.obtainToken(from: from).map { token in
-                token
-            }
+            return try await microsoft.obtainToken(from: from)
         case .apple:
-            return apple.obtainToken(from: from, restore: restore)
+            return try await apple.obtainToken(from: from, restore: restore)
         case .none:
             log.info("No auth provider.")
-            return Single.just(nil)
+            return nil
         }
     }
 }

@@ -1,13 +1,5 @@
-//
-//  Backend.swift
-//  BoatTracker
-//
-//  Created by Michael Skogberg on 10/07/2018.
-//  Copyright © 2018 Michael Skogberg. All rights reserved.
-//
-
 import Foundation
-import RxCocoa
+import Combine
 
 class Backend {
     static let shared = Backend(EnvConf.shared.baseUrl)
@@ -18,15 +10,16 @@ class Backend {
     
     var http: BoatHttpClient
     var socket: BoatSocket
+    private var cancellable: AnyCancellable? = nil
     
     init(_ baseUrl: URL) {
         //Logging.URLRequests = { _ in false }
         self.baseUrl = baseUrl
         self.http = BoatHttpClient(bearerToken: nil, baseUrl: baseUrl, client: HttpClient())
         self.socket = BoatSocket(token: nil, track: nil)
-        let _ = Auth.shared.tokens.subscribe(onNext: { token in
+        cancellable = Auth.shared.$tokens.sink { token in
             self.updateToken(new: token)
-        })
+        }
     }
     
     private func updateToken(new token: UserToken?) {
@@ -43,10 +36,6 @@ class Backend {
         } catch {
             log.error("Keychain failure. \(error)")
         }
-        
-        //let d = socket.delegate
-        //socket.close()
-        //socket = BoatSocket(token: token?.token, track: nil)
     }
     
     func open(track: TrackName, delegate: BoatSocketDelegate) {

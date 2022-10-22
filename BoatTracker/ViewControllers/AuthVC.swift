@@ -9,9 +9,10 @@
 import Foundation
 import UIKit
 import MSAL
+import Combine
 
 protocol WelcomeDelegate {
-    func showWelcome(token: UserToken?)
+    func showWelcome(token: UserToken?) async
 }
 
 class AuthVC: BaseTableVC {
@@ -32,6 +33,7 @@ class AuthVC: BaseTableVC {
     let lang: Lang
     var settingsLang: SettingsLang { lang.settings }
     var prefs: BoatPrefs { BoatPrefs.shared }
+    private var cancellable: AnyCancellable? = nil
     
     init(welcome: WelcomeDelegate, lang: Lang) {
         self.lang = lang
@@ -54,11 +56,11 @@ class AuthVC: BaseTableVC {
         
         view.backgroundColor = .white
         
-        let _ = Auth.shared.tokens.subscribe(onNext: { token in
+        cancellable = Auth.shared.$tokens.sink { token in
             if let token = token {
                 self.onToken(token: token)
             }
-        })
+        }
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -138,7 +140,10 @@ class AuthVC: BaseTableVC {
     private func clicked(provider: AuthProvider) {
         prefs.authProvider = provider
         prefs.showWelcome = true
-        Auth.shared.signIn(from: self, restore: false)
+        Task {
+            _ = await Auth.shared.signIn(from: self, restore: false)
+        }
+        
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -165,7 +170,9 @@ class AuthVC: BaseTableVC {
         onUiThread {
             self.dismiss(animated: true) {
                 if BoatPrefs.shared.showWelcome {
-                    self.welcomeDelegate.showWelcome(token: token)
+                    Task {
+                        await self.welcomeDelegate.showWelcome(token: token)
+                    }
                 }
             }
         }

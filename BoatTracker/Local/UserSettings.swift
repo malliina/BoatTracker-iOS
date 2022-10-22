@@ -1,14 +1,4 @@
-//
-//  UserProfile.swift
-//  BoatTracker
-//
-//  Created by Michael Skogberg on 03/03/2019.
-//  Copyright © 2019 Michael Skogberg. All rights reserved.
-//
-
 import Foundation
-import RxSwift
-import RxCocoa
 
 protocol LanguageChangedDelegate {
     func onLanguage(changed: Lang)
@@ -28,10 +18,7 @@ enum AuthProvider: String {
 class UserSettings {
     static let shared = UserSettings()
     
-    private let languageSubject = PublishSubject<Lang>()
-    var languageChanges: Observable<Lang> {
-        languageSubject.observe(on: MainScheduler.instance)
-    }
+    @Published var languageChanges: Lang? = nil
     
     var conf: ClientConf? = nil
     var languages: Languages? {
@@ -45,7 +32,7 @@ class UserSettings {
     var userLanguage: Language? = nil {
         didSet {
             if userLanguage != oldValue, let lang = lang {
-                languageSubject.on(.next(lang))
+                languageChanges = lang
             }
         }
     }
@@ -57,10 +44,6 @@ class UserSettings {
             guard let languages = languages else { return nil }
             return selectLanguage(lang: currentLanguage, available: languages)
         }
-    }
-    
-    init() {
-        
     }
     
     func lang(for language: Language) -> Lang? {

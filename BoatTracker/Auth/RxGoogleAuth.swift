@@ -1,13 +1,4 @@
-//
-//  RxGoogleAuth.swift
-//  BoatTracker
-//
-//  Created by Michael Skogberg on 23/12/2018.
-//  Copyright © 2018 Michael Skogberg. All rights reserved.
-//
 import Foundation
-import RxCocoa
-import RxSwift
 import GoogleSignIn
 
 class RxGoogleAuth: NSObject {
@@ -25,46 +16,56 @@ class RxGoogleAuth: NSObject {
         }
     }
     
-    func signInSilently() {
-        google.restorePreviousSignIn()
+    func signIn(conf: GIDConfiguration, from: UIViewController) async throws -> GIDGoogleUser {
+        return try await withCheckedThrowingContinuation { cont in
+            google.signIn(with: conf, presenting: from) { user, error in
+                if let error = error {
+                    cont.resume(throwing: error)
+                } else if let user = user {
+                    cont.resume(returning: user)
+                } else {
+                    cont.resume(throwing: AppError.simple("Failed to sign in."))
+                }
+            }
+        }
     }
     
-    func obtainToken(from: UIViewController?, restore: Bool) -> Single<UserToken> {
-        let subject = ReplaySubject<UserToken>.create(bufferSize: 1)
-        if let signInConfig = signInConfig, let from = from, !restore {
-            google.signIn(with: signInConfig, presenting: from) { user, error in
-                self.toSingle(user: user, error: error, subject: subject)
-            }
-        } else {
+    func signInSilently() async throws -> GIDGoogleUser {
+        return try await withCheckedThrowingContinuation { cont in
             google.restorePreviousSignIn { user, error in
-                self.toSingle(user: user, error: error, subject: subject)
+                if let error = error {
+                    cont.resume(throwing: error)
+                } else if let user = user {
+                    cont.resume(returning: user)
+                } else {
+                    cont.resume(throwing: AppError.simple("Failed to sign in silently."))
+                }
             }
-        }
-        return subject.asSingle().map { token in
-            BoatPrefs.shared.authProvider = .google
-            return token
         }
     }
     
-    private func toSingle(user: GIDGoogleUser?, error: Error?, subject: ReplaySubject<UserToken>) {
-        if let error = error {
-            subject.onError(error)
+    func obtainUser(from: UIViewController?, restore: Bool) async throws -> GIDGoogleUser {
+        if let signInConfig = signInConfig, let from = from, !restore {
+            return try await signIn(conf: signInConfig, from: from)
         } else {
-            guard let idToken = user?.authentication.idToken else {
-                subject.onError(AppError.simple("No ID token in Google sign in response."))
-                return
-            }
-            guard let email = user?.profile?.email else {
-                subject.onError(AppError.simple("No email in Google sign in response."))
-                return
-            }
-            log.info("Got email '\(email)' with token '\(idToken)'.")
-            subject.onNext(UserToken(email: email, token: AccessToken(idToken)))
-            subject.onCompleted()
+            return try await signInSilently()
         }
+    }
+    
+    func obtainToken(from: UIViewController?, restore: Bool) async throws -> UserToken {
+        let user = try await obtainUser(from: from, restore: restore)
+        guard let idToken = user.authentication.idToken else {
+            throw AppError.simple("No ID token in Google sign in response.")
+        }
+        guard let email = user.profile?.email else {
+            throw AppError.simple("No email in Google sign in response.")
+        }
+        BoatPrefs.shared.authProvider = .google
+        log.info("Got email '\(email)' with token '\(idToken)'.")
+        return UserToken(email: email, token: AccessToken(idToken))
     }
     
     func open(url: URL, options: [UIApplication.OpenURLOptionsKey : Any]) -> Bool {
-        return google.handle(url)
+        google.handle(url)
     }
 }

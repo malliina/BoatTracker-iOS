@@ -71,13 +71,13 @@ class TrackListVC: BaseTableVC {
         let okAction = UIAlertAction(title: settingsLang.rename, style: .default) { (a) in
             guard let textField = (popup.textFields ?? []).headOption(),
                 let newName = textField.text, !newName.isEmpty else { return }
-            let _ = self.backend.http.changeTrackTitle(name: track.trackName, title: TrackTitle(newName)).observe(on: MainScheduler.instance).subscribe { (single) in
-                switch single {
-                case .success(let updatedTrack):
+            Task {
+                do {
+                    let updatedTrack = try await self.backend.http.changeTrackTitle(name: track.trackName, title: TrackTitle(newName))
                     self.tracks[indexPath.row] = updatedTrack.track
                     tableView.reloadRows(at: [indexPath], with: .automatic)
-                case .failure(let err):
-                    self.log.error("Unable to rename. \(err.describe)")
+                } catch {
+                    self.log.error("Unable to rename. \(error.describe)")
                 }
             }
         }
@@ -94,23 +94,25 @@ class TrackListVC: BaseTableVC {
     
     func loadTracks() {
         display(text: lang.messages.loading)
-        let _ = backend.http.tracks().subscribe { (single) in
-            switch single {
-            case .success(let ts):
-                self.log.info("Got \(ts.count) tracks.")
-                self.onUiThread {
-                    if ts.isEmpty {
-                        self.tableView.backgroundView = self.feedbackView(text: self.lang.settings.noTracksHelp)
-                    } else {
-                        self.tableView.backgroundView = nil
-                        self.tracks = ts
-                    }
-                    self.tableView.reloadData()
-                }
-            case .failure(let err):
-                self.onError(err)
+        Task {
+            do {
+                let ts = try await backend.http.tracks()
+                log.info("Got \(ts.count) tracks.")
+                update(ts: ts)
+            } catch {
+                onError(error)
             }
         }
+    }
+    
+    @MainActor private func update(ts: [TrackRef]) {
+        if ts.isEmpty {
+            tableView.backgroundView = self.feedbackView(text: self.lang.settings.noTracksHelp)
+        } else {
+            tableView.backgroundView = nil
+            tracks = ts
+        }
+        tableView.reloadData()
     }
     
     func onError(_ err: Error) {

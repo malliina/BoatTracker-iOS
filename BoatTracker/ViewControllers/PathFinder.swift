@@ -106,31 +106,29 @@ class PathFinder: NSObject, UIGestureRecognizerDelegate {
     
     func shortest(from: CLLocationCoordinate2D, to: CLLocationCoordinate2D) {
         log.info("Loading shortest route from \(from) to \(to)...")
-        let _ = Backend.shared.http.shortestRoute(from: from, to: to).subscribe { (event) in
-            switch event {
-            case .success(let route):
-                self.log.info("Loaded shortest route from \(from) to \(to).")
-                self.update(route: route)
-            case .failure(let err):
-                self.log.error("Failed to load shortest route from \(from) to \(to). \(err.describe)")
+        Task {
+            do {
+                let route = try await Backend.shared.http.shortestRoute(from: from, to: to)
+                log.info("Loaded shortest route from \(from) to \(to).")
+                update(route: route)
+            } catch {
+                log.error("Failed to load shortest route from \(from) to \(to). \(error.describe)")
             }
         }
     }
     
-    func update(route: RouteResult) {
-        DispatchQueue.main.async {
-            let layers = self.currentLayers()
-            let fairwayPath = route.route.links.map { $0.to }
-            do {
-                try layers.update(initial: [route.from, fairwayPath.first ?? route.to],
-                                  fairways: fairwayPath,
-                                  tail: [fairwayPath.last ?? route.from, route.to])
-                let coords = fairwayPath + [ route.from, route.to ]
-                let camera = self.mapView.mapboxMap.camera(for: coords, padding: self.edgePadding, bearing: nil, pitch: nil)
-                self.mapView.camera.fly(to: camera, duration: nil, completion: nil)
-            } catch {
-                self.log.warn("Failed to update route. \(error)")
-            }
+    @MainActor func update(route: RouteResult) {
+        let layers = currentLayers()
+        let fairwayPath = route.route.links.map { $0.to }
+        do {
+            try layers.update(initial: [route.from, fairwayPath.first ?? route.to],
+                              fairways: fairwayPath,
+                              tail: [fairwayPath.last ?? route.from, route.to])
+            let coords = fairwayPath + [ route.from, route.to ]
+            let camera = mapView.mapboxMap.camera(for: coords, padding: self.edgePadding, bearing: nil, pitch: nil)
+            mapView.camera.fly(to: camera, duration: nil, completion: nil)
+        } catch {
+            log.warn("Failed to update route. \(error)")
         }
     }
 

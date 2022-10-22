@@ -33,7 +33,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             Crashes.self
         ])
         
-        let _ = AppDelegate.initMapboxToken()
+//        let _ = AppDelegate.initMapboxToken()
 
         let w = UIWindow(frame: UIScreen.main.bounds)
         window = w
@@ -50,17 +50,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         log.info("Handled universal link from \(incomingURL).")
         return true
-    }
-    
-    static func initMapboxToken(key: String = "MapboxAccessToken") -> Bool {
-        do {
-            let token = try Credentials.read(key: key)
-            ResourceOptionsManager.default.resourceOptions.accessToken = token
-            return true
-        } catch let err {
-            log.error("Failed to initialize token. \(err.describe)")
-            return false
-        }
     }
     
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
@@ -85,7 +74,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillEnterForeground(_ application: UIApplication) {
         // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
-        connectSocket()
+        Task {
+            await connectSocket()
+        }
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
@@ -97,7 +88,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        notifications.didRegister(deviceToken)
+        Task {
+            await notifications.didRegister(deviceToken)
+        }
     }
     
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
@@ -109,8 +102,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         notifications.handleNotification(application, window: window, data: userInfo)
     }
 
-    func connectSocket() {
-        Auth.shared.signInSilentlyNow()
+    func connectSocket() async {
+        await Auth.shared.signInSilentlyNow()
     }
     
     func disconnectSocket() {

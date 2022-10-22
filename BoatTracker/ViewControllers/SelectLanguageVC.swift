@@ -1,14 +1,5 @@
-//
-//  SelectLanguageVC.swift
-//  BoatTracker
-//
-//  Created by Michael Skogberg on 02/03/2019.
-//  Copyright © 2019 Michael Skogberg. All rights reserved.
-//
-
 import Foundation
-import RxCocoa
-import RxSwift
+import Combine
 
 typealias Row = Int
 
@@ -26,8 +17,7 @@ class SelectLanguageVC: BaseTableVC, LanguageChangedDelegate {
         settings.currentLanguage
     }
     var langs: [Row: LangInfo] = [:]
-    
-    var disposeBag: DisposeBag? = nil
+    private var cancellable: AnyCancellable? = nil
     
     init(lang: ProfileLang) {
         self.lang = lang
@@ -42,16 +32,16 @@ class SelectLanguageVC: BaseTableVC, LanguageChangedDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        let bag = DisposeBag()
-        self.disposeBag = bag
-        settings.languageChanges.subscribe(onNext: { (lang) in
-            self.onLanguage(changed: lang)
-        }, onError: nil, onCompleted: nil, onDisposed: nil).disposed(by: bag)
+        cancellable = settings.$languageChanges.sink { lang in
+            if let lang = lang {
+                self.onLanguage(changed: lang)
+            }
+        }
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        self.disposeBag = nil
+        cancellable?.cancel()
     }
     
     func onLanguage(changed: Lang) {
@@ -84,12 +74,15 @@ class SelectLanguageVC: BaseTableVC, LanguageChangedDelegate {
     }
     
     func changeLanguage(to language: Language) {
-        let _ = Backend.shared.http.changeLanguage(to: language).subscribe { (msg) in
-            self.settings.userLanguage = language
-            self.log.info(msg.message)
-        } onFailure: { (err) in
-            self.log.error("Failed to change language. \(err.describe)")
-        } onDisposed: {
+        Task {
+            do {
+                let msg = try await Backend.shared.http.changeLanguage(to: language)
+                settings.userLanguage = language
+                log.info(msg.message)
+            } catch {
+                log.error("Failed to change language. \(error.describe)")
+            }
+            
         }
     }
     

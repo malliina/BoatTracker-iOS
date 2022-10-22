@@ -1,21 +1,11 @@
-//
-//  BoatsTokensVC.swift
-//  BoatTracker
-//
-//  Created by Michael Skogberg on 11/08/2018.
-//  Copyright © 2018 Michael Skogberg. All rights reserved.
-//
-
 import Foundation
 import UIKit
-import RxSwift
-import RxCocoa
 
 extension BoatTokensVC: NotificationPermissionDelegate {
-    func didRegister(_ token: PushToken) {
+    func didRegister(_ token: PushToken) async {
         if let token = self.boatSettings.pushToken {
             log.info("Permission granted.")
-            registerWithToken(token: token)
+            await registerWithToken(token: token)
         } else {
             log.info("Access granted, but no token available.")
         }
@@ -29,36 +19,36 @@ extension BoatTokensVC: NotificationPermissionDelegate {
         log.error(error.describe)
     }
     
-    func registerNotifications() {
+    func registerNotifications() async {
         notifications.permissionDelegate = self
         if let token = boatSettings.pushToken {
             log.info("Registering with previously saved push token...")
-            registerWithToken(token: token)
+            await registerWithToken(token: token)
         } else {
             log.info("No saved push token. Asking for permission...")
-            notifications.initNotifications(UIApplication.shared)
+            notifications.initNotifications(.shared)
         }
     }
     
-    func disableNotifications() {
+    func disableNotifications() async {
         if let token = boatSettings.pushToken {
-            http.disableNotifications(token: token).subscribe { (event) in
-                switch event {
-                case .success(_): self.log.info("Disabled notifications with backend.")
-                case .failure(let err): self.log.error("Failed to disable notifications with backend. \(err.describe)")
-                }
-            }.disposed(by: bag)
+            do {
+                _ = try await http.disableNotifications(token: token)
+                log.info("Disabled notifications with backend.")
+            } catch {
+                log.error("Failed to disable notifications with backend. \(error.describe)")
+            }
         }
         notifications.disableNotifications()
     }
     
-    func registerWithToken(token: PushToken) {
-        http.enableNotifications(token: token).subscribe { (event) in
-            switch event {
-            case .success(_): self.log.info("Enabled notifications with backend.")
-            case .failure(let err): self.log.error(err.describe)
-            }
-        }.disposed(by: bag)
+    func registerWithToken(token: PushToken) async {
+        do {
+            _ = try await http.enableNotifications(token: token)
+            log.info("Enabled notifications with backend.")
+        } catch {
+            log.error(error.describe)
+        }
     }
 }
 
@@ -69,13 +59,12 @@ class BoatTokensVC: BaseTableVC {
     let boatSettings = BoatPrefs.shared
     let http = Backend.shared.http
     let notifications = BoatNotifications.shared
-    let bag = DisposeBag()
     
     var profile: UserProfile? = nil
     var onOff: UISwitch?
     var loadError: Error? = nil
     let lang: Lang
-    var settingsLang: SettingsLang { return lang.settings }
+    var settingsLang: SettingsLang { lang.settings }
     
     init(lang: Lang) {
         self.lang = lang
@@ -87,10 +76,12 @@ class BoatTokensVC: BaseTableVC {
     }
     
     func didToggleNotifications(_ uiSwitch: UISwitch) {
-        if uiSwitch.isOn {
-            registerNotifications()
-        } else {
-            disableNotifications()
+        Task {
+            if uiSwitch.isOn {
+                await registerNotifications()
+            } else {
+                await disableNotifications()
+            }
         }
     }
     
@@ -103,7 +94,9 @@ class BoatTokensVC: BaseTableVC {
             self.didToggleNotifications(uiSwitch)
         }
         onOff?.isOn = boatSettings.pushToken != nil
-        loadProfile()
+        Task {
+            await loadProfile()
+        }
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -167,17 +160,17 @@ class BoatTokensVC: BaseTableVC {
         tableView.deselectRow(at: indexPath, animated: true)
         let popup = UIAlertController(title: settingsLang.renameBoat, message: settingsLang.newName, preferredStyle: .alert)
         popup.addTextField(configurationHandler: nil)
-        let okAction = UIAlertAction(title: settingsLang.rename, style: .default) { (a) in
+        let okAction = UIAlertAction(title: settingsLang.rename, style: .default) { a in
             guard let textField = (popup.textFields ?? []).headOption(),
                 let newName = textField.text, !newName.isEmpty,
                 let boat = self.profile?.boats[indexPath.row] else { return }
-            let _ = Backend.shared.http.renameBoat(boat: boat.id, newName: BoatName(newName)).subscribe { (single) in
-                switch single {
-                case .success(let boat):
-                    self.loadProfile()
+            Task {
+                do {
+                    let boat = try await Backend.shared.http.renameBoat(boat: boat.id, newName: BoatName(newName))
+                    await self.loadProfile()
                     self.log.info("Renamed to '\(boat.name)'.")
-                case .failure(let err):
-                    self.log.error("Unable to rename. \(err.describe)")
+                } catch {
+                    self.log.error("Unable to rename. \(error.describe)")
                 }
             }
         }
@@ -186,26 +179,26 @@ class BoatTokensVC: BaseTableVC {
         present(popup, animated: true, completion: nil)
     }
     
-    func loadProfile() {
-        let _ = Backend.shared.http.profile().subscribe { (single) in
-            self.onUiThread {
-                self.onProfile(single)
-            }
+    func loadProfile() async {
+        do {
+            let profile = try await Backend.shared.http.profile()
+            onProfile(p: profile)
+        } catch {
+            onProfile(err: error)
         }
     }
     
-    func onProfile(_ single: SingleEvent<UserProfile>) {
-        switch single {
-        case .success(let p):
-            loadError = nil
-            profile = p
-            log.info("Got profile for user \(p.username).")
-            tableView.backgroundView = nil
-            tableView.reloadData()
-        case .failure(let err):
-            loadError = err
-            tableView.backgroundView = feedbackView(text: self.lang.messages.failedToLoadProfile)
-            log.error("Unable to load profile. \(err.describe)")
-        }
+    @MainActor private func onProfile(p: UserProfile) {
+        loadError = nil
+        profile = p
+        log.info("Got profile for user \(p.username).")
+        tableView.backgroundView = nil
+        tableView.reloadData()
+    }
+    
+    @MainActor private func onProfile(err: Error) {
+        loadError = err
+        tableView.backgroundView = feedbackView(text: self.lang.messages.failedToLoadProfile)
+        log.error("Unable to load profile. \(err.describe)")
     }
 }

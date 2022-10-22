@@ -1,18 +1,8 @@
-//
-//  BoatNotifications.swift
-//  BoatTracker
-//
-//  Created by Michael Skogberg on 11/10/2018.
-//  Copyright © 2018 Michael Skogberg. All rights reserved.
-//
-
 import Foundation
-import RxSwift
-import RxCocoa
 import UserNotifications
 
 protocol NotificationPermissionDelegate {
-    func didRegister(_ token: PushToken)
+    func didRegister(_ token: PushToken) async
     func didFailToRegister(_ error: Error)
 }
 
@@ -23,7 +13,6 @@ open class BoatNotifications {
     let settings = BoatPrefs.shared
     
     let noPushTokenValue = "none"
-    let bag = DisposeBag()
     var permissionDelegate: NotificationPermissionDelegate? = nil
     
     func initNotifications(_ application: UIApplication) {
@@ -41,13 +30,13 @@ open class BoatNotifications {
         application.registerForRemoteNotifications()
     }
     
-    func didRegister(_ deviceToken: Data) {
+    func didRegister(_ deviceToken: Data) async {
         let hexToken = deviceToken.hexString()
         let token = PushToken(hexToken)
         log.info("Got device token \(hexToken)")
         settings.pushToken = token
         settings.notificationsAllowed = true
-        permissionDelegate?.didRegister(token)
+        await permissionDelegate?.didRegister(token)
     }
     
     func didFailToRegister(_ error: Error) {

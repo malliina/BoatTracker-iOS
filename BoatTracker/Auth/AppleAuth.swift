@@ -1,14 +1,4 @@
-//
-//  AppleAuth.swift
-//  BoatTracker
-//
-//  Created by Michael Skogberg on 25.12.2021.
-//  Copyright © 2021 Michael Skogberg. All rights reserved.
-//
-
 import Foundation
-import RxSwift
-import RxCocoa
 import AuthenticationServices
 
 class AppleAuth: NSObject {
@@ -17,34 +7,32 @@ class AppleAuth: NSObject {
     
     var from: UIViewController? = nil
     
-    private var subject = ReplaySubject<UserToken?>.create(bufferSize: 1)
+    @Published private var subject: UserToken? = nil
+    @Published private var error: Error? = nil
     private var currentNonce: String? = nil
+    private var cont: CheckedContinuation<UserToken, Error>? = nil
     
-    func obtainToken(from: UIViewController?, restore: Bool) -> Single<UserToken?> {
-        return signInSilently().map { $0 }.catch { err in
+    func obtainToken(from: UIViewController?, restore: Bool) async throws -> UserToken? {
+        do {
+            return try await signInSilently()
+        } catch let err {
             self.log.info("Failed to obtain token silently. \(err)")
             if let from = from {
-                return self.signInInteractive(from: from)
+                return try await signInInteractive(from: from)
             } else {
-                return Single.just(nil)
+                return nil
             }
         }
     }
     
-    func signInSilently() -> Single<UserToken> {
-        do {
-            let latest = try Keychain.shared.readToken()
-            return Backend.shared.http.obtainValidToken(token: latest).map { res in
-                self.log.info("Obtained Apple token for '\(res.email)'.")
-                return UserToken(email: res.email, token: res.idToken)
-            }
-        } catch {
-            return Single.error(error)
-        }
+    func signInSilently() async throws -> UserToken {
+        let latest = try Keychain.shared.readToken()
+        let res = try await Backend.shared.http.obtainValidToken(token: latest)
+        self.log.info("Obtained Apple token for '\(res.email)'.")
+        return UserToken(email: res.email, token: res.idToken)
     }
     
-    func signInInteractive(from: UIViewController) -> Single<UserToken?> {
-        subject = ReplaySubject<UserToken?>.create(bufferSize: 1)
+    func signInInteractive(from: UIViewController) async throws -> UserToken {
         self.from = from
         let appleIDProvider = ASAuthorizationAppleIDProvider()
         let request = appleIDProvider.createRequest()
@@ -54,13 +42,17 @@ class AppleAuth: NSObject {
         request.requestedScopes = [.fullName, .email]
         log.info("Attempting to login...")
         let authorizationController = ASAuthorizationController(authorizationRequests: [request])
-        onUiThread {
-            authorizationController.delegate = self
-            self.log.info("Installing presentation delegate...")
-            authorizationController.presentationContextProvider = self
-            authorizationController.performRequests()
+        return try await installPresentation(to: authorizationController)
+    }
+    
+    @MainActor private func installPresentation(to: ASAuthorizationController) async throws -> UserToken {
+        to.delegate = self
+        self.log.info("Installing presentation delegate...")
+        to.presentationContextProvider = self
+        return try await withCheckedThrowingContinuation { cont in
+            self.cont = cont
+            to.performRequests()
         }
-        return subject.asSingle()
     }
     
     func signOut(from: UIViewController) {
@@ -74,43 +66,56 @@ class AppleAuth: NSObject {
 
 extension AppleAuth: ASAuthorizationControllerDelegate {
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+        Task {
+            do {
+                let userToken = try await authController(controller: controller, didCompleteWithAuthorization: authorization)
+                await update(token: userToken)
+            } catch {
+                await update(error: error)
+            }
+        }
+    }
+    
+    private func authController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) async throws -> UserToken {
         guard let nonce = currentNonce else {
-            return subject.onError(AppError.simple("No nonce."))
+            throw AppError.simple("No nonce.")
         }
         guard let idCredential = authorization.credential as? ASAuthorizationAppleIDCredential else {
-            return subject.onError(AppError.simple("Credential is not an ASAuthorizationAppleIDCredential. \(authorization.credential)"))
+            throw AppError.simple("Credential is not an ASAuthorizationAppleIDCredential. \(authorization.credential)")
         }
         guard let idTokenData = idCredential.identityToken else {
-            return subject.onError(AppError.simple("No identity token. \(idCredential)"))
+            throw AppError.simple("No identity token. \(idCredential)")
         }
         guard let idToken = String(data: idTokenData, encoding: .utf8) else {
-            return subject.onError(AppError.simple("ID token is not a string. \(idCredential)"))
+            throw AppError.simple("ID token is not a string. \(idCredential)")
         }
 //        guard let email = idCredential.email else {
 //            let givenName = idCredential.fullName?.givenName ?? "unknown"
 //            return subject.onError(AppError.simple("No email in credential. Given name \(givenName). Token was '\(idToken)'. \(idCredential)"))
 //        }
         guard let authCodeData = idCredential.authorizationCode, let authCodeStr = String(data: authCodeData, encoding: .utf8) else {
-            return subject.onError(AppError.simple("No auth code string. \(idCredential)"))
+            throw AppError.simple("ID token is not a string. \(idCredential)")
         }
         let reg = RegisterCode(code: AuthorizationCode(authCodeStr), nonce: nonce)
         log.info("Auth complete, authorization code '\(reg.code)' token '\(idToken)'.")
-        let _ = Backend.shared.http.register(code: reg).subscribe { e in
-            switch(e) {
-            case .success(let res):
-                self.log.info("Obtained server token for \(res.email) from backend.")
-//                try? Keychain.shared.save(token: res.idToken)
-                self.subject.onNext(UserToken(email: res.email, token: res.idToken))
-                self.subject.onCompleted()
-            case .failure(let err):
-                self.subject.onError(err)
-            }
-        }
+        let res = try await Backend.shared.http.register(code: reg)
+        self.log.info("Obtained server token for \(res.email) from backend.")
+        return UserToken(email: res.email, token: res.idToken)
+    }
+    
+    @MainActor private func update(token: UserToken) {
+        subject = token
+        cont?.resume(returning: token)
+    }
+    
+    @MainActor private func update(error: Error) {
+        self.error = error
+        cont?.resume(throwing: error)
     }
 
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
         log.info("Auth error \(error)")
-        subject.onError(error)
+        self.error = error
     }
 }
 

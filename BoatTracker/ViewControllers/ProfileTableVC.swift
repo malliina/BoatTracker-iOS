@@ -274,8 +274,10 @@ class ProfileTableVC: BaseTableVC {
     }
     
     func logout() {
-        Auth.shared.signOut(from: self)
-        goBack()
+        Task {
+            await Auth.shared.signOut(from: self)
+            goBack()
+        }
     }
     
     func cellIdentifier(indexPath: IndexPath) -> String {
@@ -347,22 +349,26 @@ class ProfileTableVC: BaseTableVC {
     }
     
     func loadTracks() {
-        let _ = Backend.shared.http.tracks().subscribe { (single) in
-            self.onUiThread {
-                switch single {
-                case .success(let ts):
-                    self.log.info("Got \(ts.count) tracks.")
-                    self.onUiThread {
-                        self.tableView.backgroundView = nil
-                        self.onTracks(ts: ts)
-                    }
-                case .failure(let err):
-                    self.state = .failed
-                    self.tableView.backgroundView = self.feedbackView(text: self.lang.messages.failedToLoadProfile)
-                    self.log.error("Unable to load tracks. \(err.describe)")
-                }
+        Task {
+            do {
+                let ts = try await Backend.shared.http.tracks()
+                log.info("Got \(ts.count) tracks.")
+                update(ts: ts)
+            } catch {
+                update(err: error)
             }
         }
+    }
+    
+    @MainActor private func update(ts: [TrackRef]) {
+        tableView.backgroundView = nil
+        onTracks(ts: ts)
+    }
+    
+    @MainActor private func update(err: Error) {
+        state = .failed
+        tableView.backgroundView = self.feedbackView(text: lang.messages.failedToLoadProfile)
+        log.error("Unable to load tracks. \(err.describe)")
     }
     
     func onTracks(ts: [TrackRef]) {

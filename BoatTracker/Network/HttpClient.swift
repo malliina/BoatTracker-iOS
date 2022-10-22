@@ -1,14 +1,4 @@
-//
-//  HttpClient.swift
-//  BoatTracker
-//
-//  Created by Michael Skogberg on 08/07/2018.
-//  Copyright © 2018 Michael Skogberg. All rights reserved.
-//
-
 import Foundation
-import RxSwift
-import RxCocoa
 
 struct Headers {
     static let accept = "Accept", acceptLanguage = "Accept-Language", authorization = "Authorization", contentType = "Content-Type"
@@ -36,45 +26,47 @@ class HttpClient {
     let session: URLSession
     
     init() {
-        self.session = URLSession.shared
+        session = URLSession.shared
     }
     
-    func get(_ url: URL, headers: [String: String] = [:]) -> Single<HttpResponse> {
+    func get(_ url: URL, headers: [String: String] = [:]) async throws -> HttpResponse {
         let req = buildRequest(url: url, httpMethod: HttpClient.get, headers: headers)
-        return executeHttp(req)
+        return try await executeHttp(req)
     }
     
-    func patchJSON<T: Encodable>(_ url: URL, headers: [String: String] = [:], payload: T) -> Single<HttpResponse> {
-        return sendData(url, headers: headers, payload: payload, httpMethod: HttpClient.patch)
+    func patchJSON<T: Encodable>(_ url: URL, headers: [String: String] = [:], payload: T) async throws -> HttpResponse {
+        try await sendData(url, headers: headers, payload: payload, httpMethod: HttpClient.patch)
     }
     
-    func postJSON<T: Encodable>(_ url: URL, headers: [String: String] = [:], payload: T) -> Single<HttpResponse> {
-        return sendData(url, headers: headers, payload: payload, httpMethod: HttpClient.post)
+    func postJSON<T: Encodable>(_ url: URL, headers: [String: String] = [:], payload: T) async throws -> HttpResponse {
+        try await sendData(url, headers: headers, payload: payload, httpMethod: HttpClient.post)
     }
     
-    func postEmpty(_ url: URL, headers: [String: String] = [:]) -> Single<HttpResponse> {
+    func postEmpty(_ url: URL, headers: [String: String] = [:]) async throws -> HttpResponse {
         let req = buildRequest(url: url, httpMethod: HttpClient.post, headers: headers)
-        return executeHttp(req)
+        return try await executeHttp(req)
     }
     
-    func putJSON<T: Encodable>(_ url: URL, headers: [String: String] = [:], payload: T) -> Single<HttpResponse> {
-        return sendData(url, headers: headers, payload: payload, httpMethod: HttpClient.put)
+    func putJSON<T: Encodable>(_ url: URL, headers: [String: String] = [:], payload: T) async throws -> HttpResponse {
+        return try await sendData(url, headers: headers, payload: payload, httpMethod: HttpClient.put)
     }
     
-    func sendData<T: Encodable>(_ url: URL, headers: [String: String] = [:], payload: T?, httpMethod: String) -> Single<HttpResponse> {
+    func sendData<T: Encodable>(_ url: URL, headers: [String: String] = [:], payload: T?, httpMethod: String) async throws -> HttpResponse {
         let req = buildRequestWithBody(url: url, httpMethod: httpMethod, headers: headers, body: payload)
-        return executeHttp(req)
+        return try await executeHttp(req)
     }
     
-    func delete(_ url: URL, headers: [String: String] = [:]) -> Single<HttpResponse> {
+    func delete(_ url: URL, headers: [String: String] = [:]) async throws -> HttpResponse {
         let req = buildRequest(url: url, httpMethod: HttpClient.delete, headers: headers)
-        return executeHttp(req)
+        return try await executeHttp(req)
     }
     
-    func executeHttp(_ req: URLRequest, retryCount: Int = 0) -> Single<HttpResponse> {
-        return session.rx.response(request: req).asSingle().flatMap { (result) -> Single<HttpResponse> in
-            let (response, data) = result
-            return Single.just(HttpResponse(http: response, data: data))
+    func executeHttp(_ req: URLRequest, retryCount: Int = 0) async throws -> HttpResponse {
+        let (data, response) = try await session.data(for: req)
+        if let response = response as? HTTPURLResponse {
+            return HttpResponse(http: response, data: data)
+        } else {
+            throw AppError.simple("Non-HTTP response received from \(req.url?.absoluteString ?? "no url").")
         }
     }
     

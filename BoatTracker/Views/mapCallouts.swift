@@ -1,11 +1,3 @@
-//
-//  MarkCallout.swift
-//  BoatTracker
-//
-//  Created by Michael Skogberg on 10/02/2019.
-//  Copyright © 2019 Michael Skogberg. All rights reserved.
-//
-
 import Foundation
 import MapboxMaps
 import UIKit
