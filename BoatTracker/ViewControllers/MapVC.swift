@@ -135,7 +135,6 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, UIPopoverPresentatio
                     await self.reload(token: token)
                 }
             }
-            _ = await Auth.shared.signIn(from: self, restore: true)
         }
     }
     

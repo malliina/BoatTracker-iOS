@@ -8,11 +8,10 @@ class Auth {
     
     @Published var tokens: UserToken? = nil
     
-    private var google: RxGoogleAuth { RxGoogleAuth.shared }
+    private var google: BoatGoogleAuth { BoatGoogleAuth.shared }
     private var microsoft: MicrosoftAuth { MicrosoftAuth.shared }
     private var apple: AppleAuth { AppleAuth.shared }
     
-    // Called on app startup
     func signIn(from: UIViewController, restore: Bool) async -> UserToken? {
         await signInAny(from: from, restore: restore)
     }
@@ -30,6 +29,7 @@ class Auth {
     }
     
     func signInSilentlyNow() async {
+        log.info("Signing in silently")
         _ = await signInAny(from: nil, restore: true)
     }
     
@@ -52,6 +52,7 @@ class Auth {
         tokens = nil
     }
     
+    @MainActor
     private func obtainToken(from: UIViewController?, restore: Bool) async throws -> UserToken? {
         switch prefs.authProvider {
         case .google:

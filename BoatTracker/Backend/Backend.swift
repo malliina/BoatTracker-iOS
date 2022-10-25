@@ -13,7 +13,6 @@ class Backend {
     private var cancellable: AnyCancellable? = nil
     
     init(_ baseUrl: URL) {
-        //Logging.URLRequests = { _ in false }
         self.baseUrl = baseUrl
         self.http = BoatHttpClient(bearerToken: nil, baseUrl: baseUrl, client: HttpClient())
         self.socket = BoatSocket(token: nil, track: nil)
@@ -47,6 +46,7 @@ class Backend {
     func openStandalone(track: TrackName, delegate: BoatSocketDelegate) -> BoatSocket {
         let s = BoatSocket(token: latestToken?.token, track: track)
         s.delegate = delegate
+        log.info("Opening standalone...")
         s.open()
         return s
     }

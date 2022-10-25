@@ -58,6 +58,7 @@ class BoatSocket {
     }
     
     func open() {
+        log.info("Opening socket...")
         socket.connect()
     }
     

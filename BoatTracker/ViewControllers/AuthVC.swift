@@ -140,10 +140,13 @@ class AuthVC: BaseTableVC {
     private func clicked(provider: AuthProvider) {
         prefs.authProvider = provider
         prefs.showWelcome = true
+        signIn()
+    }
+    
+    @MainActor private func signIn() {
         Task {
             _ = await Auth.shared.signIn(from: self, restore: false)
         }
-        
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

@@ -75,7 +75,7 @@
 		61BCBE7F2208CC1C00EE74EB /* Layers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61BCBE7E2208CC1C00EE74EB /* Layers.swift */; };
 		61CD40CF211635FD00F31AA5 /* Dummy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61CD40CE211635FD00F31AA5 /* Dummy.swift */; };
 		61CD40D121163E0E00F31AA5 /* StatBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61CD40D021163E0E00F31AA5 /* StatBox.swift */; };
-		61DCDA3C21D02693009A75EB /* RxGoogleAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DCDA3B21D02693009A75EB /* RxGoogleAuth.swift */; };
+		61DCDA3C21D02693009A75EB /* BoatGoogleAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DCDA3B21D02693009A75EB /* BoatGoogleAuth.swift */; };
 		61DE7F3F20F29F6900C95B3F /* BoatSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DE7F3E20F29F6900C95B3F /* BoatSocket.swift */; };
 		61DE7F4120F2A23100C95B3F /* StringUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DE7F4020F2A23100C95B3F /* StringUtils.swift */; };
 		61DE7F4320F3AEFC00C95B3F /* models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DE7F4220F3AEFC00C95B3F /* models.swift */; };
@@ -191,7 +191,7 @@
 		61BCBE7E2208CC1C00EE74EB /* Layers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Layers.swift; sourceTree = "<group>"; };
 		61CD40CE211635FD00F31AA5 /* Dummy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dummy.swift; sourceTree = "<group>"; };
 		61CD40D021163E0E00F31AA5 /* StatBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatBox.swift; sourceTree = "<group>"; };
-		61DCDA3B21D02693009A75EB /* RxGoogleAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxGoogleAuth.swift; sourceTree = "<group>"; };
+		61DCDA3B21D02693009A75EB /* BoatGoogleAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatGoogleAuth.swift; sourceTree = "<group>"; };
 		61DE7F3E20F29F6900C95B3F /* BoatSocket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatSocket.swift; sourceTree = "<group>"; };
 		61DE7F4020F2A23100C95B3F /* StringUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringUtils.swift; sourceTree = "<group>"; };
 		61DE7F4220F3AEFC00C95B3F /* models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = models.swift; sourceTree = "<group>"; };
@@ -311,7 +311,7 @@
 				7DDBA9A627773D3900108B24 /* AppleAuth.swift */,
 				7D045D69265A54A300B92EE8 /* Auth.swift */,
 				7D2CC0F2264D6EBD0091E05C /* MicrosoftAuth.swift */,
-				61DCDA3B21D02693009A75EB /* RxGoogleAuth.swift */,
+				61DCDA3B21D02693009A75EB /* BoatGoogleAuth.swift */,
 			);
 			path = Auth;
 			sourceTree = "<group>";
@@ -657,7 +657,7 @@
 				61DE7F4920F3EB0700C95B3F /* BoatTextField.swift in Sources */,
 				612F46B520F644B7001A3003 /* Distance.swift in Sources */,
 				613D174D22F5F7D7008D8E80 /* PeriodStatCell.swift in Sources */,
-				61DCDA3C21D02693009A75EB /* RxGoogleAuth.swift in Sources */,
+				61DCDA3C21D02693009A75EB /* BoatGoogleAuth.swift in Sources */,
 				619679FC20FBCF2F00432672 /* Duration.swift in Sources */,
 				61DE7F4120F2A23100C95B3F /* StringUtils.swift in Sources */,
 				613D174B22F5B0DD008D8E80 /* StatsVC.swift in Sources */,
@@ -840,7 +840,7 @@
 				CURRENT_PROJECT_VERSION = 22;
 				DEVELOPMENT_TEAM = D2T2QC36Z9;
 				INFOPLIST_FILE = BoatTracker/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -867,7 +867,7 @@
 				CURRENT_PROJECT_VERSION = 22;
 				DEVELOPMENT_TEAM = D2T2QC36Z9;
 				INFOPLIST_FILE = BoatTracker/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
