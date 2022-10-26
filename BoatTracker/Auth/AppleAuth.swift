@@ -9,6 +9,7 @@ class AppleAuth: NSObject {
     
     @Published private var subject: UserToken? = nil
     @Published private var error: Error? = nil
+    
     private var currentNonce: String? = nil
     private var cont: CheckedContinuation<UserToken, Error>? = nil
     
@@ -57,10 +58,6 @@ class AppleAuth: NSObject {
     
     func signOut(from: UIViewController) {
         
-    }
-    
-    func onUiThread(_ f: @escaping () -> Void) {
-        DispatchQueue.main.async(execute: f)
     }
 }
 

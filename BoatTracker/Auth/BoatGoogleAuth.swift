@@ -20,7 +20,6 @@ class BoatGoogleAuth: NSObject {
     func signIn(conf: GIDConfiguration, from: UIViewController) async throws -> GIDGoogleUser {
         return try await withCheckedThrowingContinuation { cont in
             google.signIn(with: conf, presenting: from) { user, error in
-                self.log.info("Got user")
                 if let error = error {
                     cont.resume(throwing: error)
                 } else if let user = user {

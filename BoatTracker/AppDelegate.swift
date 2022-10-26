@@ -12,7 +12,6 @@ struct MapViewRepresentable: UIViewControllerRepresentable {
     }
     
     func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
-        
     }
 }
 
@@ -30,19 +29,23 @@ struct BoatApp: App {
         ])
     }
     
+    let viewModel: MapViewModel = MapViewModel()
+    
     var body: some Scene {
         WindowGroup {
-            MapViewRepresentable().ignoresSafeArea()
+            SwiftUIMapView(viewModel: viewModel)
+                .ignoresSafeArea()
+                .task {
+                    await viewModel.prepare()
+                }
         }.onChange(of: scenePhase) { phase in
             if phase == .background {
-                log.info("Background")
-//                MapEvents.shared.close()
+                MapEvents.shared.onBackground()
             }
-            if phase == .active {
-                log.info("Foregound")
-//                Task {
-//                    await Auth.shared.signInSilentlyNow()
-//                }
+            if phase == .active && MapEvents.shared.onForeground() {
+                Task {
+                    await Auth.shared.signInSilentlyNow()
+                }
             }
         }
     }
