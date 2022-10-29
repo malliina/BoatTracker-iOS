@@ -1,12 +1,20 @@
 import Foundation
 import MapboxMaps
+import Combine
 
 protocol MapViewModelLike: ObservableObject {
     var settings: UserSettings { get }
-    var latestToken: UserToken? { get }
+    var latestToken: UserToken? { get set }
+    var latestTrack: TrackName? { get set }
     var isProfileButtonHidden: Bool { get }
     var isFollowButtonHidden: Bool { get }
     var styleUri: StyleURI? { get set }
+}
+
+extension MapViewModel: BoatSocketDelegate {
+    func onCoords(event: CoordsData) {
+        latestTrack = event.from.trackName
+    }
 }
 
 class MapViewModel: MapViewModelLike {
@@ -20,10 +28,13 @@ class MapViewModel: MapViewModelLike {
     private var clientConf: ClientConf? { settings.conf }
     
     @Published var latestToken: UserToken? = nil
-    
+    private var isSignedIn: Bool { latestToken != nil }
+    @Published var latestTrack: TrackName? = nil
     @Published var isProfileButtonHidden: Bool = true
     @Published var isFollowButtonHidden: Bool = false
     @Published var styleUri: StyleURI? = nil
+    
+    private var cancellable: AnyCancellable? = nil
     
     func prepare() async {
         do {
@@ -35,6 +46,38 @@ class MapViewModel: MapViewModelLike {
 //            log.info("Obtained style URI \(styleUri), profile hidden \(isProfileButtonHidden).")
         } catch {
             log.error("Failed to load conf and style: '\(error.describe)'.")
+        }
+        cancellable = Auth.shared.$tokens.sink { token in
+            Task {
+                await self.reload(token: token)
+            }
+        }
+    }
+    
+    @MainActor
+    func reload(token: UserToken?) async {
+        log.info("Reloading with \(token?.email ?? "no user")")
+        latestToken = token
+        socket.delegate = nil
+        socket.close()
+        socket.updateToken(token: token?.token)
+        socket.delegate = self
+        socket.vesselDelegate = NoopVesselDelegate()
+        socket.open()
+        await setupUser(token: token?.token)
+    }
+    
+    func setupUser(token: AccessToken?) async {
+        http.updateToken(token: token)
+        if isSignedIn {
+            do {
+                let profile = try await http.profile()
+                settings.profile = profile
+            } catch {
+                log.error("Unable to load profile: '\(error.describe)'.")
+            }
+        } else {
+            settings.profile = nil
         }
     }
     
@@ -49,6 +92,7 @@ class MapViewModel: MapViewModelLike {
 class PreviewMapViewModel: MapViewModelLike {
     var settings: UserSettings = UserSettings.shared
     var latestToken: UserToken? = nil
+    var latestTrack: TrackName? = nil
     var isProfileButtonHidden: Bool = false
     var isFollowButtonHidden: Bool = false
     var styleUri: StyleURI? = nil

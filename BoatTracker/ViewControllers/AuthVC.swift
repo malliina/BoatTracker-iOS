@@ -18,6 +18,7 @@ struct AuthVCRepresentable: UIViewControllerRepresentable, WelcomeDelegate {
     }
      
     func showWelcome(token: UserToken?) async {
+        BoatPrefs.shared.showWelcome = false
         do {
             let profile = try await Backend.shared.http.profile()
                 if let boatToken = profile.boats.headOption()?.token {

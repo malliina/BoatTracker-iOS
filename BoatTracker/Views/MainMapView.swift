@@ -8,8 +8,10 @@ struct WelcomeInfo: Identifiable {
     var id: String { boatToken }
 }
 
-class NoopDelegate: WelcomeDelegate {
-    func showWelcome(token: UserToken?) async { }
+class NoopDelegate: TracksDelegate {
+    func onTrack(_ track: TrackName) {
+        
+    }
 }
 
 struct MainMapView<T>: View where T: MapViewModelLike {
@@ -19,6 +21,7 @@ struct MainMapView<T>: View where T: MapViewModelLike {
     
     @State var welcomeInfo: WelcomeInfo? = nil
     @State var authInfo: Lang? = nil
+    @State var profileInfo: ProfileInfo? = nil
     
     init(viewModel: T) {
         self.viewModel = viewModel
@@ -27,11 +30,14 @@ struct MainMapView<T>: View where T: MapViewModelLike {
     var body: some View {
         VStack {
             ZStack(alignment: .topLeading) {
-                SwiftUIMapView(styleUri: $viewModel.styleUri)
+                MapViewRepresentable(styleUri: $viewModel.styleUri, latestTrack: $viewModel.latestTrack)
                     .ignoresSafeArea()
                 if !viewModel.isProfileButtonHidden {
                     MapButtonView(imageResource: "SettingsSlider") {
-                        if let lang = viewModel.settings.lang {
+                        guard let lang = viewModel.settings.lang else { return }
+                        if let user = viewModel.latestToken {
+                            profileInfo = ProfileInfo(tracksDelegate: NoopDelegate(), user: user, current: viewModel.latestTrack, lang: lang)
+                        } else {
                             authInfo = lang
                         }
                     }.offset(x: 16, y: 16)
@@ -47,10 +53,52 @@ struct MainMapView<T>: View where T: MapViewModelLike {
             }
         }
         .sheet(item: $welcomeInfo) { info in
-            WelcomeSignedInRepresentable(boatToken: info.boatToken, lang: info.lang)
+            NavigationView {
+                WelcomeSignedInRepresentable(boatToken: info.boatToken, lang: info.lang)
+                    .navigationBarTitleDisplayMode(.large)
+                    .navigationTitle(info.lang.welcome)
+                    .toolbar {
+                        ToolbarItemGroup(placement: .navigationBarTrailing) {
+                            Button {
+                                welcomeInfo = nil
+                            } label: {
+                                Text(info.lang.done)
+                            }
+                        }
+                    }
+            }
         }
         .sheet(item: $authInfo) { info in
-            AuthVCRepresentable(welcomeInfo: $welcomeInfo, lang: info)
+            NavigationView {
+                AuthVCRepresentable(welcomeInfo: $welcomeInfo, lang: info)
+                    .navigationBarTitleDisplayMode(.large)
+                    .navigationTitle(info.settings.signIn)
+                    .toolbar {
+                        ToolbarItemGroup(placement: .navigationBarTrailing) {
+                            Button {
+                                authInfo = nil
+                            } label: {
+                                Text(info.settings.cancel)
+                            }
+                        }
+                    }
+            }
+        }
+        .sheet(item: $profileInfo) { info in
+            NavigationView {
+                ProfileTableRepresentable(info: info)
+                    .navigationBarTitleDisplayMode(.large)
+                    .navigationTitle(info.lang.appName)
+                    .toolbar {
+                        ToolbarItemGroup(placement: .navigationBarLeading) {
+                            Button {
+                                profileInfo = nil
+                            } label: {
+                                Text(info.lang.map)
+                            }
+                        }
+                    }
+            }
         }
     }
 }

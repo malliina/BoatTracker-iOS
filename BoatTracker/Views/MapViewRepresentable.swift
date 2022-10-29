@@ -3,15 +3,17 @@ import MapboxMaps
 import SwiftUI
 import Combine
 
-struct SwiftUIMapView: UIViewRepresentable {
-    let log = LoggerFactory.shared.vc(SwiftUIMapView.self)
+struct MapViewRepresentable: UIViewRepresentable {
+    let log = LoggerFactory.shared.vc(MapViewRepresentable.self)
     
     @Binding var styleUri: StyleURI?
+    @Binding var latestTrack: TrackName?
     
     let defaultCenter = CLLocationCoordinate2D(latitude: 60.14, longitude: 24.9)
     let viewFrame: CGRect = CGRect(x: 0, y: 0, width: 64, height: 64)
     
     func makeUIView(context: Context) -> MapView {
+        log.info("Making map.")
         let camera = CameraOptions(center: defaultCenter, zoom: 10)
         let token = try! MapVC.readMapboxToken()
         let options = MapInitOptions(resourceOptions: token, cameraOptions: camera, styleURI: nil)
@@ -21,7 +23,9 @@ struct SwiftUIMapView: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: MapView, context: Context) {
-        if let styleUri = styleUri, !uiView.mapboxMap.style.isLoaded {
+        if let styleUri = styleUri, !uiView.mapboxMap.style.isLoaded, !context.coordinator.isStyleLoaded {
+            context.coordinator.isStyleLoaded = true
+            log.info("Loading style.")
             Task {
                 do {
                     let style = try await loadStyle(map: uiView, uri: styleUri)
@@ -50,8 +54,8 @@ struct SwiftUIMapView: UIViewRepresentable {
     
     class Coordinator {
         let log = LoggerFactory.shared.vc(Coordinator.self)
-        private var isStyleLoaded = false
-        let map: SwiftUIMapView
+        var isStyleLoaded = false
+        let map: MapViewRepresentable
         
         private var style: Style? = nil
         private var boatRenderer: BoatRenderer? = nil
@@ -60,9 +64,8 @@ struct SwiftUIMapView: UIViewRepresentable {
         private var taps: TapListener? = nil
         private var settings: UserSettings { UserSettings.shared }
         private var firstInit: Bool = true
-        private var cancellable: AnyCancellable? = nil
         
-        init(map: SwiftUIMapView) {
+        init(map: MapViewRepresentable) {
             self.map = map
         }
         
@@ -109,11 +112,11 @@ struct SwiftUIMapView: UIViewRepresentable {
                     }
                 }
                 self.taps = TapListener(mapView: mapView, layers: layers, ais: self.aisRenderer, boats: boats)
-                cancellable = Auth.shared.$tokens.sink { token in
-                    Task {
-                        await self.reload(token: token)
-                    }
-                }
+//                cancellable = Auth.shared.$tokens.sink { token in
+//                    Task {
+//                        await self.reload(token: token)
+//                    }
+//                }
             }
         }
         
@@ -145,34 +148,6 @@ struct SwiftUIMapView: UIViewRepresentable {
             guard let lang = settings.lang, let finnishSpecials = settings.languages?.finnish.specialWords else { return nil }
             return tapped.callout(lang: lang, finnishSpecials: finnishSpecials)
         }
-        
-        func reload(token: UserToken?) async {
-//            latestToken = token
-//            socket.delegate = nil
-//            socket.close()
-//            onUiThread {
-//                self.removeAllTrails()
-//                self.followButton.isHidden = true
-//            }
-//            socket.updateToken(token: token?.token)
-//            socket.delegate = self
-//            socket.vesselDelegate = self
-//            socket.open()
-//            await setupUser(token: token?.token)
-        }
-        
-//        private func displayDetails(child: UIView, senderView: UIView, point: CGPoint) {
-//            // log.info("Sender \(senderView) point \(point)")
-//            let popup = MapPopup(child: child)
-//            popup.modalPresentationStyle = .popover
-//            if let popover = popup.popoverPresentationController {
-//                popover.delegate = self
-//                popover.sourceView = senderView
-//                // self.log.info("Set sourceView to \(senderView)")
-//                popover.sourceRect = CGRect(origin: point, size: .zero)
-//            }
-//            self.present(popup, animated: true, completion: nil)
-//        }
     }
     
     static func readMapboxToken(key: String = "MapboxAccessToken") throws -> ResourceOptions {

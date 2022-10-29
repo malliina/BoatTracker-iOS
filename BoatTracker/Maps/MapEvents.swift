@@ -7,7 +7,7 @@ protocol MapDelegate {
 class MapEvents {
     static let shared = MapEvents()
     
-    var reconnectOnActive: Bool = false
+    var reconnectOnActive: Bool = true
     var delegate: MapDelegate? = nil
     
     func onBackground() {

@@ -6,15 +6,6 @@ import MapboxMaps
 import MSAL
 import SwiftUI
 
-struct MapViewRepresentable: UIViewControllerRepresentable {
-    func makeUIViewController(context: Context) -> some UIViewController {
-        MapVC()
-    }
-    
-    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
-    }
-}
-
 @main
 struct BoatApp: App {
     let log = LoggerFactory.shared.system(BoatApp.self)
@@ -41,9 +32,12 @@ struct BoatApp: App {
             if phase == .background {
                 MapEvents.shared.onBackground()
             }
-            if phase == .active && MapEvents.shared.onForeground() {
-                Task {
-                    await Auth.shared.signInSilentlyNow()
+            if phase == .active {
+                let reconnect = MapEvents.shared.onForeground()
+                if reconnect {
+                    Task {
+                        await Auth.shared.signInSilentlyNow()
+                    }
                 }
             }
         }
