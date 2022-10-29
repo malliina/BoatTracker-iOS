@@ -1,17 +1,28 @@
 import Foundation
 import MapboxMaps
 
-class MapViewModel: ObservableObject {
+protocol MapViewModelLike: ObservableObject {
+    var settings: UserSettings { get }
+    var latestToken: UserToken? { get }
+    var isProfileButtonHidden: Bool { get }
+    var isFollowButtonHidden: Bool { get }
+    var styleUri: StyleURI? { get set }
+}
+
+class MapViewModel: MapViewModelLike {
     let log = LoggerFactory.shared.vc(MapViewModel.self)
     
     private var backend: Backend { Backend.shared }
     private var socket: BoatSocket { backend.socket }
     private var http: BoatHttpClient { backend.http }
-    private var settings: UserSettings { UserSettings.shared }
+    var settings: UserSettings { UserSettings.shared }
     private var prefs: BoatPrefs { BoatPrefs.shared }
     private var clientConf: ClientConf? { settings.conf }
     
+    @Published var latestToken: UserToken? = nil
+    
     @Published var isProfileButtonHidden: Bool = true
+    @Published var isFollowButtonHidden: Bool = false
     @Published var styleUri: StyleURI? = nil
     
     func prepare() async {
@@ -21,19 +32,7 @@ class MapViewModel: ObservableObject {
             await update(profileHidden: false)
             let url = conf.map.styleUrl
             await update(style: StyleURI(rawValue: url)!)
-            log.info("Obtained style URI \(styleUri), profile hidden \(isProfileButtonHidden).")
-            
-//            mapView.mapboxMap.loadStyleURI(StyleURI(rawValue: url)!) { result in
-//                switch result {
-//                case .success(let style):
-//                    self.log.info("Style '\(url)' loaded.")
-//                    Task {
-//                        await self.onStyleLoaded(mapView, didFinishLoading: style)
-//                    }
-//                case let .failure(error):
-//                    self.log.error("Failed to load style \(url). \(error)")
-//                }
-//            }
+//            log.info("Obtained style URI \(styleUri), profile hidden \(isProfileButtonHidden).")
         } catch {
             log.error("Failed to load conf and style: '\(error.describe)'.")
         }
@@ -45,4 +44,12 @@ class MapViewModel: ObservableObject {
     @MainActor private func update(profileHidden: Bool) {
         isProfileButtonHidden = profileHidden
     }
+}
+
+class PreviewMapViewModel: MapViewModelLike {
+    var settings: UserSettings = UserSettings.shared
+    var latestToken: UserToken? = nil
+    var isProfileButtonHidden: Bool = false
+    var isFollowButtonHidden: Bool = false
+    var styleUri: StyleURI? = nil
 }

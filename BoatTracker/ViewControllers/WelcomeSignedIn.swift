@@ -1,13 +1,21 @@
-//
-//  WelcomeSignedIn.swift
-//  BoatTracker
-//
-//  Created by Michael Skogberg on 24/08/2018.
-//  Copyright © 2018 Michael Skogberg. All rights reserved.
-//
-
 import Foundation
 import UIKit
+import SwiftUI
+
+struct WelcomeSignedInRepresentable: UIViewControllerRepresentable {
+    let boatToken: String
+    let lang: SettingsLang
+    
+    func makeUIViewController(context: Context) -> WelcomeSignedIn {
+        WelcomeSignedIn(boatToken: boatToken, lang: lang)
+    }
+    
+    func updateUIViewController(_ uiViewController: WelcomeSignedIn, context: Context) {
+        
+    }
+    
+    typealias UIViewControllerType = WelcomeSignedIn
+}
 
 class WelcomeSignedIn: UIViewController {
     let welcomeLabel = BoatLabel.build()

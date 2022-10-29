@@ -141,6 +141,10 @@ struct Lang: Codable {
     let labels: LabelsLang
 }
 
+extension Lang: Identifiable {
+    var id: String { language.rawValue }
+}
+
 struct Languages: Codable {
     let finnish, swedish, english: Lang
 }

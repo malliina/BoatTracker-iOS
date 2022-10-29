@@ -305,7 +305,6 @@ extension MapVC: VesselDelegate {
             } catch {
                 self.log.warn("Failed to update vessels. \(error)")
             }
-            
         }
     }
 }

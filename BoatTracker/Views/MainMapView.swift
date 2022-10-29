@@ -1,12 +1,26 @@
 import Foundation
 import SwiftUI
 
-struct MainMapView: View {
+struct WelcomeInfo: Identifiable {
+    let boatToken: String
+    let lang: SettingsLang
+    
+    var id: String { boatToken }
+}
+
+class NoopDelegate: WelcomeDelegate {
+    func showWelcome(token: UserToken?) async { }
+}
+
+struct MainMapView<T>: View where T: MapViewModelLike {
     let log = LoggerFactory.shared.view(MainMapView.self)
     
-    @ObservedObject var viewModel: MapViewModel
+    @ObservedObject var viewModel: T
     
-    init(viewModel: MapViewModel) {
+    @State var welcomeInfo: WelcomeInfo? = nil
+    @State var authInfo: Lang? = nil
+    
+    init(viewModel: T) {
         self.viewModel = viewModel
     }
     
@@ -15,113 +29,38 @@ struct MainMapView: View {
             ZStack(alignment: .topLeading) {
                 SwiftUIMapView(styleUri: $viewModel.styleUri)
                     .ignoresSafeArea()
-                Button {
-                    log.info("Profile tapped")
-                } label: {
-                    Image(uiImage: #imageLiteral(resourceName: "SettingsSlider"))
+                if !viewModel.isProfileButtonHidden {
+                    MapButtonView(imageResource: "SettingsSlider") {
+                        if let lang = viewModel.settings.lang {
+                            authInfo = lang
+                        }
+                    }.offset(x: 16, y: 16)
                 }
-                .padding()
-                .background(.white)
-                .opacity(0.6)
-                .cornerRadius(2)
-                .offset(x: 20, y: 20)
-                .frame(width: 40, height: 40)
+                if !viewModel.isFollowButtonHidden {
+                    MapButtonView(imageResource: "LocationArrow") {
+                        log.info("Location tapped")
+                        if let settings = viewModel.settings.lang?.settings {
+                            welcomeInfo = WelcomeInfo(boatToken: "abc", lang: settings)
+                        }
+                    }.offset(x: 16, y: 60)
+                }
             }
+        }
+        .sheet(item: $welcomeInfo) { info in
+            WelcomeSignedInRepresentable(boatToken: info.boatToken, lang: info.lang)
+        }
+        .sheet(item: $authInfo) { info in
+            AuthVCRepresentable(welcomeInfo: $welcomeInfo, lang: info)
         }
     }
 }
 
-class Model: ObservableObject {
-    @Published var message: String = ""
-    
-    func update() {
-        message = "Hej"
-        print("Set message to \(message).")
-    }
-}
-
-struct MainView2: View {
-    @ObservedObject var model = Model()
-    var body: some View {
-        HStack {
-            Button {
-                model.update()
-            } label: {
-                Text("Prep")
-            }
-
-            Text("Message is \(model.message)").onAppear {
-                model.update()
-            }
-        }
-    }
-}
-
-class Stopwatch: ObservableObject {
-    // 2.
-    @Published var counter: Int = 0
-    @Published var message: String = "no message yet"
-    
-    var timer = Timer()
-    
-    func prep() {
-        message = "Hejsan"
-    }
-    
-    // 3.
-    func start() {
-        self.timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
-            self.counter += 1
-        }
-    }
-    
-    // 4.
-    func stop() {
-        timer.invalidate()
-    }
-    
-    // 5.
-    func reset() {
-        counter = 0
-        timer.invalidate()
-    }
-}
-
-struct ContentView: View {
-    // 1.
-    @ObservedObject var stopwatch = Stopwatch()
-    
-    var body: some View {
-        VStack {
-            HStack {
-                Text("Message is \(stopwatch.message)").onAppear {
-                    stopwatch.prep()
-                }
-                // 2.
-                Button(action: {
-                    self.stopwatch.prep()
-                }) {
-                    Text("Message")
-                }
-                Button(action: {
-                    self.stopwatch.start()
-                }) {
-                    Text("Start")
-                }
-                
-                Button(action: {
-                    self.stopwatch.stop()
-                }) {
-                    Text("Stop")
-                }
-                Button(action: {
-                    self.stopwatch.reset()
-                }) {
-                    Text("Reset")
-                }
-            }
-            // 3.
-            Text("\(self.stopwatch.counter)")
-        }.font(.largeTitle)
-    }
-}
+//struct MapView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ForEach(["iPhone 12 mini", "iPad Pro (11-inch) (3rd generation)"], id: \.self) { deviceName in
+//            MainMapView(viewModel: PreviewMapViewModel())
+//                .previewDevice(PreviewDevice(rawValue: deviceName))
+//                .previewDisplayName(deviceName)
+//        }
+//    }
+//}

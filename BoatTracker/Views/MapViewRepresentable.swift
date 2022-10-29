@@ -22,15 +22,25 @@ struct SwiftUIMapView: UIViewRepresentable {
     
     func updateUIView(_ uiView: MapView, context: Context) {
         if let styleUri = styleUri, !uiView.mapboxMap.style.isLoaded {
-            uiView.mapboxMap.loadStyleURI(styleUri) { result in
+            Task {
+                do {
+                    let style = try await loadStyle(map: uiView, uri: styleUri)
+                    log.info("Style '\(styleUri.rawValue)' loaded.")
+                    await context.coordinator.onStyleLoaded(uiView, didFinishLoading: style)
+                } catch {
+                    log.error("Failed to load style \(styleUri.rawValue). \(error)")
+                }
+            }
+        }
+    }
+    
+    @MainActor
+    private func loadStyle(map: MapView, uri: StyleURI) async throws -> Style {
+        try await withUnsafeThrowingContinuation { cont in
+            map.mapboxMap.loadStyleURI(uri) { result in
                 switch result {
-                case .success(let style):
-                    self.log.info("Style '\(styleUri.rawValue)' loaded.")
-                    Task {
-                        await context.coordinator.onStyleLoaded(uiView, didFinishLoading: style)
-                    }
-                case let .failure(error):
-                    self.log.error("Failed to load style \(styleUri). \(error)")
+                case .success(let style): cont.resume(returning: style)
+                case let .failure(error): cont.resume(throwing: error)
                 }
             }
         }

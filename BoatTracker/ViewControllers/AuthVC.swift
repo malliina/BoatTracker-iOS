@@ -1,15 +1,37 @@
-//
-//  AuthVC.swift
-//  BoatTracker
-//
-//  Created by Michael Skogberg on 09/07/2018.
-//  Copyright © 2018 Michael Skogberg. All rights reserved.
-//
-
 import Foundation
 import UIKit
 import MSAL
 import Combine
+import SwiftUI
+
+struct AuthVCRepresentable: UIViewControllerRepresentable, WelcomeDelegate {
+    let log = LoggerFactory.shared.view(AuthVCRepresentable.self)
+    
+    @Binding var welcomeInfo: WelcomeInfo?
+    let lang: Lang
+    
+    func makeUIViewController(context: Context) -> AuthVC {
+        AuthVC(welcome: self, lang: lang)
+    }
+    
+    func updateUIViewController(_ uiViewController: AuthVC, context: Context) {
+    }
+     
+    func showWelcome(token: UserToken?) async {
+        do {
+            let profile = try await Backend.shared.http.profile()
+                if let boatToken = profile.boats.headOption()?.token {
+                welcomeInfo = WelcomeInfo(boatToken: boatToken, lang: lang.settings)
+            } else {
+                log.warn("Signed in but user has no boats.")
+            }
+        } catch {
+            log.error("Failed to load profile. \(error)")
+        }
+    }
+    
+    typealias UIViewControllerType = AuthVC
+}
 
 protocol WelcomeDelegate {
     func showWelcome(token: UserToken?) async
