@@ -29,16 +29,15 @@ struct BoatApp: App {
         ])
     }
     
-    let viewModel: MapViewModel = MapViewModel()
+    let viewModel = MapViewModel()
     
     var body: some Scene {
         WindowGroup {
-            SwiftUIMapView(viewModel: viewModel)
-                .ignoresSafeArea()
-                .task {
-                    await viewModel.prepare()
-                }
-        }.onChange(of: scenePhase) { phase in
+            MainMapView(viewModel: viewModel).task {
+                await viewModel.prepare()
+            }
+        }
+        .onChange(of: scenePhase) { phase in
             if phase == .background {
                 MapEvents.shared.onBackground()
             }

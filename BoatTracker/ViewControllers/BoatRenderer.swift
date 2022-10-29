@@ -23,7 +23,7 @@ class BoatRenderer {
     var latestTrack: TrackName? = nil
     private var hasBeenFollowing: Bool = false
     
-    private let followButton: UIButton
+//    private let followButton: UIButton
     private let mapView: MapView
     private let style: Style
     
@@ -32,21 +32,22 @@ class BoatRenderer {
             switch mapMode {
             case .fit:
                 app.isIdleTimerDisabled = false
-                followButton.alpha = MapButton.selectedAlpha
+//                followButton.alpha = MapButton.selectedAlpha
             case .follow:
                 app.isIdleTimerDisabled = true
-                followButton.alpha = MapButton.deselectedAlpha
+//                followButton.alpha = MapButton.deselectedAlpha
             case .stay:
                 app.isIdleTimerDisabled = false
-                followButton.alpha = MapButton.selectedAlpha
+//                followButton.alpha = MapButton.selectedAlpha
             }
         }
     }
     
-    init(mapView: MapView, style: Style, followButton: UIButton) {
+//    init(mapView: MapView, style: Style, followButton: UIButton) {
+    init(mapView: MapView, style: Style) {
         self.mapView = mapView
         self.style = style
-        self.followButton = followButton
+//        self.followButton = followButton
     }
     
     func layers() -> Set<String> {

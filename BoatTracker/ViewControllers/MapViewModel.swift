@@ -21,6 +21,7 @@ class MapViewModel: ObservableObject {
             await update(profileHidden: false)
             let url = conf.map.styleUrl
             await update(style: StyleURI(rawValue: url)!)
+            log.info("Obtained style URI \(styleUri), profile hidden \(isProfileButtonHidden).")
             
 //            mapView.mapboxMap.loadStyleURI(StyleURI(rawValue: url)!) { result in
 //                switch result {

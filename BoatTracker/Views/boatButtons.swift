@@ -1,11 +1,3 @@
-//
-//  BoatButton.swift
-//  BoatTracker
-//
-//  Created by Michael Skogberg on 09/07/2018.
-//  Copyright Michael Skogberg. All rights reserved.
-//
-
 import Foundation
 import UIKit
 

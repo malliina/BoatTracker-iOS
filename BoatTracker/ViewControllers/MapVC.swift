@@ -109,7 +109,7 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, UIPopoverPresentatio
     
     func onStyleLoaded(_ mapView: MapView, didFinishLoading style: Style) async {
         self.style = style
-        let boats = BoatRenderer(mapView: mapView, style: style, followButton: followButton)
+        let boats = BoatRenderer(mapView: mapView, style: style)
         self.boatRenderer = boats
         self.pathFinder = PathFinder(mapView: mapView, style: style)
         installTapListener(mapView: mapView)
