@@ -9,12 +9,6 @@ protocol VesselDelegate {
     func on(vessels: [Vessel])
 }
 
-class NoopVesselDelegate: VesselDelegate {
-    func on(vessels: [Vessel]) {
-        
-    }
-}
-
 extension BoatSocket: WebSocketMessageDelegate {
     func on(message: String) {
         do {

@@ -10,6 +10,7 @@ struct MapViewRepresentable: UIViewRepresentable {
     @Binding var latestTrack: TrackName?
     @Binding var popup: MapPopup?
     let coords: Published<CoordsData?>.Publisher
+    let vessels: Published<[Vessel]>.Publisher
     
     let defaultCenter = CLLocationCoordinate2D(latitude: 60.14, longitude: 24.9)
     let viewFrame: CGRect = CGRect(x: 0, y: 0, width: 64, height: 64)
@@ -66,6 +67,7 @@ struct MapViewRepresentable: UIViewRepresentable {
         private var settings: UserSettings { UserSettings.shared }
         private var firstInit: Bool = true
         private var cancellable: AnyCancellable? = nil
+        private var vesselJob: AnyCancellable? = nil
         
         init(map: MapViewRepresentable) {
             self.map = map
@@ -99,6 +101,13 @@ struct MapViewRepresentable: UIViewRepresentable {
                 if BoatPrefs.shared.isAisEnabled {
                     do {
                         let ais = try AISRenderer(mapView: mapView, style: style, conf: layers.ais)
+                        vesselJob = map.vessels.sink { vs in
+                            do {
+                                try ais.update(vessels: vs)
+                            } catch {
+                                self.log.error("Failed to update AIS. \(error)")
+                            }
+                        }
                         self.aisRenderer = ais
                     } catch {
                         log.warn("Failed to init AIS. \(error)")

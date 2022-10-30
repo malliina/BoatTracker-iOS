@@ -4,6 +4,7 @@ import Combine
 
 protocol MapViewModelLike: ObservableObject {
     var coordsPublisher: Published<CoordsData?>.Publisher { get }
+    var vesselsPublisher: Published<[Vessel]>.Publisher { get }
     var settings: UserSettings { get }
     var latestToken: UserToken? { get set }
     var latestTrack: TrackName? { get set }
@@ -26,6 +27,18 @@ extension MapViewModel: BoatSocketDelegate {
     }
 }
 
+extension MapViewModel: VesselDelegate {
+    func on(vessels: [Vessel]) {
+        Task {
+            await update(vessels: vessels)
+        }
+    }
+    
+    @MainActor private func update(vessels: [Vessel]) {
+        self.vessels = vessels
+    }
+}
+
 class MapViewModel: MapViewModelLike {
     let log = LoggerFactory.shared.vc(MapViewModel.self)
     
@@ -44,6 +57,8 @@ class MapViewModel: MapViewModelLike {
     @Published var styleUri: StyleURI? = nil
     @Published var coords: CoordsData? = nil
     var coordsPublisher: Published<CoordsData?>.Publisher { $coords }
+    @Published var vessels: [Vessel] = []
+    var vesselsPublisher: Published<[Vessel]>.Publisher { $vessels }
     
     private var cancellable: AnyCancellable? = nil
     
@@ -54,7 +69,6 @@ class MapViewModel: MapViewModelLike {
             await update(profileHidden: false)
             let url = conf.map.styleUrl
             await update(style: StyleURI(rawValue: url)!)
-//            log.info("Obtained style URI \(styleUri), profile hidden \(isProfileButtonHidden).")
         } catch {
             log.error("Failed to load conf and style: '\(error.describe)'.")
         }
@@ -73,7 +87,7 @@ class MapViewModel: MapViewModelLike {
         socket.close()
         socket.updateToken(token: token?.token)
         socket.delegate = self
-        socket.vesselDelegate = NoopVesselDelegate()
+        socket.vesselDelegate = self
         socket.open()
         await setupUser(token: token?.token)
     }
@@ -102,7 +116,9 @@ class MapViewModel: MapViewModelLike {
 
 class PreviewMapViewModel: MapViewModelLike {
     @Published var coords: CoordsData? = nil
+    @Published var vessels: [Vessel] = []
     var coordsPublisher: Published<CoordsData?>.Publisher { $coords }
+    var vesselsPublisher: Published<[Vessel]>.Publisher { $vessels }
     var settings: UserSettings = UserSettings.shared
     var latestToken: UserToken? = nil
     var latestTrack: TrackName? = nil
