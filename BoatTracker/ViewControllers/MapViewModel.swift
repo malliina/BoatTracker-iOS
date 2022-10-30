@@ -5,25 +5,27 @@ import Combine
 protocol MapViewModelLike: ObservableObject {
     var coordsPublisher: Published<CoordsData?>.Publisher { get }
     var vesselsPublisher: Published<[Vessel]>.Publisher { get }
+    var follows: Published<Date>.Publisher { get }
     var settings: UserSettings { get }
     var latestToken: UserToken? { get set }
     var latestTrack: TrackName? { get set }
     var isProfileButtonHidden: Bool { get }
     var isFollowButtonHidden: Bool { get }
+    var mapMode: MapMode { get set }
     var styleUri: StyleURI? { get set }
+    func toggleFollow()
 }
 
 extension MapViewModel: BoatSocketDelegate {
     func onCoords(event: CoordsData) {
         Task {
-            await update(coords: event)
+            await update(coordsData: event)
         }
     }
     
-    @MainActor private func update(coords: CoordsData) {
-        self.latestTrack = coords.from.trackName
-        self.log.info("Assigning \(coords.coords.count) coords to publisher...")
-        self.coords = coords
+    @MainActor private func update(coordsData: CoordsData) {
+        latestTrack = coordsData.from.trackName
+        coords = coordsData
     }
 }
 
@@ -54,12 +56,14 @@ class MapViewModel: MapViewModelLike {
     @Published var latestTrack: TrackName? = nil
     @Published var isProfileButtonHidden: Bool = true
     @Published var isFollowButtonHidden: Bool = false
+    @Published var mapMode: MapMode = .fit
     @Published var styleUri: StyleURI? = nil
     @Published var coords: CoordsData? = nil
     var coordsPublisher: Published<CoordsData?>.Publisher { $coords }
     @Published var vessels: [Vessel] = []
     var vesselsPublisher: Published<[Vessel]>.Publisher { $vessels }
-    
+    @Published var follow: Date = Date.now
+    var follows: Published<Date>.Publisher { $follow }
     private var cancellable: AnyCancellable? = nil
     
     func prepare() async {
@@ -112,6 +116,10 @@ class MapViewModel: MapViewModelLike {
     @MainActor private func update(profileHidden: Bool) {
         isProfileButtonHidden = profileHidden
     }
+    
+    func toggleFollow() {
+        follow = Date.now
+    }
 }
 
 class PreviewMapViewModel: MapViewModelLike {
@@ -119,10 +127,14 @@ class PreviewMapViewModel: MapViewModelLike {
     @Published var vessels: [Vessel] = []
     var coordsPublisher: Published<CoordsData?>.Publisher { $coords }
     var vesselsPublisher: Published<[Vessel]>.Publisher { $vessels }
+    @Published var follow: Date = Date.now
+    var follows: Published<Date>.Publisher { $follow }
     var settings: UserSettings = UserSettings.shared
     var latestToken: UserToken? = nil
     var latestTrack: TrackName? = nil
+    var mapMode: MapMode = .fit
     var isProfileButtonHidden: Bool = false
     var isFollowButtonHidden: Bool = false
     var styleUri: StyleURI? = nil
+    func toggleFollow() { }
 }

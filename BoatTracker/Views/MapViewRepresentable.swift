@@ -9,8 +9,10 @@ struct MapViewRepresentable: UIViewRepresentable {
     @Binding var styleUri: StyleURI?
     @Binding var latestTrack: TrackName?
     @Binding var popup: MapPopup?
+    @Binding var mapMode: MapMode
     let coords: Published<CoordsData?>.Publisher
     let vessels: Published<[Vessel]>.Publisher
+    let follows: Published<Date>.Publisher
     
     let defaultCenter = CLLocationCoordinate2D(latitude: 60.14, longitude: 24.9)
     let viewFrame: CGRect = CGRect(x: 0, y: 0, width: 64, height: 64)
@@ -54,7 +56,7 @@ struct MapViewRepresentable: UIViewRepresentable {
     
     func makeCoordinator() -> Coordinator { Coordinator(map: self) }
     
-    class Coordinator: NSObject, UIPopoverPresentationControllerDelegate {
+    class Coordinator: NSObject, UIPopoverPresentationControllerDelegate, UIGestureRecognizerDelegate {
         let log = LoggerFactory.shared.vc(Coordinator.self)
         var isStyleLoaded = false
         let map: MapViewRepresentable
@@ -68,6 +70,7 @@ struct MapViewRepresentable: UIViewRepresentable {
         private var firstInit: Bool = true
         private var cancellable: AnyCancellable? = nil
         private var vesselJob: AnyCancellable? = nil
+        private var followJob: AnyCancellable? = nil
         
         init(map: MapViewRepresentable) {
             self.map = map
@@ -75,7 +78,7 @@ struct MapViewRepresentable: UIViewRepresentable {
         
         func onStyleLoaded(_ mapView: MapView, didFinishLoading style: Style) async {
             self.style = style
-            let boats = BoatRenderer(mapView: mapView, style: style)
+            let boats = BoatRenderer(mapView: mapView, style: style, mapMode: map._mapMode)
             log.info("Subscribing to coords events...")
             cancellable = map.coords.sink { coords in
                 if let coords = coords {
@@ -87,12 +90,28 @@ struct MapViewRepresentable: UIViewRepresentable {
                     }
                 }
             }
+            followJob = map.follows.sink { date in
+                boats.toggleFollow()
+                self.log.info("Follow tapped, map mode is now \(self.map.mapMode)")
+            }
             boatRenderer = boats
             pathFinder = PathFinder(mapView: mapView, style: style)
             installTapListener(mapView: mapView)
             guard let conf = settings.conf else { return }
             // Maybe the conf should be cached in a file?
             await initInteractive(mapView: mapView, style: style, layers: conf.layers, boats: boats)
+            
+            let swipes = UIPanGestureRecognizer(target: self, action: #selector(onSwipe(_:)))
+            // Prevents this from firing when the user is zooming
+            swipes.maximumNumberOfTouches = 1
+            swipes.delegate = self
+            mapView.addGestureRecognizer(swipes)
+        }
+        
+        @objc func onSwipe(_ sender: UIPanGestureRecognizer) {
+            if sender.state == .began {
+                boatRenderer?.stay()
+            }
         }
         
         func initInteractive(mapView: MapView, style: Style, layers: MapboxLayers, boats: BoatRenderer) async {
@@ -108,17 +127,12 @@ struct MapViewRepresentable: UIViewRepresentable {
                                 self.log.error("Failed to update AIS. \(error)")
                             }
                         }
-                        self.aisRenderer = ais
+                        aisRenderer = ais
                     } catch {
                         log.warn("Failed to init AIS. \(error)")
                     }
                 }
-                self.taps = TapListener(mapView: mapView, layers: layers, ais: self.aisRenderer, boats: boats)
-//                cancellable = Auth.shared.$tokens.sink { token in
-//                    Task {
-//                        await self.reload(token: token)
-//                    }
-//                }
+                taps = TapListener(mapView: mapView, layers: layers, ais: aisRenderer, boats: boats)
             }
         }
         
@@ -171,6 +185,11 @@ struct MapViewRepresentable: UIViewRepresentable {
         /// Essential to make the popup show as a popup and not as a near-full-page sheet on iOS
         func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
             .none
+        }
+        
+        /// UIGestureRecognizerDelegate
+        func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+            true
         }
     }
     

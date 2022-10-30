@@ -32,7 +32,7 @@ struct MainMapView<T>: View where T: MapViewModelLike {
     var body: some View {
         VStack {
             ZStack(alignment: .topLeading) {
-                MapViewRepresentable(styleUri: $viewModel.styleUri, latestTrack: $viewModel.latestTrack, popup: $popover, coords: viewModel.coordsPublisher, vessels: viewModel.vesselsPublisher)
+                MapViewRepresentable(styleUri: $viewModel.styleUri, latestTrack: $viewModel.latestTrack, popup: $popover, mapMode: $viewModel.mapMode, coords: viewModel.coordsPublisher, vessels: viewModel.vesselsPublisher, follows: viewModel.follows)
                     .ignoresSafeArea()
                 if !viewModel.isProfileButtonHidden {
                     MapButtonView(imageResource: "SettingsSlider") {
@@ -42,15 +42,16 @@ struct MainMapView<T>: View where T: MapViewModelLike {
                         } else {
                             authInfo = lang
                         }
-                    }.offset(x: 16, y: 16)
+                    }
+                    .offset(x: 16, y: 16)
+                    .opacity(0.6)
                 }
                 if !viewModel.isFollowButtonHidden {
                     MapButtonView(imageResource: "LocationArrow") {
-                        log.info("Location tapped")
-                        if let settings = viewModel.settings.lang?.settings {
-                            welcomeInfo = WelcomeInfo(boatToken: "abc", lang: settings)
-                        }
-                    }.offset(x: 16, y: 60)
+                        viewModel.toggleFollow()
+                    }
+                    .offset(x: 16, y: 60)
+                    .opacity(viewModel.mapMode == .follow ? 0.3 : 0.6)
                 }
             }
         }

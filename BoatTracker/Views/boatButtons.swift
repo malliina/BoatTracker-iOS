@@ -16,7 +16,6 @@ struct MapButtonView: View {
         }
         .frame(width: 36, height: 36)
         .background(.white)
-        .opacity(0.6)
         .cornerRadius(2)
     }
 }
