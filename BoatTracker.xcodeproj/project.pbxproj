@@ -367,6 +367,7 @@
 				61DE7F4820F3EB0700C95B3F /* BoatTextField.swift */,
 				61ACE5CA2131667600925265 /* BoatTextView.swift */,
 				6171906A212CA06900337B0B /* BoatTokenCell.swift */,
+				B03BC559290D31EE00BA38EF /* MainMapView.swift */,
 				6101D54A221057340051A427 /* mapCallouts.swift */,
 				B02EC50B2909AE2700D21793 /* MapViewRepresentable.swift */,
 				613D174C22F5F7D7008D8E80 /* PeriodStatCell.swift */,
@@ -378,7 +379,6 @@
 				6106448921FDBC8300C9ED0D /* vesselAnnotation.swift */,
 				61AB2C7E2132A63C009774DC /* viewExt.swift */,
 				613D5D232220AC09003FF8EB /* viewModels.swift */,
-				B03BC559290D31EE00BA38EF /* MainMapView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";

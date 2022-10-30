@@ -41,7 +41,7 @@ class TapListener {
     private func handleMarksTap(_ point: CGPoint) async -> CustomAnnotation? {
         let features = (try? await queryFeatures(at: point, layerIds: Array(marksLayers))) ?? []
         guard let coordinate = self.markCoordinate(features.first) else {
-            self.log.warn("No coordinate for mark feature.")
+            log.warn("No coordinate for mark feature. Found \(features.count) features at \(point).")
             return nil
         }
         return features.first.flatMap { feature in
@@ -129,7 +129,7 @@ class TapListener {
                 return try Json.shared.parse(t, from: props)
             }
         } catch let error {
-            self.log.warn("Failed to parse props. \(error)")
+            log.warn("Failed to parse props. \(error)")
             return nil
         }
     }

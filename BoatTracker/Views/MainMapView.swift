@@ -22,6 +22,8 @@ struct MainMapView<T>: View where T: MapViewModelLike {
     @State var welcomeInfo: WelcomeInfo? = nil
     @State var authInfo: Lang? = nil
     @State var profileInfo: ProfileInfo? = nil
+    @State var popover: MapPopup? = nil
+    @State var showPopover: Bool = false
     
     init(viewModel: T) {
         self.viewModel = viewModel
@@ -30,7 +32,7 @@ struct MainMapView<T>: View where T: MapViewModelLike {
     var body: some View {
         VStack {
             ZStack(alignment: .topLeading) {
-                MapViewRepresentable(styleUri: $viewModel.styleUri, latestTrack: $viewModel.latestTrack)
+                MapViewRepresentable(styleUri: $viewModel.styleUri, latestTrack: $viewModel.latestTrack, popup: $popover, coords: viewModel.coordsPublisher)
                     .ignoresSafeArea()
                 if !viewModel.isProfileButtonHidden {
                     MapButtonView(imageResource: "SettingsSlider") {
@@ -99,6 +101,9 @@ struct MainMapView<T>: View where T: MapViewModelLike {
                         }
                     }
             }
+        }
+        .background {
+            PopupRepresentable(popup: popover)
         }
     }
 }

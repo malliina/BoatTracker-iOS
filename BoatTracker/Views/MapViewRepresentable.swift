@@ -8,12 +8,13 @@ struct MapViewRepresentable: UIViewRepresentable {
     
     @Binding var styleUri: StyleURI?
     @Binding var latestTrack: TrackName?
+    @Binding var popup: MapPopup?
+    let coords: Published<CoordsData?>.Publisher
     
     let defaultCenter = CLLocationCoordinate2D(latitude: 60.14, longitude: 24.9)
     let viewFrame: CGRect = CGRect(x: 0, y: 0, width: 64, height: 64)
     
     func makeUIView(context: Context) -> MapView {
-        log.info("Making map.")
         let camera = CameraOptions(center: defaultCenter, zoom: 10)
         let token = try! MapVC.readMapboxToken()
         let options = MapInitOptions(resourceOptions: token, cameraOptions: camera, styleURI: nil)
@@ -25,7 +26,7 @@ struct MapViewRepresentable: UIViewRepresentable {
     func updateUIView(_ uiView: MapView, context: Context) {
         if let styleUri = styleUri, !uiView.mapboxMap.style.isLoaded, !context.coordinator.isStyleLoaded {
             context.coordinator.isStyleLoaded = true
-            log.info("Loading style.")
+            log.info("Loading style at \(styleUri.rawValue)...")
             Task {
                 do {
                     let style = try await loadStyle(map: uiView, uri: styleUri)
@@ -52,7 +53,7 @@ struct MapViewRepresentable: UIViewRepresentable {
     
     func makeCoordinator() -> Coordinator { Coordinator(map: self) }
     
-    class Coordinator {
+    class Coordinator: NSObject, UIPopoverPresentationControllerDelegate {
         let log = LoggerFactory.shared.vc(Coordinator.self)
         var isStyleLoaded = false
         let map: MapViewRepresentable
@@ -64,36 +65,28 @@ struct MapViewRepresentable: UIViewRepresentable {
         private var taps: TapListener? = nil
         private var settings: UserSettings { UserSettings.shared }
         private var firstInit: Bool = true
+        private var cancellable: AnyCancellable? = nil
         
         init(map: MapViewRepresentable) {
             self.map = map
         }
         
-        func update(view: MapView) {
-            guard let styleUri = map.styleUri, !isStyleLoaded else {
-                log.info("Style loaded \(isStyleLoaded), returning")
-                return
-            }
-            log.info("Loading style \(styleUri)")
-            isStyleLoaded = true
-            view.mapboxMap.loadStyleURI(styleUri) { result in
-                switch result {
-                case .success(let style):
-                    self.log.info("Style '\(styleUri.rawValue)' loaded.")
-                    Task {
-                        await self.onStyleLoaded(view, didFinishLoading: style)
-                    }
-                case let .failure(error):
-                    self.log.error("Failed to load style \(styleUri). \(error)")
-                }
-            }
-        }
-        
         func onStyleLoaded(_ mapView: MapView, didFinishLoading style: Style) async {
             self.style = style
             let boats = BoatRenderer(mapView: mapView, style: style)
+            log.info("Subscribing to coords events...")
+            cancellable = map.coords.sink { coords in
+                if let coords = coords {
+                    do {
+                        self.log.info("Handling event with \(coords.coords.count) coords...")
+                        try boats.addCoords(event: coords)
+                    } catch {
+                        self.log.error("Failed to handle coords. \(error)")
+                    }
+                }
+            }
             boatRenderer = boats
-            pathFinder = await PathFinder(mapView: mapView, style: style)
+            pathFinder = PathFinder(mapView: mapView, style: style)
             installTapListener(mapView: mapView)
             guard let conf = settings.conf else { return }
             // Maybe the conf should be cached in a file?
@@ -126,27 +119,49 @@ struct MapViewRepresentable: UIViewRepresentable {
         }
         
         @objc func handleMapTap(sender: UITapGestureRecognizer) {
+            let point = sender.location(in: sender.view)
             if sender.state == .ended {
-                // Tries matching the exact point first
-                guard let senderView = sender.view, let taps = taps else { return }
-                let point = sender.location(in: senderView)
                 Task {
-                    if let tapped = await taps.onTap(point: point) {
-                        // self.log.info("Tapped \(tapped) at \(tapped.coordinate).")
-                        guard let popoverContent = popoverView(tapped) else { return }
-                        log.info("Display popover")
-//                        displayDetails(child: popoverContent, senderView: senderView, point: point)
-                    } else {
-                        self.log.info("Tapped nothing of interest.")
-//                        self.dismiss(animated: true, completion: nil)
-                    }
+                    await handlePopover(sender: sender, point: point)
                 }
+            }
+        }
+        
+        @MainActor
+        private func handlePopover(sender: UITapGestureRecognizer, point: CGPoint) async {
+            // Tries matching the exact point first
+            guard let senderView = sender.view, let taps = taps else { return }
+            if let tapped = await taps.onTap(point: point) {
+//                log.info("Tapped \(tapped) at \(tapped.coordinate).")
+                guard let popoverContent = popoverView(tapped) else { return }
+                displayDetails(child: popoverContent, senderView: senderView, point: point)
+            } else {
+                log.info("Tapped nothing of interest.")
+                map.popup = nil
             }
         }
         
         private func popoverView(_ tapped: CustomAnnotation) -> UIView? {
             guard let lang = settings.lang, let finnishSpecials = settings.languages?.finnish.specialWords else { return nil }
             return tapped.callout(lang: lang, finnishSpecials: finnishSpecials)
+        }
+        
+        func displayDetails(child: UIView, senderView: UIView, point: CGPoint) {
+            let popup = MapPopup(child: child, id: Randoms.shared.randomNonceString(length: 6))
+            popup.modalPresentationStyle = .popover
+            if let popover = popup.popoverPresentationController {
+                popover.delegate = self
+                popover.sourceView = senderView
+                popover.sourceRect = CGRect(origin: point, size: .zero)
+            } else {
+                log.info("No popover to configure")
+            }
+            map.popup = popup
+        }
+        
+        /// Essential to make the popup show as a popup and not as a near-full-page sheet on iOS
+        func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
+            .none
         }
     }
     

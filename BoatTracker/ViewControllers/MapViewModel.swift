@@ -3,6 +3,7 @@ import MapboxMaps
 import Combine
 
 protocol MapViewModelLike: ObservableObject {
+    var coordsPublisher: Published<CoordsData?>.Publisher { get }
     var settings: UserSettings { get }
     var latestToken: UserToken? { get set }
     var latestTrack: TrackName? { get set }
@@ -13,7 +14,15 @@ protocol MapViewModelLike: ObservableObject {
 
 extension MapViewModel: BoatSocketDelegate {
     func onCoords(event: CoordsData) {
-        latestTrack = event.from.trackName
+        Task {
+            await update(coords: event)
+        }
+    }
+    
+    @MainActor private func update(coords: CoordsData) {
+        self.latestTrack = coords.from.trackName
+        self.log.info("Assigning \(coords.coords.count) coords to publisher...")
+        self.coords = coords
     }
 }
 
@@ -33,6 +42,8 @@ class MapViewModel: MapViewModelLike {
     @Published var isProfileButtonHidden: Bool = true
     @Published var isFollowButtonHidden: Bool = false
     @Published var styleUri: StyleURI? = nil
+    @Published var coords: CoordsData? = nil
+    var coordsPublisher: Published<CoordsData?>.Publisher { $coords }
     
     private var cancellable: AnyCancellable? = nil
     
@@ -90,6 +101,8 @@ class MapViewModel: MapViewModelLike {
 }
 
 class PreviewMapViewModel: MapViewModelLike {
+    @Published var coords: CoordsData? = nil
+    var coordsPublisher: Published<CoordsData?>.Publisher { $coords }
     var settings: UserSettings = UserSettings.shared
     var latestToken: UserToken? = nil
     var latestTrack: TrackName? = nil

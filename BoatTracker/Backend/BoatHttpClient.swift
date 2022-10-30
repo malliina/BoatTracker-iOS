@@ -111,9 +111,9 @@ class BoatHttpClient {
     }
     
     func changeLanguage(to: Language) async throws -> SimpleMessage {
-        try await parsed(SimpleMessage.self, "/users/me", run: { url in
+        try await parsed(SimpleMessage.self, "/users/me") { url in
             try await self.client.putJSON(url, headers: self.postHeaders, payload: ChangeLanguage(language: to))
-        })
+        }
     }
     
     func shortestRoute(from: CLLocationCoordinate2D, to: CLLocationCoordinate2D) async throws -> RouteResult {
