@@ -2,10 +2,10 @@ import Foundation
 import MapboxMaps
 import Combine
 
-protocol MapViewModelLike: ObservableObject {
+protocol MapViewModelLike: ObservableObject, TracksDelegate {
     var coordsPublisher: Published<CoordsData?>.Publisher { get }
     var vesselsPublisher: Published<[Vessel]>.Publisher { get }
-    var follows: Published<Date>.Publisher { get }
+    var commands: Published<MapCommand?>.Publisher { get }
     var settings: UserSettings { get }
     var latestToken: UserToken? { get set }
     var latestTrack: TrackName? { get set }
@@ -41,6 +41,26 @@ extension MapViewModel: VesselDelegate {
     }
 }
 
+extension MapViewModel: TracksDelegate {
+    func onTrack(_ track: TrackName) {
+        change(to: track)
+    }
+    
+    private func change(to track: TrackName) {
+        disconnect()
+        latestTrack = track
+        //log.info("Changing to \(track)...")
+        backend.open(track: track, delegate: self)
+    }
+    
+    private func disconnect() {
+        socket.delegate = nil
+        socket.close()
+        command = .clearAll
+        isFollowButtonHidden = true
+    }
+}
+
 class MapViewModel: MapViewModelLike {
     let log = LoggerFactory.shared.vc(MapViewModel.self)
     
@@ -62,8 +82,8 @@ class MapViewModel: MapViewModelLike {
     var coordsPublisher: Published<CoordsData?>.Publisher { $coords }
     @Published var vessels: [Vessel] = []
     var vesselsPublisher: Published<[Vessel]>.Publisher { $vessels }
-    @Published var follow: Date = Date.now
-    var follows: Published<Date>.Publisher { $follow }
+    @Published var command: MapCommand? = nil
+    var commands: Published<MapCommand?>.Publisher { $command }
     private var cancellable: AnyCancellable? = nil
     
     func prepare() async {
@@ -118,7 +138,7 @@ class MapViewModel: MapViewModelLike {
     }
     
     func toggleFollow() {
-        follow = Date.now
+        command = .toggleFollow
     }
 }
 
@@ -127,8 +147,8 @@ class PreviewMapViewModel: MapViewModelLike {
     @Published var vessels: [Vessel] = []
     var coordsPublisher: Published<CoordsData?>.Publisher { $coords }
     var vesselsPublisher: Published<[Vessel]>.Publisher { $vessels }
-    @Published var follow: Date = Date.now
-    var follows: Published<Date>.Publisher { $follow }
+    @Published var command: MapCommand? = nil
+    var commands: Published<MapCommand?>.Publisher { $command }
     var settings: UserSettings = UserSettings.shared
     var latestToken: UserToken? = nil
     var latestTrack: TrackName? = nil
@@ -137,4 +157,5 @@ class PreviewMapViewModel: MapViewModelLike {
     var isFollowButtonHidden: Bool = false
     var styleUri: StyleURI? = nil
     func toggleFollow() { }
+    func onTrack(_ track: TrackName) { }
 }

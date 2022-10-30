@@ -12,7 +12,7 @@ struct MapViewRepresentable: UIViewRepresentable {
     @Binding var mapMode: MapMode
     let coords: Published<CoordsData?>.Publisher
     let vessels: Published<[Vessel]>.Publisher
-    let follows: Published<Date>.Publisher
+    let commands: Published<MapCommand?>.Publisher
     
     let defaultCenter = CLLocationCoordinate2D(latitude: 60.14, longitude: 24.9)
     let viewFrame: CGRect = CGRect(x: 0, y: 0, width: 64, height: 64)
@@ -90,12 +90,21 @@ struct MapViewRepresentable: UIViewRepresentable {
                     }
                 }
             }
-            followJob = map.follows.sink { date in
-                boats.toggleFollow()
-                self.log.info("Follow tapped, map mode is now \(self.map.mapMode)")
-            }
+            
             boatRenderer = boats
-            pathFinder = PathFinder(mapView: mapView, style: style)
+            let paths = PathFinder(mapView: mapView, style: style)
+            pathFinder = paths
+            followJob = map.commands.sink { cmd in
+                if let cmd = cmd {
+                    switch cmd {
+                    case .toggleFollow:
+                        boats.toggleFollow()
+                    case .clearAll:
+                        boats.clear()
+                        paths.clear()
+                    }
+                }
+            }
             installTapListener(mapView: mapView)
             guard let conf = settings.conf else { return }
             // Maybe the conf should be cached in a file?

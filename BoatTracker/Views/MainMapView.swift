@@ -8,12 +8,6 @@ struct WelcomeInfo: Identifiable {
     var id: String { boatToken }
 }
 
-class NoopDelegate: TracksDelegate {
-    func onTrack(_ track: TrackName) {
-        
-    }
-}
-
 struct MainMapView<T>: View where T: MapViewModelLike {
     let log = LoggerFactory.shared.view(MainMapView.self)
     
@@ -32,13 +26,13 @@ struct MainMapView<T>: View where T: MapViewModelLike {
     var body: some View {
         VStack {
             ZStack(alignment: .topLeading) {
-                MapViewRepresentable(styleUri: $viewModel.styleUri, latestTrack: $viewModel.latestTrack, popup: $popover, mapMode: $viewModel.mapMode, coords: viewModel.coordsPublisher, vessels: viewModel.vesselsPublisher, follows: viewModel.follows)
+                MapViewRepresentable(styleUri: $viewModel.styleUri, latestTrack: $viewModel.latestTrack, popup: $popover, mapMode: $viewModel.mapMode, coords: viewModel.coordsPublisher, vessels: viewModel.vesselsPublisher, commands: viewModel.commands)
                     .ignoresSafeArea()
                 if !viewModel.isProfileButtonHidden {
                     MapButtonView(imageResource: "SettingsSlider") {
                         guard let lang = viewModel.settings.lang else { return }
                         if let user = viewModel.latestToken {
-                            profileInfo = ProfileInfo(tracksDelegate: NoopDelegate(), user: user, current: viewModel.latestTrack, lang: lang)
+                            profileInfo = ProfileInfo(tracksDelegate: viewModel, user: user, current: viewModel.latestTrack, lang: lang)
                         } else {
                             authInfo = lang
                         }

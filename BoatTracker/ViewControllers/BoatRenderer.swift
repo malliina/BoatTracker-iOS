@@ -19,22 +19,6 @@ class BoatRenderer {
     private let mapView: MapView
     private let style: Style
     
-//    var mapMode: MapMode = .fit {
-//        didSet {
-//            switch mapMode {
-//            case .fit:
-//                app.isIdleTimerDisabled = false
-////                followButton.alpha = MapButton.selectedAlpha
-//            case .follow:
-//                app.isIdleTimerDisabled = true
-////                followButton.alpha = MapButton.deselectedAlpha
-//            case .stay:
-//                app.isIdleTimerDisabled = false
-////                followButton.alpha = MapButton.selectedAlpha
-//            }
-//        }
-//    }
-    
     @Binding var mapMode: MapMode
     
     init(mapView: MapView, style: Style, mapMode: Binding<MapMode>) {
