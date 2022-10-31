@@ -109,6 +109,7 @@ class MapViewModel: MapViewModelLike {
         latestToken = token
         socket.delegate = nil
         socket.close()
+        command = .clearAll
         socket.updateToken(token: token?.token)
         socket.delegate = self
         socket.vesselDelegate = self
