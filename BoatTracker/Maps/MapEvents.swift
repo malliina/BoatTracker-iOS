@@ -1,11 +1,3 @@
-//
-//  MapDelegate.swift
-//  BoatTracker
-//
-//  Created by Michael Skogberg on 15/07/2018.
-//  Copyright © 2018 Michael Skogberg. All rights reserved.
-//
-
 import Foundation
 
 protocol MapDelegate {
@@ -15,7 +7,19 @@ protocol MapDelegate {
 class MapEvents {
     static let shared = MapEvents()
     
+    var reconnectOnActive: Bool = true
     var delegate: MapDelegate? = nil
+    
+    func onBackground() {
+        close()
+        reconnectOnActive = true
+    }
+    
+    func onForeground() -> Bool {
+        let old = reconnectOnActive
+        reconnectOnActive = false
+        return old
+    }
     
     func close() {
         delegate?.close()

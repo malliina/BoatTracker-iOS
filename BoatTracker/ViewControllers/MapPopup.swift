@@ -1,20 +1,31 @@
-//
-//  MapPopup.swift
-//  BoatTracker
-//
-//  Created by Michael Skogberg on 5.12.2021.
-//  Copyright © 2021 Michael Skogberg. All rights reserved.
-//
-
 import Foundation
+import SwiftUI
 
-class MapPopup: UIViewController {
-    let child: UIView
+/// To display a popup, don't use .popover or .sheet in SwiftUI, but set this as a .background to your View
+struct PopupRepresentable: UIViewControllerRepresentable {
+    let popup: MapPopup?
+
+    func makeUIViewController(context: Context) -> UIViewController {
+        UIViewController()
+    }
     
-    init(child: UIView) {
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
+        if let popup = popup, uiViewController.presentedViewController == nil {
+            uiViewController.present(popup, animated: true)
+        }
+    }
+    
+    typealias UIViewControllerType = UIViewController
+}
+
+class MapPopup: UIViewController, Identifiable {
+    let child: UIView
+    let id: String
+    
+    init(child: UIView, id: String) {
         self.child = child
+        self.id = id
         super.init(nibName: nil, bundle: nil)
-        //presentationController?.delegate = self
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -23,7 +34,6 @@ class MapPopup: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(cancelClicked(_:)))
         view.addSubview(child)
         view.backgroundColor = BoatColors.shared.backgroundColor
         child.snp.makeConstraints { make in
@@ -31,9 +41,5 @@ class MapPopup: UIViewController {
         }
         let size = view.systemLayoutSizeFitting(UIView.layoutFittingExpandedSize)
         preferredContentSize = CGSize(width: size.width, height: size.height)
-    }
-    
-    @objc func cancelClicked(_ sender: UIBarButtonItem) {
-        goBack()
     }
 }

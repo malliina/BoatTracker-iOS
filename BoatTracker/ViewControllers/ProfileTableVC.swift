@@ -23,6 +23,28 @@ enum ViewState {
     case failed
 }
 
+struct ProfileInfo: Identifiable {
+    let tracksDelegate: TracksDelegate
+    let user: UserToken
+    let current: TrackName?
+    let lang: Lang
+    var id: String { user.email }
+}
+
+struct ProfileTableRepresentable: UIViewControllerRepresentable {
+    let info: ProfileInfo
+    
+    func makeUIViewController(context: Context) -> ProfileTableVC {
+        ProfileTableVC(tracksDelegate: info.tracksDelegate, current: info.current, user: info.user, lang: info.lang)
+    }
+    
+    func updateUIViewController(_ uiViewController: ProfileTableVC, context: Context) {
+        
+    }
+    
+    typealias UIViewControllerType = ProfileTableVC
+}
+
 class ProfileTableVC: BaseTableVC {
     let log = LoggerFactory.shared.vc(ProfileTableVC.self)
     

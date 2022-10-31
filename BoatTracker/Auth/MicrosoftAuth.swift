@@ -60,30 +60,16 @@ class MicrosoftAuth {
         }
     }
     
+    @MainActor
     func acquireTokenInteractively(webViewParameters: MSALWebviewParameters) async throws -> MSALResult {
-        try await withCheckedThrowingContinuation { cont in
-            acquireTokenInteractively(webViewParameters: webViewParameters, cont: cont)
-        }
-    }
-    
-    private func acquireTokenInteractively(webViewParameters: MSALWebviewParameters, cont: CheckedContinuation<MSALResult, Error>) {
         let parameters = MSALInteractiveTokenParameters(scopes: scopes, webviewParameters: webViewParameters)
         parameters.promptType = .selectAccount
-        self.applicationContext.acquireToken(with: parameters) { (result, error) in
-            if let error = error {
-                self.log.error("Could not acquire token: \(error)")
-                cont.resume(throwing: error)
-            } else if let result = result {
-                if let claims = result.account.accountClaims, let email = claims["email"] {
-                    self.log.info("Email is \(email)")
-                }
-                self.log.info("Access token is \(result.accessToken)")
-                cont.resume(returning: result)
-            } else {
-                self.log.error("Could not acquire token: No result returned")
-                cont.resume(throwing: AppError.simple("No result from Microsoft auth."))
-            }
+        let result = try await applicationContext.acquireToken(with: parameters)
+        if let claims = result.account.accountClaims, let email = claims["email"] {
+            self.log.info("Email is \(email)")
         }
+        self.log.info("Access token is \(result.accessToken)")
+        return result
     }
     
     func acquireTokenSilently(_ account : MSALAccount, webViewParameters: MSALWebviewParameters?) async throws -> MSALResult {
@@ -101,38 +87,26 @@ class MicrosoftAuth {
          */
 
         let parameters = MSALSilentTokenParameters(scopes: scopes, account: account)
-        return try await withCheckedThrowingContinuation { cont in
-//           try await applicationContext.acquireTokenSilent(with: parameters)
-            applicationContext.acquireTokenSilent(with: parameters) { (result, error) in
-                if let error = error {
-                    let nsError = error as NSError
-                    // interactionRequired means we need to ask the user to sign-in. This usually happens
-                    // when the user's Refresh Token is expired or if the user has changed their password
-                    // among other possible reasons.
-                    if (nsError.domain == MSALErrorDomain && nsError.code == MSALError.interactionRequired.rawValue) {
-                        if let webViewParameters = webViewParameters {
-                            DispatchQueue.main.async {
-                                self.acquireTokenInteractively(webViewParameters: webViewParameters, cont: cont)
-                            }
-                        } else {
-                            cont.resume(throwing: AppError.simple("Interaction required to complete Microsoft auth, but not in an interactive context."))
-                        }
-                    } else {
-                        self.log.warn("Could not acquire token silently: \(error)")
-                        cont.resume(throwing: error)
-                    }
+        do {
+            let result = try await applicationContext.acquireTokenSilent(with: parameters)
+            if let claims = result.account.accountClaims, let email = claims["email"] {
+                log.info("Email is \(email)")
+            }
+            return result
+        } catch {
+            let nsError = error as NSError
+            // interactionRequired means we need to ask the user to sign-in. This usually happens
+            // when the user's Refresh Token is expired or if the user has changed their password
+            // among other possible reasons.
+            if (nsError.domain == MSALErrorDomain && nsError.code == MSALError.interactionRequired.rawValue) {
+                if let webViewParameters = webViewParameters {
+                    return try await acquireTokenInteractively(webViewParameters: webViewParameters)
                 } else {
-                    if let result = result {
-                        if let claims = result.account.accountClaims, let email = claims["email"] {
-                            self.log.info("Email is \(email)")
-                        }
-                        //self.log.info("Refreshed Access token is \(result.accessToken)")
-                        cont.resume(returning: result)
-                    } else {
-                        self.log.warn("Could not acquire token: No result returned")
-                        cont.resume(throwing: AppError.simple("No result from silent Microsoft auth."))
-                    }
+                    throw AppError.simple("Interaction required to complete Microsoft auth, but not in an interactive context.")
                 }
+            } else {
+                log.warn("Could not acquire token silently: \(error)")
+                throw error
             }
         }
     }
@@ -146,6 +120,7 @@ class MicrosoftAuth {
         }
     }
     
+    @MainActor
     func signOutFromAccount(from: UIViewController) async throws -> MSALAccount? {
         let params = MSALSignoutParameters(webviewParameters: MSALWebviewParameters(authPresentationViewController: from))
         let account = try await loadCurrentAccount()

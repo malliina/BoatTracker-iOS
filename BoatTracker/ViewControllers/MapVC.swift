@@ -109,7 +109,7 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, UIPopoverPresentatio
     
     func onStyleLoaded(_ mapView: MapView, didFinishLoading style: Style) async {
         self.style = style
-        let boats = BoatRenderer(mapView: mapView, style: style, followButton: followButton)
+        let boats = BoatRenderer(mapView: mapView, style: style, mapMode: .constant(.fit))
         self.boatRenderer = boats
         self.pathFinder = PathFinder(mapView: mapView, style: style)
         installTapListener(mapView: mapView)
@@ -135,7 +135,6 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, UIPopoverPresentatio
                     await self.reload(token: token)
                 }
             }
-            _ = await Auth.shared.signIn(from: self, restore: true)
         }
     }
     
@@ -183,15 +182,15 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, UIPopoverPresentatio
     
     func displayDetails(child: UIView, senderView: UIView, point: CGPoint) {
         // log.info("Sender \(senderView) point \(point)")
-        let popup = MapPopup(child: child)
-        popup.modalPresentationStyle = .popover
-        if let popover = popup.popoverPresentationController {
-            popover.delegate = self
-            popover.sourceView = senderView
-            // self.log.info("Set sourceView to \(senderView)")
-            popover.sourceRect = CGRect(origin: point, size: .zero)
-        }
-        self.present(popup, animated: true, completion: nil)
+//        let popup = MapPopup(child: child)
+//        popup.modalPresentationStyle = .popover
+//        if let popover = popup.popoverPresentationController {
+//            popover.delegate = self
+//            popover.sourceView = senderView
+//            // self.log.info("Set sourceView to \(senderView)")
+//            popover.sourceRect = CGRect(origin: point, size: .zero)
+//        }
+//        self.present(popup, animated: true, completion: nil)
     }
     
     func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
@@ -306,7 +305,6 @@ extension MapVC: VesselDelegate {
             } catch {
                 self.log.warn("Failed to update vessels. \(error)")
             }
-            
         }
     }
 }

@@ -1,13 +1,24 @@
-//
-//  BoatButton.swift
-//  BoatTracker
-//
-//  Created by Michael Skogberg on 09/07/2018.
-//  Copyright Michael Skogberg. All rights reserved.
-//
-
 import Foundation
 import UIKit
+import SwiftUI
+
+struct MapButtonView: View {
+    let imageResource: String
+    let action: () -> Void
+    var body: some View {
+        Button {
+            action()
+        } label: {
+            Image(uiImage: #imageLiteral(resourceName: imageResource))
+                .resizable()
+                .scaledToFit()
+                .frame(width: 22, height: 22)
+        }
+        .frame(width: 36, height: 36)
+        .background(.white)
+        .cornerRadius(2)
+    }
+}
 
 class BoatButton {
     static func create(title: String, color: UIColor = UIColor.black, fontSize: CGFloat = 24) -> UIButton {

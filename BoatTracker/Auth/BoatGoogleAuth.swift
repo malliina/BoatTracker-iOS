@@ -1,9 +1,9 @@
 import Foundation
 import GoogleSignIn
 
-class RxGoogleAuth: NSObject {
-    let log = LoggerFactory.shared.system(RxGoogleAuth.self)
-    static let shared = RxGoogleAuth()
+class BoatGoogleAuth: NSObject {
+    let log = LoggerFactory.shared.system(BoatGoogleAuth.self)
+    static let shared = BoatGoogleAuth()
     let google = GIDSignIn.sharedInstance
     var signInConfig: GIDConfiguration? = nil
     
@@ -16,6 +16,7 @@ class RxGoogleAuth: NSObject {
         }
     }
     
+    @MainActor
     func signIn(conf: GIDConfiguration, from: UIViewController) async throws -> GIDGoogleUser {
         return try await withCheckedThrowingContinuation { cont in
             google.signIn(with: conf, presenting: from) { user, error in

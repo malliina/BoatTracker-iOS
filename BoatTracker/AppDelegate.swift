@@ -1,19 +1,50 @@
-//
-//  AppDelegate.swift
-//  BoatTracker
-//
-//  Created by Michael Skogberg on 08/07/2018.
-//  Copyright © 2018 Michael Skogberg. All rights reserved.
-//
-
 import UIKit
 import AppCenter
 import AppCenterAnalytics
 import AppCenterCrashes
 import MapboxMaps
 import MSAL
+import SwiftUI
 
-@UIApplicationMain
+@main
+struct BoatApp: App {
+    let log = LoggerFactory.shared.system(BoatApp.self)
+    
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    @Environment(\.scenePhase) private var scenePhase
+    
+    init() {
+        AppCenter.start(withAppSecret: "adbb4491-3c8c-4893-bd16-cc8be65899a8", services: [
+            Analytics.self,
+            Crashes.self
+        ])
+    }
+    
+    let viewModel = MapViewModel()
+    
+    var body: some Scene {
+        WindowGroup {
+            MainMapView(viewModel: viewModel).task {
+                await viewModel.prepare()
+            }
+        }
+        .onChange(of: scenePhase) { phase in
+            if phase == .background {
+                MapEvents.shared.onBackground()
+            }
+            if phase == .active {
+                let reconnect = MapEvents.shared.onForeground()
+                if reconnect {
+                    Task {
+                        await Auth.shared.signInSilentlyNow()
+                    }
+                }
+            }
+        }
+    }
+}
+
+//@UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     static let log = LoggerFactory.shared.system(AppDelegate.self)
     
@@ -25,22 +56,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
 //        UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
 //    }
-
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
-        AppCenter.start(withAppSecret: "adbb4491-3c8c-4893-bd16-cc8be65899a8", services: [
-            Analytics.self,
-            Crashes.self
-        ])
-        
-//        let _ = AppDelegate.initMapboxToken()
-
-        let w = UIWindow(frame: UIScreen.main.bounds)
-        window = w
-        w.makeKeyAndVisible()
-        w.rootViewController = MapVC()
-        return true
-    }
     
     /// https://developer.apple.com/documentation/uikit/core_app/allowing_apps_and_websites_to_link_to_your_content/handling_universal_links
     func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
@@ -53,7 +68,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-        let googleAttempt = RxGoogleAuth.shared.open(url: url, options: options)
+        let googleAttempt = BoatGoogleAuth.shared.open(url: url, options: options)
         if googleAttempt {
             return true
         } else {
@@ -69,14 +84,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidEnterBackground(_ application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-        disconnectSocket()
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
         // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
-        Task {
-            await connectSocket()
-        }
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
@@ -100,14 +111,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) {
         log.info("Received remote notification...")
         notifications.handleNotification(application, window: window, data: userInfo)
-    }
-
-    func connectSocket() async {
-        await Auth.shared.signInSilentlyNow()
-    }
-    
-    func disconnectSocket() {
-        MapEvents.shared.close()
     }
 }
 

@@ -1,12 +1,5 @@
-//
-//  BoatSocket.swift
-//  BoatTracker
-//
-//  Created by Michael Skogberg on 08/07/2018.
-//  Copyright © 2018 Michael Skogberg. All rights reserved.
-//
-
 import Foundation
+import SwiftUI
 
 protocol BoatSocketDelegate {
     func onCoords(event: CoordsData)
@@ -58,6 +51,7 @@ class BoatSocket {
     }
     
     func open() {
+        log.info("Opening socket...")
         socket.connect()
     }
     

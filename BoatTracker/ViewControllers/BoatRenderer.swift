@@ -1,14 +1,7 @@
-//
-//  BoatRenderer.swift
-//  BoatTracker
-//
-//  Created by Michael Skogberg on 03/02/2019.
-//  Copyright © 2019 Michael Skogberg. All rights reserved.
-//
-
 import Foundation
 import UIKit
 import MapboxMaps
+import SwiftUI
 
 class BoatRenderer {
     let log = LoggerFactory.shared.vc(BoatRenderer.self)
@@ -23,30 +16,15 @@ class BoatRenderer {
     var latestTrack: TrackName? = nil
     private var hasBeenFollowing: Bool = false
     
-    private let followButton: UIButton
     private let mapView: MapView
     private let style: Style
     
-    var mapMode: MapMode = .fit {
-        didSet {
-            switch mapMode {
-            case .fit:
-                app.isIdleTimerDisabled = false
-                followButton.alpha = MapButton.selectedAlpha
-            case .follow:
-                app.isIdleTimerDisabled = true
-                followButton.alpha = MapButton.deselectedAlpha
-            case .stay:
-                app.isIdleTimerDisabled = false
-                followButton.alpha = MapButton.selectedAlpha
-            }
-        }
-    }
+    @Binding var mapMode: MapMode
     
-    init(mapView: MapView, style: Style, followButton: UIButton) {
+    init(mapView: MapView, style: Style, mapMode: Binding<MapMode>) {
         self.mapView = mapView
         self.style = style
-        self.followButton = followButton
+        self._mapMode = mapMode
     }
     
     func layers() -> Set<String> {
@@ -57,6 +35,7 @@ class BoatRenderer {
         Set(trophyIcons.map { (track, layer) -> String in trophyName(for: track) })
     }
     
+    @MainActor
     func toggleFollow() {
         if mapMode == .stay {
             flyToLatest()
