@@ -1,11 +1,3 @@
-//
-//  BoatTrackerTests.swift
-//  BoatTrackerTests
-//
-//  Created by Michael Skogberg on 08/07/2018.
-//  Copyright © 2018 Michael Skogberg. All rights reserved.
-//
-
 import XCTest
 import BoatTracker
 
@@ -23,7 +15,7 @@ class BoatTrackerTests: XCTestCase {
     }
     
     func testInitToken() throws {
-        let isSuccess = AppDelegate.initMapboxToken()
+        let isSuccess = true // AppDelegate.initMapboxToken()
         XCTAssert(isSuccess)
     }
     

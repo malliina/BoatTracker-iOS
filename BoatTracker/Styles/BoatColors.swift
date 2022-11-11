@@ -33,6 +33,7 @@ class BoatColor {
         self.ref = ref
     }
     var almostWhite: Color { Color(uiColor: ref.almostWhite) }
+    var secondaryText: Color { Color(uiColor: ref.secondaryText) }
 }
 
 extension UIColor {
