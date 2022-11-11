@@ -21,7 +21,7 @@ class Auth {
             let token = try await obtainToken(from: from, restore: restore)
             tokens = token
             return token
-        } catch let error {
+        } catch {
             log.error("Failed to authenticate: '\(error.describe)'.")
             tokens = nil
             return nil

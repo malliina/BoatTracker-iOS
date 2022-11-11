@@ -38,6 +38,22 @@ protocol WelcomeDelegate {
     func showWelcome(token: UserToken?) async
 }
 
+class AuthVM {
+    var prefs: BoatPrefs { BoatPrefs.shared }
+    
+    func clicked(provider: AuthProvider) {
+        prefs.authProvider = provider
+        prefs.showWelcome = true
+//        signIn()
+    }
+    
+//    @MainActor private func signIn() {
+//        Task {
+//            _ = await Auth.shared.signIn(from: self, restore: false)
+//        }
+//    }
+}
+
 class AuthVC: BaseTableVC {
     let log = LoggerFactory.shared.vc(AuthVC.self)
     

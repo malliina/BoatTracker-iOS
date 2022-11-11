@@ -15,6 +15,7 @@ struct MainMapView<T>: View where T: MapViewModelLike {
     
     @State var welcomeInfo: WelcomeInfo? = nil
     @State var authInfo: Lang? = nil
+    @State var authInfo2: Lang? = nil
     @State var profileInfo: ProfileInfo? = nil
     @State var popover: MapPopup? = nil
     @State var showPopover: Bool = false
@@ -38,6 +39,14 @@ struct MainMapView<T>: View where T: MapViewModelLike {
                         }
                     }
                     .offset(x: 16, y: 16)
+                    .opacity(0.6)
+                }
+                if !viewModel.isProfileButtonHidden {
+                    MapButtonView(imageResource: "SettingsSlider") {
+                        guard let lang = viewModel.settings.lang else { return }
+                        authInfo2 = lang
+                    }
+                    .offset(x: 66, y: 16)
                     .opacity(0.6)
                 }
                 if !viewModel.isFollowButtonHidden {
@@ -92,6 +101,22 @@ struct MainMapView<T>: View where T: MapViewModelLike {
                                 profileInfo = nil
                             } label: {
                                 Text(info.lang.map)
+                            }
+                        }
+                    }
+            }
+        }
+        .sheet(item: $authInfo2) { info in
+            NavigationView {
+                AuthView(lang: info, viewModel: AuthVM())
+                    .navigationBarTitleDisplayMode(.large)
+                    .navigationTitle(info.settings.signIn)
+                    .toolbar {
+                        ToolbarItemGroup(placement: .navigationBarTrailing) {
+                            Button {
+                                authInfo2 = nil
+                            } label: {
+                                Text(info.settings.cancel)
                             }
                         }
                     }

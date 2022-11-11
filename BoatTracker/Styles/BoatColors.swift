@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import SwiftUI
 
 class BoatColors {
     static let shared = BoatColors()
@@ -23,6 +24,15 @@ class BoatColors {
     let logoutBackground = UIColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 0.9)
     var feedback: UIColor { textColor }
     var backgroundColor: UIColor { .white }
+}
+
+class BoatColor {
+    static let shared = BoatColor(BoatColors.shared)
+    let ref: BoatColors
+    init(_ ref: BoatColors) {
+        self.ref = ref
+    }
+    var almostWhite: Color { Color(uiColor: ref.almostWhite) }
 }
 
 extension UIColor {

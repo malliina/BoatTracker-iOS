@@ -13,6 +13,15 @@ enum AuthProvider: String {
     static func parse(s: String) -> AuthProvider {
         AuthProvider(rawValue: s) ?? none
     }
+    
+    var name: String {
+        switch self {
+        case .google: return "Google"
+        case .microsoft: return "Microsoft"
+        case .apple: return "Apple"
+        case .none: return "Other"
+        }
+    }
 }
 
 class UserSettings {
