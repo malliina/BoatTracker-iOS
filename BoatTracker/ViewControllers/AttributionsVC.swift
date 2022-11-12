@@ -8,6 +8,20 @@
 
 import Foundation
 import UIKit
+import SwiftUI
+
+struct AttributionsRepresentable: UIViewControllerRepresentable {
+    let info: AttributionInfo
+    func makeUIViewController(context: Context) -> AttributionsVC {
+        AttributionsVC(info: info)
+    }
+    
+    func updateUIViewController(_ uiViewController: AttributionsVC, context: Context) {
+        
+    }
+    
+    typealias UIViewControllerType = AttributionsVC
+}
 
 class AttributionsVC: BaseTableVC {
     let attributionKey = "AttributionCell"

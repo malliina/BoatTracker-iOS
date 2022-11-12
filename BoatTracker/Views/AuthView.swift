@@ -11,6 +11,7 @@ struct AuthView: View {
         ScrollView {
             VStack(alignment: .leading) {
                 SocialButton(provider: .google, image: "LogoGoogle")
+                    .padding(.top)
                 SocialButton(provider: .microsoft, image: "LogoMicrosoft")
                 SocialButton(provider: .apple, image: "LogoApple")
                 Text(settingsLang.signInText)
@@ -24,7 +25,16 @@ struct AuthView: View {
                     .font(.system(size: 17))
                     .foregroundColor(color.secondaryText)
                     .padding(.horizontal)
-            }.padding()
+                NavigationLink {
+                    AttributionsRepresentable(info: lang.attributions)
+                } label: {
+                    HStack {
+                        Text(lang.attributions.title)
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                    }
+                }.padding()
+            }
         }
     }
 
@@ -41,7 +51,7 @@ struct AuthView: View {
                 Spacer()
             }
         }
-        .background(BoatColor.shared.almostWhite)
+        .background(color.almostWhite)
         .cornerRadius(14)
         .padding(.horizontal)
         .padding(.bottom)
