@@ -105,6 +105,8 @@
 		B02EC50E2909B41A00D21793 /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02EC50D2909B41A00D21793 /* MapViewModel.swift */; };
 		B03BC55A290D31EE00BA38EF /* MainMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B03BC559290D31EE00BA38EF /* MainMapView.swift */; };
 		B0C5981A291ED81E00439237 /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C59819291ED81E00439237 /* AuthView.swift */; };
+		B0C5981C2920255200439237 /* SocialView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C5981B2920255200439237 /* SocialView.swift */; };
+		B0C5981E2920258B00439237 /* Tasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C5981D2920258B00439237 /* Tasks.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -218,6 +220,8 @@
 		B02EC50D2909B41A00D21793 /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
 		B03BC559290D31EE00BA38EF /* MainMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMapView.swift; sourceTree = "<group>"; };
 		B0C59819291ED81E00439237 /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
+		B0C5981B2920255200439237 /* SocialView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialView.swift; sourceTree = "<group>"; };
+		B0C5981D2920258B00439237 /* Tasks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tasks.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -382,6 +386,7 @@
 				6106448921FDBC8300C9ED0D /* vesselAnnotation.swift */,
 				61AB2C7E2132A63C009774DC /* viewExt.swift */,
 				613D5D232220AC09003FF8EB /* viewModels.swift */,
+				B0C5981B2920255200439237 /* SocialView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -405,6 +410,7 @@
 				613669BD217117390043494A /* generalExtensions.swift */,
 				6199E0EE20F24EC300A4009A /* Log.swift */,
 				61DE7F4020F2A23100C95B3F /* StringUtils.swift */,
+				B0C5981D2920258B00439237 /* Tasks.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -636,7 +642,9 @@
 				61967A072103CAFD00432672 /* BoatColors.swift in Sources */,
 				619679F620FBBA3A00432672 /* BoatCell.swift in Sources */,
 				7D2CC0F3264D6EBD0091E05C /* MicrosoftAuth.swift in Sources */,
+				B0C5981E2920258B00439237 /* Tasks.swift in Sources */,
 				612F46A620F4AB70001A3003 /* Backend.swift in Sources */,
+				B0C5981C2920255200439237 /* SocialView.swift in Sources */,
 				6101D54B221057340051A427 /* mapCallouts.swift in Sources */,
 				61967A022103C4EE00432672 /* BaseTableVC.swift in Sources */,
 				61ACE5CB2131667600925265 /* BoatTextView.swift in Sources */,

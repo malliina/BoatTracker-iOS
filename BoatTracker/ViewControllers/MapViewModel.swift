@@ -85,6 +85,7 @@ class MapViewModel: MapViewModelLike {
     @Published var command: MapCommand? = nil
     var commands: Published<MapCommand?>.Publisher { $command }
     private var cancellable: AnyCancellable? = nil
+    @Published var welcomeInfo: WelcomeInfo? = nil
     
     func prepare() async {
         do {

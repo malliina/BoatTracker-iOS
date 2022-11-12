@@ -108,7 +108,7 @@ struct MainMapView<T>: View where T: MapViewModelLike {
         }
         .sheet(item: $authInfo2) { info in
             NavigationView {
-                AuthView(lang: info, viewModel: AuthVM())
+                AuthView(welcomeInfo: $welcomeInfo, lang: info, viewModel: AuthVM())
                     .navigationBarTitleDisplayMode(.large)
                     .navigationTitle(info.settings.signIn)
                     .toolbar {

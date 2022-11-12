@@ -39,12 +39,29 @@ protocol WelcomeDelegate {
 }
 
 class AuthVM {
+    let log = LoggerFactory.shared.vc(AuthVM.self)
+    
     var prefs: BoatPrefs { BoatPrefs.shared }
     
     func clicked(provider: AuthProvider) {
         prefs.authProvider = provider
         prefs.showWelcome = true
 //        signIn()
+    }
+    
+    func showWelcome(token: UserToken?, lang: Lang) async -> WelcomeInfo? {
+        BoatPrefs.shared.showWelcome = false
+        do {
+            let profile = try await Backend.shared.http.profile()
+                if let boatToken = profile.boats.headOption()?.token {
+                return WelcomeInfo(boatToken: boatToken, lang: lang.settings)
+            } else {
+                log.warn("Signed in but user has no boats.")
+            }
+        } catch {
+            log.error("Failed to load profile. \(error)")
+        }
+        return nil
     }
     
 //    @MainActor private func signIn() {
