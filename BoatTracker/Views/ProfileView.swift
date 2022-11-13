@@ -12,9 +12,11 @@ struct ProfileView: View {
         VStack {
             if let summary = vm.summary {
                 TrackSummaryView(track: summary, lang: lang)
-            } else {
+            } else if vm.state == .empty {
                 Text(info.lang.messages.noSavedTracks)
                     .foregroundColor(color.secondaryText)
+            } else if vm.state == .loading {
+                ProgressView()
             }
             if let summary = vm.summary {
                 NavigationLink {

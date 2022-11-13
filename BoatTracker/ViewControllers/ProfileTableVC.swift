@@ -44,6 +44,7 @@ class ProfileVM: ObservableObject {
     }
     let tracksDelegate: TracksDelegate?
     private var socket: BoatSocket { Backend.shared.socket }
+    private var http: BoatHttpClient { Backend.shared.http }
     
     init(current: TrackName? = nil, tracksDelegate: TracksDelegate?) {
         self.current = current
@@ -51,19 +52,24 @@ class ProfileVM: ObservableObject {
     }
 
     func loadTracks() async {
+        await update(viewState: .loading)
         do {
-            let ts = try await Backend.shared.http.tracks()
+            let ts = try await http.tracks()
             log.info("Got \(ts.count) tracks.")
             await update(ts: ts)
         } catch {
             log.error("Unable to load tracks. \(error.describe)")
-            await update(err: error)
+            await update(viewState: .failed)
         }
     }
     
+    @MainActor private func update(viewState: ViewState) {
+        state = viewState
+    }
+    
     @MainActor private func update(ts: [TrackRef]) {
-        state = ts.isEmpty ? .empty : .content
         tracks = ts
+        state = ts.isEmpty ? .empty : .content
     }
     
     @MainActor private func update(err: Error) {
