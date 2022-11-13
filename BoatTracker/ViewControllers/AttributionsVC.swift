@@ -1,11 +1,3 @@
-//
-//  AttributionsVC.swift
-//  BoatTracker
-//
-//  Created by Michael Skogberg on 12/08/2018.
-//  Copyright © 2018 Michael Skogberg. All rights reserved.
-//
-
 import Foundation
 import UIKit
 import SwiftUI
@@ -21,6 +13,19 @@ struct AttributionsRepresentable: UIViewControllerRepresentable {
     }
     
     typealias UIViewControllerType = AttributionsVC
+}
+
+struct AttributionsView: View {
+    let info: AttributionInfo
+    var attributions: [AppAttribution] { info.attributions }
+    var body: some View {
+        List {
+            ForEach(attributions) { attribution in
+                AttributionView(data: attribution)
+            }
+        }
+        .listStyle(.plain)
+    }
 }
 
 class AttributionsVC: BaseTableVC {
@@ -63,6 +68,10 @@ struct AppAttribution: Codable {
     let title: String
     let text: String?
     let links: [Link]
+}
+
+extension AppAttribution: Identifiable {
+    var id: String { title }
 }
 
 struct AttributionInfo: Codable {

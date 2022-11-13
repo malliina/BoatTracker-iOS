@@ -9,49 +9,85 @@ struct ProfileView: View {
     var lang: Lang { info.lang }
     
     var body: some View {
-        VStack {
-            if let summary = vm.summary {
-                TrackSummaryView(track: summary, lang: lang)
-            } else if vm.state == .empty {
-                Text(info.lang.messages.noSavedTracks)
-                    .foregroundColor(color.secondaryText)
-            } else if vm.state == .loading {
-                ProgressView()
+        List {
+            Section(footer: Footer()) {
+                if let summary = vm.summary {
+                    TrackSummaryView(track: summary, lang: lang)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                } else if vm.state == .empty {
+                    Text(info.lang.messages.noSavedTracks)
+                        .foregroundColor(color.secondaryText)
+                } else if vm.state == .loading {
+                    ProgressView()
+                }
             }
-            if let summary = vm.summary {
+            Section(footer: Footer()) {
+                if let summary = vm.summary {
+                    NavigationLink {
+                        ChartsRepresentable(track: summary.trackName, lang: lang)
+                            .navigationBarTitleDisplayMode(.large)
+                            .navigationTitle(summary.trackTitle?.description ?? summary.startDate)
+                    } label: {
+                        Text(lang.track.graph)
+                    }
+                }
                 NavigationLink {
-                    ChartsRepresentable(track: summary.trackName, lang: lang)
+                    TrackListRepresentable(delegate: vm.tracksDelegate, login: false, lang: lang)
                         .navigationBarTitleDisplayMode(.large)
-                        .navigationTitle(summary.trackTitle?.description ?? summary.startDate)
+                        .navigationTitle(lang.track.tracks)
                 } label: {
-                    NavLink(title: lang.track.graph)
-                }.padding()
+                    Text(lang.track.trackHistory)
+                }
+                NavigationLink {
+                    StatsRepresentable(lang: lang)
+                        .navigationBarTitleDisplayMode(.large)
+                        .navigationTitle(lang.labels.statistics)
+                } label: {
+                    Text(lang.labels.statistics)
+                }
+                NavigationLink {
+                    BoatTokensRepresentable(lang: lang)
+                        .navigationBarTitleDisplayMode(.large)
+                        .navigationTitle(lang.track.boats)
+                } label: {
+                    Text(lang.track.boats)
+                }
             }
-            NavigationLink {
-                TrackListRepresentable(delegate: vm.tracksDelegate, login: false, lang: lang)
-                    .navigationBarTitleDisplayMode(.large)
-                    .navigationTitle(lang.track.tracks)
-            } label: {
-                NavLink(title: lang.track.trackHistory)
-            }.padding()
-            NavigationLink {
-                StatsRepresentable(lang: lang)
-                    .navigationBarTitleDisplayMode(.large)
-                    .navigationTitle(lang.labels.statistics)
-            } label: {
-                NavLink(title: lang.labels.statistics)
-            }.padding()
-            NavigationLink {
-                BoatTokensRepresentable(lang: lang)
-                    .navigationBarTitleDisplayMode(.large)
-                    .navigationTitle(lang.track.boats)
-            } label: {
-                NavLink(title: lang.track.boats)
-            }.padding()
-            Spacer()
+            Section(footer: Footer()) {
+                NavigationLink {
+                    SelectLanguageRepresentable(lang: lang.profile)
+                        .navigationBarTitleDisplayMode(.large)
+                        .navigationTitle(lang.profile.language)
+                } label: {
+                    Text(lang.profile.language)
+                }
+            }
+            Section(footer: Footer()) {
+                NavigationLink {
+                    AttributionsView(info: lang.attributions)
+                        .navigationBarTitleDisplayMode(.large)
+                        .navigationTitle(lang.attributions.title)
+                } label: {
+                    Text(lang.attributions.title)
+                }
+            }
+            Section(footer: Footer()) {
+                if let versionText = vm.versionText(lang: lang) {
+                    Text(versionText)
+                        .foregroundColor(Color(uiColor: .lightGray))
+                        .frame(maxWidth: .infinity, alignment: .center)
+                }
+                Text("\(lang.profile.signedInAs) \(info.user.email)")
+                    .foregroundColor(Color(uiColor: .lightGray))
+                    .frame(maxWidth: .infinity, alignment: .center)
+            }
         }.task {
             await vm.loadTracks()
         }
+        .listStyle(.plain)
+    }
+    func Footer() -> some View {
+        Spacer()
     }
 }
 

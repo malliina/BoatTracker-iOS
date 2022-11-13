@@ -43,12 +43,23 @@ class ProfileVM: ObservableObject {
         }
     }
     let tracksDelegate: TracksDelegate?
+    
     private var socket: BoatSocket { Backend.shared.socket }
     private var http: BoatHttpClient { Backend.shared.http }
     
     init(current: TrackName? = nil, tracksDelegate: TracksDelegate?) {
         self.current = current
         self.tracksDelegate = tracksDelegate
+    }
+        
+    func versionText(lang: Lang) -> String? {
+        if let bundleMeta = Bundle.main.infoDictionary,
+           let appVersion = bundleMeta["CFBundleShortVersionString"] as? String,
+           let buildId = bundleMeta["CFBundleVersion"] as? String {
+            return "\(lang.appMeta.version) \(appVersion) \(lang.appMeta.build) \(buildId)"
+        } else {
+            return nil
+        }
     }
 
     func loadTracks() async {
