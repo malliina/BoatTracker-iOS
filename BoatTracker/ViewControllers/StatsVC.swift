@@ -1,12 +1,18 @@
-//
-//  StatsVC.swift
-//  BoatTracker
-//
-//  Created by Michael Skogberg on 03/08/2019.
-//  Copyright © 2019 Michael Skogberg. All rights reserved.
-//
-
 import Foundation
+import SwiftUI
+
+struct StatsRepresentable: UIViewControllerRepresentable {
+    let lang: Lang
+    
+    func makeUIViewController(context: Context) -> StatsVC {
+        StatsVC(lang: lang)
+    }
+    
+    func updateUIViewController(_ uiViewController: StatsVC, context: Context) {
+    }
+    
+    typealias UIViewControllerType = StatsVC
+}
 
 class StatsVC: BaseTableVC {
     let log = LoggerFactory.shared.vc(StatsVC.self)

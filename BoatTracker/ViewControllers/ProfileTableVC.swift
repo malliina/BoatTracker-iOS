@@ -31,6 +31,46 @@ struct ProfileInfo: Identifiable {
     var id: String { user.email }
 }
 
+class ProfileVM: ObservableObject {
+    let log = LoggerFactory.shared.vc(ProfileVM.self)
+    
+    @Published var state: ViewState = .loading
+    @Published var tracks: [TrackRef] = []
+    @Published var current: TrackName?
+    var summary: TrackRef? {
+        tracks.first { ref in
+            ref.trackName == current
+        }
+    }
+    let tracksDelegate: TracksDelegate?
+    private var socket: BoatSocket { Backend.shared.socket }
+    
+    init(current: TrackName? = nil, tracksDelegate: TracksDelegate?) {
+        self.current = current
+        self.tracksDelegate = tracksDelegate
+    }
+
+    func loadTracks() async {
+        do {
+            let ts = try await Backend.shared.http.tracks()
+            log.info("Got \(ts.count) tracks.")
+            await update(ts: ts)
+        } catch {
+            log.error("Unable to load tracks. \(error.describe)")
+            await update(err: error)
+        }
+    }
+    
+    @MainActor private func update(ts: [TrackRef]) {
+        state = ts.isEmpty ? .empty : .content
+        tracks = ts
+    }
+    
+    @MainActor private func update(err: Error) {
+        state = .failed
+    }
+}
+
 struct ProfileTableRepresentable: UIViewControllerRepresentable {
     let info: ProfileInfo
     

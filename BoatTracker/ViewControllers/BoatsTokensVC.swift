@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import SwiftUI
 
 extension BoatTokensVC: NotificationPermissionDelegate {
     func didRegister(_ token: PushToken) async {
@@ -50,6 +51,19 @@ extension BoatTokensVC: NotificationPermissionDelegate {
             log.error(error.describe)
         }
     }
+}
+
+struct BoatTokensRepresentable: UIViewControllerRepresentable {
+    let lang: Lang
+    
+    func makeUIViewController(context: Context) -> BoatTokensVC {
+        BoatTokensVC(lang: lang)
+    }
+    
+    func updateUIViewController(_ uiViewController: BoatTokensVC, context: Context) {
+    }
+    
+    typealias UIViewControllerType = BoatTokensVC
 }
 
 class BoatTokensVC: BaseTableVC {

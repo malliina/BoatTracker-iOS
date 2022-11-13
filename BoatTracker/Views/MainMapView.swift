@@ -17,6 +17,7 @@ struct MainMapView<T>: View where T: MapViewModelLike {
     @State var authInfo: Lang? = nil
     @State var authInfo2: Lang? = nil
     @State var profileInfo: ProfileInfo? = nil
+    @State var profileInfo2: ProfileInfo? = nil
     @State var popover: MapPopup? = nil
     @State var showPopover: Bool = false
     
@@ -49,6 +50,18 @@ struct MainMapView<T>: View where T: MapViewModelLike {
                     .offset(x: 66, y: 16)
                     .opacity(0.6)
                 }
+                if !viewModel.isProfileButtonHidden {
+                    MapButtonView(imageResource: "SettingsSlider") {
+                        guard let lang = viewModel.settings.lang else { return }
+                        if let user = viewModel.latestToken {
+                            profileInfo2 = ProfileInfo(tracksDelegate: viewModel, user: user, current: viewModel.latestTrack, lang: lang)
+                        } else {
+                            authInfo2 = lang
+                        }
+                    }
+                    .offset(x: 116, y: 16)
+                    .opacity(0.6)
+                }
                 if !viewModel.isFollowButtonHidden {
                     MapButtonView(imageResource: "LocationArrow") {
                         viewModel.toggleFollow()
@@ -60,7 +73,7 @@ struct MainMapView<T>: View where T: MapViewModelLike {
         }
         .sheet(item: $welcomeInfo) { info in
             NavigationView {
-                WelcomeSignedInRepresentable(boatToken: info.boatToken, lang: info.lang)
+                WelcomeView(lang: info.lang, token: info.boatToken)
                     .navigationBarTitleDisplayMode(.large)
                     .navigationTitle(info.lang.welcome)
                     .toolbar {
@@ -99,6 +112,22 @@ struct MainMapView<T>: View where T: MapViewModelLike {
                         ToolbarItemGroup(placement: .navigationBarLeading) {
                             Button {
                                 profileInfo = nil
+                            } label: {
+                                Text(info.lang.map)
+                            }
+                        }
+                    }
+            }
+        }
+        .sheet(item: $profileInfo2) { info in
+            NavigationView {
+                ProfileView(info: info, vm: ProfileVM(current: viewModel.latestTrack, tracksDelegate: viewModel))
+                    .navigationBarTitleDisplayMode(.large)
+                    .navigationTitle(info.lang.appName)
+                    .toolbar {
+                        ToolbarItemGroup(placement: .navigationBarLeading) {
+                            Button {
+                                profileInfo2 = nil
                             } label: {
                                 Text(info.lang.map)
                             }

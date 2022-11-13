@@ -36,11 +36,7 @@ struct AuthView: View {
                         .navigationBarTitleDisplayMode(.large)
                         .navigationTitle(lang.attributions.title)
                 } label: {
-                    HStack {
-                        Text(lang.attributions.title)
-                        Spacer()
-                        Image(systemName: "chevron.right")
-                    }
+                    NavLink(title: lang.attributions.title)
                 }.padding()
             }
         }
@@ -56,7 +52,7 @@ struct AuthView: View {
         .frame(height: 42)
     }
 }
-
+/// Clickhandler requires UIViewController, so still using UIKit for this button
 //struct SocialButton: View {
 //    let provider: AuthProvider
 //    let image: String

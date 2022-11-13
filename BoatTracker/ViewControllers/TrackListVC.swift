@@ -1,9 +1,26 @@
 import Foundation
 import UIKit
+import SwiftUI
 
 protocol TracksDelegate {
     /// Called on the main thread.
     func onTrack(_ track: TrackName)
+}
+
+struct TrackListRepresentable: UIViewControllerRepresentable {
+    let delegate: TracksDelegate?
+    let login: Bool
+    let lang: Lang
+    
+    func makeUIViewController(context: Context) -> TrackListVC {
+        TrackListVC(delegate: delegate, login: login, lang: lang)
+    }
+    
+    func updateUIViewController(_ uiViewController: TrackListVC, context: Context) {
+        
+    }
+    
+    typealias UIViewControllerType = TrackListVC
 }
 
 class TrackListVC: BaseTableVC {
