@@ -55,7 +55,7 @@ struct ProfileView: View {
             }
             Section(footer: Footer()) {
                 NavigationLink {
-                    SelectLanguageRepresentable(lang: lang.profile)
+                    SelectLanguageView(lang: lang.profile.languages, vm: LanguageVM())
                         .navigationBarTitleDisplayMode(.large)
                         .navigationTitle(lang.profile.language)
                 } label: {

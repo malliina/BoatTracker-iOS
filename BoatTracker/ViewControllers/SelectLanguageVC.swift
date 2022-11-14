@@ -4,23 +4,6 @@ import SwiftUI
 
 typealias Row = Int
 
-struct LangInfo {
-    let language: Language
-    let title: String
-}
-
-struct SelectLanguageRepresentable: UIViewControllerRepresentable {
-    let lang: ProfileLang
-    func makeUIViewController(context: Context) -> SelectLanguageVC {
-        SelectLanguageVC(lang: lang)
-    }
-    
-    func updateUIViewController(_ uiViewController: SelectLanguageVC, context: Context) {
-    }
-    
-    typealias UIViewControllerType = SelectLanguageVC
-}
-
 class SelectLanguageVC: BaseTableVC, LanguageChangedDelegate {
     let log = LoggerFactory.shared.vc(SelectLanguageVC.self)
     let cellIdentifier = "LanguageCell"
