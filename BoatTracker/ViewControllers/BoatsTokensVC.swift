@@ -27,7 +27,7 @@ extension BoatTokensVC: NotificationPermissionDelegate {
             await registerWithToken(token: token)
         } else {
             log.info("No saved push token. Asking for permission...")
-            notifications.initNotifications(.shared)
+            await notifications.initNotifications(.shared)
         }
     }
     

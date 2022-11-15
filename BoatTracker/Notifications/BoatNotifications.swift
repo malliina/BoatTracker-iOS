@@ -3,7 +3,7 @@ import UserNotifications
 
 protocol NotificationPermissionDelegate {
     func didRegister(_ token: PushToken) async
-    func didFailToRegister(_ error: Error)
+    func didFailToRegister(_ error: Error) async
 }
 
 open class BoatNotifications {
@@ -15,19 +15,20 @@ open class BoatNotifications {
     let noPushTokenValue = "none"
     var permissionDelegate: NotificationPermissionDelegate? = nil
     
-    func initNotifications(_ application: UIApplication) {
-        // the playback notification is displayed as an alert to the user, so we must call this
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) {
-            (granted, error) in
-            if !granted {
-                self.log.info("The user did not grant permission to send notifications")
-                self.disableNotifications()
+    func initNotifications(_ application: UIApplication) async {
+        do {
+            let granted = try await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge])
+            if granted {
+                log.info("Registering with APNs...")
+                // registers with APNs
+                await application.registerForRemoteNotifications()
             } else {
+                log.info("The user did not grant permission to send notifications")
+                disableNotifications()
             }
+        } catch {
+            log.error("Failed to init notifications. \(error.describe)")
         }
-        log.info("Registering with APNs...")
-        // registers with APNs
-        application.registerForRemoteNotifications()
     }
     
     func didRegister(_ deviceToken: Data) async {
@@ -39,10 +40,10 @@ open class BoatNotifications {
         await permissionDelegate?.didRegister(token)
     }
     
-    func didFailToRegister(_ error: Error) {
+    func didFailToRegister(_ error: Error) async {
         log.error("Remote notifications registration failure \(error.localizedDescription)")
         disableNotifications()
-        permissionDelegate?.didFailToRegister(error)
+        await permissionDelegate?.didFailToRegister(error)
     }
     
     func disableNotifications() {

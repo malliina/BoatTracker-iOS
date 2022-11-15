@@ -105,6 +105,7 @@
 		B02EC50C2909AE2700D21793 /* MapViewRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02EC50B2909AE2700D21793 /* MapViewRepresentable.swift */; };
 		B02EC50E2909B41A00D21793 /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02EC50D2909B41A00D21793 /* MapViewModel.swift */; };
 		B03BC55A290D31EE00BA38EF /* MainMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B03BC559290D31EE00BA38EF /* MainMapView.swift */; };
+		B0485D60292414AE005A1FC5 /* BoatTokensView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0485D5F292414AE005A1FC5 /* BoatTokensView.swift */; };
 		B0C5981A291ED81E00439237 /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C59819291ED81E00439237 /* AuthView.swift */; };
 		B0C5981C2920255200439237 /* SocialView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C5981B2920255200439237 /* SocialView.swift */; };
 		B0C5981E2920258B00439237 /* Tasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C5981D2920258B00439237 /* Tasks.swift */; };
@@ -224,6 +225,7 @@
 		B02EC50B2909AE2700D21793 /* MapViewRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewRepresentable.swift; sourceTree = "<group>"; };
 		B02EC50D2909B41A00D21793 /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
 		B03BC559290D31EE00BA38EF /* MainMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMapView.swift; sourceTree = "<group>"; };
+		B0485D5F292414AE005A1FC5 /* BoatTokensView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatTokensView.swift; sourceTree = "<group>"; };
 		B0C59819291ED81E00439237 /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
 		B0C5981B2920255200439237 /* SocialView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialView.swift; sourceTree = "<group>"; };
 		B0C5981D2920258B00439237 /* Tasks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tasks.swift; sourceTree = "<group>"; };
@@ -382,6 +384,7 @@
 				61DE7F4820F3EB0700C95B3F /* BoatTextField.swift */,
 				61ACE5CA2131667600925265 /* BoatTextView.swift */,
 				6171906A212CA06900337B0B /* BoatTokenCell.swift */,
+				B0485D5F292414AE005A1FC5 /* BoatTokensView.swift */,
 				B02A812D2922C46900848949 /* LanguageView.swift */,
 				B03BC559290D31EE00BA38EF /* MainMapView.swift */,
 				6101D54A221057340051A427 /* mapCallouts.swift */,
@@ -643,6 +646,7 @@
 				614221B82231779000FD1FF3 /* httpPayloads.swift in Sources */,
 				610EE3E421724CE10040FBC6 /* UIImage+FontAwesome.m in Sources */,
 				61AB2C7F2132A63C009774DC /* viewExt.swift in Sources */,
+				B0485D60292414AE005A1FC5 /* BoatTokensView.swift in Sources */,
 				61F419972120745A00B1ED7D /* TrackSummaryBox.swift in Sources */,
 				61999FFD22A3286F003BD037 /* seaModels.swift in Sources */,
 				613669B5216A98560043494A /* BoatSwitch.swift in Sources */,
@@ -1011,8 +1015,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/microsoft/appcenter-sdk-apple.git";
 			requirement = {
-				branch = develop;
-				kind = branch;
+				kind = exactVersion;
+				version = 5.0.0;
 			};
 		};
 		7D175C4827BD85300050E29B /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */ = {

@@ -879,7 +879,7 @@ struct BoatResponse: Codable {
     let boat: Boat
 }
 
-struct Boat: Codable {
+struct Boat: Codable, Identifiable {
     let id: Int
     let name: BoatName
     let token: String

@@ -46,7 +46,7 @@ struct ProfileView: View {
                     Text(lang.labels.statistics)
                 }
                 NavigationLink {
-                    BoatTokensRepresentable(lang: lang)
+                    BoatTokensView(lang: TokensLang.build(lang: lang), vm: BoatTokensVM())
                         .navigationBarTitleDisplayMode(.large)
                         .navigationTitle(lang.track.boats)
                 } label: {
