@@ -15,19 +15,17 @@ open class BoatNotifications {
     let noPushTokenValue = "none"
     var permissionDelegate: NotificationPermissionDelegate? = nil
     
-    func initNotifications(_ application: UIApplication) async {
-        do {
-            let granted = try await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge])
-            if granted {
-                log.info("Registering with APNs...")
-                // registers with APNs
-                await application.registerForRemoteNotifications()
-            } else {
-                log.info("The user did not grant permission to send notifications")
-                disableNotifications()
-            }
-        } catch {
-            log.error("Failed to init notifications. \(error.describe)")
+    func initNotifications(_ application: UIApplication) async throws -> Bool {
+        let granted = try await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge])
+        if granted {
+            log.info("Registering with APNs...")
+            // registers with APNs
+            await application.registerForRemoteNotifications()
+            return true
+        } else {
+            log.info("The user did not grant permission to send notifications")
+            disableNotifications()
+            return false
         }
     }
     
@@ -41,7 +39,7 @@ open class BoatNotifications {
     }
     
     func didFailToRegister(_ error: Error) async {
-        log.error("Remote notifications registration failure \(error.localizedDescription)")
+        log.error("Remote notifications registration failure \(error.describe)")
         disableNotifications()
         await permissionDelegate?.didFailToRegister(error)
     }

@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import Combine
 
 struct TokensLang {
     let notificationsText, notifications, boat, token, tokenText, renameBoat, newName, failText, cancel: String
@@ -26,11 +27,6 @@ struct BoatTokensView: View {
         List {
             Section {
                 Toggle(lang.notifications, isOn: $vm.notificationsEnabled)
-                    .onChange(of: vm.notificationsEnabled) { enabled in
-                        Task {
-                            await vm.toggleNotifications(isEnabled: enabled)
-                        }
-                    }
             } header: {
                 Spacer().frame(height: 8)
             } footer: {
@@ -97,6 +93,7 @@ struct BoatTokensPreview: PreviewProvider {
 }
 
 class BoatTokensVM: ObservableObject {
+    static let shared = BoatTokensVM()
     let log = LoggerFactory.shared.vc(BoatTokensVM.self)
     private let http = Backend.shared.http
     private let notifications = BoatNotifications.shared
@@ -109,6 +106,12 @@ class BoatTokensVM: ObservableObject {
     
     init() {
         notificationsEnabled = boatSettings.notificationsAllowed
+        log.info("Init BoatTokensVM \(boatSettings.notificationsAllowed)")
+        Task {
+            for await isEnabled in $notificationsEnabled.values {
+                await toggleNotifications(isEnabled: isEnabled)
+            }
+        }
     }
     
     func load() async {
@@ -139,59 +142,81 @@ class BoatTokensVM: ObservableObject {
     }
     
     func toggleNotifications(isEnabled: Bool) async {
-        if isEnabled {
-            await registerNotifications()
-        } else {
-            await disableNotifications()
+        do {
+            if isEnabled {
+                try await registerNotifications()
+            } else {
+                try await disableNotifications()
+            }
+        } catch {
+            let word = isEnabled ? "enable" : "disable"
+            log.error("Failed to \(word) notifications. \(error)")
         }
     }
     
-    func registerNotifications() async {
+    func registerNotifications() async throws {
         notifications.permissionDelegate = self
         if let token = boatSettings.pushToken {
             log.info("Registering with previously saved push token...")
-            await registerWithToken(token: token)
+            try await registerWithToken(token: token)
         } else {
             log.info("No saved push token. Asking for permission...")
-            await notifications.initNotifications(.shared)
+            let granted = try await notifications.initNotifications(.shared)
+            if !granted {
+                await update(isEnabled: false)
+                await openNotificationSettings()
+            }
         }
     }
     
-    func disableNotifications() async {
-        if let token = boatSettings.pushToken {
-            do {
-                _ = try await http.disableNotifications(token: token)
-                log.info("Disabled notifications with backend.")
-            } catch {
-                log.error("Failed to disable notifications with backend. \(error.describe)")
+    @MainActor
+    func openNotificationSettings() {
+        if let url = URL(string: appNotificationSettingsUrl) {
+            if UIApplication.shared.canOpenURL(url) {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
             }
+        }
+    }
+    
+    var appNotificationSettingsUrl: String {
+        if #available(iOS 16.0, *) {
+            return UIApplication.openNotificationSettingsURLString
+        } else {
+            return UIApplication.openSettingsURLString
+        }
+    }
+    
+    func disableNotifications() async throws {
+        if let token = boatSettings.pushToken {
+            _ = try await http.disableNotifications(token: token)
+            log.info("Disabled notifications with backend.")
         }
         notifications.disableNotifications()
     }
     
-    func registerWithToken(token: PushToken) async {
-        do {
-            _ = try await http.enableNotifications(token: token)
-            log.info("Enabled notifications with backend.")
-        } catch {
-            log.error(error.describe)
-        }
+    func registerWithToken(token: PushToken) async throws {
+        _ = try await http.enableNotifications(token: token)
+        log.info("Enabled notifications with backend.")
     }
 }
 
 extension BoatTokensVM: NotificationPermissionDelegate {
     func didRegister(_ token: PushToken) async {
+        log.info("Permission granted.")
         if let token = boatSettings.pushToken {
-            log.info("Permission granted.")
-            await registerWithToken(token: token)
+            do {
+                try await registerWithToken(token: token)
+            } catch {
+                log.info("Failed to register \(token). \(error)")
+            }
         } else {
-            log.info("Access granted, but no token available.")
+            log.info("Permission granted, but no token available.")
         }
     }
     
     func didFailToRegister(_ error: Error) async {
         await update(isEnabled: false)
-        let error = AppError.simple("The user did not grant permission to send notifications")
+        let error = AppError.simple("The user did not grant permission to send notifications. Enabled \(notificationsEnabled)")
         log.error(error.describe)
     }
     
