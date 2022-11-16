@@ -74,11 +74,11 @@ struct ProfileView: View {
             Section(footer: Footer()) {
                 if let versionText = vm.versionText(lang: lang) {
                     Text(versionText)
-                        .foregroundColor(Color(uiColor: .lightGray))
+                        .foregroundColor(color.lightGray)
                         .frame(maxWidth: .infinity, alignment: .center)
                 }
                 Text("\(lang.profile.signedInAs) \(info.user.email)")
-                    .foregroundColor(Color(uiColor: .lightGray))
+                    .foregroundColor(color.lightGray)
                     .frame(maxWidth: .infinity, alignment: .center)
             }
         }.task {

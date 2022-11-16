@@ -787,11 +787,10 @@ extension StringCodable {
 protocol NormalIntCodable: Codable, CustomStringConvertible {
     init(_ value: Int)
     var value: Int { get }
-    
 }
 
 extension NormalIntCodable {
-    var description: String { return "\(value)"}
+    var description: String { "\(value)"}
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
@@ -844,7 +843,7 @@ extension DoubleCodable {
 struct Mmsi: Hashable, CustomStringConvertible, Codable {
     static let key = "mmsi"
     let mmsi: String
-    var description: String { return mmsi }
+    var description: String { mmsi }
     
     init(_ mmsi: String) {
         self.mmsi = mmsi

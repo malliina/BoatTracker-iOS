@@ -34,6 +34,7 @@ class BoatColor {
     }
     var almostWhite: Color { Color(uiColor: ref.almostWhite) }
     var secondaryText: Color { Color(uiColor: ref.secondaryText) }
+    var lightGray: Color { Color(uiColor: .lightGray) }
 }
 
 extension UIColor {
