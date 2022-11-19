@@ -28,8 +28,15 @@ struct MainMapView<T>: View where T: MapViewModelLike {
     var body: some View {
         VStack {
             ZStack(alignment: .topLeading) {
-                MapViewRepresentable(styleUri: $viewModel.styleUri, popup: $popover, mapMode: $viewModel.mapMode, coords: viewModel.coordsPublisher, vessels: viewModel.vesselsPublisher, commands: viewModel.commands)
-                    .ignoresSafeArea()
+                MapViewRepresentable(
+                    styleUri: $viewModel.styleUri,
+                    popup: $popover,
+                    mapMode: $viewModel.mapMode,
+                    coords: viewModel.coordsPublisher,
+                    vessels: viewModel.vesselsPublisher,
+                    commands: viewModel.commands
+                )
+                .ignoresSafeArea()
                 if !viewModel.isProfileButtonHidden {
                     MapButtonView(imageResource: "SettingsSlider") {
                         guard let lang = viewModel.settings.lang else { return }

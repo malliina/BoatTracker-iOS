@@ -40,8 +40,28 @@ struct SummaryLang {
     }
 }
 
+protocol TrackInfo {
+    var duration: Duration { get }
+    var distanceMeters: Distance { get }
+    var topSpeed: Speed? { get }
+    var avgSpeed: Speed? { get }
+    var avgWaterTemp: Temperature? { get }
+    var startDate: String { get }
+}
+
+struct TrackInfo2: TrackInfo {
+    let duration: Duration
+    let distanceMeters: Distance
+    let topSpeed: Speed?
+    let avgSpeed: Speed?
+    let avgWaterTemp: Temperature?
+    let startDate: String
+}
+
+extension TrackRef: TrackInfo { }
+
 struct TrackSummaryView: View {
-    let track: TrackRef
+    let track: TrackInfo
     let lang: SummaryLang
     let spacingBig: CGFloat = 36
     let verticalSpacing: CGFloat = 12
@@ -76,9 +96,10 @@ struct TrackSummaryView: View {
 
 struct TrackSummaryPreviews: PreviewProvider {
     static var previews: some View {
+        let lang = SummaryLang(duration: "Duration", distance: "Distance", topSpeed: "Top speed", avgSpeed: "Avg speed", waterTemp: "Water temp", date: "Date", notAvailable: "N/A")
+        let info = TrackInfo2(duration: 1200.seconds, distanceMeters: 2000.meters, topSpeed: 40.knots, avgSpeed: 32.knots, avgWaterTemp: 14.celsius, startDate: "Today")
         Group {
-            StatView(label: "Label", value: "15.5", style: .large)
-            StatView(label: "Label", value: "16.4", style: .small)
+            TrackSummaryView(track: info, lang: lang)
         }
     }
 }
