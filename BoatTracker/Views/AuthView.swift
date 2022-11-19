@@ -6,7 +6,7 @@ struct AuthView: View {
     @Environment(\.dismiss) var dismiss
     @Binding var welcomeInfo: WelcomeInfo?
     let lang: Lang
-    let viewModel: AuthVM
+    @StateObject var viewModel: AuthVM = AuthVM()
     var settingsLang: SettingsLang { lang.settings }
     var color: BoatColor { BoatColor.shared }
 

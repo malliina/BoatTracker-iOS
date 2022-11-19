@@ -12,6 +12,7 @@ struct MainMapView<T>: View where T: MapViewModelLike {
     let log = LoggerFactory.shared.view(MainMapView.self)
     
     @ObservedObject var viewModel: T
+    @ObservedObject var active: ActiveTrack = ActiveTrack.shared
     
     @State var welcomeInfo: WelcomeInfo? = nil
     @State var authInfo: Lang? = nil
@@ -28,13 +29,13 @@ struct MainMapView<T>: View where T: MapViewModelLike {
     var body: some View {
         VStack {
             ZStack(alignment: .topLeading) {
-                MapViewRepresentable(styleUri: $viewModel.styleUri, latestTrack: $viewModel.latestTrack, popup: $popover, mapMode: $viewModel.mapMode, coords: viewModel.coordsPublisher, vessels: viewModel.vesselsPublisher, commands: viewModel.commands)
+                MapViewRepresentable(styleUri: $viewModel.styleUri, popup: $popover, mapMode: $viewModel.mapMode, coords: viewModel.coordsPublisher, vessels: viewModel.vesselsPublisher, commands: viewModel.commands)
                     .ignoresSafeArea()
                 if !viewModel.isProfileButtonHidden {
                     MapButtonView(imageResource: "SettingsSlider") {
                         guard let lang = viewModel.settings.lang else { return }
                         if let user = viewModel.latestToken {
-                            profileInfo = ProfileInfo(tracksDelegate: viewModel, user: user, current: viewModel.latestTrack, lang: lang)
+                            profileInfo = ProfileInfo(user: user, current: viewModel.latestTrack, lang: lang)
                         } else {
                             authInfo = lang
                         }
@@ -54,7 +55,7 @@ struct MainMapView<T>: View where T: MapViewModelLike {
                     MapButtonView(imageResource: "SettingsSlider") {
                         guard let lang = viewModel.settings.lang else { return }
                         if let user = viewModel.latestToken {
-                            profileInfo2 = ProfileInfo(tracksDelegate: viewModel, user: user, current: viewModel.latestTrack, lang: lang)
+                            profileInfo2 = ProfileInfo(user: user, current: viewModel.latestTrack, lang: lang)
                         } else {
                             authInfo2 = lang
                         }
@@ -121,7 +122,7 @@ struct MainMapView<T>: View where T: MapViewModelLike {
         }
         .sheet(item: $profileInfo2) { info in
             NavigationView {
-                ProfileView(info: info, vm: ProfileVM(current: viewModel.latestTrack, tracksDelegate: viewModel))
+                ProfileView(info: info)
                     .navigationBarTitleDisplayMode(.large)
                     .navigationTitle(info.lang.appName)
                     .toolbar {
@@ -137,7 +138,7 @@ struct MainMapView<T>: View where T: MapViewModelLike {
         }
         .sheet(item: $authInfo2) { info in
             NavigationView {
-                AuthView(welcomeInfo: $welcomeInfo, lang: info, viewModel: AuthVM())
+                AuthView(welcomeInfo: $welcomeInfo, lang: info)
                     .navigationBarTitleDisplayMode(.large)
                     .navigationTitle(info.settings.signIn)
                     .toolbar {

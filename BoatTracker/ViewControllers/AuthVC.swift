@@ -38,7 +38,7 @@ protocol WelcomeDelegate {
     func showWelcome(token: UserToken?) async
 }
 
-class AuthVM {
+class AuthVM: BaseViewModel {
     let log = LoggerFactory.shared.vc(AuthVM.self)
     
     var prefs: BoatPrefs { BoatPrefs.shared }
@@ -52,7 +52,7 @@ class AuthVM {
     func showWelcome(token: UserToken?, lang: Lang) async -> WelcomeInfo? {
         BoatPrefs.shared.showWelcome = false
         do {
-            let profile = try await Backend.shared.http.profile()
+            let profile = try await http.profile()
                 if let boatToken = profile.boats.headOption()?.token {
                 return WelcomeInfo(boatToken: boatToken, lang: lang.settings)
             } else {

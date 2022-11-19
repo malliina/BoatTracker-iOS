@@ -885,7 +885,7 @@ struct Boat: Codable, Identifiable {
     let addedMillis: UInt64
 }
 
-struct UserToken {
+struct UserToken: Equatable {
     let email: String
     let token: AccessToken
 }
@@ -963,6 +963,10 @@ struct MonthlyStats: Codable {
     let days, trackCount: Int
     let distance: Distance
     let duration: Duration
+}
+
+extension MonthlyStats {
+    var id: String { "\(year)-\(month)" }
 }
 
 struct YearlyStats: Codable {

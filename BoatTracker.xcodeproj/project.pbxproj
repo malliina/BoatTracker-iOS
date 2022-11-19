@@ -104,6 +104,7 @@
 		B02A812E2922C46900848949 /* LanguageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02A812D2922C46900848949 /* LanguageView.swift */; };
 		B02EC50C2909AE2700D21793 /* MapViewRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02EC50B2909AE2700D21793 /* MapViewRepresentable.swift */; };
 		B02EC50E2909B41A00D21793 /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02EC50D2909B41A00D21793 /* MapViewModel.swift */; };
+		B03383B32928E3D800974FFE /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B03383B22928E3D800974FFE /* StatsView.swift */; };
 		B03BC55A290D31EE00BA38EF /* MainMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B03BC559290D31EE00BA38EF /* MainMapView.swift */; };
 		B0485D60292414AE005A1FC5 /* BoatTokensView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0485D5F292414AE005A1FC5 /* BoatTokensView.swift */; };
 		B0485D6229256907005A1FC5 /* PeriodStatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0485D6129256907005A1FC5 /* PeriodStatView.swift */; };
@@ -225,6 +226,7 @@
 		B02A812D2922C46900848949 /* LanguageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageView.swift; sourceTree = "<group>"; };
 		B02EC50B2909AE2700D21793 /* MapViewRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewRepresentable.swift; sourceTree = "<group>"; };
 		B02EC50D2909B41A00D21793 /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
+		B03383B22928E3D800974FFE /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
 		B03BC559290D31EE00BA38EF /* MainMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMapView.swift; sourceTree = "<group>"; };
 		B0485D5F292414AE005A1FC5 /* BoatTokensView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatTokensView.swift; sourceTree = "<group>"; };
 		B0485D6129256907005A1FC5 /* PeriodStatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeriodStatView.swift; sourceTree = "<group>"; };
@@ -398,6 +400,7 @@
 				B0C5981B2920255200439237 /* SocialView.swift */,
 				61CD40D021163E0E00F31AA5 /* StatBox.swift */,
 				619679F720FBBB4D00432672 /* StatCell.swift */,
+				B03383B22928E3D800974FFE /* StatsView.swift */,
 				619679FF2103BCCF00432672 /* TrackCell.swift */,
 				61F419962120745A00B1ED7D /* TrackSummaryBox.swift */,
 				61F4199C2120B39C00B1ED7D /* TrackSummaryCell.swift */,
@@ -703,6 +706,7 @@
 				61DE7F4920F3EB0700C95B3F /* BoatTextField.swift in Sources */,
 				612F46B520F644B7001A3003 /* Distance.swift in Sources */,
 				613D174D22F5F7D7008D8E80 /* PeriodStatCell.swift in Sources */,
+				B03383B32928E3D800974FFE /* StatsView.swift in Sources */,
 				B03BC55A290D31EE00BA38EF /* MainMapView.swift in Sources */,
 				61DCDA3C21D02693009A75EB /* BoatGoogleAuth.swift in Sources */,
 				619679FC20FBCF2F00432672 /* Duration.swift in Sources */,

@@ -213,7 +213,7 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, UIPopoverPresentatio
             return
         }
         if let user = latestToken {
-            let dest = ProfileTableVC(tracksDelegate: self, current: boatRenderer?.latestTrack, user: user, lang: language)
+            let dest = ProfileTableVC(current: boatRenderer?.latestTrack, user: user, lang: language)
             navigate(to: dest)
         } else {
             let dest = AuthVC(welcome: self, lang: language)

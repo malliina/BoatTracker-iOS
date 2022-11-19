@@ -13,78 +13,21 @@ enum ViewState {
     case content
     case loading
     case failed
+    case idle
 }
 
 struct ProfileInfo: Identifiable {
-    let tracksDelegate: TracksDelegate
     let user: UserToken
     let current: TrackName?
     let lang: Lang
     var id: String { user.email }
 }
 
-class ProfileVM: ObservableObject {
-    let log = LoggerFactory.shared.vc(ProfileVM.self)
-    
-    @Published var state: ViewState = .loading
-    @Published var tracks: [TrackRef] = []
-    @Published var current: TrackName?
-    var summary: TrackRef? {
-        tracks.first { ref in
-            ref.trackName == current
-        }
-    }
-    let tracksDelegate: TracksDelegate?
-    
-    private var socket: BoatSocket { Backend.shared.socket }
-    private var http: BoatHttpClient { Backend.shared.http }
-    
-    init(current: TrackName? = nil, tracksDelegate: TracksDelegate?) {
-        self.current = current
-        self.tracksDelegate = tracksDelegate
-    }
-        
-    func versionText(lang: Lang) -> String? {
-        if let bundleMeta = Bundle.main.infoDictionary,
-           let appVersion = bundleMeta["CFBundleShortVersionString"] as? String,
-           let buildId = bundleMeta["CFBundleVersion"] as? String {
-            return "\(lang.appMeta.version) \(appVersion) \(lang.appMeta.build) \(buildId)"
-        } else {
-            return nil
-        }
-    }
-
-    func loadTracks() async {
-        await update(viewState: .loading)
-        do {
-            let ts = try await http.tracks()
-            log.info("Got \(ts.count) tracks.")
-            await update(ts: ts)
-        } catch {
-            log.error("Unable to load tracks. \(error.describe)")
-            await update(viewState: .failed)
-        }
-    }
-    
-    @MainActor private func update(viewState: ViewState) {
-        state = viewState
-    }
-    
-    @MainActor private func update(ts: [TrackRef]) {
-        tracks = ts
-        state = ts.isEmpty ? .empty : .content
-    }
-    
-    @MainActor private func update(err: Error) {
-        state = .failed
-    }
-}
-
 struct ProfileTableRepresentable: UIViewControllerRepresentable {
     let info: ProfileInfo
     
     func makeUIViewController(context: Context) -> ProfileTableVC {
-        ProfileTableVC(tracksDelegate: info.tracksDelegate, current: info.current, user: info.user, lang: info.lang)
+        ProfileTableVC(current: info.current, user: info.user, lang: info.lang)
     }
     
     func updateUIViewController(_ uiViewController: ProfileTableVC, context: Context) {
@@ -104,8 +47,6 @@ class ProfileTableVC: BaseTableVC {
     let summaryRow = 0
     let summarySection = 0
     
-//    let delegate: TokenDelegate
-    let tracksDelegate: TracksDelegate
     let user: UserToken
     let current: TrackName?
     var lang: Lang
@@ -131,9 +72,7 @@ class ProfileTableVC: BaseTableVC {
         }
     }
     
-    init(tracksDelegate: TracksDelegate, current: TrackName?, user: UserToken, lang: Lang) {
-//        self.delegate = tokenDelegate
-        self.tracksDelegate = tracksDelegate
+    init(current: TrackName?, user: UserToken, lang: Lang) {
         self.current = current
         self.user = user
         self.lang = lang
@@ -291,7 +230,7 @@ class ProfileTableVC: BaseTableVC {
                 guard let track = current else { return }
                 navigate(to: ChartsVC(track: track, lang: lang), style: .fullScreen, transition: .flipHorizontal)
             case 1:
-                nav(to: TrackListVC(delegate: tracksDelegate, lang: lang))
+                nav(to: TrackListVC(lang: lang))
             case 2:
                 nav(to: StatsVC(lang: lang))
             case 3:

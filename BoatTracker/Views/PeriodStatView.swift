@@ -3,12 +3,32 @@ import SwiftUI
 
 struct PeriodStatLang {
     let distance, duration, days: String
+    
+    static func build(_ lang: Lang) -> PeriodStatLang {
+        let track = lang.track
+        return PeriodStatLang(distance: track.distance, duration: track.duration, days: track.days)
+    }
+}
+
+protocol StatInfo {
+    var label: String { get }
+    var distance: Distance { get }
+    var duration: Duration { get }
+    var days: Int { get }
+}
+
+extension YearlyStats: StatInfo {
+    var label: String { "\(year.value)" }
+}
+
+extension MonthlyStats: StatInfo {
+    
 }
 
 struct PeriodStatView: View {
-    let stat: YearlyStats
+    let stat: StatInfo
     let lang: PeriodStatLang
-    var when: String { "\(stat.year)" }
+    var when: String { stat.label }
     var body: some View {
         VStack(alignment: .center) {
             HStack {

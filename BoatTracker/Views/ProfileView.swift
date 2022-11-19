@@ -3,22 +3,27 @@ import SwiftUI
 
 struct ProfileView: View {
     let info: ProfileInfo
-    @ObservedObject var vm: ProfileVM
+    @StateObject var vm: ProfileVM = ProfileVM()
     
-    var color: BoatColor { BoatColor.shared }
     var lang: Lang { info.lang }
     
     var body: some View {
         List {
             Section(footer: Footer()) {
-                if let summary = vm.summary {
+                if let summary = vm.summary, vm.state == .content {
                     TrackSummaryView(track: summary, lang: lang)
                         .frame(maxWidth: .infinity, alignment: .center)
                 } else if vm.state == .empty {
                     Text(info.lang.messages.noSavedTracks)
                         .foregroundColor(color.secondaryText)
                 } else if vm.state == .loading {
-                    ProgressView()
+                    HStack {
+                        Spacer()
+                        ProgressView()
+                        Spacer()
+                    }
+                } else {
+                    EmptyView()
                 }
             }
             Section(footer: Footer()) {
@@ -32,21 +37,21 @@ struct ProfileView: View {
                     }
                 }
                 NavigationLink {
-                    TrackListRepresentable(delegate: vm.tracksDelegate, login: false, lang: lang)
+                    TrackListRepresentable(delegate: vm, login: false, lang: lang)
                         .navigationBarTitleDisplayMode(.large)
                         .navigationTitle(lang.track.tracks)
                 } label: {
                     Text(lang.track.trackHistory)
                 }
                 NavigationLink {
-                    StatsRepresentable(lang: lang)
+                    StatsView(lang: lang)
                         .navigationBarTitleDisplayMode(.large)
                         .navigationTitle(lang.labels.statistics)
                 } label: {
                     Text(lang.labels.statistics)
                 }
                 NavigationLink {
-                    BoatTokensView(lang: TokensLang.build(lang: lang), vm: BoatTokensVM.shared)
+                    BoatTokensView(lang: TokensLang.build(lang: lang))
                         .navigationBarTitleDisplayMode(.large)
                         .navigationTitle(lang.track.boats)
                 } label: {
@@ -81,13 +86,70 @@ struct ProfileView: View {
                     .foregroundColor(color.lightGray)
                     .frame(maxWidth: .infinity, alignment: .center)
             }
-        }.task {
-            await vm.loadTracks()
+        }
+        .task {
+            await vm.loadTracks(latest: info.current)
         }
         .listStyle(.plain)
     }
     func Footer() -> some View {
         Spacer()
+    }
+}
+
+class ProfileVM: BaseViewModel, TracksDelegate {
+    let log = LoggerFactory.shared.vc(ProfileVM.self)
+    
+    @Published var state: ViewState = .idle
+    @Published var tracks: [TrackRef] = []
+    @Published var current: TrackName? = nil
+    
+    var summary: TrackRef? {
+        tracks.first { ref in
+            ref.trackName == current
+        }
+    }
+    
+    func onTrack(_ track: TrackName) {
+        ActiveTrack.shared.selectedTrack = track
+    }
+    
+    private var socket: BoatSocket { Backend.shared.socket }
+    
+    func versionText(lang: Lang) -> String? {
+        if let bundleMeta = Bundle.main.infoDictionary,
+           let appVersion = bundleMeta["CFBundleShortVersionString"] as? String,
+           let buildId = bundleMeta["CFBundleVersion"] as? String {
+            return "\(lang.appMeta.version) \(appVersion) \(lang.appMeta.build) \(buildId)"
+        } else {
+            return nil
+        }
+    }
+
+    func loadTracks(latest: TrackName?) async {
+        await update(viewState: .loading)
+        do {
+            let ts = try await http.tracks()
+            log.info("Got \(ts.count) tracks.")
+            await update(ts: ts, trackName: latest)
+        } catch {
+            log.error("Unable to load tracks. \(error.describe)")
+            await update(viewState: .failed)
+        }
+    }
+    
+    @MainActor private func update(viewState: ViewState) {
+        state = viewState
+    }
+    
+    @MainActor private func update(ts: [TrackRef], trackName: TrackName?) {
+        tracks = ts
+        current = trackName
+        state = ts.isEmpty ? .empty : .content
+    }
+    
+    @MainActor private func update(err: Error) {
+        state = .failed
     }
 }
 

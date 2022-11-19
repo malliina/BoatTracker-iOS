@@ -7,13 +7,23 @@ protocol TracksDelegate {
     func onTrack(_ track: TrackName)
 }
 
+protocol TracksDelegate2 {
+    var latestTrack: TrackName? { get set }
+}
+
+class ActiveTrack: ObservableObject {
+    static let shared = ActiveTrack()
+    
+    @Published var selectedTrack: TrackName?
+}
+
 struct TrackListRepresentable: UIViewControllerRepresentable {
     let delegate: TracksDelegate?
     let login: Bool
     let lang: Lang
     
     func makeUIViewController(context: Context) -> TrackListVC {
-        TrackListVC(delegate: delegate, login: login, lang: lang)
+        TrackListVC(login: login, lang: lang)
     }
     
     func updateUIViewController(_ uiViewController: TrackListVC, context: Context) {
@@ -30,13 +40,11 @@ class TrackListVC: BaseTableVC {
     var login: Bool = false
     
     private var tracks: [TrackRef] = []
-    private var delegate: TracksDelegate? = nil
     
     let lang: Lang
     var settingsLang: SettingsLang { lang.settings }
     
-    init(delegate: TracksDelegate?, login: Bool = false, lang: Lang) {
-        self.delegate = delegate
+    init(login: Bool = false, lang: Lang) {
         self.login = login
         self.lang = lang
         super.init(style: .plain)
@@ -95,7 +103,7 @@ class TrackListVC: BaseTableVC {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selected = tracks[indexPath.row]
-        self.delegate?.onTrack(selected.trackName)
+        ActiveTrack.shared.selectedTrack = selected.trackName
         goBack()
     }
     

@@ -15,7 +15,7 @@ struct BoatTokensView: View {
     let log = LoggerFactory.shared.vc(BoatTokensView.self)
     let spacing: CGFloat = 12
     let lang: TokensLang
-    @ObservedObject var vm: BoatTokensVM
+    @StateObject var vm: BoatTokensVM = BoatTokensVM()
     
     @State var rename: Boat? = nil
     @State var newName: String = ""
@@ -32,7 +32,7 @@ struct BoatTokensView: View {
             } footer: {
                 Text(lang.notificationsText)
                     .font(.system(size: 16))
-                    .foregroundColor(BoatColor.shared.secondaryText)
+                    .foregroundColor(color.secondaryText)
             }
             Section {
                 if let boats = vm.userProfile?.boats {
@@ -53,7 +53,7 @@ struct BoatTokensView: View {
             } footer: {
                 Text(lang.tokenText)
                     .font(.system(size: 16))
-                    .foregroundColor(BoatColor.shared.secondaryText)
+                    .foregroundColor(color.secondaryText)
             }
         }
         .listStyle(.plain)
@@ -93,7 +93,6 @@ struct BoatTokensPreview: PreviewProvider {
 }
 
 class BoatTokensVM: ObservableObject {
-    static let shared = BoatTokensVM()
     let log = LoggerFactory.shared.vc(BoatTokensVM.self)
     private let http = Backend.shared.http
     private let notifications = BoatNotifications.shared
@@ -106,7 +105,6 @@ class BoatTokensVM: ObservableObject {
     
     init() {
         notificationsEnabled = boatSettings.notificationsAllowed
-        log.info("Init BoatTokensVM \(boatSettings.notificationsAllowed)")
         Task {
             for await isEnabled in $notificationsEnabled.values {
                 await toggleNotifications(isEnabled: isEnabled)
