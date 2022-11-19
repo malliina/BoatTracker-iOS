@@ -31,31 +31,38 @@ struct StatView: View {
     }
 }
 
+struct SummaryLang {
+    let duration, distance, topSpeed, avgSpeed, waterTemp, date, notAvailable: String
+    
+    static func build(_ lang: Lang) -> SummaryLang {
+        let track = lang.track
+        return SummaryLang(duration: track.duration, distance: track.distance, topSpeed: track.topSpeed, avgSpeed: track.avgSpeed, waterTemp: track.waterTemp, date: track.date, notAvailable: lang.messages.notAvailable)
+    }
+}
+
 struct TrackSummaryView: View {
     let track: TrackRef
-    let lang: Lang
-    var trackLang: TrackLang { lang.track }
-    var notAvailable: String { lang.messages.notAvailable }
+    let lang: SummaryLang
     let spacingBig: CGFloat = 36
     let verticalSpacing: CGFloat = 12
     var body: some View {
         VStack {
             HStack {
-                Stat(trackLang.duration, track.duration)
+                Stat(lang.duration, track.duration)
                 Spacer().frame(width: spacingBig)
-                Stat(trackLang.distance, track.distanceMeters)
+                Stat(lang.distance, track.distanceMeters)
             }
             .padding(.vertical, verticalSpacing)
             HStack {
-                Stat(trackLang.topSpeed, track.topSpeed?.description ?? notAvailable)
+                Stat(lang.topSpeed, track.topSpeed?.description ?? lang.notAvailable)
                 Spacer().frame(width: spacingBig)
-                Stat(trackLang.avgSpeed, track.avgSpeed?.description ?? notAvailable)
+                Stat(lang.avgSpeed, track.avgSpeed?.description ?? lang.notAvailable)
             }
             .padding(.vertical, verticalSpacing)
             HStack {
-                Stat(trackLang.waterTemp, track.avgWaterTemp?.description ?? notAvailable)
+                Stat(lang.waterTemp, track.avgWaterTemp?.description ?? lang.notAvailable)
                 Spacer().frame(width: spacingBig)
-                Stat(trackLang.date, track.startDate)
+                Stat(lang.date, track.startDate)
             }
             .padding(.vertical, verticalSpacing)
         }
@@ -70,8 +77,8 @@ struct TrackSummaryView: View {
 struct TrackSummaryPreviews: PreviewProvider {
     static var previews: some View {
         Group {
-            StatView(label: "Label", value: "Value", style: .large)
-            StatView(label: "Label", value: "Value", style: .small)
+            StatView(label: "Label", value: "15.5", style: .large)
+            StatView(label: "Label", value: "16.4", style: .small)
         }
     }
 }

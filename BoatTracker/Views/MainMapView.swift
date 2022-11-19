@@ -12,7 +12,6 @@ struct MainMapView<T>: View where T: MapViewModelLike {
     let log = LoggerFactory.shared.view(MainMapView.self)
     
     @ObservedObject var viewModel: T
-    @ObservedObject var active: ActiveTrack = ActiveTrack.shared
     
     @State var welcomeInfo: WelcomeInfo? = nil
     @State var authInfo: Lang? = nil

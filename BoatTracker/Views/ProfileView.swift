@@ -11,7 +11,7 @@ struct ProfileView: View {
         List {
             Section(footer: Footer()) {
                 if let summary = vm.summary, vm.state == .content {
-                    TrackSummaryView(track: summary, lang: lang)
+                    TrackSummaryView(track: summary, lang: SummaryLang.build(info.lang))
                         .frame(maxWidth: .infinity, alignment: .center)
                 } else if vm.state == .empty {
                     Text(info.lang.messages.noSavedTracks)
