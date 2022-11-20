@@ -2,6 +2,7 @@ import Foundation
 import SwiftUI
 
 struct ProfileView: View {
+    @Environment(\.dismiss) var dismiss
     let info: ProfileInfo
     @StateObject var vm: ProfileVM = ProfileVM()
     
@@ -39,7 +40,9 @@ struct ProfileView: View {
                     }
                 }
                 NavigationLink {
-                    TracksView(lang: summaryLang, vm: modules.tracks)
+                    TracksView(lang: summaryLang, vm: modules.tracks) {
+                        dismiss()
+                    }
 //                    TrackListRepresentable(delegate: vm, login: false, lang: lang)
 //                        .navigationBarTitleDisplayMode(.large)
 //                        .navigationTitle(lang.track.tracks)

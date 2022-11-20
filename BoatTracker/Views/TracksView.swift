@@ -6,11 +6,18 @@ struct TracksView<T>: View where T: TracksProtocol {
     @ObservedObject var vm: T
     @State var rename: TrackRef? = nil
     
+    let onSelect: () -> Void
+    
     var body: some View {
         List {
             ForEach(vm.tracks) { track in
-                TrackView(lang: lang, track: track) {
-                    rename = track
+                Button {
+                    ActiveTrack.shared.selectedTrack = track.trackName
+                    onSelect()
+                } label: {
+                    TrackView(lang: lang, track: track) {
+                        rename = track
+                    }
                 }
             }
         }
@@ -83,7 +90,9 @@ struct TracksPreviews: PreviewProvider {
     static var previews: some View {
         Group {
             NavigationView {
-                TracksView(lang: SummaryLang.preview, vm: PreviewsVM())
+                TracksView(lang: SummaryLang.preview, vm: PreviewsVM()) {
+                    
+                }
             }
         }
     }
