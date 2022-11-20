@@ -3,12 +3,7 @@ import UIKit
 import SwiftUI
 
 protocol TracksDelegate {
-    /// Called on the main thread.
     func onTrack(_ track: TrackName)
-}
-
-protocol TracksDelegate2 {
-    var latestTrack: TrackName? { get set }
 }
 
 class ActiveTrack: ObservableObject {

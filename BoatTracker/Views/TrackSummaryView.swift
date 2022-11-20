@@ -32,12 +32,14 @@ struct StatView: View {
 }
 
 struct SummaryLang {
-    let duration, distance, topSpeed, avgSpeed, waterTemp, date, notAvailable: String
+    let tracks, duration, distance, topSpeed, avgSpeed, waterTemp, date, notAvailable: String
     
     static func build(_ lang: Lang) -> SummaryLang {
         let track = lang.track
-        return SummaryLang(duration: track.duration, distance: track.distance, topSpeed: track.topSpeed, avgSpeed: track.avgSpeed, waterTemp: track.waterTemp, date: track.date, notAvailable: lang.messages.notAvailable)
+        return SummaryLang(tracks: track.tracks, duration: track.duration, distance: track.distance, topSpeed: track.topSpeed, avgSpeed: track.avgSpeed, waterTemp: track.waterTemp, date: track.date, notAvailable: lang.messages.notAvailable)
     }
+    
+    static let preview = SummaryLang(tracks: "Tracks", duration: "Duration", distance: "Distance", topSpeed: "Top speed", avgSpeed: "Avg speed", waterTemp: "Water temp", date: "Date", notAvailable: "N/A")
 }
 
 protocol TrackInfo {
@@ -96,10 +98,9 @@ struct TrackSummaryView: View {
 
 struct TrackSummaryPreviews: PreviewProvider {
     static var previews: some View {
-        let lang = SummaryLang(duration: "Duration", distance: "Distance", topSpeed: "Top speed", avgSpeed: "Avg speed", waterTemp: "Water temp", date: "Date", notAvailable: "N/A")
         let info = TrackInfo2(duration: 1200.seconds, distanceMeters: 2000.meters, topSpeed: 40.knots, avgSpeed: 32.knots, avgWaterTemp: 14.celsius, startDate: "Today")
         Group {
-            TrackSummaryView(track: info, lang: lang)
+            TrackSummaryView(track: info, lang: SummaryLang.preview)
         }
     }
 }

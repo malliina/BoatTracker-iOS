@@ -108,6 +108,8 @@
 		B03BC55A290D31EE00BA38EF /* MainMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B03BC559290D31EE00BA38EF /* MainMapView.swift */; };
 		B0485D60292414AE005A1FC5 /* BoatTokensView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0485D5F292414AE005A1FC5 /* BoatTokensView.swift */; };
 		B0485D6229256907005A1FC5 /* PeriodStatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0485D6129256907005A1FC5 /* PeriodStatView.swift */; };
+		B052E833292A286E00C09B89 /* TracksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B052E832292A286E00C09B89 /* TracksView.swift */; };
+		B052E835292A2BEB00C09B89 /* TrackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B052E834292A2BEB00C09B89 /* TrackView.swift */; };
 		B0C5981A291ED81E00439237 /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C59819291ED81E00439237 /* AuthView.swift */; };
 		B0C5981C2920255200439237 /* SocialView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C5981B2920255200439237 /* SocialView.swift */; };
 		B0C5981E2920258B00439237 /* Tasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C5981D2920258B00439237 /* Tasks.swift */; };
@@ -230,6 +232,8 @@
 		B03BC559290D31EE00BA38EF /* MainMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMapView.swift; sourceTree = "<group>"; };
 		B0485D5F292414AE005A1FC5 /* BoatTokensView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatTokensView.swift; sourceTree = "<group>"; };
 		B0485D6129256907005A1FC5 /* PeriodStatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeriodStatView.swift; sourceTree = "<group>"; };
+		B052E832292A286E00C09B89 /* TracksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TracksView.swift; sourceTree = "<group>"; };
+		B052E834292A2BEB00C09B89 /* TrackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackView.swift; sourceTree = "<group>"; };
 		B0C59819291ED81E00439237 /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
 		B0C5981B2920255200439237 /* SocialView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialView.swift; sourceTree = "<group>"; };
 		B0C5981D2920258B00439237 /* Tasks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tasks.swift; sourceTree = "<group>"; };
@@ -405,9 +409,11 @@
 				61F419962120745A00B1ED7D /* TrackSummaryBox.swift */,
 				61F4199C2120B39C00B1ED7D /* TrackSummaryCell.swift */,
 				B0C598212920F02900439237 /* TrackSummaryView.swift */,
+				B052E832292A286E00C09B89 /* TracksView.swift */,
 				6106448921FDBC8300C9ED0D /* vesselAnnotation.swift */,
 				61AB2C7E2132A63C009774DC /* viewExt.swift */,
 				613D5D232220AC09003FF8EB /* viewModels.swift */,
+				B052E834292A2BEB00C09B89 /* TrackView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -649,6 +655,7 @@
 				B02EC50E2909B41A00D21793 /* MapViewModel.swift in Sources */,
 				6101D54D221057530051A427 /* BoatCallout.swift in Sources */,
 				B0485D6229256907005A1FC5 /* PeriodStatView.swift in Sources */,
+				B052E833292A286E00C09B89 /* TracksView.swift in Sources */,
 				61ACE5C921309E5E00925265 /* BoatPrefs.swift in Sources */,
 				614221B82231779000FD1FF3 /* httpPayloads.swift in Sources */,
 				610EE3E421724CE10040FBC6 /* UIImage+FontAwesome.m in Sources */,
@@ -719,6 +726,7 @@
 				613D5D242220AC0A003FF8EB /* viewModels.swift in Sources */,
 				6101D549220F75200051A427 /* languages.swift in Sources */,
 				612F46B020F551CB001A3003 /* viewControllerExt.swift in Sources */,
+				B052E835292A2BEB00C09B89 /* TrackView.swift in Sources */,
 				614221B6222C10A700FD1FF3 /* UserSettings.swift in Sources */,
 				61F4198F211F7CBB00B1ED7D /* BoatsTokensVC.swift in Sources */,
 				61F4199321206C4C00B1ED7D /* AppAttributionCell.swift in Sources */,

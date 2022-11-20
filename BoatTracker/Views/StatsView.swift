@@ -4,7 +4,7 @@ import SwiftUI
 struct StatsView: View {
     private let log = LoggerFactory.shared.vc(StatsView.self)
     let lang: Lang
-    @StateObject var vm: StatsViewModel = StatsViewModel()
+    @ObservedObject var vm: StatsViewModel
     
     var body: some View {
         NavigationView {
@@ -31,7 +31,7 @@ struct StatsView: View {
     }
 }
 
-class StatsViewModel: BaseViewModel {
+class StatsViewModel: ObservableObject {
     private let log = LoggerFactory.shared.vc(StatsViewModel.self)
     @Published var stats: StatsResponse?
     @Published var error: Error?
@@ -54,8 +54,8 @@ class StatsViewModel: BaseViewModel {
     }
 }
 
-class BaseViewModel: ObservableObject {
-    let http = Backend.shared.http
+extension ObservableObject {
+    var http: BoatHttpClient { Backend.shared.http }
 }
 
 extension View {

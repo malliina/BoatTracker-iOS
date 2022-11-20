@@ -6,12 +6,14 @@ struct ProfileView: View {
     @StateObject var vm: ProfileVM = ProfileVM()
     
     var lang: Lang { info.lang }
+    var summaryLang: SummaryLang { SummaryLang.build(lang) }
+    var modules: Modules { vm.modules }
     
     var body: some View {
         List {
             Section(footer: Footer()) {
                 if let summary = vm.summary, vm.state == .content {
-                    TrackSummaryView(track: summary, lang: SummaryLang.build(info.lang))
+                    TrackSummaryView(track: summary, lang: summaryLang)
                         .frame(maxWidth: .infinity, alignment: .center)
                 } else if vm.state == .empty {
                     Text(info.lang.messages.noSavedTracks)
@@ -37,21 +39,22 @@ struct ProfileView: View {
                     }
                 }
                 NavigationLink {
-                    TrackListRepresentable(delegate: vm, login: false, lang: lang)
-                        .navigationBarTitleDisplayMode(.large)
-                        .navigationTitle(lang.track.tracks)
+                    TracksView(lang: summaryLang, vm: modules.tracks)
+//                    TrackListRepresentable(delegate: vm, login: false, lang: lang)
+//                        .navigationBarTitleDisplayMode(.large)
+//                        .navigationTitle(lang.track.tracks)
                 } label: {
                     Text(lang.track.trackHistory)
                 }
                 NavigationLink {
-                    StatsView(lang: lang)
+                    StatsView(lang: lang, vm: modules.stats)
                         .navigationBarTitleDisplayMode(.large)
                         .navigationTitle(lang.labels.statistics)
                 } label: {
                     Text(lang.labels.statistics)
                 }
                 NavigationLink {
-                    BoatTokensView(lang: TokensLang.build(lang: lang))
+                    BoatTokensView(lang: TokensLang.build(lang: lang), vm: modules.boats)
                         .navigationBarTitleDisplayMode(.large)
                         .navigationTitle(lang.track.boats)
                 } label: {
@@ -60,9 +63,7 @@ struct ProfileView: View {
             }
             Section(footer: Footer()) {
                 NavigationLink {
-                    SelectLanguageView(lang: lang.profile.languages, vm: LanguageVM())
-                        .navigationBarTitleDisplayMode(.large)
-                        .navigationTitle(lang.profile.language)
+                    SelectLanguageView(lang: lang.profile.languages, vm: modules.languages)
                 } label: {
                     Text(lang.profile.language)
                 }
@@ -97,12 +98,21 @@ struct ProfileView: View {
     }
 }
 
-class ProfileVM: BaseViewModel, TracksDelegate {
+class Modules {
+    let languages = LanguageVM()
+    let tracks = TracksViewModel()
+    let boats = BoatTokensVM()
+    let stats = StatsViewModel()
+}
+
+class ProfileVM: ObservableObject, TracksDelegate {
     let log = LoggerFactory.shared.vc(ProfileVM.self)
     
     @Published var state: ViewState = .idle
     @Published var tracks: [TrackRef] = []
     @Published var current: TrackName? = nil
+    
+    let modules = Modules()
     
     var summary: TrackRef? {
         tracks.first { ref in

@@ -38,7 +38,7 @@ protocol WelcomeDelegate {
     func showWelcome(token: UserToken?) async
 }
 
-class AuthVM: BaseViewModel {
+class AuthVM: ObservableObject {
     let log = LoggerFactory.shared.vc(AuthVM.self)
     
     var prefs: BoatPrefs { BoatPrefs.shared }

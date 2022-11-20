@@ -30,15 +30,17 @@ struct SelectLanguageView<T>: View where T: LanguageProtocol {
             }
         }
         .listStyle(.plain)
+        .navigationBarTitleDisplayMode(.large)
+        .navigationTitle(lang.language)
     }
 }
 
 struct LanguageLang {
-    let swedish, finnish, english: String
+    let swedish, finnish, english, language: String
 }
 
 extension ProfileLang {
-    var languages: LanguageLang { LanguageLang(swedish: swedish, finnish: finnish, english: english) }
+    var languages: LanguageLang { LanguageLang(swedish: swedish, finnish: finnish, english: english, language: language) }
 }
 
 struct LangInfo: Identifiable {
@@ -55,7 +57,6 @@ protocol LanguageProtocol: ObservableObject {
 class LanguageVM: LanguageProtocol {
     let log = LoggerFactory.shared.vc(LanguageVM.self)
     var settings: UserSettings { UserSettings.shared }
-    var backend: Backend { Backend.shared }
     private var current: Language { settings.currentLanguage }
     
     @Published var currentLanguage: Language
@@ -66,7 +67,7 @@ class LanguageVM: LanguageProtocol {
     
     func changeLanguage(to language: Language) async {
         do {
-            let msg = try await backend.http.changeLanguage(to: language)
+            let msg = try await http.changeLanguage(to: language)
             settings.userLanguage = language
             log.info(msg.message)
             await update(language: language)
@@ -88,9 +89,11 @@ struct LanguagePreviews: PreviewProvider {
         }
     }
     static var previews: some View {
-        let lang = LanguageLang(swedish: "Svenska", finnish: "Suomeksi", english: "English")
+        let lang = LanguageLang(swedish: "Svenska", finnish: "Suomeksi", english: "English", language: "Language")
         Group {
-            SelectLanguageView(lang: lang, vm: PreviewsVM())
+            NavigationView {
+                SelectLanguageView(lang: lang, vm: PreviewsVM())
+            }
         }
     }
 }

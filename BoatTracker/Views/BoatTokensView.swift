@@ -15,7 +15,7 @@ struct BoatTokensView: View {
     let log = LoggerFactory.shared.vc(BoatTokensView.self)
     let spacing: CGFloat = 12
     let lang: TokensLang
-    @StateObject var vm: BoatTokensVM = BoatTokensVM()
+    @ObservedObject var vm: BoatTokensVM
     
     @State var rename: Boat? = nil
     @State var newName: String = ""

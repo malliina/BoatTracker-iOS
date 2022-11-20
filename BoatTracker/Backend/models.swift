@@ -641,7 +641,7 @@ struct Times: Codable {
     let range: String
 }
 
-struct TrackRef: Codable {
+struct TrackRef: Codable, Identifiable {
     let trackName: TrackName
     let trackTitle: TrackTitle?
     let boatName: BoatName
@@ -657,6 +657,7 @@ struct TrackRef: Codable {
     
     var start: Date { Date(timeIntervalSince1970: Double(times.start.millis) / 1000) }
     var startDate: String { times.start.date }
+    var id: String { trackName.name }
 }
 
 struct TrackResponse: Codable {
