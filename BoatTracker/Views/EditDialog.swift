@@ -20,6 +20,8 @@ struct EditDialog: View {
             VStack {
                 Text(message)
                 TextField(title, text: $newName)
+                    .disableAutocorrection(true)
+                    .textFieldStyle(.roundedBorder)
                     .padding()
                 Button(ctaTitle) {
                     Task {
@@ -28,7 +30,8 @@ struct EditDialog: View {
                     }
                 }
                 .padding()
-                .disabled(newName.isEmpty)
+                .disabled(newName.isEmpty || newName == initialValue)
+                .buttonStyle(.bordered)
             }
             .navigationTitle(navTitle)
             .toolbar {
@@ -44,3 +47,13 @@ struct EditDialog: View {
         }
     }
 }
+
+struct EditDialogPreviews: PreviewProvider {
+    static var previews: some View {
+        Group {
+            EditDialog(navTitle: "Edit", title: "Some title", message: "Edit here below", initialValue: "", ctaTitle: "Save", cancel: "Cancel") { _ in
+            }
+        }
+    }
+}
+

@@ -395,6 +395,7 @@
 				61ACE5CA2131667600925265 /* BoatTextView.swift */,
 				6171906A212CA06900337B0B /* BoatTokenCell.swift */,
 				B0485D5F292414AE005A1FC5 /* BoatTokensView.swift */,
+				B052E836292A360F00C09B89 /* EditDialog.swift */,
 				B02A812D2922C46900848949 /* LanguageView.swift */,
 				B03BC559290D31EE00BA38EF /* MainMapView.swift */,
 				6101D54A221057340051A427 /* mapCallouts.swift */,
@@ -412,11 +413,10 @@
 				61F4199C2120B39C00B1ED7D /* TrackSummaryCell.swift */,
 				B0C598212920F02900439237 /* TrackSummaryView.swift */,
 				B052E832292A286E00C09B89 /* TracksView.swift */,
+				B052E834292A2BEB00C09B89 /* TrackView.swift */,
 				6106448921FDBC8300C9ED0D /* vesselAnnotation.swift */,
 				61AB2C7E2132A63C009774DC /* viewExt.swift */,
 				613D5D232220AC09003FF8EB /* viewModels.swift */,
-				B052E834292A2BEB00C09B89 /* TrackView.swift */,
-				B052E836292A360F00C09B89 /* EditDialog.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
