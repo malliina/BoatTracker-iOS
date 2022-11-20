@@ -16,8 +16,12 @@ class Backend {
         self.baseUrl = baseUrl
         self.http = BoatHttpClient(bearerToken: nil, baseUrl: baseUrl, client: HttpClient())
         self.socket = BoatSocket(token: nil, track: nil)
-        cancellable = Auth.shared.$tokens.sink { token in
-            self.updateToken(new: token)
+        cancellable = Auth.shared.$tokens.sink { state in
+            switch state {
+            case .authenticated(let token): self.updateToken(new: token)
+            case .unauthenticated: self.updateToken(new: nil)
+            case .unknown: ()
+            }
         }
     }
     

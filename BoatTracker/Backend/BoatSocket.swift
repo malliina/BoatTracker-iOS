@@ -45,13 +45,13 @@ class BoatSocket {
         }
         let trackQuery = track.map { "?track=\($0.name)" } ?? ""
         let url = URL(string: "/ws/updates\(trackQuery)", relativeTo: EnvConf.shared.baseUrl)!
-        log.info("Opening socket with \(track?.name ?? "no track") and token \(token?.token ?? "no token")")
+//        log.info("Opening socket with \(track?.name ?? "no track") and token \(token?.token ?? "no token")")
         socket = WebSocket(baseURL: url, headers: headers)
         socket.delegate = self
     }
     
     func open() {
-        log.info("Opening socket...")
+        log.info("Opening socket to \(socket.baseURL.absoluteString)...")
         socket.connect()
     }
     
@@ -70,7 +70,7 @@ class BoatSocket {
             case "coords":
                 let data = try decoder.decode(CoordsBody.self, from: json)
                 if let delegate = delegate {
-                    log.info("Passing \(data.body.coords.count) coords to delegate.")
+//                    log.info("Passing \(data.body.coords.count) coords to delegate.")
                     delegate.onCoords(event: data.body)
                 } else {
                     log.warn("No delegate for coords. This is probably an error.")

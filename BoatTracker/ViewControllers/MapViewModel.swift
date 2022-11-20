@@ -71,10 +71,20 @@ class MapViewModel: MapViewModelLike {
     private var cancellables: Set<AnyCancellable> = .init()
     
     init() {
-        Auth.shared.$tokens.removeDuplicates().sink { userToken in
-            self.log.info("Got user \(userToken?.email ?? "no user")")
-            Task {
-                await self.reload(token: userToken)
+        Auth.shared.$tokens.sink { state in
+            switch state {
+            case .authenticated(let token):
+                self.log.info("Got user '\(token.email)'.")
+                Task {
+                    await self.reload(token: token)
+                }
+            case .unauthenticated:
+                self.log.info("Got no user.")
+                Task {
+                    await self.reload(token: nil)
+                }
+            case .unknown:
+                self.log.info("Waiting for proper auth state...")
             }
         }.store(in: &cancellables)
         ActiveTrack.shared.$selectedTrack.removeDuplicates().sink { trackName in
@@ -88,7 +98,6 @@ class MapViewModel: MapViewModelLike {
     }
     
     func prepare() async {
-        log.info("Preparing map view model...")
         do {
             let conf = try await http.conf()
             settings.conf = conf

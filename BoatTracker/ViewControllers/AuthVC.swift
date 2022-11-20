@@ -112,9 +112,12 @@ class AuthVC: BaseTableVC {
         
         view.backgroundColor = .white
         
-        cancellable = Auth.shared.$tokens.sink { token in
-            if let token = token {
+        cancellable = Auth.shared.$tokens.sink { state in
+            switch state {
+            case .authenticated(let token):
                 self.onToken(token: token)
+            default:
+                ()
             }
         }
     }

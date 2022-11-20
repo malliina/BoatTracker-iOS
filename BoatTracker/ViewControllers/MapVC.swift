@@ -130,9 +130,17 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, UIPopoverPresentatio
                 }
             }
             self.taps = TapListener(mapView: mapView, layers: layers, ais: self.aisRenderer, boats: boats)
-            cancellable = Auth.shared.$tokens.sink { token in
-                Task {
-                    await self.reload(token: token)
+            cancellable = Auth.shared.$tokens.sink { state in
+                switch state {
+                case .authenticated(let token):
+                    Task {
+                        await self.reload(token: token)
+                    }
+                case .unauthenticated:
+                    Task {
+                        await self.reload(token: nil)
+                    }
+                case .unknown: ()
                 }
             }
         }
