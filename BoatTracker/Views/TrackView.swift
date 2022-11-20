@@ -4,6 +4,7 @@ import SwiftUI
 struct TrackView: View {
     let lang: SummaryLang
     let track: TrackRef
+    let onEdit: () -> Void
     
     var body: some View {
         VStack {
@@ -25,6 +26,11 @@ struct TrackView: View {
                 Spacer()
                 StatView(label: lang.topSpeed, value: track.topSpeed?.description ?? lang.notAvailable, style: .small)
                 Spacer()
+            }
+        }
+        .swipeActions(edge: .trailing) {
+            Button(lang.edit) {
+                onEdit()
             }
         }
     }

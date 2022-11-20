@@ -58,26 +58,8 @@ struct BoatTokensView: View {
         }
         .listStyle(.plain)
         .sheet(item: $rename) { boat in
-            NavigationView {
-                VStack {
-                    Text(boat.name.name)
-                    TextField(lang.renameBoat, text: $newName)
-                        .padding()
-                    Button(lang.renameBoat) {
-                        Task {
-                            await vm.rename(boat: boat, newName: newName)
-                        }
-                    }
-                    .padding()
-                }
-                .navigationTitle(lang.renameBoat)
-                .toolbar {
-                    ToolbarItemGroup(placement: .navigationBarTrailing) {
-                        Button(lang.cancel) {
-                            rename = nil
-                        }
-                    }
-                }
+            EditDialog(navTitle: lang.renameBoat, title: lang.renameBoat, message: boat.name.name, initialValue: "", ctaTitle: lang.renameBoat, cancel: lang.cancel) { newName in
+                await vm.rename(boat: boat, newName: newName)
             }
         }
         .task {

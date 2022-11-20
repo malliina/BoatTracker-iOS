@@ -32,14 +32,15 @@ struct StatView: View {
 }
 
 struct SummaryLang {
-    let tracks, duration, distance, topSpeed, avgSpeed, waterTemp, date, notAvailable: String
+    let tracks, duration, distance, topSpeed, avgSpeed, waterTemp, date, notAvailable, edit, rename, newName, cancel: String
     
     static func build(_ lang: Lang) -> SummaryLang {
         let track = lang.track
-        return SummaryLang(tracks: track.tracks, duration: track.duration, distance: track.distance, topSpeed: track.topSpeed, avgSpeed: track.avgSpeed, waterTemp: track.waterTemp, date: track.date, notAvailable: lang.messages.notAvailable)
+        let settings = lang.settings
+        return SummaryLang(tracks: track.tracks, duration: track.duration, distance: track.distance, topSpeed: track.topSpeed, avgSpeed: track.avgSpeed, waterTemp: track.waterTemp, date: track.date, notAvailable: lang.messages.notAvailable, edit: settings.edit, rename: settings.rename, newName: settings.newName, cancel: settings.cancel)
     }
     
-    static let preview = SummaryLang(tracks: "Tracks", duration: "Duration", distance: "Distance", topSpeed: "Top speed", avgSpeed: "Avg speed", waterTemp: "Water temp", date: "Date", notAvailable: "N/A")
+    static let preview = SummaryLang(tracks: "Tracks", duration: "Duration", distance: "Distance", topSpeed: "Top speed", avgSpeed: "Avg speed", waterTemp: "Water temp", date: "Date", notAvailable: "N/A", edit: "Edit", rename: "Rename", newName: "New name", cancel: "Cancel")
 }
 
 protocol TrackInfo {
