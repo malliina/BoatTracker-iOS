@@ -6,6 +6,7 @@ import SwiftUI
 struct ChartsRepresentable: UIViewControllerRepresentable {
     let track: TrackName
     let lang: Lang
+    
     func makeUIViewController(context: Context) -> ChartsVC {
         ChartsVC(track: track, lang: lang)
     }

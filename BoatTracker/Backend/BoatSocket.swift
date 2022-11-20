@@ -2,7 +2,7 @@ import Foundation
 import SwiftUI
 
 protocol BoatSocketDelegate {
-    func onCoords(event: CoordsData)
+    func onCoords(event: CoordsData) async
 }
 
 protocol VesselDelegate {
@@ -13,7 +13,9 @@ extension BoatSocket: WebSocketMessageDelegate {
     func on(message: String) {
         do {
             guard let json = message.data(using: .utf8) else { throw JsonError.invalid("Not JSON.", message) }
-            onMessage(json: json)
+            Task {
+                await onMessage(json: json)
+            }
         } catch {
             log.warn("Not JSON: '\(message)'.")
         }
@@ -59,7 +61,7 @@ class BoatSocket {
         socket.updateAuthHeader(newValue: token.map(BoatHttpClient.authValue))
     }
     
-    func onMessage(json: Data) {
+    func onMessage(json: Data) async {
         let decoder = JSONDecoder()
         do {
             let event = try decoder.decode(BoatEvent.self, from: json)
@@ -71,12 +73,12 @@ class BoatSocket {
                 let data = try decoder.decode(CoordsBody.self, from: json)
                 if let delegate = delegate {
 //                    log.info("Passing \(data.body.coords.count) coords to delegate.")
-                    delegate.onCoords(event: data.body)
+                    await delegate.onCoords(event: data.body)
                 } else {
                     log.warn("No delegate for coords. This is probably an error.")
                 }
                 if let delegate = statsDelegate {
-                    delegate.onCoords(event: data.body)
+                    await delegate.onCoords(event: data.body)
                 }
             case "vessels":
                 let data = try decoder.decode(VesselsBody.self, from: json)

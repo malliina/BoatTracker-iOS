@@ -23,11 +23,13 @@ struct EditDialog: View {
                     .disableAutocorrection(true)
                     .textFieldStyle(.roundedBorder)
                     .padding()
-                Button(ctaTitle) {
+                Button {
                     Task {
                         await onSave(newName)
                         dismiss()
                     }
+                } label: {
+                    Text(ctaTitle).frame(minWidth: 100, minHeight: 28)
                 }
                 .padding()
                 .disabled(newName.isEmpty || newName == initialValue)

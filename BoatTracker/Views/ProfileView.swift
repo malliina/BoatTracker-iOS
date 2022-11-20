@@ -32,9 +32,7 @@ struct ProfileView: View {
             Section(footer: Footer()) {
                 if let summary = vm.summary {
                     NavigationLink {
-                        ChartsRepresentable(track: summary.trackName, lang: lang)
-                            .navigationBarTitleDisplayMode(.large)
-                            .navigationTitle(summary.trackTitle?.description ?? summary.startDate)
+                        ChartsView(lang: ChartLang.build(lang), title: summary.trackTitle?.description ?? summary.startDate, trackName: summary.trackName)
                     } label: {
                         Text(lang.track.graph)
                     }
@@ -43,23 +41,16 @@ struct ProfileView: View {
                     TracksView(lang: summaryLang, vm: modules.tracks) {
                         dismiss()
                     }
-//                    TrackListRepresentable(delegate: vm, login: false, lang: lang)
-//                        .navigationBarTitleDisplayMode(.large)
-//                        .navigationTitle(lang.track.tracks)
                 } label: {
                     Text(lang.track.trackHistory)
                 }
                 NavigationLink {
                     StatsView(lang: lang, vm: modules.stats)
-                        .navigationBarTitleDisplayMode(.large)
-                        .navigationTitle(lang.labels.statistics)
                 } label: {
                     Text(lang.labels.statistics)
                 }
                 NavigationLink {
                     BoatTokensView(lang: TokensLang.build(lang: lang), vm: modules.boats)
-                        .navigationBarTitleDisplayMode(.large)
-                        .navigationTitle(lang.track.boats)
                 } label: {
                     Text(lang.track.boats)
                 }
@@ -74,8 +65,6 @@ struct ProfileView: View {
             Section(footer: Footer()) {
                 NavigationLink {
                     AttributionsView(info: lang.attributions)
-                        .navigationBarTitleDisplayMode(.large)
-                        .navigationTitle(lang.attributions.title)
                 } label: {
                     Text(lang.attributions.title)
                 }

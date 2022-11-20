@@ -25,6 +25,8 @@ struct AttributionsView: View {
             }
         }
         .listStyle(.plain)
+        .navigationBarTitleDisplayMode(.large)
+        .navigationTitle(info.title)
     }
 }
 

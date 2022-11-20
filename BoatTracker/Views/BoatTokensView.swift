@@ -3,11 +3,11 @@ import SwiftUI
 import Combine
 
 struct TokensLang {
-    let notificationsText, notifications, boat, token, tokenText, renameBoat, newName, failText, cancel: String
+    let notificationsText, notifications, boat, boats, token, tokenText, renameBoat, newName, failText, cancel: String
     
     static func build(lang: Lang) -> TokensLang {
         let settings = lang.settings
-        return TokensLang(notificationsText: settings.notificationsText, notifications: settings.notifications, boat: settings.boat, token: settings.token, tokenText: settings.tokenText, renameBoat: settings.renameBoat, newName: settings.newName, failText: lang.messages.failedToLoadProfile, cancel: settings.cancel)
+        return TokensLang(notificationsText: settings.notificationsText, notifications: settings.notifications, boat: settings.boat, boats: lang.track.boats, token: settings.token, tokenText: settings.tokenText, renameBoat: settings.renameBoat, newName: settings.newName, failText: lang.messages.failedToLoadProfile, cancel: settings.cancel)
     }
 }
 
@@ -57,6 +57,8 @@ struct BoatTokensView: View {
             }
         }
         .listStyle(.plain)
+        .navigationBarTitleDisplayMode(.large)
+        .navigationTitle(lang.boats)
         .sheet(item: $rename) { boat in
             EditDialog(navTitle: lang.renameBoat, title: lang.renameBoat, message: boat.name.name, initialValue: "", ctaTitle: lang.renameBoat, cancel: lang.cancel) { newName in
                 await vm.rename(boat: boat, newName: newName)
