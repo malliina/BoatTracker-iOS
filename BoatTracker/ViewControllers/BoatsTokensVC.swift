@@ -1,11 +1,12 @@
 import Foundation
 import UIKit
+import SwiftUI
 
 extension BoatTokensVC: NotificationPermissionDelegate {
     func didRegister(_ token: PushToken) async {
         if let token = self.boatSettings.pushToken {
             log.info("Permission granted.")
-            await registerWithToken(token: token)
+            try? await registerWithToken(token: token)
         } else {
             log.info("Access granted, but no token available.")
         }
@@ -19,14 +20,14 @@ extension BoatTokensVC: NotificationPermissionDelegate {
         log.error(error.describe)
     }
     
-    func registerNotifications() async {
+    func registerNotifications() async throws {
         notifications.permissionDelegate = self
         if let token = boatSettings.pushToken {
             log.info("Registering with previously saved push token...")
-            await registerWithToken(token: token)
+            try await registerWithToken(token: token)
         } else {
             log.info("No saved push token. Asking for permission...")
-            notifications.initNotifications(.shared)
+            _ = try await notifications.initNotifications(.shared)
         }
     }
     
@@ -42,14 +43,23 @@ extension BoatTokensVC: NotificationPermissionDelegate {
         notifications.disableNotifications()
     }
     
-    func registerWithToken(token: PushToken) async {
-        do {
-            _ = try await http.enableNotifications(token: token)
-            log.info("Enabled notifications with backend.")
-        } catch {
-            log.error(error.describe)
-        }
+    func registerWithToken(token: PushToken) async throws {
+        _ = try await http.enableNotifications(token: token)
+        log.info("Enabled notifications with backend.")
     }
+}
+
+struct BoatTokensRepresentable: UIViewControllerRepresentable {
+    let lang: Lang
+    
+    func makeUIViewController(context: Context) -> BoatTokensVC {
+        BoatTokensVC(lang: lang)
+    }
+    
+    func updateUIViewController(_ uiViewController: BoatTokensVC, context: Context) {
+    }
+    
+    typealias UIViewControllerType = BoatTokensVC
 }
 
 class BoatTokensVC: BaseTableVC {
@@ -78,7 +88,7 @@ class BoatTokensVC: BaseTableVC {
     func didToggleNotifications(_ uiSwitch: UISwitch) {
         Task {
             if uiSwitch.isOn {
-                await registerNotifications()
+                try? await registerNotifications()
             } else {
                 await disableNotifications()
             }

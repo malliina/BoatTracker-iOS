@@ -2,13 +2,13 @@ import Foundation
 import MapboxMaps
 import Combine
 
-protocol MapViewModelLike: ObservableObject, TracksDelegate {
+protocol MapViewModelLike: ObservableObject {
     var coordsPublisher: Published<CoordsData?>.Publisher { get }
+    var latestTrack: TrackName? { get }
     var vesselsPublisher: Published<[Vessel]>.Publisher { get }
     var commands: Published<MapCommand?>.Publisher { get }
     var settings: UserSettings { get }
     var latestToken: UserToken? { get set }
-    var latestTrack: TrackName? { get set }
     var isProfileButtonHidden: Bool { get }
     var isFollowButtonHidden: Bool { get }
     var mapMode: MapMode { get set }
@@ -24,7 +24,6 @@ extension MapViewModel: BoatSocketDelegate {
     }
     
     @MainActor private func update(coordsData: CoordsData) {
-        latestTrack = coordsData.from.trackName
         coords = coordsData
     }
 }
@@ -41,26 +40,6 @@ extension MapViewModel: VesselDelegate {
     }
 }
 
-extension MapViewModel: TracksDelegate {
-    func onTrack(_ track: TrackName) {
-        change(to: track)
-    }
-    
-    private func change(to track: TrackName) {
-        disconnect()
-        latestTrack = track
-        //log.info("Changing to \(track)...")
-        backend.open(track: track, delegate: self)
-    }
-    
-    private func disconnect() {
-        socket.delegate = nil
-        socket.close()
-        command = .clearAll
-        isFollowButtonHidden = true
-    }
-}
-
 class MapViewModel: MapViewModelLike {
     let log = LoggerFactory.shared.vc(MapViewModel.self)
     
@@ -73,18 +52,50 @@ class MapViewModel: MapViewModelLike {
     
     @Published var latestToken: UserToken? = nil
     private var isSignedIn: Bool { latestToken != nil }
-    @Published var latestTrack: TrackName? = nil
     @Published var isProfileButtonHidden: Bool = true
     @Published var isFollowButtonHidden: Bool = false
     @Published var mapMode: MapMode = .fit
     @Published var styleUri: StyleURI? = nil
     @Published var coords: CoordsData? = nil
+    @Published var selectedTrack: TrackName? = nil
+    var latestTrack: TrackName? {
+        coords?.from.trackName
+    }
     var coordsPublisher: Published<CoordsData?>.Publisher { $coords }
     @Published var vessels: [Vessel] = []
     var vesselsPublisher: Published<[Vessel]>.Publisher { $vessels }
     @Published var command: MapCommand? = nil
     var commands: Published<MapCommand?>.Publisher { $command }
-    private var cancellable: AnyCancellable? = nil
+    @Published var welcomeInfo: WelcomeInfo? = nil
+    
+    private var cancellables: Set<AnyCancellable> = .init()
+    
+    init() {
+        Auth.shared.$tokens.sink { state in
+            switch state {
+            case .authenticated(let token):
+                self.log.info("Got user '\(token.email)'.")
+                Task {
+                    await self.reload(token: token)
+                }
+            case .unauthenticated:
+                self.log.info("Got no user.")
+                Task {
+                    await self.reload(token: nil)
+                }
+            case .unknown:
+                self.log.info("Waiting for proper auth state...")
+            }
+        }.store(in: &cancellables)
+        ActiveTrack.shared.$selectedTrack.removeDuplicates().sink { trackName in
+            if let trackName = trackName {
+                self.log.info("Changed to \(trackName)")
+                Task {
+                    await self.change(to: trackName)
+                }
+            }
+        }.store(in: &cancellables)
+    }
     
     func prepare() async {
         do {
@@ -95,11 +106,6 @@ class MapViewModel: MapViewModelLike {
             await update(style: StyleURI(rawValue: url)!)
         } catch {
             log.error("Failed to load conf and style: '\(error.describe)'.")
-        }
-        cancellable = Auth.shared.$tokens.sink { token in
-            Task {
-                await self.reload(token: token)
-            }
         }
     }
     
@@ -131,6 +137,20 @@ class MapViewModel: MapViewModelLike {
         }
     }
     
+    private func change(to track: TrackName) async {
+        await disconnect()
+        await update(latest: track)
+        //log.info("Changing to \(track)...")
+        backend.open(track: track, delegate: self)
+    }
+    
+    @MainActor private func disconnect() {
+        socket.delegate = nil
+        socket.close()
+        command = .clearAll
+        isFollowButtonHidden = true
+    }
+    
     @MainActor private func update(style: StyleURI) {
         styleUri = style
     }
@@ -138,13 +158,18 @@ class MapViewModel: MapViewModelLike {
         isProfileButtonHidden = profileHidden
     }
     
-    func toggleFollow() {
+    @MainActor private func update(latest: TrackName) {
+        ActiveTrack.shared.selectedTrack = latest
+    }
+    
+    @MainActor func toggleFollow() {
         command = .toggleFollow
     }
 }
 
 class PreviewMapViewModel: MapViewModelLike {
     @Published var coords: CoordsData? = nil
+    var latestTrack: TrackName? { nil }
     @Published var vessels: [Vessel] = []
     var coordsPublisher: Published<CoordsData?>.Publisher { $coords }
     var vesselsPublisher: Published<[Vessel]>.Publisher { $vessels }
@@ -152,7 +177,6 @@ class PreviewMapViewModel: MapViewModelLike {
     var commands: Published<MapCommand?>.Publisher { $command }
     var settings: UserSettings = UserSettings.shared
     var latestToken: UserToken? = nil
-    var latestTrack: TrackName? = nil
     var mapMode: MapMode = .fit
     var isProfileButtonHidden: Bool = false
     var isFollowButtonHidden: Bool = false

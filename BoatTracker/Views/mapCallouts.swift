@@ -457,7 +457,6 @@ class FairwayAreaCallout: PopoverView {
         let hasMark = info.markType != nil
         let markLabels = hasMark ? [ markLabel, markValue ] : []
         let limitsView = limits.map { LimitInfoView(limit: $0, lang: lang) }
-        let hasLimits  = limitsView != nil
         if let limitsView = limitsView {
             container.addSubview(limitsView)
         }

@@ -1,6 +1,22 @@
 import Foundation
 import Charts
 import UIKit
+import SwiftUI
+
+struct ChartsRepresentable: UIViewControllerRepresentable {
+    let track: TrackName
+    let lang: Lang
+    
+    func makeUIViewController(context: Context) -> ChartsVC {
+        ChartsVC(track: track, lang: lang)
+    }
+    
+    func updateUIViewController(_ uiViewController: ChartsVC, context: Context) {
+        
+    }
+    
+    typealias UIViewControllerType = ChartsVC
+}
 
 class ChartsVC: UIViewController {
     let log = LoggerFactory.shared.vc(ChartsVC.self)

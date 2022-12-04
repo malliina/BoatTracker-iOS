@@ -15,7 +15,9 @@ struct MainMapView<T>: View where T: MapViewModelLike {
     
     @State var welcomeInfo: WelcomeInfo? = nil
     @State var authInfo: Lang? = nil
+    @State var authInfo2: Lang? = nil
     @State var profileInfo: ProfileInfo? = nil
+    @State var profileInfo2: ProfileInfo? = nil
     @State var popover: MapPopup? = nil
     @State var showPopover: Bool = false
     
@@ -26,15 +28,22 @@ struct MainMapView<T>: View where T: MapViewModelLike {
     var body: some View {
         VStack {
             ZStack(alignment: .topLeading) {
-                MapViewRepresentable(styleUri: $viewModel.styleUri, latestTrack: $viewModel.latestTrack, popup: $popover, mapMode: $viewModel.mapMode, coords: viewModel.coordsPublisher, vessels: viewModel.vesselsPublisher, commands: viewModel.commands)
-                    .ignoresSafeArea()
+                MapViewRepresentable(
+                    styleUri: $viewModel.styleUri,
+                    popup: $popover,
+                    mapMode: $viewModel.mapMode,
+                    coords: viewModel.coordsPublisher,
+                    vessels: viewModel.vesselsPublisher,
+                    commands: viewModel.commands
+                )
+                .ignoresSafeArea()
                 if !viewModel.isProfileButtonHidden {
                     MapButtonView(imageResource: "SettingsSlider") {
                         guard let lang = viewModel.settings.lang else { return }
                         if let user = viewModel.latestToken {
-                            profileInfo = ProfileInfo(tracksDelegate: viewModel, user: user, current: viewModel.latestTrack, lang: lang)
+                            profileInfo2 = ProfileInfo(user: user, current: viewModel.latestTrack, lang: lang)
                         } else {
-                            authInfo = lang
+                            authInfo2 = lang
                         }
                     }
                     .offset(x: 16, y: 16)
@@ -51,7 +60,7 @@ struct MainMapView<T>: View where T: MapViewModelLike {
         }
         .sheet(item: $welcomeInfo) { info in
             NavigationView {
-                WelcomeSignedInRepresentable(boatToken: info.boatToken, lang: info.lang)
+                WelcomeView(lang: info.lang, token: info.boatToken)
                     .navigationBarTitleDisplayMode(.large)
                     .navigationTitle(info.lang.welcome)
                     .toolbar {
@@ -92,6 +101,38 @@ struct MainMapView<T>: View where T: MapViewModelLike {
                                 profileInfo = nil
                             } label: {
                                 Text(info.lang.map)
+                            }
+                        }
+                    }
+            }
+        }
+        .sheet(item: $profileInfo2) { info in
+            NavigationView {
+                ProfileView(info: info)
+                    .navigationBarTitleDisplayMode(.large)
+                    .navigationTitle(info.lang.appName)
+                    .toolbar {
+                        ToolbarItemGroup(placement: .navigationBarLeading) {
+                            Button {
+                                profileInfo2 = nil
+                            } label: {
+                                Text(info.lang.map)
+                            }
+                        }
+                    }
+            }
+        }
+        .sheet(item: $authInfo2) { info in
+            NavigationView {
+                AuthView(welcomeInfo: $welcomeInfo, lang: info)
+                    .navigationBarTitleDisplayMode(.large)
+                    .navigationTitle(info.settings.signIn)
+                    .toolbar {
+                        ToolbarItemGroup(placement: .navigationBarTrailing) {
+                            Button {
+                                authInfo2 = nil
+                            } label: {
+                                Text(info.settings.cancel)
                             }
                         }
                     }

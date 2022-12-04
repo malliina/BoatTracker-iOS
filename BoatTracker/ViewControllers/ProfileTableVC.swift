@@ -1,11 +1,3 @@
-//
-//  ProfileTableVC.swift
-//  BoatTracker
-//
-//  Created by Michael Skogberg on 12/08/2018.
-//  Copyright © 2018 Michael Skogberg. All rights reserved.
-//
-
 import Foundation
 import UIKit
 import SwiftUI
@@ -21,10 +13,10 @@ enum ViewState {
     case content
     case loading
     case failed
+    case idle
 }
 
 struct ProfileInfo: Identifiable {
-    let tracksDelegate: TracksDelegate
     let user: UserToken
     let current: TrackName?
     let lang: Lang
@@ -35,7 +27,7 @@ struct ProfileTableRepresentable: UIViewControllerRepresentable {
     let info: ProfileInfo
     
     func makeUIViewController(context: Context) -> ProfileTableVC {
-        ProfileTableVC(tracksDelegate: info.tracksDelegate, current: info.current, user: info.user, lang: info.lang)
+        ProfileTableVC(current: info.current, user: info.user, lang: info.lang)
     }
     
     func updateUIViewController(_ uiViewController: ProfileTableVC, context: Context) {
@@ -55,8 +47,6 @@ class ProfileTableVC: BaseTableVC {
     let summaryRow = 0
     let summarySection = 0
     
-//    let delegate: TokenDelegate
-    let tracksDelegate: TracksDelegate
     let user: UserToken
     let current: TrackName?
     var lang: Lang
@@ -82,9 +72,7 @@ class ProfileTableVC: BaseTableVC {
         }
     }
     
-    init(tracksDelegate: TracksDelegate, current: TrackName?, user: UserToken, lang: Lang) {
-//        self.delegate = tokenDelegate
-        self.tracksDelegate = tracksDelegate
+    init(current: TrackName?, user: UserToken, lang: Lang) {
         self.current = current
         self.user = user
         self.lang = lang
@@ -242,7 +230,7 @@ class ProfileTableVC: BaseTableVC {
                 guard let track = current else { return }
                 navigate(to: ChartsVC(track: track, lang: lang), style: .fullScreen, transition: .flipHorizontal)
             case 1:
-                nav(to: TrackListVC(delegate: tracksDelegate, lang: lang))
+                nav(to: TrackListVC(lang: lang))
             case 2:
                 nav(to: StatsVC(lang: lang))
             case 3:

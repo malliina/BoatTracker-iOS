@@ -1,11 +1,3 @@
-//
-//  BoatPrefs.swift
-//  BoatTracker
-//
-//  Created by Michael Skogberg on 24/08/2018.
-//  Copyright © 2018 Michael Skogberg. All rights reserved.
-//
-
 import Foundation
 
 class BoatPrefs {

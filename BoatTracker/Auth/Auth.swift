@@ -1,12 +1,16 @@
 import Foundation
 
+enum AuthState {
+    case unknown, unauthenticated, authenticated(token: UserToken)
+}
+
 class Auth {
     static let shared = Auth()
     let log = LoggerFactory.shared.system(Auth.self)
     
     private var prefs: BoatPrefs { BoatPrefs.shared }
     
-    @Published var tokens: UserToken? = nil
+    @Published var tokens: AuthState = .unknown
     
     private var google: BoatGoogleAuth { BoatGoogleAuth.shared }
     private var microsoft: MicrosoftAuth { MicrosoftAuth.shared }
@@ -19,11 +23,15 @@ class Auth {
     func signInAny(from: UIViewController?, restore: Bool) async -> UserToken? {
         do {
             let token = try await obtainToken(from: from, restore: restore)
-            tokens = token
+            if let token = token {
+                tokens = .authenticated(token: token)
+            } else {
+                tokens = .unauthenticated
+            }
             return token
-        } catch let error {
+        } catch {
             log.error("Failed to authenticate: '\(error.describe)'.")
-            tokens = nil
+            tokens = .unknown
             return nil
         }
     }
@@ -49,7 +57,7 @@ class Auth {
             log.info("Nothing to sign out from.")
         }
         prefs.authProvider = .none
-        tokens = nil
+        tokens = .unauthenticated
     }
     
     @MainActor

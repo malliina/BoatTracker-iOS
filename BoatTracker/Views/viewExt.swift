@@ -10,5 +10,5 @@ import Foundation
 import UIKit
 
 extension UIView {
-    var colors: BoatColors { return BoatColors.shared }
+    var colors: BoatColors { BoatColors.shared }
 }

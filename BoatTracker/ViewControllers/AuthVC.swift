@@ -38,6 +38,39 @@ protocol WelcomeDelegate {
     func showWelcome(token: UserToken?) async
 }
 
+class AuthVM: ObservableObject {
+    let log = LoggerFactory.shared.vc(AuthVM.self)
+    
+    var prefs: BoatPrefs { BoatPrefs.shared }
+    
+    func clicked(provider: AuthProvider) {
+        prefs.authProvider = provider
+        prefs.showWelcome = true
+//        signIn()
+    }
+    
+    func showWelcome(token: UserToken?, lang: Lang) async -> WelcomeInfo? {
+        BoatPrefs.shared.showWelcome = false
+        do {
+            let profile = try await http.profile()
+                if let boatToken = profile.boats.headOption()?.token {
+                return WelcomeInfo(boatToken: boatToken, lang: lang.settings)
+            } else {
+                log.warn("Signed in but user has no boats.")
+            }
+        } catch {
+            log.error("Failed to load profile. \(error)")
+        }
+        return nil
+    }
+    
+//    @MainActor private func signIn() {
+//        Task {
+//            _ = await Auth.shared.signIn(from: self, restore: false)
+//        }
+//    }
+}
+
 class AuthVC: BaseTableVC {
     let log = LoggerFactory.shared.vc(AuthVC.self)
     
@@ -79,9 +112,12 @@ class AuthVC: BaseTableVC {
         
         view.backgroundColor = .white
         
-        cancellable = Auth.shared.$tokens.sink { token in
-            if let token = token {
+        cancellable = Auth.shared.$tokens.sink { state in
+            switch state {
+            case .authenticated(let token):
                 self.onToken(token: token)
+            default:
+                ()
             }
         }
     }

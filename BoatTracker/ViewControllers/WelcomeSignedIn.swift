@@ -2,19 +2,25 @@ import Foundation
 import UIKit
 import SwiftUI
 
-struct WelcomeSignedInRepresentable: UIViewControllerRepresentable {
-    let boatToken: String
+struct WelcomeView: View {
     let lang: SettingsLang
+    let token: String
     
-    func makeUIViewController(context: Context) -> WelcomeSignedIn {
-        WelcomeSignedIn(boatToken: boatToken, lang: lang)
+    var color: BoatColor { BoatColor.shared }
+    
+    var body: some View {
+        VStack {
+            Spacer()
+                .frame(maxHeight: 150)
+            Text(lang.welcomeText)
+            Text(token)
+                .foregroundColor(color.secondaryText)
+                .padding(.vertical)
+            Text(lang.laterText)
+            Spacer()
+        }
+        .padding(.horizontal)
     }
-    
-    func updateUIViewController(_ uiViewController: WelcomeSignedIn, context: Context) {
-        
-    }
-    
-    typealias UIViewControllerType = WelcomeSignedIn
 }
 
 class WelcomeSignedIn: UIViewController {

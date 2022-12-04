@@ -1,12 +1,8 @@
 import Foundation
 import Combine
+import SwiftUI
 
 typealias Row = Int
-
-struct LangInfo {
-    let language: Language
-    let title: String
-}
 
 class SelectLanguageVC: BaseTableVC, LanguageChangedDelegate {
     let log = LoggerFactory.shared.vc(SelectLanguageVC.self)

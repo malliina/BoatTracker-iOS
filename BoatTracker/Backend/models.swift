@@ -641,7 +641,7 @@ struct Times: Codable {
     let range: String
 }
 
-struct TrackRef: Codable {
+struct TrackRef: Codable, Identifiable {
     let trackName: TrackName
     let trackTitle: TrackTitle?
     let boatName: BoatName
@@ -657,6 +657,7 @@ struct TrackRef: Codable {
     
     var start: Date { Date(timeIntervalSince1970: Double(times.start.millis) / 1000) }
     var startDate: String { times.start.date }
+    var id: String { trackName.name }
 }
 
 struct TrackResponse: Codable {
@@ -787,11 +788,10 @@ extension StringCodable {
 protocol NormalIntCodable: Codable, CustomStringConvertible {
     init(_ value: Int)
     var value: Int { get }
-    
 }
 
 extension NormalIntCodable {
-    var description: String { return "\(value)"}
+    var description: String { "\(value)"}
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
@@ -844,7 +844,7 @@ extension DoubleCodable {
 struct Mmsi: Hashable, CustomStringConvertible, Codable {
     static let key = "mmsi"
     let mmsi: String
-    var description: String { return mmsi }
+    var description: String { mmsi }
     
     init(_ mmsi: String) {
         self.mmsi = mmsi
@@ -879,14 +879,14 @@ struct BoatResponse: Codable {
     let boat: Boat
 }
 
-struct Boat: Codable {
+struct Boat: Codable, Identifiable {
     let id: Int
     let name: BoatName
     let token: String
     let addedMillis: UInt64
 }
 
-struct UserToken {
+struct UserToken: Equatable {
     let email: String
     let token: AccessToken
 }
@@ -964,6 +964,10 @@ struct MonthlyStats: Codable {
     let days, trackCount: Int
     let distance: Distance
     let duration: Duration
+}
+
+extension MonthlyStats {
+    var id: String { "\(year)-\(month)" }
 }
 
 struct YearlyStats: Codable {

@@ -7,7 +7,6 @@ struct MapViewRepresentable: UIViewRepresentable {
     let log = LoggerFactory.shared.vc(MapViewRepresentable.self)
     
     @Binding var styleUri: StyleURI?
-    @Binding var latestTrack: TrackName?
     @Binding var popup: MapPopup?
     @Binding var mapMode: MapMode
     let coords: Published<CoordsData?>.Publisher
