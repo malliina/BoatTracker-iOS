@@ -41,32 +41,12 @@ struct MainMapView<T>: View where T: MapViewModelLike {
                     MapButtonView(imageResource: "SettingsSlider") {
                         guard let lang = viewModel.settings.lang else { return }
                         if let user = viewModel.latestToken {
-                            profileInfo = ProfileInfo(user: user, current: viewModel.latestTrack, lang: lang)
-                        } else {
-                            authInfo = lang
-                        }
-                    }
-                    .offset(x: 16, y: 16)
-                    .opacity(0.6)
-                }
-                if !viewModel.isProfileButtonHidden {
-                    MapButtonView(imageResource: "SettingsSlider") {
-                        guard let lang = viewModel.settings.lang else { return }
-                        authInfo2 = lang
-                    }
-                    .offset(x: 66, y: 16)
-                    .opacity(0.6)
-                }
-                if !viewModel.isProfileButtonHidden {
-                    MapButtonView(imageResource: "SettingsSlider") {
-                        guard let lang = viewModel.settings.lang else { return }
-                        if let user = viewModel.latestToken {
                             profileInfo2 = ProfileInfo(user: user, current: viewModel.latestTrack, lang: lang)
                         } else {
                             authInfo2 = lang
                         }
                     }
-                    .offset(x: 116, y: 16)
+                    .offset(x: 16, y: 16)
                     .opacity(0.6)
                 }
                 if !viewModel.isFollowButtonHidden {
