@@ -9,7 +9,7 @@ struct TracksView<T>: View where T: TracksProtocol {
     let onSelect: () -> Void
     
     var body: some View {
-        List {
+        BoatList {
             ForEach(vm.tracks) { track in
                 Button {
                     ActiveTrack.shared.selectedTrack = track.trackName
@@ -21,9 +21,9 @@ struct TracksView<T>: View where T: TracksProtocol {
                 }
             }
         }
-        .listStyle(.plain)
         .navigationBarTitleDisplayMode(.large)
         .navigationTitle(lang.tracks)
+        .navigationViewStyle(.stack)
         .task {
             await vm.load()
         }

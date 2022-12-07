@@ -32,9 +32,8 @@ struct AuthView: View {
                     .foregroundColor(color.secondaryText)
                     .padding(.horizontal)
                 NavigationLink {
-                    AttributionsRepresentable(info: lang.attributions)
+                    AttributionsView(info: lang.attributions)
                         .navigationBarTitleDisplayMode(.large)
-                        .navigationTitle(lang.attributions.title)
                 } label: {
                     NavLink(title: lang.attributions.title)
                 }.padding()

@@ -1,6 +1,13 @@
 import Foundation
 import SwiftUI
 
+struct ProfileInfo: Identifiable {
+    let user: UserToken
+    let current: TrackName?
+    let lang: Lang
+    var id: String { user.email }
+}
+
 struct ProfileView: View {
     @Environment(\.dismiss) var dismiss
     let info: ProfileInfo
@@ -11,8 +18,8 @@ struct ProfileView: View {
     var modules: Modules { vm.modules }
     
     var body: some View {
-        List {
-            Section(footer: Footer()) {
+        BoatList {
+            BoatSection {
                 if let summary = vm.summary, vm.state == .content {
                     TrackSummaryView(track: summary, lang: summaryLang)
                         .frame(maxWidth: .infinity, alignment: .center)
@@ -24,12 +31,12 @@ struct ProfileView: View {
                         Spacer()
                         ProgressView()
                         Spacer()
-                    }
+                    }.frame(height: 228)
                 } else {
                     EmptyView()
                 }
             }
-            Section(footer: Footer()) {
+            BoatSection {
                 if let summary = vm.summary {
                     NavigationLink {
                         ChartsView(lang: ChartLang.build(lang), title: summary.trackTitle?.description ?? summary.startDate, trackName: summary.trackName)
@@ -55,21 +62,21 @@ struct ProfileView: View {
                     Text(lang.track.boats)
                 }
             }
-            Section(footer: Footer()) {
+            BoatSection {
                 NavigationLink {
                     SelectLanguageView(lang: lang.profile.languages, vm: modules.languages)
                 } label: {
                     Text(lang.profile.language)
                 }
             }
-            Section(footer: Footer()) {
+            BoatSection {
                 NavigationLink {
                     AttributionsView(info: lang.attributions)
                 } label: {
                     Text(lang.attributions.title)
                 }
             }
-            Section(footer: Footer()) {
+            BoatSection {
                 if let versionText = vm.versionText(lang: lang) {
                     Text(versionText)
                         .foregroundColor(color.lightGray)
@@ -83,8 +90,15 @@ struct ProfileView: View {
         .task {
             await vm.loadTracks(latest: info.current)
         }
-        .listStyle(.plain)
     }
+    
+    func BoatSection<Content: View>(@ViewBuilder content: () -> Content) -> some View {
+        Section(footer: Footer()) {
+            content()
+        }
+        .listRowSeparator(.hidden)
+    }
+    
     func Footer() -> some View {
         Spacer()
     }

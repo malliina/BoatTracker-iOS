@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import MapboxMaps
 
 struct WelcomeInfo: Identifiable {
     let boatToken: String
@@ -15,9 +16,7 @@ struct MainMapView<T>: View where T: MapViewModelLike {
     
     @State var welcomeInfo: WelcomeInfo? = nil
     @State var authInfo: Lang? = nil
-    @State var authInfo2: Lang? = nil
     @State var profileInfo: ProfileInfo? = nil
-    @State var profileInfo2: ProfileInfo? = nil
     @State var popover: MapPopup? = nil
     @State var showPopover: Bool = false
     
@@ -41,9 +40,9 @@ struct MainMapView<T>: View where T: MapViewModelLike {
                     MapButtonView(imageResource: "SettingsSlider") {
                         guard let lang = viewModel.settings.lang else { return }
                         if let user = viewModel.latestToken {
-                            profileInfo2 = ProfileInfo(user: user, current: viewModel.latestTrack, lang: lang)
+                            profileInfo = ProfileInfo(user: user, current: viewModel.latestTrack, lang: lang)
                         } else {
-                            authInfo2 = lang
+                            authInfo = lang
                         }
                     }
                     .offset(x: 16, y: 16)
@@ -74,25 +73,9 @@ struct MainMapView<T>: View where T: MapViewModelLike {
                     }
             }
         }
-        .sheet(item: $authInfo) { info in
-            NavigationView {
-                AuthVCRepresentable(welcomeInfo: $welcomeInfo, lang: info)
-                    .navigationBarTitleDisplayMode(.large)
-                    .navigationTitle(info.settings.signIn)
-                    .toolbar {
-                        ToolbarItemGroup(placement: .navigationBarTrailing) {
-                            Button {
-                                authInfo = nil
-                            } label: {
-                                Text(info.settings.cancel)
-                            }
-                        }
-                    }
-            }
-        }
         .sheet(item: $profileInfo) { info in
             NavigationView {
-                ProfileTableRepresentable(info: info)
+                ProfileView(info: info)
                     .navigationBarTitleDisplayMode(.large)
                     .navigationTitle(info.lang.appName)
                     .toolbar {
@@ -106,23 +89,7 @@ struct MainMapView<T>: View where T: MapViewModelLike {
                     }
             }
         }
-        .sheet(item: $profileInfo2) { info in
-            NavigationView {
-                ProfileView(info: info)
-                    .navigationBarTitleDisplayMode(.large)
-                    .navigationTitle(info.lang.appName)
-                    .toolbar {
-                        ToolbarItemGroup(placement: .navigationBarLeading) {
-                            Button {
-                                profileInfo2 = nil
-                            } label: {
-                                Text(info.lang.map)
-                            }
-                        }
-                    }
-            }
-        }
-        .sheet(item: $authInfo2) { info in
+        .sheet(item: $authInfo) { info in
             NavigationView {
                 AuthView(welcomeInfo: $welcomeInfo, lang: info)
                     .navigationBarTitleDisplayMode(.large)
@@ -130,7 +97,7 @@ struct MainMapView<T>: View where T: MapViewModelLike {
                     .toolbar {
                         ToolbarItemGroup(placement: .navigationBarTrailing) {
                             Button {
-                                authInfo2 = nil
+                                authInfo = nil
                             } label: {
                                 Text(info.settings.cancel)
                             }

@@ -7,24 +7,21 @@ struct StatsView: View {
     @ObservedObject var vm: StatsViewModel
     
     var body: some View {
-        NavigationView {
-            List {
-                if let stats = vm.stats {
-                    ForEach(stats.yearly, id: \.year.value) { yearly in
-                        Section {
-                            ForEach(yearly.monthly, id: \.id) { monthly in
-                                PeriodStatView(stat: monthly, lang: PeriodStatLang.build(lang))
-                            }
-                        } header: {
-                            PeriodStatView(stat: yearly, lang: PeriodStatLang.build(lang))
+        BoatList {
+            if let stats = vm.stats {
+                ForEach(stats.yearly, id: \.year.value) { yearly in
+                    Section {
+                        ForEach(yearly.monthly, id: \.id) { monthly in
+                            PeriodStatView(stat: monthly, lang: PeriodStatLang.build(lang))
                         }
+                    } header: {
+                        PeriodStatView(stat: yearly, lang: PeriodStatLang.build(lang))
                     }
                 }
             }
-            .listStyle(.plain)
-            .task {
-                await vm.load()
-            }
+        }
+        .task {
+            await vm.load()
         }
         .navigationBarTitleDisplayMode(.large)
         .navigationTitle(lang.labels.statistics)

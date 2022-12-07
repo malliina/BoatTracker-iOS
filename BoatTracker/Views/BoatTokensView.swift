@@ -24,7 +24,7 @@ struct BoatTokensView: View {
     }
     
     var body: some View {
-        List {
+        BoatList {
             Section {
                 Toggle(lang.notifications, isOn: $vm.notificationsEnabled)
             } header: {
@@ -56,7 +56,6 @@ struct BoatTokensView: View {
                     .foregroundColor(color.secondaryText)
             }
         }
-        .listStyle(.plain)
         .navigationBarTitleDisplayMode(.large)
         .navigationTitle(lang.boats)
         .sheet(item: $rename) { boat in

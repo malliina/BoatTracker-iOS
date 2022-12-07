@@ -1,11 +1,3 @@
-//
-//  BoatCallout.swift
-//  BoatTracker
-//
-//  Created by Michael Skogberg on 10/02/2019.
-//  Copyright © 2019 Michael Skogberg. All rights reserved.
-//
-
 import Foundation
 import MapboxMaps
 import UIKit
@@ -16,9 +8,6 @@ class BoatCallout: UIView {
     static let spacing = 8
     static let inset = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
     
-//    weak var delegate: MGLCalloutViewDelegate?
-    
-//    var representedObject: MGLAnnotation
     var leftAccessoryView: UIView = UIView()
     var rightAccessoryView: UIView = UIView()
     

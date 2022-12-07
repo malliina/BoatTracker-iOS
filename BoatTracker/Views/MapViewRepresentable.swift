@@ -18,7 +18,7 @@ struct MapViewRepresentable: UIViewRepresentable {
     
     func makeUIView(context: Context) -> MapView {
         let camera = CameraOptions(center: defaultCenter, zoom: 10)
-        let token = try! MapVC.readMapboxToken()
+        let token = try! MapViewRepresentable.readMapboxToken()
         let options = MapInitOptions(resourceOptions: token, cameraOptions: camera, styleURI: nil)
         let mapView = MapView(frame: viewFrame, mapInitOptions: options)
         mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]

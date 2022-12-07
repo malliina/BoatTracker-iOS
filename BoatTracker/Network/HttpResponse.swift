@@ -43,7 +43,7 @@ class ResponseDetails {
     let code: Int
     let errors: [SingleError]
     
-    var message: String? { return errors.first?.message }
+    var message: String? { errors.first?.message }
     
     init(url: URL, code: Int, errors: [SingleError]) {
         self.url = url
