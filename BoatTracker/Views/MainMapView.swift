@@ -29,7 +29,7 @@ struct MainMapView<T>: View where T: MapViewModelLike {
             ZStack(alignment: .topLeading) {
                 MapViewRepresentable(
                     styleUri: $viewModel.styleUri,
-                    tapResult: $tapResult,
+                    tapped: $tapResult,
                     mapMode: $viewModel.mapMode,
                     coords: viewModel.coordsPublisher,
                     vessels: viewModel.vesselsPublisher,

@@ -7,7 +7,7 @@ struct MapViewRepresentable: UIViewRepresentable {
     let log = LoggerFactory.shared.vc(MapViewRepresentable.self)
     
     @Binding var styleUri: StyleURI?
-    @Binding var tapResult: Tapped?
+    @Binding var tapped: Tapped?
     @Binding var mapMode: MapMode
     let coords: Published<CoordsData?>.Publisher
     let vessels: Published<[Vessel]>.Publisher
@@ -117,7 +117,7 @@ struct MapViewRepresentable: UIViewRepresentable {
         }
         
         @objc func onSwipe(_ sender: UIPanGestureRecognizer) {
-            map.tapResult = nil
+            map.tapped = nil
             if sender.state == .began {
                 boatRenderer?.stay()
             }
@@ -165,11 +165,18 @@ struct MapViewRepresentable: UIViewRepresentable {
             // Tries matching the exact point first
             guard let senderView = sender.view, let taps = taps else { return }
             if let tapResult = await taps.onTap(point: point) {
-                map.tapResult = Tapped(source: senderView, point: point, result: tapResult)
+                map.tapped = Tapped(source: senderView, point: extractPoint(result: tapResult) ?? point, result: tapResult)
 //                log.info("Tapped \(tapped) at \(tapped.coordinate).")
             } else {
                 log.info("Tapped nothing of interest.")
-                map.tapResult = nil
+                map.tapped = nil
+            }
+        }
+        
+        private func extractPoint(result: TapResult) -> CGPoint? {
+            switch result {
+            case .mark(_, let point, _): return point
+            default: return nil
             }
         }
         

@@ -43,7 +43,7 @@ struct TappedRepresentable: UIViewControllerRepresentable {
             LimitView(limit: area, lang: lang)
         case .miniMark(let info, _):
             MinimalMarkView(info: info, lang: lang, finnishWords: finnishWords)
-        case .mark(let info, _):
+        case .mark(let info, _, _):
             MarkView(info: info, lang: lang, finnishWords: finnishWords)
         case .boat(let info):
             BoatView(info: info, lang: lang)

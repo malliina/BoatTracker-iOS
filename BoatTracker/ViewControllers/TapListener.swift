@@ -5,7 +5,7 @@ enum TapResult {
     case trophy(info: TrophyInfo, at: CLLocationCoordinate2D)
     case limit(area: LimitArea, at: CLLocationCoordinate2D)
     case miniMark(info: MinimalMarineSymbol, at: CLLocationCoordinate2D)
-    case mark(info: MarineSymbol, at: CLLocationCoordinate2D)
+    case mark(info: MarineSymbol, point: CGPoint, at: CLLocationCoordinate2D)
     case boat(info: BoatPoint)
     case vessel(info: Vessel)
     case area(info: FairwayArea, limit: LimitArea?)
@@ -67,11 +67,13 @@ class TapListener {
             log.warn("No coordinate for mark feature. Found \(features.count) features at \(point).")
             return nil
         }
+        let point = await pointAt(coord: coordinate)
         return features.first.flatMap { feature in
             let props = feature.feature.properties ?? [:]
             let full: TapResult? = props.parseOpt(MarineSymbol.self).map { symbol in
-                .mark(info: symbol, at: coordinate)
+                .mark(info: symbol, point: point, at: coordinate)
             }
+
             let minimal: TapResult? = props.parseOpt(MinimalMarineSymbol.self).map { symbol in
                 .miniMark(info: symbol, at: coordinate)
             }
@@ -137,6 +139,11 @@ class TapListener {
         return result.map { area in
             return .limit(area: area, at: mapView.mapboxMap.coordinate(for: point))
         }
+    }
+    
+    @MainActor
+    private func pointAt(coord: CLLocationCoordinate2D) -> CGPoint {
+        mapView.mapboxMap.point(for: coord)
     }
     
     private func queryLimitAreaInfo(_ point: CGPoint) async -> LimitArea? {
