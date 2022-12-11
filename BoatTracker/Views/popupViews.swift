@@ -167,7 +167,7 @@ struct AreaView: View {
     }
     
     var body: some View {
-        InfoView(title: info.owner, items: items())
+        InfoView(title: info.owner, items: items(), leftColumnSize: .fixed(limit != nil ? 100 : 80))
     }
 }
 
