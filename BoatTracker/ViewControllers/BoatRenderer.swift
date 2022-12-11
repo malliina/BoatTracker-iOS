@@ -3,6 +3,10 @@ import UIKit
 import MapboxMaps
 import SwiftUI
 
+struct TrophyPoint: Codable {
+    let top: CoordBody
+}
+
 class BoatRenderer {
     let log = LoggerFactory.shared.vc(BoatRenderer.self)
     var app: UIApplication { UIApplication.shared }

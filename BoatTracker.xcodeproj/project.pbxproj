@@ -11,9 +11,6 @@
 		1A6A6531279059D19746CE2B /* Files.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A6A693739B80A86DFB4EBF9 /* Files.swift */; };
 		1A6A675D048DFF6E1E0BE701 /* Credentials.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1A6A633812206E4A035E56A6 /* Credentials.plist */; };
 		6101D549220F75200051A427 /* languages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6101D548220F75200051A427 /* languages.swift */; };
-		6101D54B221057340051A427 /* mapCallouts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6101D54A221057340051A427 /* mapCallouts.swift */; };
-		6101D54D221057530051A427 /* BoatCallout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6101D54C221057530051A427 /* BoatCallout.swift */; };
-		6106448A21FDBC8300C9ED0D /* vesselAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6106448921FDBC8300C9ED0D /* vesselAnnotation.swift */; };
 		610EE3E121724CE10040FBC6 /* NSString+FontAwesome.m in Sources */ = {isa = PBXBuildFile; fileRef = 610EE3DA21724CDF0040FBC6 /* NSString+FontAwesome.m */; };
 		610EE3E221724CE10040FBC6 /* UIFont+FontAwesome.m in Sources */ = {isa = PBXBuildFile; fileRef = 610EE3DB21724CDF0040FBC6 /* UIFont+FontAwesome.m */; };
 		610EE3E321724CE10040FBC6 /* String+FontAwesome.swift in Sources */ = {isa = PBXBuildFile; fileRef = 610EE3DC21724CE00040FBC6 /* String+FontAwesome.swift */; };
@@ -78,7 +75,6 @@
 		61F4199521206F9200B1ED7D /* Arrays.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61F4199421206F9200B1ED7D /* Arrays.swift */; };
 		61F4199B2120B2F700B1ED7D /* ViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61F4199A2120B2F700B1ED7D /* ViewState.swift */; };
 		7D045D6A265A54A300B92EE8 /* Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D045D69265A54A300B92EE8 /* Auth.swift */; };
-		7D175C3D27BD80930050E29B /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 7D175C3C27BD80930050E29B /* SnapKit */; };
 		7D175C4527BD84990050E29B /* AppCenterAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 7D175C4427BD84990050E29B /* AppCenterAnalytics */; };
 		7D175C4727BD84990050E29B /* AppCenterCrashes in Frameworks */ = {isa = PBXBuildFile; productRef = 7D175C4627BD84990050E29B /* AppCenterCrashes */; };
 		7D175C4A27BD85300050E29B /* MapboxMaps in Frameworks */ = {isa = PBXBuildFile; productRef = 7D175C4927BD85300050E29B /* MapboxMaps */; };
@@ -87,7 +83,6 @@
 		7D175C5327BD876F0050E29B /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 7D175C5227BD876F0050E29B /* GoogleSignIn */; };
 		7D2CC0F3264D6EBD0091E05C /* MicrosoftAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D2CC0F2264D6EBD0091E05C /* MicrosoftAuth.swift */; };
 		7D528E6227B9682F00C55F06 /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D528E6127B9682F00C55F06 /* WebSocket.swift */; };
-		7D998D30275D38E3001064A6 /* MapPopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D998D2F275D38E3001064A6 /* MapPopup.swift */; };
 		7DDBA9A727773D3900108B24 /* AppleAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DDBA9A627773D3900108B24 /* AppleAuth.swift */; };
 		B02A812E2922C46900848949 /* LanguageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02A812D2922C46900848949 /* LanguageView.swift */; };
 		B02EC50C2909AE2700D21793 /* MapViewRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02EC50B2909AE2700D21793 /* MapViewRepresentable.swift */; };
@@ -95,6 +90,8 @@
 		B03383B32928E3D800974FFE /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B03383B22928E3D800974FFE /* StatsView.swift */; };
 		B03BC55A290D31EE00BA38EF /* MainMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B03BC559290D31EE00BA38EF /* MainMapView.swift */; };
 		B03F58A32940FEC0006B5DC1 /* BoatViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = B03F58A22940FEC0006B5DC1 /* BoatViews.swift */; };
+		B03F58A5294287FF006B5DC1 /* popupViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = B03F58A4294287FF006B5DC1 /* popupViews.swift */; };
+		B03F58A729428DB0006B5DC1 /* TappedRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B03F58A629428DB0006B5DC1 /* TappedRepresentable.swift */; };
 		B0485D60292414AE005A1FC5 /* BoatTokensView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0485D5F292414AE005A1FC5 /* BoatTokensView.swift */; };
 		B0485D6229256907005A1FC5 /* PeriodStatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0485D6129256907005A1FC5 /* PeriodStatView.swift */; };
 		B052E833292A286E00C09B89 /* TracksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B052E832292A286E00C09B89 /* TracksView.swift */; };
@@ -102,7 +99,6 @@
 		B052E837292A360F00C09B89 /* EditDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = B052E836292A360F00C09B89 /* EditDialog.swift */; };
 		B052E839292AA5FE00C09B89 /* ChartsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B052E838292AA5FE00C09B89 /* ChartsView.swift */; };
 		B0C5981A291ED81E00439237 /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C59819291ED81E00439237 /* AuthView.swift */; };
-		B0C5981C2920255200439237 /* SocialView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C5981B2920255200439237 /* SocialView.swift */; };
 		B0C5981E2920258B00439237 /* Tasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C5981D2920258B00439237 /* Tasks.swift */; };
 		B0C598202920EF8300439237 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C5981F2920EF8300439237 /* ProfileView.swift */; };
 		B0C598222920F02900439237 /* TrackSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C598212920F02900439237 /* TrackSummaryView.swift */; };
@@ -124,9 +120,6 @@
 		1A6A693739B80A86DFB4EBF9 /* Files.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Files.swift; sourceTree = "<group>"; };
 		1A6A6F29FF0942BF01A10434 /* SelectLanguageUI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectLanguageUI.swift; sourceTree = "<group>"; };
 		6101D548220F75200051A427 /* languages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = languages.swift; sourceTree = "<group>"; };
-		6101D54A221057340051A427 /* mapCallouts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = mapCallouts.swift; sourceTree = "<group>"; };
-		6101D54C221057530051A427 /* BoatCallout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatCallout.swift; sourceTree = "<group>"; };
-		6106448921FDBC8300C9ED0D /* vesselAnnotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = vesselAnnotation.swift; sourceTree = "<group>"; };
 		610EE3D921724CDE0040FBC6 /* BoatTracker-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BoatTracker-Bridging-Header.h"; sourceTree = "<group>"; };
 		610EE3DA21724CDF0040FBC6 /* NSString+FontAwesome.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+FontAwesome.m"; sourceTree = "<group>"; };
 		610EE3DB21724CDF0040FBC6 /* UIFont+FontAwesome.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIFont+FontAwesome.m"; sourceTree = "<group>"; };
@@ -202,7 +195,6 @@
 		7D045D69265A54A300B92EE8 /* Auth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Auth.swift; sourceTree = "<group>"; };
 		7D2CC0F2264D6EBD0091E05C /* MicrosoftAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrosoftAuth.swift; sourceTree = "<group>"; };
 		7D528E6127B9682F00C55F06 /* WebSocket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocket.swift; sourceTree = "<group>"; };
-		7D998D2F275D38E3001064A6 /* MapPopup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapPopup.swift; sourceTree = "<group>"; };
 		7DDBA9A627773D3900108B24 /* AppleAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleAuth.swift; sourceTree = "<group>"; };
 		B02A812D2922C46900848949 /* LanguageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageView.swift; sourceTree = "<group>"; };
 		B02EC50B2909AE2700D21793 /* MapViewRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewRepresentable.swift; sourceTree = "<group>"; };
@@ -210,6 +202,8 @@
 		B03383B22928E3D800974FFE /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
 		B03BC559290D31EE00BA38EF /* MainMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMapView.swift; sourceTree = "<group>"; };
 		B03F58A22940FEC0006B5DC1 /* BoatViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatViews.swift; sourceTree = "<group>"; };
+		B03F58A4294287FF006B5DC1 /* popupViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = popupViews.swift; sourceTree = "<group>"; };
+		B03F58A629428DB0006B5DC1 /* TappedRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TappedRepresentable.swift; sourceTree = "<group>"; };
 		B0485D5F292414AE005A1FC5 /* BoatTokensView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatTokensView.swift; sourceTree = "<group>"; };
 		B0485D6129256907005A1FC5 /* PeriodStatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeriodStatView.swift; sourceTree = "<group>"; };
 		B052E832292A286E00C09B89 /* TracksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TracksView.swift; sourceTree = "<group>"; };
@@ -217,7 +211,6 @@
 		B052E836292A360F00C09B89 /* EditDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditDialog.swift; sourceTree = "<group>"; };
 		B052E838292AA5FE00C09B89 /* ChartsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartsView.swift; sourceTree = "<group>"; };
 		B0C59819291ED81E00439237 /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
-		B0C5981B2920255200439237 /* SocialView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialView.swift; sourceTree = "<group>"; };
 		B0C5981D2920258B00439237 /* Tasks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tasks.swift; sourceTree = "<group>"; };
 		B0C5981F2920EF8300439237 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		B0C598212920F02900439237 /* TrackSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackSummaryView.swift; sourceTree = "<group>"; };
@@ -234,7 +227,6 @@
 				7D175C4727BD84990050E29B /* AppCenterCrashes in Frameworks */,
 				7D175C5027BD87110050E29B /* Charts in Frameworks */,
 				7D175C4D27BD85AE0050E29B /* MSAL in Frameworks */,
-				7D175C3D27BD80930050E29B /* SnapKit in Frameworks */,
 				7D175C5327BD876F0050E29B /* GoogleSignIn in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -344,7 +336,6 @@
 				61DE7F4420F3E6D100C95B3F /* AuthVM.swift */,
 				61BCBE7C2207730400EE74EB /* BoatRenderer.swift */,
 				613E82CF21A0789000D3C412 /* TimeFormatter.swift */,
-				7D998D2F275D38E3001064A6 /* MapPopup.swift */,
 				B02EC50D2909B41A00D21793 /* MapViewModel.swift */,
 				6173F248228CB99000A1E9B9 /* PathFinder.swift */,
 				61F4199A2120B2F700B1ED7D /* ViewState.swift */,
@@ -362,7 +353,6 @@
 				61F4199221206C4C00B1ED7D /* AttributionView.swift */,
 				B0C59819291ED81E00439237 /* AuthView.swift */,
 				61DE7F4A20F3ED3900C95B3F /* boatButtons.swift */,
-				6101D54C221057530051A427 /* BoatCallout.swift */,
 				6199E0E820F2325100A4009A /* BoatLabel.swift */,
 				613669B4216A98560043494A /* BoatSwitch.swift */,
 				61DE7F4820F3EB0700C95B3F /* BoatTextField.swift */,
@@ -373,18 +363,17 @@
 				B052E836292A360F00C09B89 /* EditDialog.swift */,
 				B02A812D2922C46900848949 /* LanguageView.swift */,
 				B03BC559290D31EE00BA38EF /* MainMapView.swift */,
-				6101D54A221057340051A427 /* mapCallouts.swift */,
 				B02EC50B2909AE2700D21793 /* MapViewRepresentable.swift */,
 				B0C598232921159900439237 /* NavLink.swift */,
 				B0485D6129256907005A1FC5 /* PeriodStatView.swift */,
+				B03F58A4294287FF006B5DC1 /* popupViews.swift */,
 				B0C5981F2920EF8300439237 /* ProfileView.swift */,
-				B0C5981B2920255200439237 /* SocialView.swift */,
 				61CD40D021163E0E00F31AA5 /* StatBox.swift */,
 				B03383B22928E3D800974FFE /* StatsView.swift */,
+				B03F58A629428DB0006B5DC1 /* TappedRepresentable.swift */,
 				B0C598212920F02900439237 /* TrackSummaryView.swift */,
 				B052E832292A286E00C09B89 /* TracksView.swift */,
 				B052E834292A2BEB00C09B89 /* TrackView.swift */,
-				6106448921FDBC8300C9ED0D /* vesselAnnotation.swift */,
 				61AB2C7E2132A63C009774DC /* viewExt.swift */,
 				613D5D232220AC09003FF8EB /* viewModels.swift */,
 			);
@@ -502,7 +491,6 @@
 			);
 			name = BoatTracker;
 			packageProductDependencies = (
-				7D175C3C27BD80930050E29B /* SnapKit */,
 				7D175C4427BD84990050E29B /* AppCenterAnalytics */,
 				7D175C4627BD84990050E29B /* AppCenterCrashes */,
 				7D175C4927BD85300050E29B /* MapboxMaps */,
@@ -571,7 +559,6 @@
 			);
 			mainGroup = 61B07C5320F21DC300D8B7E0;
 			packageReferences = (
-				7D175C3B27BD80930050E29B /* XCRemoteSwiftPackageReference "SnapKit" */,
 				7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */,
 				7D175C4827BD85300050E29B /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */,
 				7D175C4B27BD85AE0050E29B /* XCRemoteSwiftPackageReference "microsoft-authentication-library-for-objc" */,
@@ -622,10 +609,8 @@
 				61DE7F3F20F29F6900C95B3F /* BoatSocket.swift in Sources */,
 				61999FFB22A2E8F3003BD037 /* Json.swift in Sources */,
 				B02EC50C2909AE2700D21793 /* MapViewRepresentable.swift in Sources */,
-				6106448A21FDBC8300C9ED0D /* vesselAnnotation.swift in Sources */,
 				61DE7F4320F3AEFC00C95B3F /* models.swift in Sources */,
 				B02EC50E2909B41A00D21793 /* MapViewModel.swift in Sources */,
-				6101D54D221057530051A427 /* BoatCallout.swift in Sources */,
 				B0485D6229256907005A1FC5 /* PeriodStatView.swift in Sources */,
 				B052E833292A286E00C09B89 /* TracksView.swift in Sources */,
 				61ACE5C921309E5E00925265 /* BoatPrefs.swift in Sources */,
@@ -646,12 +631,12 @@
 				7D2CC0F3264D6EBD0091E05C /* MicrosoftAuth.swift in Sources */,
 				B0C5981E2920258B00439237 /* Tasks.swift in Sources */,
 				612F46A620F4AB70001A3003 /* Backend.swift in Sources */,
-				B0C5981C2920255200439237 /* SocialView.swift in Sources */,
-				6101D54B221057340051A427 /* mapCallouts.swift in Sources */,
+				B03F58A729428DB0006B5DC1 /* TappedRepresentable.swift in Sources */,
 				61ACE5CB2131667600925265 /* BoatTextView.swift in Sources */,
 				61DE7F4520F3E6D100C95B3F /* AuthVM.swift in Sources */,
 				6199E0F920F25EA100A4009A /* Credentials.swift in Sources */,
 				613E82D021A0789000D3C412 /* TimeFormatter.swift in Sources */,
+				B03F58A5294287FF006B5DC1 /* popupViews.swift in Sources */,
 				B03F58A32940FEC0006B5DC1 /* BoatViews.swift in Sources */,
 				6199E0E920F2325100A4009A /* BoatLabel.swift in Sources */,
 				61CD40CF211635FD00F31AA5 /* Dummy.swift in Sources */,
@@ -667,7 +652,6 @@
 				6199E0F520F2501E00A4009A /* errors.swift in Sources */,
 				619679FA20FBCDB100432672 /* TrackModels.swift in Sources */,
 				61BCBE7D2207730400EE74EB /* BoatRenderer.swift in Sources */,
-				7D998D30275D38E3001064A6 /* MapPopup.swift in Sources */,
 				61BCBE7F2208CC1C00EE74EB /* Layers.swift in Sources */,
 				6199E0EF20F24EC300A4009A /* Log.swift in Sources */,
 				613669BC216FDB3E0043494A /* notificationModels.swift in Sources */,
@@ -987,14 +971,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		7D175C3B27BD80930050E29B /* XCRemoteSwiftPackageReference "SnapKit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
-			requirement = {
-				kind = exactVersion;
-				version = 5.0.1;
-			};
-		};
 		7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/microsoft/appcenter-sdk-apple.git";
@@ -1038,11 +1014,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		7D175C3C27BD80930050E29B /* SnapKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 7D175C3B27BD80930050E29B /* XCRemoteSwiftPackageReference "SnapKit" */;
-			productName = SnapKit;
-		};
 		7D175C4427BD84990050E29B /* AppCenterAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */;

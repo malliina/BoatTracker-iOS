@@ -7,7 +7,7 @@ struct MapViewRepresentable: UIViewRepresentable {
     let log = LoggerFactory.shared.vc(MapViewRepresentable.self)
     
     @Binding var styleUri: StyleURI?
-    @Binding var popup: MapPopup?
+    @Binding var tapResult: Tapped?
     @Binding var mapMode: MapMode
     let coords: Published<CoordsData?>.Publisher
     let vessels: Published<[Vessel]>.Publisher
@@ -117,6 +117,7 @@ struct MapViewRepresentable: UIViewRepresentable {
         }
         
         @objc func onSwipe(_ sender: UIPanGestureRecognizer) {
+            map.tapResult = nil
             if sender.state == .began {
                 boatRenderer?.stay()
             }
@@ -150,6 +151,7 @@ struct MapViewRepresentable: UIViewRepresentable {
         }
         
         @objc func handleMapTap(sender: UITapGestureRecognizer) {
+            log.info("Tapped map...")
             let point = sender.location(in: sender.view)
             if sender.state == .ended {
                 Task {
@@ -162,32 +164,13 @@ struct MapViewRepresentable: UIViewRepresentable {
         private func handlePopover(sender: UITapGestureRecognizer, point: CGPoint) async {
             // Tries matching the exact point first
             guard let senderView = sender.view, let taps = taps else { return }
-            if let tapped = await taps.onTap(point: point) {
+            if let tapResult = await taps.onTap(point: point) {
+                map.tapResult = Tapped(source: senderView, point: point, result: tapResult)
 //                log.info("Tapped \(tapped) at \(tapped.coordinate).")
-                guard let popoverContent = popoverView(tapped) else { return }
-                displayDetails(child: popoverContent, senderView: senderView, point: point)
             } else {
                 log.info("Tapped nothing of interest.")
-                map.popup = nil
+                map.tapResult = nil
             }
-        }
-        
-        private func popoverView(_ tapped: CustomAnnotation) -> UIView? {
-            guard let lang = settings.lang, let finnishSpecials = settings.languages?.finnish.specialWords else { return nil }
-            return tapped.callout(lang: lang, finnishSpecials: finnishSpecials)
-        }
-        
-        func displayDetails(child: UIView, senderView: UIView, point: CGPoint) {
-            let popup = MapPopup(child: child, id: Randoms.shared.randomNonceString(length: 6))
-            popup.modalPresentationStyle = .popover
-            if let popover = popup.popoverPresentationController {
-                popover.delegate = self
-                popover.sourceView = senderView
-                popover.sourceRect = CGRect(origin: point, size: .zero)
-            } else {
-                log.info("No popover to configure")
-            }
-            map.popup = popup
         }
         
         /// Essential to make the popup show as a popup and not as a near-full-page sheet on iOS

@@ -86,6 +86,11 @@ struct ProfileView: View {
                     .foregroundColor(color.lightGray)
                     .frame(maxWidth: .infinity, alignment: .center)
             }
+            BoatSection {
+                SignoutButton(lang: lang, vm: vm) {
+                    dismiss()
+                }
+            }
         }
         .task {
             await vm.loadTracks(latest: info.current)
@@ -102,6 +107,35 @@ struct ProfileView: View {
     func Footer() -> some View {
         Spacer()
     }
+}
+
+struct SignoutButton: UIViewControllerRepresentable {
+    let lang: Lang
+    let vm: ProfileVM
+    let onSignOutComplete: () -> Void
+    @State var signOut = false
+    
+    func makeUIViewController(context: Context) -> UIViewController {
+        let button = Button {
+            signOut = true
+        } label: {
+            Text(lang.profile.logout)
+                .foregroundColor(.red)
+        }
+        return UIHostingController(rootView: button)
+    }
+    
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
+        if signOut {
+            Task {
+                signOut = false
+                await vm.signOut(from: uiViewController)
+                onSignOutComplete()
+            }
+        }
+    }
+    
+    typealias UIViewControllerType = UIViewController
 }
 
 class Modules {
@@ -152,6 +186,11 @@ class ProfileVM: ObservableObject, TracksDelegate {
             log.error("Unable to load tracks. \(error.describe)")
             await update(viewState: .failed)
         }
+    }
+    
+    func signOut(from: UIViewController) async {
+        log.info("Signing out...")
+        await Auth.shared.signOut(from: from)
     }
     
     @MainActor private func update(viewState: ViewState) {

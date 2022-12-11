@@ -17,7 +17,7 @@ struct MainMapView<T>: View where T: MapViewModelLike {
     @State var welcomeInfo: WelcomeInfo? = nil
     @State var authInfo: Lang? = nil
     @State var profileInfo: ProfileInfo? = nil
-    @State var popover: MapPopup? = nil
+    @State var tapResult: Tapped? = nil
     @State var showPopover: Bool = false
     
     init(viewModel: T) {
@@ -29,7 +29,7 @@ struct MainMapView<T>: View where T: MapViewModelLike {
             ZStack(alignment: .topLeading) {
                 MapViewRepresentable(
                     styleUri: $viewModel.styleUri,
-                    popup: $popover,
+                    tapResult: $tapResult,
                     mapMode: $viewModel.mapMode,
                     coords: viewModel.coordsPublisher,
                     vessels: viewModel.vesselsPublisher,
@@ -106,7 +106,11 @@ struct MainMapView<T>: View where T: MapViewModelLike {
             }
         }
         .background {
-            PopupRepresentable(popup: popover)
+            if let lang = viewModel.settings.lang,
+                let specials = viewModel.settings.languages?.finnish.specialWords {
+                TappedRepresentable(lang: lang, finnishWords: specials, tapped: $tapResult)
+            }
+            
         }
     }
 }

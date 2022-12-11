@@ -1,28 +1,8 @@
-//
-//  extensions.swift
-//  BoatTracker
-//
-//  Created by Michael Skogberg on 10/07/2018.
-//  Copyright © 2018 Michael Skogberg. All rights reserved.
-//
-
 import Foundation
 import UIKit
 
 extension UIViewController {
     var colors: BoatColors { return BoatColors.shared }
-    
-    func feedbackView(text: String) -> UIView {
-        let feedback = BoatLabel.build(text: text, alignment: .center, numberOfLines: 0)
-        let container = UIView()
-        container.addSubview(feedback)
-        feedback.snp.makeConstraints { (make) in
-            make.leading.equalToSuperview().offset(16)
-            make.trailing.equalToSuperview().inset(16)
-            make.centerY.equalToSuperview()
-        }
-        return container
-    }
     
     func navigate(to: UIViewController, style: UIModalPresentationStyle = .formSheet, transition: UIModalTransitionStyle = .coverVertical) {
         let nav = UINavigationController(rootViewController: to)
