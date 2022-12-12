@@ -98,6 +98,7 @@
 		B052E835292A2BEB00C09B89 /* TrackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B052E834292A2BEB00C09B89 /* TrackView.swift */; };
 		B052E837292A360F00C09B89 /* EditDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = B052E836292A360F00C09B89 /* EditDialog.swift */; };
 		B052E839292AA5FE00C09B89 /* ChartsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B052E838292AA5FE00C09B89 /* ChartsView.swift */; };
+		B0A23AC72947B90800704DCE /* DeleteDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A23AC62947B90800704DCE /* DeleteDialog.swift */; };
 		B0C5981A291ED81E00439237 /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C59819291ED81E00439237 /* AuthView.swift */; };
 		B0C5981E2920258B00439237 /* Tasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C5981D2920258B00439237 /* Tasks.swift */; };
 		B0C598202920EF8300439237 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C5981F2920EF8300439237 /* ProfileView.swift */; };
@@ -210,6 +211,7 @@
 		B052E834292A2BEB00C09B89 /* TrackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackView.swift; sourceTree = "<group>"; };
 		B052E836292A360F00C09B89 /* EditDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditDialog.swift; sourceTree = "<group>"; };
 		B052E838292AA5FE00C09B89 /* ChartsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartsView.swift; sourceTree = "<group>"; };
+		B0A23AC62947B90800704DCE /* DeleteDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteDialog.swift; sourceTree = "<group>"; };
 		B0C59819291ED81E00439237 /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
 		B0C5981D2920258B00439237 /* Tasks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tasks.swift; sourceTree = "<group>"; };
 		B0C5981F2920EF8300439237 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
@@ -335,13 +337,13 @@
 				61F4199021206A5600B1ED7D /* AttributionModels.swift */,
 				61DE7F4420F3E6D100C95B3F /* AuthVM.swift */,
 				61BCBE7C2207730400EE74EB /* BoatRenderer.swift */,
-				613E82CF21A0789000D3C412 /* TimeFormatter.swift */,
 				B02EC50D2909B41A00D21793 /* MapViewModel.swift */,
 				6173F248228CB99000A1E9B9 /* PathFinder.swift */,
-				61F4199A2120B2F700B1ED7D /* ViewState.swift */,
 				61832AAD220B69D400413FD0 /* TapListener.swift */,
+				613E82CF21A0789000D3C412 /* TimeFormatter.swift */,
 				619679F920FBCDB100432672 /* TrackModels.swift */,
 				612F46AF20F551CB001A3003 /* viewControllerExt.swift */,
+				61F4199A2120B2F700B1ED7D /* ViewState.swift */,
 				61ACE5C62130956A00925265 /* WelcomeSignedIn.swift */,
 			);
 			path = ViewControllers;
@@ -360,6 +362,7 @@
 				B0485D5F292414AE005A1FC5 /* BoatTokensView.swift */,
 				B03F58A22940FEC0006B5DC1 /* BoatViews.swift */,
 				B052E838292AA5FE00C09B89 /* ChartsView.swift */,
+				B0A23AC62947B90800704DCE /* DeleteDialog.swift */,
 				B052E836292A360F00C09B89 /* EditDialog.swift */,
 				B02A812D2922C46900848949 /* LanguageView.swift */,
 				B03BC559290D31EE00BA38EF /* MainMapView.swift */,
@@ -559,10 +562,10 @@
 			);
 			mainGroup = 61B07C5320F21DC300D8B7E0;
 			packageReferences = (
-				7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple.git" */,
-				7D175C4827BD85300050E29B /* XCRemoteSwiftPackageReference "mapbox-maps-ios.git" */,
+				7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */,
+				7D175C4827BD85300050E29B /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */,
 				7D175C4B27BD85AE0050E29B /* XCRemoteSwiftPackageReference "microsoft-authentication-library-for-objc" */,
-				7D175C4E27BD87110050E29B /* XCRemoteSwiftPackageReference "Charts.git" */,
+				7D175C4E27BD87110050E29B /* XCRemoteSwiftPackageReference "Charts" */,
 				7D175C5127BD876F0050E29B /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 			);
 			productRefGroup = 61B07C5D20F21DC300D8B7E0 /* Products */;
@@ -627,6 +630,7 @@
 				6199E0F120F24F1800A4009A /* HttpResponse.swift in Sources */,
 				61832AAE220B69D400413FD0 /* TapListener.swift in Sources */,
 				7D528E6227B9682F00C55F06 /* WebSocket.swift in Sources */,
+				B0A23AC72947B90800704DCE /* DeleteDialog.swift in Sources */,
 				61967A072103CAFD00432672 /* BoatColors.swift in Sources */,
 				7D2CC0F3264D6EBD0091E05C /* MicrosoftAuth.swift in Sources */,
 				B0C5981E2920258B00439237 /* Tasks.swift in Sources */,
@@ -971,7 +975,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple.git" */ = {
+		7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/microsoft/appcenter-sdk-apple.git";
 			requirement = {
@@ -979,7 +983,7 @@
 				version = 5.0.0;
 			};
 		};
-		7D175C4827BD85300050E29B /* XCRemoteSwiftPackageReference "mapbox-maps-ios.git" */ = {
+		7D175C4827BD85300050E29B /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/mapbox/mapbox-maps-ios.git";
 			requirement = {
@@ -995,7 +999,7 @@
 				version = 1.2.5;
 			};
 		};
-		7D175C4E27BD87110050E29B /* XCRemoteSwiftPackageReference "Charts.git" */ = {
+		7D175C4E27BD87110050E29B /* XCRemoteSwiftPackageReference "Charts" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/danielgindi/Charts.git";
 			requirement = {
@@ -1016,17 +1020,17 @@
 /* Begin XCSwiftPackageProductDependency section */
 		7D175C4427BD84990050E29B /* AppCenterAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple.git" */;
+			package = 7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */;
 			productName = AppCenterAnalytics;
 		};
 		7D175C4627BD84990050E29B /* AppCenterCrashes */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple.git" */;
+			package = 7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */;
 			productName = AppCenterCrashes;
 		};
 		7D175C4927BD85300050E29B /* MapboxMaps */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 7D175C4827BD85300050E29B /* XCRemoteSwiftPackageReference "mapbox-maps-ios.git" */;
+			package = 7D175C4827BD85300050E29B /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */;
 			productName = MapboxMaps;
 		};
 		7D175C4C27BD85AE0050E29B /* MSAL */ = {
@@ -1036,7 +1040,7 @@
 		};
 		7D175C4F27BD87110050E29B /* Charts */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 7D175C4E27BD87110050E29B /* XCRemoteSwiftPackageReference "Charts.git" */;
+			package = 7D175C4E27BD87110050E29B /* XCRemoteSwiftPackageReference "Charts" */;
 			productName = Charts;
 		};
 		7D175C5227BD876F0050E29B /* GoogleSignIn */ = {

@@ -15,7 +15,10 @@ struct ProfileView: View {
     
     var lang: Lang { info.lang }
     var summaryLang: SummaryLang { SummaryLang.build(lang) }
+    var profileLang: ProfileLang { lang.profile }
     var modules: Modules { vm.modules }
+    
+    @State var showDeleteConfirmation = false
     
     var body: some View {
         BoatList {
@@ -64,7 +67,7 @@ struct ProfileView: View {
             }
             BoatSection {
                 NavigationLink {
-                    SelectLanguageView(lang: lang.profile.languages, vm: modules.languages)
+                    SelectLanguageView(lang: profileLang.languages, vm: modules.languages)
                 } label: {
                     Text(lang.profile.language)
                 }
@@ -82,14 +85,33 @@ struct ProfileView: View {
                         .foregroundColor(color.lightGray)
                         .frame(maxWidth: .infinity, alignment: .center)
                 }
-                Text("\(lang.profile.signedInAs) \(info.user.email)")
+                Text("\(profileLang.signedInAs) \(info.user.email)")
                     .foregroundColor(color.lightGray)
                     .frame(maxWidth: .infinity, alignment: .center)
             }
             BoatSection {
-                SignoutButton(lang: lang, vm: vm) {
+                ViewControllerButton(profileLang.logout) { vc in
+                    await vm.signOut(from: vc)
                     dismiss()
                 }
+            }
+            BoatSection {
+                HStack {
+                    Spacer()
+                    Button(role: .destructive) {
+                        showDeleteConfirmation.toggle()
+                    } label: {
+                        Text(profileLang.deleteAccount)
+                    }
+                    Spacer()
+                }
+                
+            }
+        }
+        .sheet(isPresented: $showDeleteConfirmation) {
+            DeleteDialog(navTitle: profileLang.deleteAccount, message: "\(profileLang.signedInAs) \(info.user.email)", confirmation: profileLang.deleteAccountConfirmation, ctaTitle: profileLang.deleteAccount, cancel: lang.settings.cancel) { vc in
+                _ = await vm.deleteMe(from: vc)
+                dismiss()
             }
         }
         .task {
@@ -109,34 +131,48 @@ struct ProfileView: View {
     }
 }
 
-struct SignoutButton: UIViewControllerRepresentable {
-    let lang: Lang
-    let vm: ProfileVM
-    let onSignOutComplete: () -> Void
-    @State var signOut = false
+struct ViewControllerButton<S>: UIViewControllerRepresentable where S: PrimitiveButtonStyle {
+    let title: String
+    let role: ButtonRole?
+    let style: S
+    let action: (UIViewController) async -> Void
+    
+    init(_ title: String, role: ButtonRole? = nil, style: S = .automatic, action: @escaping (UIViewController) async -> Void) {
+        self.title = title
+        self.role = role
+        self.style = style
+        self.action = action
+    }
+    
+    func makeCoordinator() -> Coordinator {
+        Coordinator()
+    }
     
     func makeUIViewController(context: Context) -> UIViewController {
-        let button = Button {
-            signOut = true
+        let button = Button(role: .destructive) {
+            Task {
+                if let vc = context.coordinator.vc {
+                    await action(vc)
+                }
+            }
         } label: {
-            Text(lang.profile.logout)
+            Text(title)
                 .foregroundColor(.red)
-        }
+        }.buttonStyle(style)
         return UIHostingController(rootView: button)
     }
     
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
-        if signOut {
-            Task {
-                signOut = false
-                await vm.signOut(from: uiViewController)
-                onSignOutComplete()
-            }
-        }
+        context.coordinator.vc = uiViewController
     }
     
     typealias UIViewControllerType = UIViewController
+    
+    class Coordinator {
+        var vc: UIViewController? = nil
+    }
 }
+
 
 class Modules {
     let languages = LanguageVM()
@@ -191,6 +227,19 @@ class ProfileVM: ObservableObject, TracksDelegate {
     func signOut(from: UIViewController) async {
         log.info("Signing out...")
         await Auth.shared.signOut(from: from)
+    }
+    
+    func deleteMe(from: UIViewController) async -> Bool {
+        do {
+            _ = try await http.deleteMe()
+            log.info("Deleted user.")
+            await signOut(from: from)
+            return true
+        } catch {
+            log.error("Failed to delete user. \(error)")
+            return false
+        }
+        
     }
     
     @MainActor private func update(viewState: ViewState) {

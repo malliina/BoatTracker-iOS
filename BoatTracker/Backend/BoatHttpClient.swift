@@ -107,7 +107,7 @@ class BoatHttpClient {
             .to(SimpleMessage.self)
     }
     
-    func delete(user: Username) async throws -> SimpleMessage {
+    func deleteMe() async throws -> SimpleMessage {
         try await executeNoBody("/users/me/delete", method: HttpClient.post)
             .to(SimpleMessage.self)
     }
