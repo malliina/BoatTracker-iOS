@@ -29,38 +29,6 @@ class HttpClient {
         session = URLSession.shared
     }
     
-    func get(_ url: URL, headers: [String: String] = [:]) async throws -> HttpResponse {
-        let req = buildRequest(url: url, httpMethod: HttpClient.get, headers: headers)
-        return try await executeHttp(req)
-    }
-    
-    func patchJSON<T: Encodable>(_ url: URL, headers: [String: String] = [:], payload: T) async throws -> HttpResponse {
-        try await sendData(url, headers: headers, payload: payload, httpMethod: HttpClient.patch)
-    }
-    
-    func postJSON<T: Encodable>(_ url: URL, headers: [String: String] = [:], payload: T) async throws -> HttpResponse {
-        try await sendData(url, headers: headers, payload: payload, httpMethod: HttpClient.post)
-    }
-    
-    func postEmpty(_ url: URL, headers: [String: String] = [:]) async throws -> HttpResponse {
-        let req = buildRequest(url: url, httpMethod: HttpClient.post, headers: headers)
-        return try await executeHttp(req)
-    }
-    
-    func putJSON<T: Encodable>(_ url: URL, headers: [String: String] = [:], payload: T) async throws -> HttpResponse {
-        return try await sendData(url, headers: headers, payload: payload, httpMethod: HttpClient.put)
-    }
-    
-    func sendData<T: Encodable>(_ url: URL, headers: [String: String] = [:], payload: T?, httpMethod: String) async throws -> HttpResponse {
-        let req = buildRequestWithBody(url: url, httpMethod: httpMethod, headers: headers, body: payload)
-        return try await executeHttp(req)
-    }
-    
-    func delete(_ url: URL, headers: [String: String] = [:]) async throws -> HttpResponse {
-        let req = buildRequest(url: url, httpMethod: HttpClient.delete, headers: headers)
-        return try await executeHttp(req)
-    }
-    
     func executeHttp(_ req: URLRequest) async throws -> HttpResponse {
         let (data, response) = try await session.data(for: req)
         if let response = response as? HTTPURLResponse {
@@ -90,11 +58,6 @@ class HttpClient {
             req.addValue(value, forHTTPHeaderField: key)
         }
         return req
-    }
-    
-    func executeRequest(_ req: URLRequest, completionHandler: @escaping ((Data?, URLResponse?, Error?) -> Void)) {
-        let task = session.dataTask(with: req, completionHandler: completionHandler)
-        task.resume()
     }
 }
 
