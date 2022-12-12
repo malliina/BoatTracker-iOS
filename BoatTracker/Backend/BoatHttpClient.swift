@@ -49,100 +49,115 @@ class BoatHttpClient {
     }
     
     func pingAuth() async throws -> BackendInfo {
-        try await getParsed(BackendInfo.self, "/pingAuth")
+        try await get("/pingAuth").to(BackendInfo.self)
     }
     
     // Call after UI sign in completes
     func register(code: RegisterCode) async throws -> TokenResponse {
-        try await parsed(TokenResponse.self, "/users/me") { url in
-            try await self.client.postJSON(url, payload: code)
-        }
+        try await execute("/users/me", method: HttpClient.post, body: code)
+            .to(TokenResponse.self)
     }
     
     // Call on app startup
     func obtainValidToken(token: AccessToken) async throws -> TokenResponse {
         updateToken(token: token)
-        return try await parsed(TokenResponse.self, "/users/me/tokens") { url in
-            try await self.client.postEmpty(url, headers: self.postHeaders)
-        }
+        return try await executeNoBody("/users/me/tokens", method: HttpClient.post)
+            .to(TokenResponse.self)
     }
     
     func profile() async throws -> UserProfile {
-        let parsed = try await getParsed(UserContainer.self, "/users/me")
-        return parsed.user
+        try await get("/users/me").to(UserContainer.self).user
     }
     
     func tracks() async throws -> [TrackRef] {
-        let res = try await getParsed(TracksResponse.self, "/tracks")
-        return res.tracks
+        try await get("/tracks").to(TracksResponse.self).tracks
     }
     
     func stats() async throws -> StatsResponse {
-        try await getParsed(StatsResponse.self, "/stats?order=desc")
+        try await get("/stats?order=desc").to(StatsResponse.self)
     }
     
     func changeTrackTitle(name: TrackName, title: TrackTitle) async throws -> TrackResponse {
-        try await parsed(TrackResponse.self, "/tracks/\(name)") { url in
-            try await self.client.putJSON(url, headers: self.postHeaders, payload: ChangeTrackTitle(title: title))
-        }
+        try await execute("/tracks/\(name)", method: HttpClient.put, body: ChangeTrackTitle(title: title))
+            .to(TrackResponse.self)
     }
     
     func conf() async throws -> ClientConf {
-        try await getParsed(ClientConf.self, "/conf")
+        try await get("/conf").to(ClientConf.self)
     }
     
     func enableNotifications(token: PushToken) async throws -> SimpleMessage {
-        try await parsed(SimpleMessage.self, "/users/notifications") { url in
-            try await self.client.postJSON(url, headers: self.postHeaders, payload: PushPayload(token))
-        }
+        try await execute("/users/notifications", method: HttpClient.post, body: PushPayload(token))
+            .to(SimpleMessage.self)
     }
     
     func disableNotifications(token: PushToken) async throws -> SimpleMessage {
-        try await parsed(SimpleMessage.self, "/users/notifications/disable") { url in
-            try await self.client.postJSON(url, headers: self.postHeaders, payload: DisablePush(token: token))
-        }
+        try await execute("/users/notifications/disable", method: HttpClient.post, body: DisablePush(token: token))
+            .to(SimpleMessage.self)
     }
     
     func renameBoat(boat: Int, newName: BoatName) async throws -> Boat {
-        let res = try await parsed(BoatResponse.self, "/boats/\(boat)") { url in
-            try await self.client.patchJSON(url, headers: self.postHeaders, payload: ChangeBoatName(boatName: newName))
-        }
-        return res.boat
+        try await execute("/boats/\(boat)", method: HttpClient.patch, body: ChangeBoatName(boatName: newName))
+            .to(BoatResponse.self)
+            .boat
     }
     
     func changeLanguage(to: Language) async throws -> SimpleMessage {
-        try await parsed(SimpleMessage.self, "/users/me") { url in
-            try await self.client.putJSON(url, headers: self.postHeaders, payload: ChangeLanguage(language: to))
-        }
+        try await execute("/users/me", method: HttpClient.put, body: ChangeLanguage(language: to))
+            .to(SimpleMessage.self)
+    }
+    
+    func delete(user: Username) async throws -> SimpleMessage {
+        try await executeNoBody("/users/me/delete", method: HttpClient.post)
+            .to(SimpleMessage.self)
     }
     
     func shortestRoute(from: CLLocationCoordinate2D, to: CLLocationCoordinate2D) async throws -> RouteResult {
-        try await getParsed(RouteResult.self, "/routes/\(from.latitude)/\(from.longitude)/\(to.latitude)/\(to.longitude)")
+        try await get("/routes/\(from.latitude)/\(from.longitude)/\(to.latitude)/\(to.longitude)")
+            .to(RouteResult.self)
     }
     
-    func getParsed<T: Decodable>(_ t: T.Type, _ uri: String) async throws -> T {
-        try await parsed(t, uri) { url in
-            try await self.client.get(url, headers: self.defaultHeaders)
-        }
+    func get(_ path: String) async throws -> HttpResponse {
+        try await executeNoBody(path, method: HttpClient.get)
     }
     
-    func parsed<T : Decodable>(_ t: T.Type, _ uri: String, run: @escaping (URL) async throws -> HttpResponse, attempt: Int = 1) async throws -> T {
-        let url = fullUrl(to: uri)
-        let response = try await run(url)
+    func executeNoBody(_ path: String, method: String) async throws -> HttpResponse {
+        let dummy: String? = nil
+        return try await execute(path, method: method, body: dummy)
+    }
+    
+    func execute<T: Encodable>(_ path: String, method: String, body: T? = nil) async throws -> HttpResponse {
+        try await make(request: build(path: path, method: method, body: body))
+    }
+    
+    func make(request: URLRequest, attempt: Int = 1) async throws -> HttpResponse {
+        let response = try await client.executeHttp(request)
         if response.isStatusOK {
-            return try parseAs(t, response: response)
+            return response
         } else {
-            self.log.error("Request to '\(url)' failed with status '\(response.statusCode)'.")
+            self.log.error("Request to '\(request.url?.absoluteString ?? "no url")' failed with status '\(response.statusCode)'.")
             if attempt == 1 && response.isTokenExpired {
                 let token = try await Auth.shared.signInSilently()
                 self.updateToken(token: token?.token)
-                return try await parsed(t, uri, run: run, attempt: 2)
+                var retry = request
+                retry.setValue(token.map { t in BoatHttpClient.authValue(for: t.token) }, forHTTPHeaderField: Headers.authorization)
+                return try await make(request: retry, attempt: 2)
             } else {
                 let decoder = JSONDecoder()
                 let errors = (try? decoder.decode(Errors.self, from: response.data))?.errors ?? []
-                throw AppError.responseFailure(ResponseDetails(url: url, code: response.statusCode, errors: errors))
+                if let url = request.url {
+                    throw AppError.responseFailure(ResponseDetails(url: url, code: response.statusCode, errors: errors))
+                } else {
+                    let err = errors.headOption() ?? SingleError(message: "Failed to handle request.")
+                    throw AppError.simpleError(err)
+                }
             }
         }
+    }
+    
+    func build<T: Encodable>(path: String, method: String, body: T? = nil) -> URLRequest {
+        let headers = method == HttpClient.get ? defaultHeaders : postHeaders
+        return client.buildRequestWithBody(url: fullUrl(to: path), httpMethod: method, headers: headers, body: body)
     }
     
     func fullUrl(to: String) -> URL {
@@ -157,20 +172,26 @@ class BoatHttpClient {
 //            }
             return try decoder.decode(t, from: response.data)
         } catch let error as JsonError {
-            self.log.error(error.describe)
+            log.error(error.describe)
             throw AppError.parseError(error)
         } catch DecodingError.dataCorrupted(let ctx) {
-            self.log.error("Corrupted: \(ctx)")
+            log.error("Corrupted: \(ctx)")
             throw AppError.simple("Unknown parse error.")
         } catch DecodingError.typeMismatch(let t, let context) {
-            self.log.error("Type mismatch: \(t) ctx \(context)")
+            log.error("Type mismatch: \(t) ctx \(context)")
             throw AppError.simple("Unknown parse error.")
         } catch DecodingError.keyNotFound(let key, let context) {
-            self.log.error("Key not found: \(key) ctx \(context)")
+            log.error("Key not found: \(key) ctx \(context)")
             throw AppError.simple("Unknown parse error.")
         } catch let error {
-            self.log.error(error.localizedDescription)
+            log.error(error.localizedDescription)
             throw AppError.simple("Unknown parse error.")
         }
+    }
+}
+
+extension HttpResponse {
+    func to<T: Decodable>(_ t: T.Type) throws -> T {
+        try HttpParser.shared.parseAs(t, response: self)
     }
 }

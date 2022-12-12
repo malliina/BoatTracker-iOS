@@ -61,7 +61,7 @@ class HttpClient {
         return try await executeHttp(req)
     }
     
-    func executeHttp(_ req: URLRequest, retryCount: Int = 0) async throws -> HttpResponse {
+    func executeHttp(_ req: URLRequest) async throws -> HttpResponse {
         let (data, response) = try await session.data(for: req)
         if let response = response as? HTTPURLResponse {
             return HttpResponse(http: response, data: data)
