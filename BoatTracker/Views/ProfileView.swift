@@ -9,6 +9,7 @@ struct ProfileInfo: Identifiable {
 }
 
 struct ProfileView: View {
+    let log = LoggerFactory.shared.view(ProfileView.self)
     @Environment(\.dismiss) var dismiss
     let info: ProfileInfo
     @StateObject var vm: ProfileVM = ProfileVM()
@@ -19,7 +20,10 @@ struct ProfileView: View {
     var modules: Modules { vm.modules }
     
     @State var showDeleteConfirmation = false
-    
+    @State var confirm = false
+    @State var confirmed = false
+    @State var vc: UIViewController? = nil
+
     var body: some View {
         BoatList {
             BoatSection {
@@ -80,19 +84,29 @@ struct ProfileView: View {
                 }
             }
             BoatSection {
+                Text("\(profileLang.signedInAs) \(info.user.email)")
+                    .foregroundColor(color.lightGray)
+                    .frame(maxWidth: .infinity, alignment: .center)
                 if let versionText = vm.versionText(lang: lang) {
                     Text(versionText)
                         .foregroundColor(color.lightGray)
                         .frame(maxWidth: .infinity, alignment: .center)
                 }
-                Text("\(profileLang.signedInAs) \(info.user.email)")
-                    .foregroundColor(color.lightGray)
-                    .frame(maxWidth: .infinity, alignment: .center)
             }
             BoatSection {
-                ViewControllerButton(profileLang.logout) { vc in
-                    await vm.signOut(from: vc)
-                    dismiss()
+                HStack {
+                    Spacer()
+                    Button(role: .destructive) {
+                        Task {
+                            if let vc = vc {
+                                await vm.signOut(from: vc)
+                                dismiss()
+                            }
+                        }
+                    } label: {
+                        Text(profileLang.logout)
+                    }
+                    Spacer()
                 }
             }
             BoatSection {
@@ -103,16 +117,26 @@ struct ProfileView: View {
                     } label: {
                         Text(profileLang.deleteAccount)
                     }
+                    .confirmationDialog(profileLang.deleteAccountConfirmation, isPresented: $showDeleteConfirmation, titleVisibility: .visible, presenting: info.user.email) { email in
+                        Button(profileLang.deleteAccount, role: .destructive) {
+                            Task {
+                                if let vc = vc {
+                                    let success = await vm.deleteMe(from: vc)
+                                    if success {
+                                        dismiss()
+                                    }
+                                }
+                            }
+                        }
+                    } message: { email in
+                        Text("\(profileLang.signedInAs) \(email)")
+                    }
                     Spacer()
                 }
-                
             }
         }
-        .sheet(isPresented: $showDeleteConfirmation) {
-            DeleteDialog(navTitle: profileLang.deleteAccount, message: "\(profileLang.signedInAs) \(info.user.email)", confirmation: profileLang.deleteAccountConfirmation, ctaTitle: profileLang.deleteAccount, cancel: lang.settings.cancel) { vc in
-                _ = await vm.deleteMe(from: vc)
-                dismiss()
-            }
+        .background {
+            ControllerRepresentable(vc: $vc)
         }
         .task {
             await vm.loadTracks(latest: info.current)
@@ -120,59 +144,14 @@ struct ProfileView: View {
     }
     
     func BoatSection<Content: View>(@ViewBuilder content: () -> Content) -> some View {
-        Section(footer: Footer()) {
+        Section {
             content()
+        } footer: {
+            Spacer()
         }
         .listRowSeparator(.hidden)
     }
-    
-    func Footer() -> some View {
-        Spacer()
-    }
 }
-
-struct ViewControllerButton<S>: UIViewControllerRepresentable where S: PrimitiveButtonStyle {
-    let title: String
-    let role: ButtonRole?
-    let style: S
-    let action: (UIViewController) async -> Void
-    
-    init(_ title: String, role: ButtonRole? = nil, style: S = .automatic, action: @escaping (UIViewController) async -> Void) {
-        self.title = title
-        self.role = role
-        self.style = style
-        self.action = action
-    }
-    
-    func makeCoordinator() -> Coordinator {
-        Coordinator()
-    }
-    
-    func makeUIViewController(context: Context) -> UIViewController {
-        let button = Button(role: .destructive) {
-            Task {
-                if let vc = context.coordinator.vc {
-                    await action(vc)
-                }
-            }
-        } label: {
-            Text(title)
-                .foregroundColor(.red)
-        }.buttonStyle(style)
-        return UIHostingController(rootView: button)
-    }
-    
-    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
-        context.coordinator.vc = uiViewController
-    }
-    
-    typealias UIViewControllerType = UIViewController
-    
-    class Coordinator {
-        var vc: UIViewController? = nil
-    }
-}
-
 
 class Modules {
     let languages = LanguageVM()

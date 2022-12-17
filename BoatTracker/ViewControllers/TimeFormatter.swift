@@ -1,6 +1,5 @@
 import Foundation
 import Charts
-import UIKit
 
 class TimeFormatter: AxisValueFormatter {
     let formatter: DateFormatter

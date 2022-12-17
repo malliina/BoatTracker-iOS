@@ -23,6 +23,7 @@ struct EditDialog: View {
                     .disableAutocorrection(true)
                     .textFieldStyle(.roundedBorder)
                     .padding()
+                    .frame(maxWidth: 500)
                 Button {
                     Task {
                         await onSave(newName)
@@ -44,6 +45,7 @@ struct EditDialog: View {
                 }
             }
         }
+        .navigationViewStyle(.stack)
         .onAppear {
             newName = initialValue
         }

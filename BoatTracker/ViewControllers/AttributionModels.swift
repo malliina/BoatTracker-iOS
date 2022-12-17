@@ -5,7 +5,7 @@ import SwiftUI
 struct AppAttribution: Codable {
     let title: String
     let text: String?
-    let links: [Link]
+    let links: [TextAndUrl]
 }
 
 extension AppAttribution: Identifiable {
@@ -17,7 +17,7 @@ struct AttributionInfo: Codable {
     let attributions: [AppAttribution]
 }
 
-class Link: NSObject, Codable {
+class TextAndUrl: NSObject, Codable {
     let text: String
     let url: URL
     

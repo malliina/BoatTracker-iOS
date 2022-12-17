@@ -1,6 +1,4 @@
 import Foundation
-import UIKit
-import SwiftUI
 
 protocol TracksDelegate {
     func onTrack(_ track: TrackName)

@@ -96,8 +96,6 @@ struct LimitView: View {
                 VStack(alignment: .leading) {
                     ForEach(limit.types, id: \.hashValue) { l in
                         Text(l.translate(lang: lang.limits.types))
-//                            .multilineTextAlignment(.leading)
-//                            .lineLimit(nil)
                     }
                 }
             }

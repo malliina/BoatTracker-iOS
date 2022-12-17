@@ -12,7 +12,7 @@ struct SelectLanguageView<T>: View where T: LanguageProtocol {
         ]
     }
     var body: some View {
-        BoatList {
+        BoatList(rowSeparator: .automatic) {
             ForEach(languages) { language in
                 Button {
                     Task {

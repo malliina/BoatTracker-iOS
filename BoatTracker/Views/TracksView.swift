@@ -9,7 +9,7 @@ struct TracksView<T>: View where T: TracksProtocol {
     let onSelect: () -> Void
     
     var body: some View {
-        BoatList {
+        BoatList(rowSeparator: .automatic) {
             ForEach(vm.tracks) { track in
                 Button {
                     ActiveTrack.shared.selectedTrack = track.trackName

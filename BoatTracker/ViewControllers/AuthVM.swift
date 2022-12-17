@@ -1,8 +1,6 @@
 import Foundation
-import UIKit
 import MSAL
 import Combine
-import SwiftUI
 
 protocol WelcomeDelegate {
     func showWelcome(token: UserToken?) async

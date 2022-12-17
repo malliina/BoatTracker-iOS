@@ -1,11 +1,3 @@
-//
-//  BoatColors.swift
-//  BoatTracker
-//
-//  Created by Michael Skogberg on 21/07/2018.
-//  Copyright © 2018 Michael Skogberg. All rights reserved.
-//
-
 import Foundation
 import UIKit
 import SwiftUI
@@ -35,6 +27,7 @@ class BoatColor {
     var almostWhite: Color { Color(uiColor: ref.almostWhite) }
     var secondaryText: Color { Color(uiColor: ref.secondaryText) }
     var lightGray: Color { Color(uiColor: .lightGray) }
+    var lighterGray: Color { .gray.opacity(0.25) }
 }
 
 extension UIColor {

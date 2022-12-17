@@ -85,7 +85,6 @@ struct ChartRepresentable: UIViewRepresentable {
                 ChartDataEntry(x: Double(c.time.millis), y: c.depthMeters.meters, data: c.depthMeters as AnyObject)
             }
             speedDataSet.replaceEntries(speedDataSet.entries + speedEntries)
-            let entries = speedDataSet.entries.count
             depthDataSet.replaceEntries(depthDataSet.entries + depthEntries)
         }
     }

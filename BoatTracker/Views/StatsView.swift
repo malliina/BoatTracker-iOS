@@ -7,7 +7,7 @@ struct StatsView: View {
     @ObservedObject var vm: StatsViewModel
     
     var body: some View {
-        BoatList {
+        BoatList(rowSeparator: .automatic) {
             if let stats = vm.stats {
                 ForEach(stats.yearly, id: \.year.value) { yearly in
                     Section {
