@@ -368,10 +368,39 @@ extension BaseSymbol {
     }
 }
 
-struct MinimalMarineSymbol: BaseSymbol, Codable {
+enum TrafficMarkType: Decodable {
+    case speedLimit, noWaves, other
+    
+    init(from decoder: Decoder) throws {
+        let code = try decoder.singleValueContainer().decode(Int.self)
+        self = try TrafficMarkType.parse(code: code)
+    }
+    
+    func translate(lang: LimitTypes) -> String {
+        switch self {
+        case .speedLimit: return lang.speedLimit
+        case .noWaves: return lang.noWaves
+        case .other: return lang.unknown
+        }
+    }
+    
+    private static func parse(code: Int) throws -> TrafficMarkType {
+        switch code {
+        case 6: return .noWaves
+        case 11: return .speedLimit
+        default: return .other
+        }
+    }
+}
+
+struct MinimalMarineSymbol: BaseSymbol, Decodable {
     let owner: String
     let nameFi, nameSe, locationFi, locationSe: NonEmptyString?
-    let influence: ZoneOfInfluence
+    let influence: ZoneOfInfluence?
+    let trafficMarkType: TrafficMarkType?
+    let limit: Double?
+    
+    var speedLimit: Speed? { trafficMarkType == .speedLimit ? limit?.kmh : nil }
     
     private enum CodingKeys: String, CodingKey {
         case owner = "OMISTAJA"
@@ -380,6 +409,8 @@ struct MinimalMarineSymbol: BaseSymbol, Codable {
         case locationFi = "SIJAINTIS"
         case locationSe = "SIJAINTIR"
         case influence = "VAIKUTUSAL"
+        case trafficMarkType = "VLM_LAJI"
+        case limit = "RA_ARVO"
     }
 }
 
@@ -555,7 +586,7 @@ struct Vessel: Codable {
     let destination: String?
     let time: Timing
 
-    var speed: Speed { return sog }
+    var speed: Speed { sog }
 }
 
 struct VesselMeta: Codable {

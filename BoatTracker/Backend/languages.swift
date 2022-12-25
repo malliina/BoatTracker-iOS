@@ -100,7 +100,7 @@ struct LimitTypes: Codable {
     let noAttachment: String
     let noOvertaking: String
     let noRendezVous: String
-    let speedRecommendation: String
+    let speedRecommendation, unknown: String
 }
 
 struct LimitLang: Codable {

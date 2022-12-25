@@ -21,11 +21,21 @@ struct MinimalMarkView: View {
     var markLang: MarkLang { lang.mark }
     var language: Language { lang.language }
     
+    func markItem() -> InfoItem? {
+        guard let mark = info.trafficMarkType else { return nil }
+        return InfoItem(markLang.markType, mark.translate(lang: lang.limits.types))
+    }
+    func speedItem() -> InfoItem? {
+        guard let speed = info.speedLimit else { return nil }
+        return InfoItem(lang.limits.magnitude, speed.formattedKmh)
+    }
     func locationView() -> InfoItem? {
         guard let location = info.location(lang: language), info.hasLocation else { return nil }
         return InfoItem(markLang.location, location.value)
     }
     func items() -> [InfoItem] {
+        markItem().toList +
+        speedItem().toList +
         locationView().toList +
         [ InfoItem(markLang.owner, info.translatedOwner(finnish: finnishWords, translated: lang.specialWords)) ]
     }

@@ -63,6 +63,7 @@ class TapListener {
     
     private func handleMarks(_ point: CGPoint) async -> TapResult? {
         let features = (try? await queryFeatures(at: point, layerIds: Array(marksLayers))) ?? []
+//        log.info("Tapped \(features.count) mark features.")
         guard let coordinate = self.markCoordinate(features.first) else {
             log.warn("No coordinate for mark feature. Found \(features.count) features at \(point).")
             return nil
@@ -126,7 +127,7 @@ class TapListener {
         let areaInfo = await queryVisibleFeatureProps(point, layers: layers.fairwayAreas, t: FairwayArea.self)
         let limitInfo = await queryLimitAreaInfo(point)
         if let area = areaInfo {
-            let coord = mapView.mapboxMap.coordinate(for: point)
+            // let coord = mapView.mapboxMap.coordinate(for: point)
             return .area(info: area, limit: limitInfo)
         } else {
             return nil
