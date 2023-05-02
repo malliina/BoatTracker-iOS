@@ -198,6 +198,7 @@
 		B052E834292A2BEB00C09B89 /* TrackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackView.swift; sourceTree = "<group>"; };
 		B052E836292A360F00C09B89 /* EditDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditDialog.swift; sourceTree = "<group>"; };
 		B052E838292AA5FE00C09B89 /* ChartsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartsView.swift; sourceTree = "<group>"; };
+		B05D66962A01780B002E784F /* ci_post_clone.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_post_clone.sh; sourceTree = "<group>"; };
 		B0C59819291ED81E00439237 /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
 		B0C5981D2920258B00439237 /* Tasks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tasks.swift; sourceTree = "<group>"; };
 		B0C5981F2920EF8300439237 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
@@ -382,6 +383,7 @@
 		61B07C5320F21DC300D8B7E0 = {
 			isa = PBXGroup;
 			children = (
+				B05D66952A0177BF002E784F /* ci_scripts */,
 				61B07C5E20F21DC300D8B7E0 /* BoatTracker */,
 				61B07C7320F21DC400D8B7E0 /* BoatTrackerTests */,
 				61B07C5D20F21DC300D8B7E0 /* Products */,
@@ -446,6 +448,14 @@
 				7D528E6127B9682F00C55F06 /* WebSocket.swift */,
 			);
 			path = Backend;
+			sourceTree = "<group>";
+		};
+		B05D66952A0177BF002E784F /* ci_scripts */ = {
+			isa = PBXGroup;
+			children = (
+				B05D66962A01780B002E784F /* ci_post_clone.sh */,
+			);
+			path = ci_scripts;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

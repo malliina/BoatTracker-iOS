@@ -1,11 +1,3 @@
-//
-//  WebSocket.swift
-//  BoatTracker
-//
-//  Created by Michael Skogberg on 13.2.2022.
-//  Copyright © 2022 Michael Skogberg. All rights reserved.
-//
-
 import Foundation
 
 protocol WebSocketMessageDelegate {

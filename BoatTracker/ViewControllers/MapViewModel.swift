@@ -25,6 +25,7 @@ extension MapViewModel: BoatSocketDelegate {
     
     @MainActor private func update(coordsData: CoordsData) {
         coords = coordsData
+        log.info("Got \(coordsData.coords.count) coords")
     }
 }
 

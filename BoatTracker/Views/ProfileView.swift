@@ -39,6 +39,8 @@ struct ProfileView: View {
                         ProgressView()
                         Spacer()
                     }.frame(height: 228)
+                } else if vm.state == .failed {
+                    Text("Failed to load tracks.")
                 } else {
                     EmptyView()
                 }

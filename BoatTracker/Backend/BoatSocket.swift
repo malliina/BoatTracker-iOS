@@ -65,7 +65,7 @@ class BoatSocket {
         let decoder = JSONDecoder()
         do {
             let event = try decoder.decode(BoatEvent.self, from: json)
-//            log.debug("Got \(event)")
+            log.info("Got \(event)")
             switch event.event {
             case "ping":
                 ()
