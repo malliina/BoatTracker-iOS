@@ -50,6 +50,7 @@ protocol TrackInfo {
     var avgSpeed: Speed? { get }
     var avgWaterTemp: Temperature? { get }
     var startDate: String { get }
+    var sourceType: SourceType { get }
 }
 
 struct TrackInfo2: TrackInfo {
@@ -59,6 +60,7 @@ struct TrackInfo2: TrackInfo {
     let avgSpeed: Speed?
     let avgWaterTemp: Temperature?
     let startDate: String
+    let sourceType: SourceType
 }
 
 extension TrackRef: TrackInfo { }
@@ -68,6 +70,7 @@ struct TrackSummaryView: View {
     let lang: SummaryLang
     let spacingBig: CGFloat = 36
     let verticalSpacing: CGFloat = 12
+    var isBoat: Bool { track.sourceType.isBoat }
     var body: some View {
         VStack {
             HStack {
@@ -77,9 +80,9 @@ struct TrackSummaryView: View {
             }
             .padding(.vertical, verticalSpacing)
             HStack {
-                Stat(lang.topSpeed, track.topSpeed?.description ?? lang.notAvailable)
+                Stat(lang.topSpeed, (isBoat ? track.topSpeed?.formattedKnots : track.topSpeed?.formattedKmh) ?? lang.notAvailable)
                 Spacer().frame(width: spacingBig)
-                Stat(lang.avgSpeed, track.avgSpeed?.description ?? lang.notAvailable)
+                Stat(lang.avgSpeed, (isBoat ? track.avgSpeed?.formattedKnots : track.avgSpeed?.formattedKmh) ?? lang.notAvailable)
             }
             .padding(.vertical, verticalSpacing)
             HStack {
@@ -99,7 +102,7 @@ struct TrackSummaryView: View {
 
 struct TrackSummaryPreviews: PreviewProvider {
     static var previews: some View {
-        let info = TrackInfo2(duration: 1200.seconds, distanceMeters: 2000.meters, topSpeed: 40.knots, avgSpeed: 32.knots, avgWaterTemp: 14.celsius, startDate: "Today")
+        let info = TrackInfo2(duration: 1200.seconds, distanceMeters: 2000.meters, topSpeed: 40.knots, avgSpeed: 32.knots, avgWaterTemp: 14.celsius, startDate: "Today", sourceType: .boat)
         Group {
             TrackSummaryView(track: info, lang: SummaryLang.preview)
         }

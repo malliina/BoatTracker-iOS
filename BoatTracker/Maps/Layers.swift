@@ -1,17 +1,10 @@
-//
-//  Layers.swift
-//  BoatTracker
-//
-//  Created by Michael Skogberg on 04/02/2019.
-//  Copyright © 2019 Michael Skogberg. All rights reserved.
-//
-
 import Foundation
 import MapboxMaps
 
 class Layers {
     static let log = LoggerFactory.shared.boat(Layers.self)
     static let boatIcon: String = "boat-resized-opt-30"
+    static let carIcon: String = "car4"
     static let trophyIcon: String = "trophy-gold-path"
     static let routeStartIcon: String = "flag"
     static let routeEndIcon: String = "flag-checkered"

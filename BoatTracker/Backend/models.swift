@@ -1,13 +1,40 @@
-//
-//  models.swift
-//  BoatTracker
-//
-//  Created by Michael Skogberg on 09/07/2018.
-//  Copyright © 2018 Michael Skogberg. All rights reserved.
-//
-
 import Foundation
 import MapboxMaps
+
+enum SourceType: Codable, Equatable {
+    case vehicle
+    case boat
+    case other(name: String)
+    
+    var stringify: String {
+        switch self {
+        case .boat: return SourceType.boatKey
+        case .vehicle: return SourceType.vehicleKey
+        case .other(let name): return name
+        }
+    }
+    var isBoat: Bool { self == SourceType.boat }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let s = try container.decode(String.self)
+        self = try SourceType.parse(s: s)
+    }
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(stringify)
+    }
+    
+    static let boatKey = "boat"
+    static let vehicleKey = "vehicle"
+    static func parse(s: String) throws -> SourceType {
+        switch s {
+        case SourceType.vehicleKey: return .vehicle
+        case SourceType.boatKey: return .boat
+        default: return .other(name: s)
+        }
+    }
+}
 
 enum MarkType: Decodable {
     case unknown
@@ -678,6 +705,7 @@ struct TrackRef: Codable, Identifiable {
     let boatName: BoatName
     let username: Username
 
+    let sourceType: SourceType
     let topSpeed: Speed?
     let avgSpeed: Speed?
     let distanceMeters: Distance

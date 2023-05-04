@@ -70,10 +70,10 @@ class BoatRenderer {
         let isUpdate = previousTrail != nil && !coords.isEmpty
         history.updateValue(newTrail, forKey: track)
         let polyline: FeatureCollection = speedFeatures(coords: newTrail)
-        var trail: GeoJSONSource = try trails[track] ?? initEmptyLayers(track: event.from, to: style)
+        var trail: GeoJSONSource = try trails[track] ?? initEmptyLayers(track: from, to: style)
         let coll = GeoJSONSourceData.featureCollection(polyline)
         trail.data = coll
-        try style.updateGeoJSONSource(withId: trailName(for: event.from.trackName), geoJSON: .featureCollection(polyline))
+        try style.updateGeoJSONSource(withId: trailName(for: from.trackName), geoJSON: .featureCollection(polyline))
         // Updates boat icon position
         guard let lastCoord = coords.last, let iconLayer = boatIcons[track] else { return }
         let dict = try Json.shared.write(from: BoatPoint(from: from, coord: lastCoord))
@@ -87,8 +87,9 @@ class BoatRenderer {
         let lastTwo = Array(newTrail.suffix(2)).map { $0.coord }
         let bearing = lastTwo.count == 2 ? Geo.shared.bearing(from: lastTwo[0], to: lastTwo[1]) : nil
         if let bearing = bearing {
+            let adjustedBearing = from.sourceType.isBoat ? bearing : (bearing + 90).truncatingRemainder(dividingBy: 360)
             try style.updateLayer(withId: iconLayer.id, type: SymbolLayer.self) { layer in
-                layer.iconRotate = .constant(bearing)
+                layer.iconRotate = .constant(adjustedBearing)
             }
         }
         // Updates trophy
@@ -141,7 +142,9 @@ class BoatRenderer {
         
         // Boat icon
         let iconId = iconName(for: trackName)
-        let iconData = LayerSource(iconId: iconId, iconImageName: Layers.boatIcon, iconSize: 0.7)
+        let iconData = track.sourceType.isBoat ?
+            LayerSource(iconId: iconId, iconImageName: Layers.boatIcon, iconSize: 0.7) :
+            LayerSource(iconId: iconId, iconImageName: Layers.carIcon, iconSize: 0.5)
         try iconData.install(to: style, id: iconId)
         boatIcons.updateValue(iconData.layer, forKey: trackName)
         
