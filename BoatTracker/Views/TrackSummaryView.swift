@@ -32,15 +32,15 @@ struct StatView: View {
 }
 
 struct SummaryLang {
-    let tracks, duration, distance, topSpeed, avgSpeed, waterTemp, date, notAvailable, edit, rename, newName, cancel: String
+    let tracks, duration, distance, topSpeed, avgSpeed, temperature, waterTemp, date, notAvailable, edit, rename, newName, cancel: String
     
     static func build(_ lang: Lang) -> SummaryLang {
         let track = lang.track
         let settings = lang.settings
-        return SummaryLang(tracks: track.tracks, duration: track.duration, distance: track.distance, topSpeed: track.topSpeed, avgSpeed: track.avgSpeed, waterTemp: track.waterTemp, date: track.date, notAvailable: lang.messages.notAvailable, edit: settings.edit, rename: settings.rename, newName: settings.newName, cancel: settings.cancel)
+        return SummaryLang(tracks: track.tracks, duration: track.duration, distance: track.distance, topSpeed: track.topSpeed, avgSpeed: track.avgSpeed, temperature: track.temperature, waterTemp: track.waterTemp, date: track.date, notAvailable: lang.messages.notAvailable, edit: settings.edit, rename: settings.rename, newName: settings.newName, cancel: settings.cancel)
     }
     
-    static let preview = SummaryLang(tracks: "Tracks", duration: "Duration", distance: "Distance", topSpeed: "Top speed", avgSpeed: "Avg speed", waterTemp: "Water temp", date: "Date", notAvailable: "N/A", edit: "Edit", rename: "Rename", newName: "New name", cancel: "Cancel")
+    static let preview = SummaryLang(tracks: "Tracks", duration: "Duration", distance: "Distance", topSpeed: "Top speed", avgSpeed: "Avg speed", temperature: "Temperature", waterTemp: "Water temp", date: "Date", notAvailable: "N/A", edit: "Edit", rename: "Rename", newName: "New name", cancel: "Cancel")
 }
 
 protocol TrackInfo {
@@ -49,6 +49,7 @@ protocol TrackInfo {
     var topSpeed: Speed? { get }
     var avgSpeed: Speed? { get }
     var avgWaterTemp: Temperature? { get }
+    var avgOutsideTemp: Temperature? { get }
     var startDate: String { get }
     var sourceType: SourceType { get }
 }
@@ -59,6 +60,7 @@ struct TrackInfo2: TrackInfo {
     let topSpeed: Speed?
     let avgSpeed: Speed?
     let avgWaterTemp: Temperature?
+    let avgOutsideTemp: Temperature?
     let startDate: String
     let sourceType: SourceType
 }
@@ -80,13 +82,17 @@ struct TrackSummaryView: View {
             }
             .padding(.vertical, verticalSpacing)
             HStack {
-                Stat(lang.topSpeed, (isBoat ? track.topSpeed?.formattedKnots : track.topSpeed?.formattedKmh) ?? lang.notAvailable)
+                Stat(lang.topSpeed, track.topSpeed?.formatted(isBoat: isBoat) ?? lang.notAvailable)
                 Spacer().frame(width: spacingBig)
-                Stat(lang.avgSpeed, (isBoat ? track.avgSpeed?.formattedKnots : track.avgSpeed?.formattedKmh) ?? lang.notAvailable)
+                Stat(lang.avgSpeed, track.avgSpeed?.formatted(isBoat: isBoat) ?? lang.notAvailable)
             }
             .padding(.vertical, verticalSpacing)
             HStack {
-                Stat(lang.waterTemp, track.avgWaterTemp?.description ?? lang.notAvailable)
+                if isBoat {
+                    Stat(lang.waterTemp, track.avgWaterTemp?.description ?? lang.notAvailable)
+                } else {
+                    Stat(lang.temperature, track.avgOutsideTemp?.description ?? lang.notAvailable)
+                }
                 Spacer().frame(width: spacingBig)
                 Stat(lang.date, track.startDate)
             }
@@ -102,7 +108,7 @@ struct TrackSummaryView: View {
 
 struct TrackSummaryPreviews: PreviewProvider {
     static var previews: some View {
-        let info = TrackInfo2(duration: 1200.seconds, distanceMeters: 2000.meters, topSpeed: 40.knots, avgSpeed: 32.knots, avgWaterTemp: 14.celsius, startDate: "Today", sourceType: .boat)
+        let info = TrackInfo2(duration: 1200.seconds, distanceMeters: 2000.meters, topSpeed: 40.knots, avgSpeed: 32.knots, avgWaterTemp: 14.celsius, avgOutsideTemp: 11.celsius, startDate: "Today", sourceType: .boat)
         Group {
             TrackSummaryView(track: info, lang: SummaryLang.preview)
         }

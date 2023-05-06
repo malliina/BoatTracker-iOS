@@ -1,11 +1,3 @@
-//
-//  languages.swift
-//  BoatTracker
-//
-//  Created by Michael Skogberg on 09/02/2019.
-//  Copyright © 2019 Michael Skogberg. All rights reserved.
-//
-
 import Foundation
 
 struct SpecialCategory: Codable {
@@ -41,7 +33,7 @@ struct AisLang: Codable {
 }
 
 struct TrackLang: Codable {
-    let track, boats, tracks, days, routes, speed, water, depth, top, duration, distance, topSpeed, avgSpeed, waterTemp, date, trackHistory, graph: String
+    let track, boats, tracks, days, routes, speed, water, depth, top, duration, distance, topSpeed, avgSpeed, temperature, waterTemp, date, trackHistory, graph: String
 }
 
 struct MarkTypeLang: Codable {

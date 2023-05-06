@@ -4,13 +4,14 @@ import SwiftUI
 struct TrophyInfo {
     let speed: Speed
     let dateTime: String
+    let isBoat: Bool
 }
 
 struct TrophyView: View {
     let info: TrophyInfo
     
     var body: some View {
-        InfoView(title: info.speed.formattedKnots, footer: info.dateTime)
+        InfoView(title: info.speed.formatted(isBoat: info.isBoat), footer: info.dateTime)
     }
 }
 
@@ -27,7 +28,7 @@ struct MinimalMarkView: View {
     }
     func speedItem() -> InfoItem? {
         guard let speed = info.speedLimit else { return nil }
-        return InfoItem(lang.limits.magnitude, speed.formattedKmh)
+        return InfoItem(lang.limits.magnitude, speed.formattedKph)
     }
     func locationView() -> InfoItem? {
         guard let location = info.location(lang: language), info.hasLocation else { return nil }
@@ -91,7 +92,7 @@ struct LimitView: View {
     
     func speedItem() -> InfoItem? {
         guard let speed = limit.limit else { return nil }
-        return InfoItem(lang.limits.magnitude, speed.formattedKmh)
+        return InfoItem(lang.limits.magnitude, speed.formattedKph)
     }
     func fairwayItem() -> InfoItem? {
         guard let fairway = limit.fairwayName else { return nil }

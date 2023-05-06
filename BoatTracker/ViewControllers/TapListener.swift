@@ -106,7 +106,7 @@ class TapListener {
         if !layers.isEmpty {
             let result = await queryVisibleFeatureProps(point, layers: Array(layers), t: TrophyPoint.self)
             return result.map { point in
-                .trophy(info: TrophyInfo(speed: point.top.speed, dateTime: point.top.time.dateTime), at: point.top.coord)
+                    .trophy(info: TrophyInfo(speed: point.top.speed, dateTime: point.top.time.dateTime, isBoat: point.isBoat), at: point.top.coord)
             }
         } else {
             return nil

@@ -5,6 +5,8 @@ import SwiftUI
 
 struct TrophyPoint: Codable {
     let top: CoordBody
+    let sourceType: SourceType
+    var isBoat: Bool { sourceType == .boat }
 }
 
 class BoatRenderer {
@@ -96,7 +98,7 @@ class BoatRenderer {
         let top = from.topPoint
         guard let trophyLayer = trophyIcons[track] else { return }
         var trophyFeature = Feature(geometry: .point(.init(top.coord)))
-        trophyFeature.properties = try Json.shared.write(from: TrophyPoint(top: top))
+        trophyFeature.properties = try Json.shared.write(from: TrophyPoint(top: top, sourceType: from.sourceType))
         if let trophySourceId = trophyLayer.source {
             try style.updateGeoJSONSource(withId: trophySourceId, geoJSON: .feature(trophyFeature))
         }

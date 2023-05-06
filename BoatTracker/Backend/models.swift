@@ -711,6 +711,7 @@ struct TrackRef: Codable, Identifiable {
     let distanceMeters: Distance
     let duration: Duration
     let avgWaterTemp: Temperature?
+    let avgOutsideTemp: Temperature?
     let topPoint: CoordBody
     let times: Times
     
