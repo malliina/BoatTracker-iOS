@@ -606,7 +606,7 @@ struct Vessel: Codable {
     let heading: Double?
     let cog: Double
     let sog: Speed
-    let shipType: Int
+//    let shipType: Int
     let draft: Distance
     let coord: CLLocationCoordinate2D
     let timestampMillis: Double
@@ -666,6 +666,8 @@ struct CoordBody: Codable, MeasuredCoord {
     let speed: Speed
     let depthMeters: Distance
     let waterTemp: Temperature
+    let outsideTemp: Temperature?
+    let altitude: Distance?
     let time: Timing
 }
 

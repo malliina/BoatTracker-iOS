@@ -4,14 +4,27 @@ import SwiftUI
 struct TrophyInfo {
     let speed: Speed
     let dateTime: String
+    let outsideTemp: Temperature?
+    let altitude: Distance?
     let isBoat: Bool
 }
 
 struct TrophyView: View {
     let info: TrophyInfo
+    let lang: TrackLang
+    
+    func tempItem() -> InfoItem? {
+        guard let temp = info.outsideTemp else { return nil }
+        return InfoItem(lang.temperature, temp.description)
+    }
+    
+    func altitudeItem() -> InfoItem? {
+        guard let altitude = info.altitude else { return nil }
+        return InfoItem(lang.env.altitude, altitude.formatMeters)
+    }
     
     var body: some View {
-        InfoView(title: info.speed.formatted(isBoat: info.isBoat), footer: info.dateTime)
+        InfoView(title: info.speed.formatted(isBoat: info.isBoat), items: tempItem().toList + altitudeItem().toList, footer: info.dateTime)
     }
 }
 

@@ -38,7 +38,7 @@ struct TappedRepresentable: UIViewControllerRepresentable {
         let result = from.result
         switch result {
         case .trophy(let info, _):
-            TrophyView(info: info)
+            TrophyView(info: info, lang: lang.track)
         case .limit(let area, _):
             LimitView(limit: area, lang: lang)
         case .miniMark(let info, _):

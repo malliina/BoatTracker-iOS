@@ -32,8 +32,13 @@ struct AisLang: Codable {
     let draft, destination, shipType: String
 }
 
+struct EnvLang: Codable {
+    let altitude: String
+}
+
 struct TrackLang: Codable {
     let track, boats, tracks, days, routes, speed, water, depth, top, duration, distance, topSpeed, avgSpeed, temperature, waterTemp, date, trackHistory, graph: String
+    let env: EnvLang
 }
 
 struct MarkTypeLang: Codable {
