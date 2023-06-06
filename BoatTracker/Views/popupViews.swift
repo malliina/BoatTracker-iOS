@@ -151,7 +151,7 @@ struct VesselView: View {
     
     func items() -> [InfoItem] {
         destinationItem().toList +
-        [ InfoItem(lang.track.speed, vessel.speed.description) ] +
+        [ InfoItem(lang.track.speed, vessel.speed.formattedKnots) ] +
         [ InfoItem(lang.ais.draft, vessel.draft.formatMeters) ]
     }
     

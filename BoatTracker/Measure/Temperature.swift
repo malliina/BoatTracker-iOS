@@ -13,15 +13,15 @@ public struct Temperature: Comparable, CustomStringConvertible, DoubleCodable {
     
     let celsius: Double
     
-    var value: Double { return celsius }
+    var value: Double { celsius }
     
     public init(_ celsius: Double) {
         self.celsius = celsius
     }
     
-    var rounded: String { return String(format: "%.2f", celsius) }
+    var rounded: String { String(format: "%.2f", celsius) }
     
-    public var description: String { return "\(rounded) ℃" }
+    public var description: String { "\(rounded) ℃" }
     
     public static func == (lhs: Temperature, rhs: Temperature) -> Bool {
         return lhs.celsius == rhs.celsius
@@ -33,13 +33,13 @@ public struct Temperature: Comparable, CustomStringConvertible, DoubleCodable {
 }
 
 public extension Double {
-    var celsius: Temperature { return Temperature(self) }
-    var fahrenheit: Temperature { return Temperature(Temperature.fahrenheitToCelsius(f: self)) }
-    var kelvin: Temperature { return Temperature(Temperature.kelvinToCelsius(k: self)) }
+    var celsius: Temperature { Temperature(self) }
+    var fahrenheit: Temperature { Temperature(Temperature.fahrenheitToCelsius(f: self)) }
+    var kelvin: Temperature { Temperature(Temperature.kelvinToCelsius(k: self)) }
 }
 
 public extension Int {
-    var celsius: Temperature { return Double(self).celsius }
-    var fahrenheit: Temperature { return Double(self).fahrenheit }
-    var kelvin: Temperature { return Double(self).kelvin }
+    var celsius: Temperature { Double(self).celsius }
+    var fahrenheit: Temperature { Double(self).fahrenheit }
+    var kelvin: Temperature { Double(self).kelvin }
 }

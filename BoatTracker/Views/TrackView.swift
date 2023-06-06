@@ -18,15 +18,14 @@ struct TrackView: View {
                 Spacer()
             }
             .padding(.bottom, 8)
-            HStack {
-                Spacer()
+            HStack(spacing: 30) {
                 StatView(label: lang.distance, value: track.distanceMeters, style: .small)
-                Spacer()
+                    .frame(maxWidth: .infinity)
                 StatView(label: lang.duration, value: track.duration, style: .small)
-                Spacer()
-                StatView(label: lang.topSpeed, value: track.topSpeed?.description ?? lang.notAvailable, style: .small)
-                Spacer()
-            }
+                    .frame(maxWidth: .infinity)
+                StatView(label: lang.topSpeed, value: track.topSpeed?.formatted(isBoat: track.sourceType.isBoat) ?? lang.notAvailable, style: .small)
+                    .frame(maxWidth: .infinity)
+            }.frame(maxWidth: 600)
         }
         .swipeActions(edge: .trailing) {
             Button(lang.edit) {

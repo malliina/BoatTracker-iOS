@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Speed: Comparable, CustomStringConvertible, DoubleCodable {
+public struct Speed: Comparable, DoubleCodable {
     static let knotInKph: Double = 1.852
     static let zero = Speed(0)
     static let key = "speed"
@@ -11,7 +11,7 @@ public struct Speed: Comparable, CustomStringConvertible, DoubleCodable {
     var rounded: String { String(format: "%.2f", knots) }
     var roundedKph: String { String(format: "%.0f", kph) }
     
-    public var description: String { formattedKnots }
+//    public var description: String { formattedKnots }
     var formattedKph: String { "\(roundedKph) km/h" }
     var formattedKnots: String { "\(rounded) kn" }
     func formatted(isBoat: Bool) -> String { isBoat ? formattedKnots : formattedKph }
