@@ -46,15 +46,9 @@ struct AttributionsView: View {
 }
 
 struct AttributionsViewPreviews: PreviewProvider {
-    static var attrs = [
-        AppAttribution(title: "Attribution 1 very long title", text: "Good library", links: [TextAndUrl(text: "Go here", url: URL(string: "https://www.google.com")!)]),
-        AppAttribution(title: "Attribution 2", text: "Excellent library yeah here we go", links: [TextAndUrl(text: "Link", url: URL(string: "https://www.google.com")!)]),
-        AppAttribution(title: "Attribution 3", text: nil, links: [TextAndUrl(text: "Link 3", url: URL(string: "https://www.google.com")!)])
-    ]
     static var previews: some View {
         Group {
-            AttributionsView(info: AttributionInfo(title: "Attributions",
-                                                   attributions: attrs))
+            AttributionsView(info: lang.attributions)
         }
     }
 }

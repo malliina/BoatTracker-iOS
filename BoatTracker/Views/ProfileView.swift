@@ -8,16 +8,15 @@ struct ProfileInfo: Identifiable {
     var id: String { user.email }
 }
 
-struct ProfileView: View {
+struct ProfileView<T>: View where T: ProfileProtocol  {
     let log = LoggerFactory.shared.view(ProfileView.self)
     @Environment(\.dismiss) var dismiss
     let info: ProfileInfo
-    @StateObject var vm: ProfileVM = ProfileVM()
+    @ObservedObject var vm: T
     
     var lang: Lang { info.lang }
     var summaryLang: SummaryLang { SummaryLang.build(lang) }
     var profileLang: ProfileLang { lang.profile }
-    var modules: Modules { vm.modules }
     
     @State var showDeleteConfirmation = false
     @State var confirm = false
@@ -54,26 +53,26 @@ struct ProfileView: View {
                     }
                 }
                 NavigationLink {
-                    TracksView(lang: summaryLang, vm: modules.tracks) {
+                    TracksView<TracksViewModel>(lang: summaryLang, vm: TracksViewModel.shared) {
                         dismiss()
                     }
                 } label: {
                     Text(lang.track.trackHistory)
                 }
                 NavigationLink {
-                    StatsView(lang: lang, vm: modules.stats)
+                    StatsView(lang: lang, vm: StatsViewModel.shared)
                 } label: {
                     Text(lang.labels.statistics)
                 }
                 NavigationLink {
-                    BoatTokensView(lang: TokensLang.build(lang: lang), vm: modules.boats)
+                    BoatTokensView(lang: TokensLang.build(lang: lang), vm: BoatTokensVM.shared)
                 } label: {
                     Text(lang.track.boats)
                 }
             }
             BoatSection {
                 NavigationLink {
-                    SelectLanguageView(lang: profileLang.languages, vm: modules.languages)
+                    SelectLanguageView(lang: profileLang.languages, vm: LanguageVM.shared)
                 } label: {
                     Text(lang.profile.language)
                 }
@@ -155,93 +154,29 @@ struct ProfileView: View {
     }
 }
 
-class Modules {
-    let languages = LanguageVM()
-    let tracks = TracksViewModel()
-    let boats = BoatTokensVM()
-    let stats = StatsViewModel()
-}
-
-class ProfileVM: ObservableObject, TracksDelegate {
-    let log = LoggerFactory.shared.vc(ProfileVM.self)
-    
-    @Published var state: ViewState = .idle
-    @Published var tracks: [TrackRef] = []
-    @Published var current: TrackName? = nil
-    
-    let modules = Modules()
-    
-    var summary: TrackRef? {
-        tracks.first { ref in
-            ref.trackName == current
-        }
-    }
-    
-    func onTrack(_ track: TrackName) {
-        ActiveTrack.shared.selectedTrack = track
-    }
-    
-    private var socket: BoatSocket { Backend.shared.socket }
-    
-    func versionText(lang: Lang) -> String? {
-        if let bundleMeta = Bundle.main.infoDictionary,
-           let appVersion = bundleMeta["CFBundleShortVersionString"] as? String,
-           let buildId = bundleMeta["CFBundleVersion"] as? String {
-            return "\(lang.appMeta.version) \(appVersion) \(lang.appMeta.build) \(buildId)"
-        } else {
-            return nil
-        }
-    }
-
-    func loadTracks(latest: TrackName?) async {
-        await update(viewState: .loading)
-        do {
-            let ts = try await http.tracks()
-            log.info("Got \(ts.count) tracks.")
-            await update(ts: ts, trackName: latest)
-        } catch {
-            log.error("Unable to load tracks. \(error.describe)")
-            await update(viewState: .failed)
-        }
-    }
-    
-    func signOut(from: UIViewController) async {
-        log.info("Signing out...")
-        await Auth.shared.signOut(from: from)
-    }
-    
-    func deleteMe(from: UIViewController) async -> Bool {
-        do {
-            _ = try await http.deleteMe()
-            log.info("Deleted user.")
-            await signOut(from: from)
-            return true
-        } catch {
-            log.error("Failed to delete user. \(error)")
-            return false
+struct ProfilePreviews: PreviewProvider {
+    class PreviewsVM: ProfileProtocol {
+        var state: ViewState { .content }
+        
+        var summary: TrackRef? { nil }
+        
+        func versionText(lang: Lang) -> String? {
+            "Version preview"
         }
         
+        func loadTracks(latest: TrackName?) async {
+        }
+        
+        func signOut(from: UIViewController) async {
+        }
+        
+        func deleteMe(from: UIViewController) async -> Bool {
+            false
+        }
     }
-    
-    @MainActor private func update(viewState: ViewState) {
-        state = viewState
-    }
-    
-    @MainActor private func update(ts: [TrackRef], trackName: TrackName?) {
-        tracks = ts
-        current = trackName
-        state = ts.isEmpty ? .empty : .content
-    }
-    
-    @MainActor private func update(err: Error) {
-        state = .failed
-    }
-}
-
-struct ProfilePreviews: PreviewProvider {
     static var previews: some View {
         Group {
-            Text("Preview todo")
+            ProfileView<PreviewsVM>(info: ProfileInfo(user: UserToken(email: "a@b.com", token: AccessToken("abc")), current: nil, lang: lang), vm: PreviewsVM())
         }
     }
 }

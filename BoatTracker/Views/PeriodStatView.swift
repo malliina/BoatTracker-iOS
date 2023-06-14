@@ -51,10 +51,9 @@ struct PeriodStatView: View {
 }
 
 struct PeriodStatPreviews: PreviewProvider {
-    static let lang = PeriodStatLang(distance: "Distance", duration: "Duration", days: "Days")
     static var previews: some View {
         Group {
-            PeriodStatView(stat: YearlyStats(year: YearVal(2022), days: 14, trackCount: 4, distance: Distance(meters: 1445), duration: Duration(1412), monthly: []), lang: lang)
+            PeriodStatView(stat: YearlyStats(year: YearVal(2022), days: 14, trackCount: 4, distance: Distance(meters: 1445), duration: Duration(1412), monthly: []), lang: PeriodStatLang.build(lang))
         }
     }
 }

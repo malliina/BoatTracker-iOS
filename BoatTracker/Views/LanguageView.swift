@@ -54,6 +54,7 @@ protocol LanguageProtocol: ObservableObject {
 }
 
 class LanguageVM: LanguageProtocol {
+    static let shared = LanguageVM()
     let log = LoggerFactory.shared.vc(LanguageVM.self)
     var settings: UserSettings { UserSettings.shared }
     private var current: Language { settings.currentLanguage }
@@ -88,10 +89,9 @@ struct LanguagePreviews: PreviewProvider {
         }
     }
     static var previews: some View {
-        let lang = LanguageLang(swedish: "Svenska", finnish: "Suomeksi", english: "English", language: "Language")
         Group {
             NavigationView {
-                SelectLanguageView(lang: lang, vm: PreviewsVM())
+                SelectLanguageView(lang: lang.profile.languages, vm: PreviewsVM())
             }
         }
     }

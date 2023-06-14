@@ -39,8 +39,6 @@ struct SummaryLang {
         let settings = lang.settings
         return SummaryLang(tracks: track.tracks, duration: track.duration, distance: track.distance, topSpeed: track.topSpeed, avgSpeed: track.avgSpeed, temperature: track.temperature, waterTemp: track.waterTemp, date: track.date, notAvailable: lang.messages.notAvailable, edit: settings.edit, rename: settings.rename, newName: settings.newName, cancel: settings.cancel)
     }
-    
-    static let preview = SummaryLang(tracks: "Tracks", duration: "Duration", distance: "Distance", topSpeed: "Top speed", avgSpeed: "Avg speed", temperature: "Temperature", waterTemp: "Water temp", date: "Date", notAvailable: "N/A", edit: "Edit", rename: "Rename", newName: "New name", cancel: "Cancel")
 }
 
 protocol TrackInfo {
@@ -110,7 +108,7 @@ struct TrackSummaryPreviews: PreviewProvider {
     static var previews: some View {
         let info = TrackInfo2(duration: 1200.seconds, distanceMeters: 2000.meters, topSpeed: 40.knots, avgSpeed: 32.knots, avgWaterTemp: 14.celsius, avgOutsideTemp: 11.celsius, startDate: "Today", sourceType: .boat)
         Group {
-            TrackSummaryView(track: info, lang: SummaryLang.preview)
+            TrackSummaryView(track: info, lang: SummaryLang.build(lang))
         }
     }
 }

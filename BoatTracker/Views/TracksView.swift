@@ -41,8 +41,13 @@ struct TracksLang {
 
 class TracksViewModel: TracksProtocol {
     private let log = LoggerFactory.shared.vc(TracksViewModel.self)
+    static let shared = TracksViewModel()
     @Published var tracks: [TrackRef] = []
     @Published var error: Error?
+    
+    init() {
+        log.info("Init TVM")
+    }
     
     func load() async {
         do {
@@ -90,7 +95,7 @@ struct TracksPreviews: PreviewProvider {
     static var previews: some View {
         Group {
             NavigationView {
-                TracksView(lang: SummaryLang.preview, vm: PreviewsVM()) {
+                TracksView<PreviewsVM>(lang: SummaryLang.build(lang), vm: PreviewsVM()) {
                     
                 }
             }

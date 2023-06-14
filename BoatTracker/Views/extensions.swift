@@ -1,6 +1,13 @@
 import Foundation
-import UIKit
 import SwiftUI
+
+extension ObservableObject {
+    var http: BoatHttpClient { Backend.shared.http }
+}
+
+extension View {
+    var color: BoatColor { BoatColor.shared }
+}
 
 extension UIView {
     var colors: BoatColors { BoatColors.shared }
@@ -43,4 +50,8 @@ struct ControllerRepresentable: UIViewControllerRepresentable {
     }
     
     typealias UIViewControllerType = UIViewController
+}
+
+extension PreviewProvider {
+    static var lang: Lang { BoatPreviews.conf.languages.english }
 }

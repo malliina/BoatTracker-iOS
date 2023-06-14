@@ -1,0 +1,1224 @@
+{
+    "map": {
+        "styleId": "clb7q3k8x000p14tirbrnh1em",
+        "styleUrl": "mapbox://styles/skogberglabs/clb7q3k8x000p14tirbrnh1em",
+        "icons": {
+            "boat": "boat-resized-opt-30",
+            "trophy": "trophy-gold-path"
+        }
+    },
+    "languages": {
+        "finnish": {
+            "appName": "Boat-Tracker",
+            "map": "Kartta",
+            "language": "fi-FI",
+            "name": "Nimi",
+            "qualityClass": "Laatuluokka",
+            "time": "Aika",
+            "comparisonLevel": "Vertaustaso",
+            "appMeta": {
+                "appName": "Boat-Tracker",
+                "version": "Versio",
+                "build": "paketti"
+            },
+            "specialWords": {
+                "transportAgency": "Liikennevirasto",
+                "transportInfrastructureAgency": "Väylävirasto",
+                "defenceForces": "Puolustusvoimat",
+                "portOfHelsinki": "Helsingin Satama",
+                "cityOfHelsinki": "Helsingin kaupunki",
+                "cityOfEspoo": "Espoon kaupunki"
+            },
+            "fairway": {
+                "fairwayType": "Väyläalueen laji",
+                "fairwayDepth": "Väyläalueen syvyys",
+                "harrowDepth": "Haraussyvyys",
+                "minDepth": "Syvyys min",
+                "maxDepth": "Syvyys max",
+                "state": "Väylän tila",
+                "states": {
+                    "confirmed": "Vahvistettu",
+                    "aihio": "Aihio",
+                    "mayChange": "Muutoksen alainen",
+                    "changeAihio": "Muutosaihio",
+                    "mayBeRemoved": "Poiston alainen",
+                    "removed": "Poistettu"
+                },
+                "zones": {
+                    "area": "Alue",
+                    "fairway": "Väylä",
+                    "areaAndFairway": "Alue ja väylä"
+                },
+                "types": {
+                    "navigation": "Navigointialue",
+                    "anchoring": "Ankkurointialue",
+                    "meetup": "Ohitus- ja kohtaamisalue",
+                    "harborPool": "Satama-allas",
+                    "turn": "Kääntöallas",
+                    "channel": "Kanava",
+                    "coastTraffic": "Rannikkoliikenteen alue",
+                    "core": "Runkoväylä",
+                    "special": "Erikoisalue",
+                    "lock": "Sulku",
+                    "confirmedExtra": "Varmistettu lisäalue",
+                    "helcom": "HELCOM-alue",
+                    "pilot": "Luotsin otto- ja jättöalue"
+                }
+            },
+            "track": {
+                "track": "Ura",
+                "boats": "Veneet",
+                "tracks": "Urat",
+                "days": "Ajopäivät",
+                "routes": "Ajokerrat",
+                "speed": "Nopeus",
+                "water": "Vesi",
+                "depth": "Syvyys",
+                "top": "Huippu",
+                "duration": "Kesto",
+                "hours": "Ajotunnit",
+                "distance": "Matka",
+                "topSpeed": "Huippunopeus",
+                "avgSpeed": "Keskinopeus",
+                "temperature": "Lämpötila",
+                "waterTemp": "Veden lämpötila",
+                "date": "Päivämäärä",
+                "trackHistory": "Edelliset",
+                "graph": "Käyrät",
+                "coordinate": "Koordinaatit",
+                "comments": "Kommentit",
+                "env": {
+                    "altitude": "Korkeus"
+                }
+            },
+            "mark": {
+                "markType": "Merkin laji",
+                "aidType": "Tyyppi",
+                "navigation": "Navigointi",
+                "construction": "Rakenne",
+                "influence": "Vaikutusalue",
+                "location": "Sijainti",
+                "owner": "Omistaja",
+                "types": {
+                    "unknown": "Tuntematon",
+                    "lateral": "Lateraali",
+                    "cardinal": "Kardinaali"
+                },
+                "navTypes": {
+                    "unknown": "Tuntematon",
+                    "left": "Vasen",
+                    "right": "Oikea",
+                    "north": "Pohjois",
+                    "south": "Etelä",
+                    "west": "Länsi",
+                    "east": "Itä",
+                    "rock": "Karimerkki",
+                    "safeWaters": "Turvavesimerkki",
+                    "special": "Erikoismerkki",
+                    "notApplicable": "Ei sovellettavissa"
+                },
+                "structures": {
+                    "buoyBeacon": "Poijuviitta",
+                    "iceBuoy": "Jääpoiju",
+                    "beaconBuoy": "Viittapoiju",
+                    "superBeacon": "Suurviitta",
+                    "exteriorLight": "Fasadivalo",
+                    "dayBoard": "Levykummeli",
+                    "helicopterPlatform": "Helikopteritasanne",
+                    "radioMast": "Radiomasto",
+                    "waterTower": "Vesitorni",
+                    "smokePipe": "Savupiippu",
+                    "radarTower": "Tutkatorni",
+                    "churchTower": "Kirkontorni",
+                    "superBuoy": "Suurpoiju",
+                    "edgeCairn": "Reunakummeli",
+                    "compassCheck": "Kompassintarkistuspaikka",
+                    "borderMark": "Rajamerkki",
+                    "borderLineMark": "Rajalinjamerkki",
+                    "channelEdgeLight": "Kanavan reunavalo",
+                    "tower": "Torni"
+                },
+                "aidTypes": {
+                    "unknown": "Tuntematon",
+                    "lighthouse": "Merimajakka",
+                    "sectorLight": "Sektoriloisto",
+                    "leadingMark": "Linjamerkki",
+                    "directionalLight": "Suuntaloisto",
+                    "minorLight": "Apuloisto",
+                    "otherMark": "Muu merkki",
+                    "edgeMark": "Reunamerkki",
+                    "radarTarget": "Tutkamerkki",
+                    "buoy": "Poiju",
+                    "beacon": "Viitta",
+                    "signatureLighthouse": "Tunnusmajakka",
+                    "cairn": "Kummeli"
+                },
+                "flotation": {
+                    "floating": "Kelluva",
+                    "solid": "Kiinteä",
+                    "other": "Muu"
+                },
+                "lit": "Valaistu",
+                "yes": "Kyllä",
+                "no": "Ei",
+                "extraInfo1": "Lisätieto 1",
+                "extraInfo2": "Lisätieto 2"
+            },
+            "ais": {
+                "draft": "Syväys",
+                "destination": "Määränpää",
+                "shipType": "Alus"
+            },
+            "shipTypes": {
+                "wingInGround": "Wing in Ground",
+                "special": {
+                    "fishing": "Kalastus",
+                    "tug": "Hinaus",
+                    "dredger": "Ruoppaaja",
+                    "diveVessel": "Sukellus",
+                    "militaryOps": "Asevoimat",
+                    "sailing": "Purjehdus",
+                    "pleasureCraft": "Huvialus"
+                },
+                "highSpeedCraft": "Vauhtivene",
+                "pilotVessel": "Pilot",
+                "searchAndRescue": "Search and Rescue",
+                "searchAndRescueAircraft": "Search and Rescue Aircraft",
+                "portTender": "Satama",
+                "antiPollution": "Anti-Pollution",
+                "lawEnforce": "Patrol Vessel",
+                "localVessel": "Local Vessel",
+                "medicalTransport": "Hospital Ship",
+                "specialCraft": "Special Craft",
+                "passenger": "Matkustaja",
+                "cargo": "Rahtilaiva",
+                "tanker": "Tankkeri",
+                "other": "Muu",
+                "unknown": "Tuntematon"
+            },
+            "attributions": {
+                "title": "Lisenssit",
+                "attributions": [
+                    {
+                        "title": "Merikartta-aineistot",
+                        "text": "Lähde: Liikennevirasto. Ei navigointikäyttöön. Ei täytä virallisen merikartan vaatimuksia.",
+                        "links": [
+                            {
+                                "text": "CC 4.0",
+                                "url": "https://creativecommons.org/licenses/by/4.0/"
+                            }
+                        ]
+                    },
+                    {
+                        "title": "Font Awesome",
+                        "links": [
+                            {
+                                "text": "https://fontawesome.com/license",
+                                "url": "https://fontawesome.com/license"
+                            }
+                        ]
+                    },
+                    {
+                        "title": "Inspiration",
+                        "links": [
+                            {
+                                "text": "https://github.com/iaue/poiju.io",
+                                "url": "https://github.com/iaue/poiju.io"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "profile": {
+                "username": "Käyttäjätunnus",
+                "signedInAs": "Käyttäjätunnus",
+                "logout": "Kirjaudu ulos",
+                "chooseIdentityProvider": "Valitse kirjautuminen",
+                "language": "Kieli",
+                "chooseLanguage": "Valitse kieli",
+                "finnish": "Suomeksi",
+                "swedish": "Svenska",
+                "english": "English",
+                "deleteAccount": "Poista tili",
+                "deleteAccountConfirmation": "Haluatko varmasti poistaa tilisi?"
+            },
+            "messages": {
+                "loading": "Laddar...",
+                "failedToLoadProfile": "Käyttäjätietojen lataus epäonnistui.",
+                "noSavedTracks": "Ei tallennettuja reittejä.",
+                "notAvailable": "N/A"
+            },
+            "settings": {
+                "boat": "Vene",
+                "rename": "Uusi nimi",
+                "renameBoat": "Nimeä vene",
+                "addBoat": "Lisää vene",
+                "newName": "Uusi nimi",
+                "token": "Avain",
+                "tokenText": "Lisää avain veneeseen asennettuun Boat-Tracker -sovellukseen. Lisätietoja saat osoitteesta https://docs.boat-tracker.com/agent/.",
+                "tokenTextLong": "Kirjautumisen jälkeen saat avaimen, jolla tallennat ajetut matkat käyttäjätunnuksellesi. Lisätietoja saat osoitteesta https://docs.boat-tracker.com/agent/.",
+                "welcome": "Welcome",
+                "welcomeText": "Lisää tämä avain veneeseen asennettuun Boat-Tracker -sovellukseen tallentaaksesi ajettuja reittejä:",
+                "laterText": "Näet tämän avaimen myöhemmin myös sovelluksen Veneet -osiossa.",
+                "notifications": "Notifikaatio",
+                "notificationsText": "Vastaanota notifikaatio kun veneesi yhdistää Boat-Tracker -sovellukseen.",
+                "howItWorks": "Kuinka tämä toimii",
+                "signIn": "Kirjaudu sisään",
+                "signInText": "Kirjaudu sisään ja tallenna ajetut matkat",
+                "signInWith": "Kirjaudu palvelulla",
+                "giveTrackTitle": "Nimeä",
+                "edit": "Muokkaa",
+                "cancel": "Keskeytä",
+                "back": "Takaisin",
+                "done": "Valmis",
+                "noTracksHelp": "Hei! Ei tallennettuja reittejä. Reittien tallennus vaatii Boat-Tracker -sovelluksen yhdistämisen veneesi karttaplotteriin.",
+                "formats": {
+                    "date": "dd.MM.yyyy",
+                    "time": "HH:mm:ss",
+                    "timeShort": "HH:mm",
+                    "dateTime": "dd.MM.yyyy HH:mm:ss"
+                },
+                "boatLang": {
+                    "boat": "Vene",
+                    "rename": "Uusi nimi",
+                    "renameBoat": "Nimeä vene",
+                    "addBoat": "Lisää vene",
+                    "newName": "Uusi nimi",
+                    "token": "Avain",
+                    "tokenText": "Lisää avain veneeseen asennettuun Boat-Tracker -sovellukseen. Lisätietoja saat osoitteesta https://docs.boat-tracker.com/agent/.",
+                    "tokenTextLong": "Kirjautumisen jälkeen saat avaimen, jolla tallennat ajetut matkat käyttäjätunnuksellesi. Lisätietoja saat osoitteesta https://docs.boat-tracker.com/agent/."
+                },
+                "actions": "Toimenpiteet",
+                "delete": "Poista",
+                "invite": {
+                    "invites": "Kutsutut",
+                    "noInvites": "Ei kutsuttuja.",
+                    "invite": "Kutsu",
+                    "placeholder": "Sähköposti",
+                    "friends": "Ystävät",
+                    "noFriends": "Ei ystäviä.",
+                    "state": "Tila",
+                    "email": "Sähköposti",
+                    "revoke": "Poista",
+                    "accept": "Hyväksy",
+                    "accepted": "Hyväksytty",
+                    "reject": "Kiellä",
+                    "rejected": "Kielletty",
+                    "awaiting": "Odottaa",
+                    "from": "käyttäjältä"
+                }
+            },
+            "limits": {
+                "limit": "Rajoitukset",
+                "magnitude": "Nopeus",
+                "length": "Pituus",
+                "location": "Sijainti",
+                "fairwayName": "Väylän nimi",
+                "responsible": "Merkinnästä vastaava",
+                "types": {
+                    "speedLimit": "Nopeusrajoitus",
+                    "noWaves": "Aallokon aiheuttamisen kielto",
+                    "noWindSurfing": "Purjelautailukielto",
+                    "noJetSkiing": "Vesiskootterilla ajo kielletty",
+                    "noMotorPower": "Aluksen kulku moottorivoimaa käyttäen kielletty",
+                    "noAnchoring": "Ankkurin käyttökielto",
+                    "noStopping": "Pysäköimiskielto",
+                    "noAttachment": "Kiinnittymiskielto",
+                    "noOvertaking": "Ohittamiskielto",
+                    "noRendezVous": "Kohtaamiskielto",
+                    "speedRecommendation": "Nopeussuositus",
+                    "unknown": "Tuntematon"
+                },
+                "signs": {
+                    "limits": {
+                        "unknown": "Tuntematon",
+                        "noAnchoring": "Ankkurin käyttökielto",
+                        "noParking": "Pysäköimiskielto",
+                        "noAttachment": "Kiinnittymiskielto",
+                        "noOvertaking": "Ohittamiskielto",
+                        "noRendezVous": "Kohtaamiskielto",
+                        "noWaves": "Aallokon aiheuttamisen kielto",
+                        "noWaterSkiing": "Vesihiihtokielto",
+                        "noWindSurfing": "Purjelautailukielto",
+                        "noMotorPower": "Aluksen kulku moottorivoimaa käyttäen kielletty",
+                        "noJetSkiing": "Vesiskootterilla ajo kielletty",
+                        "speedLimit": "Nopeusrajoitus",
+                        "stopSign": "Pysähtymismerkki",
+                        "generalWarning": "Yleinen varoitusmerkki",
+                        "signalMandatory": "Annettava äänimerkki",
+                        "heightLimit": "Rajoitettu alikulkukorkeus",
+                        "depthLimit": "Rajoitettu kulkusyvyys",
+                        "widthLimit": "Rajoitettu kulkuleveys"
+                    },
+                    "infos": {
+                        "strongCurrent": "Voimakas virtaus",
+                        "fairwaySide": "Väylän reuna",
+                        "swimmingWarning": "Varoitus uimapaikasta",
+                        "useRadio": "Otettava yhteys radiopuhelimella",
+                        "parkingAllowed": "Pysäköiminen sallittu",
+                        "attachmentAllowed": "Kiinnittyminen sallittu",
+                        "airCable": "Ilmajohto",
+                        "phone": "Puhelin",
+                        "cableFerryCrossing": "Lauttaväylän risteäminen, lossi",
+                        "ferryCrossing": "Lauttaväylän risteäminen, lautta",
+                        "radioPossibility": "Mahdollisuus radiopuhelinyhteyteen",
+                        "drinkingPoint": "Juomavesipiste",
+                        "limitEnds": "Kiellon, määräyksen tai rajoituksen päättyminen",
+                        "cableSign": "Kaapelitaulu",
+                        "wireSign": "Johtotaulu",
+                        "directionUpper": "Suuntamerkki, ylempi",
+                        "directionLower": "Suuntamerkki, alempi"
+                    },
+                    "types": {
+                        "unknown": "Tuntematon",
+                        "forbidden": "Kieltomerkki",
+                        "limit": "Määräys- tai rajoitusmerkki",
+                        "info": "Tiedotusmerkki",
+                        "cableOrWire": "Kaapeli- tai johtotaulu",
+                        "direction": "Suuntamerkki",
+                        "lightInfo": "Valo-opaste"
+                    }
+                }
+            },
+            "labels": {
+                "statistics": "Tilastot",
+                "monthly": "Kuukausittain",
+                "yearly": "Vuosittain",
+                "allTime": "Kaikki"
+            },
+            "calendar": {
+                "months": {
+                    "jan": "Tammikuu",
+                    "feb": "Helmikuu",
+                    "mar": "Maaliskuu",
+                    "apr": "Huhtikuu",
+                    "may": "Toukokuu",
+                    "jun": "Kesäkuu",
+                    "jul": "Heinäkuu",
+                    "aug": "Elokuu",
+                    "sep": "Syyskuu",
+                    "oct": "Lokakuu",
+                    "nov": "Marraskuu",
+                    "dec": "Joulukuu"
+                }
+            }
+        },
+        "swedish": {
+            "appName": "Boat-Tracker",
+            "map": "Karta",
+            "language": "sv-SE",
+            "name": "Namn",
+            "qualityClass": "Kvalitet",
+            "time": "Tid",
+            "comparisonLevel": "Jämförelse",
+            "appMeta": {
+                "appName": "Boat-Tracker",
+                "version": "Version",
+                "build": "paket"
+            },
+            "specialWords": {
+                "transportAgency": "Trafikverket",
+                "transportInfrastructureAgency": "Trafikledsverket",
+                "defenceForces": "Försvarsmakten",
+                "portOfHelsinki": "Helsingfors Hamn",
+                "cityOfHelsinki": "Helsingfors stad",
+                "cityOfEspoo": "Esbo stad"
+            },
+            "fairway": {
+                "fairwayType": "Farledstyp",
+                "fairwayDepth": "Farledens djup",
+                "harrowDepth": "Ramat djup",
+                "minDepth": "Djup min",
+                "maxDepth": "Djup max",
+                "state": "Farledens status",
+                "states": {
+                    "confirmed": "Bekräftat",
+                    "aihio": "Pågående",
+                    "mayChange": "Ändras",
+                    "changeAihio": "Ändring",
+                    "mayBeRemoved": "Tags bort",
+                    "removed": "Borttagen"
+                },
+                "zones": {
+                    "area": "Område",
+                    "fairway": "Farled",
+                    "areaAndFairway": "Område och farled"
+                },
+                "types": {
+                    "navigation": "Navigeringsområde",
+                    "anchoring": "Ankringsområde",
+                    "meetup": "Mötespunkt",
+                    "harborPool": "Hamnbassäng",
+                    "turn": "Vändområde",
+                    "channel": "Kanal",
+                    "coastTraffic": "Kusttrafik",
+                    "core": "Huvudled",
+                    "special": "Specialområde",
+                    "lock": "Sluss",
+                    "confirmedExtra": "Försäkrat område",
+                    "helcom": "HELCOM-område",
+                    "pilot": "Plats där lots möter"
+                }
+            },
+            "track": {
+                "track": "Spår",
+                "boats": "Båtar",
+                "tracks": "Spår",
+                "days": "Båtdagar",
+                "routes": "Rutter",
+                "speed": "Hastighet",
+                "water": "Vatten",
+                "depth": "Djup",
+                "top": "Max",
+                "duration": "Tid",
+                "hours": "Timmar",
+                "distance": "Avstånd",
+                "topSpeed": "Max hastighet",
+                "avgSpeed": "Medelhastighet",
+                "temperature": "Temperatur",
+                "waterTemp": "Vattentemperatur",
+                "date": "Datum",
+                "trackHistory": "Tidigare",
+                "graph": "Visualisering",
+                "coordinate": "Koordinater",
+                "comments": "Kommentarer",
+                "env": {
+                    "altitude": "Höjd"
+                }
+            },
+            "mark": {
+                "markType": "Märke",
+                "aidType": "Typ",
+                "navigation": "Navigering",
+                "construction": "Struktur",
+                "influence": "Område",
+                "location": "Plats",
+                "owner": "Ägare",
+                "types": {
+                    "unknown": "Okänd",
+                    "lateral": "Lateral",
+                    "cardinal": "Kardinal"
+                },
+                "navTypes": {
+                    "unknown": "Okänd",
+                    "left": "Vänster",
+                    "right": "Höger",
+                    "north": "Nord",
+                    "south": "Söder",
+                    "west": "Väster",
+                    "east": "Ost",
+                    "rock": "Grund",
+                    "safeWaters": "Mittledsmärke",
+                    "special": "Specialmärke",
+                    "notApplicable": "Inte tillämpbar"
+                },
+                "structures": {
+                    "buoyBeacon": "Bojprick",
+                    "iceBuoy": "Isboj",
+                    "beaconBuoy": "Prickboj",
+                    "superBeacon": "Storprick",
+                    "exteriorLight": "Ljus",
+                    "dayBoard": "Panelkummel",
+                    "helicopterPlatform": "Helikopterplatform",
+                    "radioMast": "Radiomast",
+                    "waterTower": "Vattentorn",
+                    "smokePipe": "Skorsten",
+                    "radarTower": "Radartorn",
+                    "churchTower": "Kyrkotorn",
+                    "superBuoy": "Storboj",
+                    "edgeCairn": "Randkummel",
+                    "compassCheck": "Kompassplats",
+                    "borderMark": "Gränsmärke",
+                    "borderLineMark": "Gränslinjemärke",
+                    "channelEdgeLight": "Kanalens randljus",
+                    "tower": "Torn"
+                },
+                "aidTypes": {
+                    "unknown": "Okänd",
+                    "lighthouse": "Havsfyr",
+                    "sectorLight": "Sektorfyr",
+                    "leadingMark": "Ensmärke",
+                    "directionalLight": "Riktning",
+                    "minorLight": "Hjälpfyr",
+                    "otherMark": "Annat märke",
+                    "edgeMark": "Randmärke",
+                    "radarTarget": "Radarmärke",
+                    "buoy": "Boj",
+                    "beacon": "Prick",
+                    "signatureLighthouse": "Båk",
+                    "cairn": "Kummel"
+                },
+                "flotation": {
+                    "floating": "Flytande",
+                    "solid": "Fast",
+                    "other": "Annan"
+                },
+                "lit": "Belyst",
+                "yes": "Ja",
+                "no": "Nej",
+                "extraInfo1": "Extra info 1",
+                "extraInfo2": "Extra info 2"
+            },
+            "ais": {
+                "draft": "Djupgående",
+                "destination": "Destination",
+                "shipType": "Fartyg"
+            },
+            "shipTypes": {
+                "wingInGround": "Wing in Ground",
+                "special": {
+                    "fishing": "Fiske",
+                    "tug": "Bogserbåt",
+                    "dredger": "Mudderverk",
+                    "diveVessel": "Dykning",
+                    "militaryOps": "Militär",
+                    "sailing": "Segling",
+                    "pleasureCraft": "Nöje"
+                },
+                "highSpeedCraft": "Fartbåt",
+                "pilotVessel": "Pilot",
+                "searchAndRescue": "Search and Rescue",
+                "searchAndRescueAircraft": "Search and Rescue Aircraft",
+                "portTender": "Hamn",
+                "antiPollution": "Anti-Pollution",
+                "lawEnforce": "Patrullering",
+                "localVessel": "Lokal",
+                "medicalTransport": "Sjukhus",
+                "specialCraft": "Special",
+                "passenger": "Passagerar",
+                "cargo": "Frakt",
+                "tanker": "Tanker",
+                "other": "Annan",
+                "unknown": "Okänd"
+            },
+            "attributions": {
+                "title": "Licenser",
+                "attributions": [
+                    {
+                        "title": "Sjökortsmaterial",
+                        "text": "Källa: Trafikverket. Får inte användas för navigationsändamål. Uppfyller inte fordringarna för officiella sjökort.",
+                        "links": [
+                            {
+                                "text": "CC 4.0",
+                                "url": "https://creativecommons.org/licenses/by/4.0/"
+                            }
+                        ]
+                    },
+                    {
+                        "title": "Font Awesome",
+                        "links": [
+                            {
+                                "text": "https://fontawesome.com/license",
+                                "url": "https://fontawesome.com/license"
+                            }
+                        ]
+                    },
+                    {
+                        "title": "Inspiration",
+                        "links": [
+                            {
+                                "text": "https://github.com/iaue/poiju.io",
+                                "url": "https://github.com/iaue/poiju.io"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "profile": {
+                "username": "Användarnamn",
+                "signedInAs": "Inloggad som",
+                "logout": "Logga ut",
+                "chooseIdentityProvider": "Identifiera dig",
+                "language": "Språk",
+                "chooseLanguage": "Välj språk",
+                "finnish": "Suomeksi",
+                "swedish": "Svenska",
+                "english": "English",
+                "deleteAccount": "Radera konto",
+                "deleteAccountConfirmation": "Är du säker att du vill radera ditt konto?"
+            },
+            "messages": {
+                "loading": "Laddar...",
+                "failedToLoadProfile": "Laddning av profildata misslyckades.",
+                "noSavedTracks": "Inga sparade spår.",
+                "notAvailable": "N/A"
+            },
+            "settings": {
+                "boat": "Båt",
+                "rename": "Ändra namn",
+                "renameBoat": "Namnge båt",
+                "addBoat": "Lägg till båt",
+                "newName": "Ange ett nytt namn",
+                "token": "Nyckel",
+                "tokenText": "Spara nyckeln i Boat-Tracker-appen installerad i din båt. För mera information, se https://docs.boat-tracker.com/agent/.",
+                "tokenTextLong": "Inloggning skapar en nyckel du kan spara i Boat-Tracker-appen installerad i din båt. Med nyckeln sparas körda spår under ditt användarnamn. För mera information, se https://docs.boat-tracker.com/agent/.",
+                "welcome": "Välkommen",
+                "welcomeText": "Spara den här nyckeln i Boat-Tracker-appen installerad i din båt för att spara körda rutter:",
+                "laterText": "Du kan senare läsa nyckeln från sidan Båtar i den här appen.",
+                "notifications": "Notifikationer",
+                "notificationsText": "Få notifikationer när din båt är uppkopplad till Boat-Tracker.",
+                "howItWorks": "Hur det fungerar",
+                "signIn": "Logga in",
+                "signInText": "Logga in för att spara spår",
+                "signInWith": "Logga in med",
+                "giveTrackTitle": "Namnge spår",
+                "edit": "Redigera",
+                "cancel": "Avbryt",
+                "back": "Tillbaka",
+                "done": "Färdig",
+                "noTracksHelp": "Inga sparade spår. För att spara spår, koppla Boat-Tracker-appen till båtens plotter.",
+                "formats": {
+                    "date": "dd.MM.yyyy",
+                    "time": "HH:mm:ss",
+                    "timeShort": "HH:mm",
+                    "dateTime": "dd.MM.yyyy HH:mm:ss"
+                },
+                "boatLang": {
+                    "boat": "Båt",
+                    "rename": "Ändra namn",
+                    "renameBoat": "Namnge båt",
+                    "addBoat": "Lägg till båt",
+                    "newName": "Ange ett nytt namn",
+                    "token": "Nyckel",
+                    "tokenText": "Spara nyckeln i Boat-Tracker-appen installerad i din båt. För mera information, se https://docs.boat-tracker.com/agent/.",
+                    "tokenTextLong": "Inloggning skapar en nyckel du kan spara i Boat-Tracker-appen installerad i din båt. Med nyckeln sparas körda spår under ditt användarnamn. För mera information, se https://docs.boat-tracker.com/agent/."
+                },
+                "actions": "Ändringar",
+                "delete": "Radera",
+                "invite": {
+                    "invites": "Inbjudningar",
+                    "noInvites": "Inga inbjudningar.",
+                    "invite": "Bjud in",
+                    "placeholder": "E-post",
+                    "friends": "Vänner",
+                    "noFriends": "Inga vänner.",
+                    "state": "Status",
+                    "email": "E-post",
+                    "revoke": "Ta bort",
+                    "accept": "Acceptera",
+                    "accepted": "Accepterad",
+                    "reject": "Tacka nej",
+                    "rejected": "Tackade nej",
+                    "awaiting": "Väntar",
+                    "from": "från"
+                }
+            },
+            "limits": {
+                "limit": "Begränsningar",
+                "magnitude": "Hastighet",
+                "length": "Längd",
+                "location": "Plats",
+                "fairwayName": "Farledens namn",
+                "responsible": "Ansvarig",
+                "types": {
+                    "speedLimit": "Hastighetsbegränsning",
+                    "noWaves": "Förbjudet att orsaka vågor",
+                    "noWindSurfing": "Vindsurfing förbjudet",
+                    "noJetSkiing": "Förbjudet att åka vattenskoter",
+                    "noMotorPower": "Motorkraft förbjudet",
+                    "noAnchoring": "Förbjudet att använda ankare",
+                    "noStopping": "Förbjudet att stanna",
+                    "noAttachment": "Förbjudet att stanna",
+                    "noOvertaking": "Förbjudet att passera",
+                    "noRendezVous": "Mötesförbud",
+                    "speedRecommendation": "Hastighetsrekommendation",
+                    "unknown": "Okänd"
+                },
+                "signs": {
+                    "limits": {
+                        "unknown": "Okänd",
+                        "noAnchoring": "Förbjudet att använda ankare",
+                        "noParking": "Förbjudet att stanna",
+                        "noAttachment": "Förbjudet att stanna",
+                        "noOvertaking": "Förbjudet att passera",
+                        "noRendezVous": "Mötesförbud",
+                        "noWaves": "Förbjudet att orsaka vågor",
+                        "noWaterSkiing": "Förbjudet att vattenskida",
+                        "noWindSurfing": "Vindsurfing förbjudet",
+                        "noMotorPower": "Motorkraft förbjudet",
+                        "noJetSkiing": "Förbjudet att åka vattenskoter",
+                        "speedLimit": "Hastighetsbegränsning",
+                        "stopSign": "Stop-märke",
+                        "generalWarning": "Allmänt varningsmärke",
+                        "signalMandatory": "Måste ge ljudsignal",
+                        "heightLimit": "Begränsad höjd",
+                        "depthLimit": "Begränsat djup",
+                        "widthLimit": "Begränsad bredd"
+                    },
+                    "infos": {
+                        "strongCurrent": "Stark ström",
+                        "fairwaySide": "Farledens gräns",
+                        "swimmingWarning": "Varning för simplats",
+                        "useRadio": "Bör ta radiokontakt",
+                        "parkingAllowed": "Tillåtet att parkera",
+                        "attachmentAllowed": "Tillåtet att stanna",
+                        "airCable": "Luftkabel",
+                        "phone": "Telefon",
+                        "cableFerryCrossing": "Korsande kabelfärja",
+                        "ferryCrossing": "Korsande färja",
+                        "radioPossibility": "Möjligt att ta radiokontakt",
+                        "drinkingPoint": "Drickspunkt, vatten",
+                        "limitEnds": "Begränsning eller förbud tar slut",
+                        "cableSign": "Kabeltavla",
+                        "wireSign": "Ledningstavla",
+                        "directionUpper": "Riktningsmärke, övre",
+                        "directionLower": "Riktningsmärke, nedre"
+                    },
+                    "types": {
+                        "unknown": "Okänd",
+                        "forbidden": "Förbudsmärke",
+                        "limit": "Begränsningsmärke",
+                        "info": "Informationsmärke",
+                        "cableOrWire": "Kabel- eller ledningstavla",
+                        "direction": "Riktningsmärke",
+                        "lightInfo": "Ljus"
+                    }
+                }
+            },
+            "labels": {
+                "statistics": "Statistik",
+                "monthly": "Per månad",
+                "yearly": "Per år",
+                "allTime": "Alla tider"
+            },
+            "calendar": {
+                "months": {
+                    "jan": "Januari",
+                    "feb": "Februari",
+                    "mar": "Mars",
+                    "apr": "April",
+                    "may": "Maj",
+                    "jun": "Juni",
+                    "jul": "Juli",
+                    "aug": "Augusti",
+                    "sep": "September",
+                    "oct": "Oktober",
+                    "nov": "November",
+                    "dec": "December"
+                }
+            }
+        },
+        "english": {
+            "appName": "Boat-Tracker",
+            "map": "Map",
+            "language": "en-US",
+            "name": "Name",
+            "qualityClass": "Quality",
+            "time": "Time",
+            "comparisonLevel": "Comparison",
+            "appMeta": {
+                "appName": "Boat-Tracker",
+                "version": "Version",
+                "build": "build"
+            },
+            "specialWords": {
+                "transportAgency": "Finnish Transport Agency",
+                "transportInfrastructureAgency": "Finnish Transport Infrastructure Agency",
+                "defenceForces": "Defence forces",
+                "portOfHelsinki": "Port of Helsinki",
+                "cityOfHelsinki": "City of Helsinki",
+                "cityOfEspoo": "City of Espoo"
+            },
+            "fairway": {
+                "fairwayType": "Fairway type",
+                "fairwayDepth": "Fairway depth",
+                "harrowDepth": "Minimum depth",
+                "minDepth": "Depth min",
+                "maxDepth": "Depth max",
+                "state": "Fairway state",
+                "states": {
+                    "confirmed": "Confirmed",
+                    "aihio": "Unfinished",
+                    "mayChange": "Changing",
+                    "changeAihio": "Change",
+                    "mayBeRemoved": "May be removed",
+                    "removed": "Removed"
+                },
+                "zones": {
+                    "area": "Area",
+                    "fairway": "Fairway",
+                    "areaAndFairway": "Area and fairway"
+                },
+                "types": {
+                    "navigation": "Navigation",
+                    "anchoring": "Anchoring area",
+                    "meetup": "Overtaking and meetup",
+                    "harborPool": "Harbor pool",
+                    "turn": "Turn area",
+                    "channel": "Channel",
+                    "coastTraffic": "Coast traffic",
+                    "core": "Main fairway",
+                    "special": "Special area",
+                    "lock": "Lock",
+                    "confirmedExtra": "Confirmed area",
+                    "helcom": "HELCOM area",
+                    "pilot": "Pilot boarding place"
+                }
+            },
+            "track": {
+                "track": "Trail",
+                "boats": "Boats",
+                "tracks": "Trails",
+                "days": "Days",
+                "routes": "Routes",
+                "speed": "Speed",
+                "water": "Water",
+                "depth": "Depth",
+                "top": "Top",
+                "duration": "Time",
+                "hours": "Hours",
+                "distance": "Distance",
+                "topSpeed": "Top Speed",
+                "avgSpeed": "Avg Speed",
+                "temperature": "Temperature",
+                "waterTemp": "Water Temp",
+                "date": "Date",
+                "trackHistory": "Track History",
+                "graph": "Graph",
+                "coordinate": "Coordinates",
+                "comments": "Comments",
+                "env": {
+                    "altitude": "Altitude"
+                }
+            },
+            "mark": {
+                "markType": "Mark",
+                "aidType": "Type",
+                "navigation": "Navigation",
+                "construction": "Structure",
+                "influence": "Area",
+                "location": "Location",
+                "owner": "Owner",
+                "types": {
+                    "unknown": "Unknown",
+                    "lateral": "Lateral",
+                    "cardinal": "Cardinal"
+                },
+                "navTypes": {
+                    "unknown": "Unknown",
+                    "left": "Left",
+                    "right": "Right",
+                    "north": "North",
+                    "south": "South",
+                    "west": "West",
+                    "east": "East",
+                    "rock": "Rocks",
+                    "safeWaters": "Safe water",
+                    "special": "Special mark",
+                    "notApplicable": "Not applicable"
+                },
+                "structures": {
+                    "buoyBeacon": "Buoy beacon",
+                    "iceBuoy": "Ice buoy",
+                    "beaconBuoy": "Beacon buoy",
+                    "superBeacon": "Super beacon",
+                    "exteriorLight": "Exterior light",
+                    "dayBoard": "Dayboard",
+                    "helicopterPlatform": "Helicopter platform",
+                    "radioMast": "Radio mast",
+                    "waterTower": "Water tower",
+                    "smokePipe": "Chimney",
+                    "radarTower": "Radar tower",
+                    "churchTower": "Church tower",
+                    "superBuoy": "Super buoy",
+                    "edgeCairn": "Edge cairn",
+                    "compassCheck": "Compass check",
+                    "borderMark": "Border mark",
+                    "borderLineMark": "Border line mark",
+                    "channelEdgeLight": "Channel edge light",
+                    "tower": "Tower"
+                },
+                "aidTypes": {
+                    "unknown": "Unknown",
+                    "lighthouse": "Lighthouse",
+                    "sectorLight": "Sector light",
+                    "leadingMark": "Leading mark",
+                    "directionalLight": "Directional light",
+                    "minorLight": "Minor light",
+                    "otherMark": "Other mark",
+                    "edgeMark": "Edge mark",
+                    "radarTarget": "Radar target",
+                    "buoy": "Buoy",
+                    "beacon": "Beacon",
+                    "signatureLighthouse": "Signature lighthouse",
+                    "cairn": "Cairn"
+                },
+                "flotation": {
+                    "floating": "Floating",
+                    "solid": "Solid",
+                    "other": "Other"
+                },
+                "lit": "Lit",
+                "yes": "Yes",
+                "no": "No",
+                "extraInfo1": "Extra info 1",
+                "extraInfo2": "Extra info 2"
+            },
+            "ais": {
+                "draft": "Draft",
+                "destination": "Destination",
+                "shipType": "Ship type"
+            },
+            "shipTypes": {
+                "wingInGround": "Wing in Ground",
+                "special": {
+                    "fishing": "Fishing",
+                    "tug": "Tug",
+                    "dredger": "Dredger",
+                    "diveVessel": "Diving Support Vessel",
+                    "militaryOps": "Military Ops",
+                    "sailing": "Sailing Vessel",
+                    "pleasureCraft": "Pleasure Craft"
+                },
+                "highSpeedCraft": "High-Speed Craft",
+                "pilotVessel": "Pilot Vessel",
+                "searchAndRescue": "Search and Rescue",
+                "searchAndRescueAircraft": "Search and Rescue Aircraft",
+                "portTender": "Port Tender",
+                "antiPollution": "Anti-Pollution",
+                "lawEnforce": "Patrol Vessel",
+                "localVessel": "Local Vessel",
+                "medicalTransport": "Hospital Ship",
+                "specialCraft": "Special Craft",
+                "passenger": "Passenger",
+                "cargo": "Cargo",
+                "tanker": "Tanker",
+                "other": "Other",
+                "unknown": "Unknown"
+            },
+            "attributions": {
+                "title": "Attributions",
+                "attributions": [
+                    {
+                        "title": "Nautical charts",
+                        "text": "Source: Finnish Transport Agency. Not for navigational use. Does not meet the requirements for official nautical charts.",
+                        "links": [
+                            {
+                                "text": "CC 4.0",
+                                "url": "https://creativecommons.org/licenses/by/4.0/"
+                            }
+                        ]
+                    },
+                    {
+                        "title": "Font Awesome",
+                        "links": [
+                            {
+                                "text": "https://fontawesome.com/license",
+                                "url": "https://fontawesome.com/license"
+                            }
+                        ]
+                    },
+                    {
+                        "title": "Inspiration",
+                        "links": [
+                            {
+                                "text": "https://github.com/iaue/poiju.io",
+                                "url": "https://github.com/iaue/poiju.io"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "profile": {
+                "username": "Username",
+                "signedInAs": "Signed in as",
+                "logout": "Logout",
+                "chooseIdentityProvider": "Choose Identity Provider",
+                "language": "Language",
+                "chooseLanguage": "Choose Language",
+                "finnish": "Suomeksi",
+                "swedish": "Svenska",
+                "english": "English",
+                "deleteAccount": "Delete account",
+                "deleteAccountConfirmation": "Are you sure you want to delete your account?"
+            },
+            "messages": {
+                "loading": "Loading...",
+                "failedToLoadProfile": "Failed to load profile,",
+                "noSavedTracks": "No saved tracks.",
+                "notAvailable": "N/A"
+            },
+            "settings": {
+                "boat": "Boat",
+                "rename": "Rename",
+                "renameBoat": "Rename Boat",
+                "addBoat": "Add boat",
+                "newName": "Provide a new name",
+                "token": "Token",
+                "tokenText": "Add the token to the Boat-Tracker agent software running in your boat. For more information, see https://www.boat-tracker.com/docs/agent.",
+                "tokenTextLong": "Add the token provided after sign in to the Boat-Tracker agent software running in your boat. Subsequently, tracks driven with the boat are saved to your account and can be viewed in this app. For agent installation instructions, see https://www.boat-tracker.com/docs/agent.",
+                "welcome": "Welcome",
+                "welcomeText": "Add this token to the Boat-Tracker agent software in your boat to save tracks to this app:",
+                "laterText": "You can later view this token in the Boats section of the app.",
+                "notifications": "Notifications",
+                "notificationsText": "Turn on to receive notifications when your boat connects or disconnects from Boat-Tracker.",
+                "howItWorks": "How it works",
+                "signIn": "Sign In",
+                "signInText": "Sign in to view past tracks driven with your boat.",
+                "signInWith": "Sign in with",
+                "giveTrackTitle": "Name the track",
+                "edit": "Edit",
+                "cancel": "Cancel",
+                "back": "Back",
+                "done": "Done",
+                "noTracksHelp": "Hello! You have no saved tracks. To save tracks, you'll need to connect the Boat-Tracker agent software to the GPS chartplotter in your boat.",
+                "formats": {
+                    "date": "dd MMM yyyy",
+                    "time": "HH:mm:ss",
+                    "timeShort": "HH:mm",
+                    "dateTime": "dd MMM yyyy HH:mm:ss"
+                },
+                "boatLang": {
+                    "boat": "Boat",
+                    "rename": "Rename",
+                    "renameBoat": "Rename Boat",
+                    "addBoat": "Add boat",
+                    "newName": "Provide a new name",
+                    "token": "Token",
+                    "tokenText": "Add the token to the Boat-Tracker agent software running in your boat. For more information, see https://www.boat-tracker.com/docs/agent.",
+                    "tokenTextLong": "Add the token provided after sign in to the Boat-Tracker agent software running in your boat. Subsequently, tracks driven with the boat are saved to your account and can be viewed in this app. For agent installation instructions, see https://www.boat-tracker.com/docs/agent."
+                },
+                "actions": "Actions",
+                "delete": "Delete",
+                "invite": {
+                    "invites": "Invites",
+                    "noInvites": "No invites.",
+                    "invite": "Invite",
+                    "placeholder": "Email",
+                    "friends": "Friends",
+                    "noFriends": "No friends.",
+                    "state": "State",
+                    "email": "Email",
+                    "revoke": "Revoke",
+                    "accept": "Accept",
+                    "accepted": "Accepted",
+                    "reject": "Reject",
+                    "rejected": "Rejected",
+                    "awaiting": "Awaiting",
+                    "from": "from"
+                }
+            },
+            "limits": {
+                "limit": "Limits",
+                "magnitude": "Speed",
+                "length": "Length",
+                "location": "Location",
+                "fairwayName": "Fairway name",
+                "responsible": "Responsible",
+                "types": {
+                    "speedLimit": "Speed limit",
+                    "noWaves": "No waves",
+                    "noWindSurfing": "No windsurfing",
+                    "noJetSkiing": "No jet skiing",
+                    "noMotorPower": "No motor power",
+                    "noAnchoring": "No anchoring",
+                    "noStopping": "No stopping",
+                    "noAttachment": "No stopping",
+                    "noOvertaking": "No passing",
+                    "noRendezVous": "No meeting",
+                    "speedRecommendation": "Speed recommendation",
+                    "unknown": "Unknown"
+                },
+                "signs": {
+                    "limits": {
+                        "unknown": "Unknown",
+                        "noAnchoring": "No anchoring",
+                        "noParking": "No stopping",
+                        "noAttachment": "No stopping",
+                        "noOvertaking": "No passing",
+                        "noRendezVous": "No meeting",
+                        "noWaves": "No waves",
+                        "noWaterSkiing": "Waterskiing forbidden",
+                        "noWindSurfing": "No windsurfing",
+                        "noMotorPower": "No motor power",
+                        "noJetSkiing": "No jet skiing",
+                        "speedLimit": "Speed limit",
+                        "stopSign": "Stop sign",
+                        "generalWarning": "General warning",
+                        "signalMandatory": "Must make sound",
+                        "heightLimit": "Limited height",
+                        "depthLimit": "Limited depth",
+                        "widthLimit": "Limited width"
+                    },
+                    "infos": {
+                        "strongCurrent": "Strong current",
+                        "fairwaySide": "Fairway limit",
+                        "swimmingWarning": "Swimmers warning",
+                        "useRadio": "Must make radio contact",
+                        "parkingAllowed": "Parking allowed",
+                        "attachmentAllowed": "Stopping allowed",
+                        "airCable": "Air cable",
+                        "phone": "Telephone",
+                        "cableFerryCrossing": "Cable ferry crossing",
+                        "ferryCrossing": "Ferry crossing",
+                        "radioPossibility": "Radio contact possibility",
+                        "drinkingPoint": "Drinking point, water",
+                        "limitEnds": "End of warning or limit",
+                        "cableSign": "Cable sign",
+                        "wireSign": "Wire sign",
+                        "directionUpper": "Direction sign, upper",
+                        "directionLower": "Direction sign, lower"
+                    },
+                    "types": {
+                        "unknown": "Unknown",
+                        "forbidden": "Not allowed",
+                        "limit": "Limit",
+                        "info": "Informational",
+                        "cableOrWire": "Cable or wire",
+                        "direction": "Direction",
+                        "lightInfo": "Light assistance"
+                    }
+                }
+            },
+            "labels": {
+                "statistics": "Statistics",
+                "monthly": "Monthly",
+                "yearly": "Yearly",
+                "allTime": "All time"
+            },
+            "calendar": {
+                "months": {
+                    "jan": "January",
+                    "feb": "February",
+                    "mar": "March",
+                    "apr": "April",
+                    "may": "May",
+                    "jun": "June",
+                    "jul": "July",
+                    "aug": "August",
+                    "sep": "September",
+                    "oct": "October",
+                    "nov": "November",
+                    "dec": "December"
+                }
+            }
+        }
+    },
+    "layers": {
+        "marks": [
+            "marks",
+            "marks-special",
+            "traffic-signs"
+        ],
+        "fairways": [
+            "fairways"
+        ],
+        "fairwayAreas": [
+            "fairway-areas"
+        ],
+        "depthAreas": [
+            "depth-area-1",
+            "depth-area-2",
+            "depth-area-3",
+            "depth-area-4"
+        ],
+        "limits": [
+            "limit-areas"
+        ],
+        "ais": {
+            "vessel": "ais-vessels",
+            "trail": "ais-vessels-trails",
+            "vesselIcon": "boat-resized-opt-30"
+        }
+    }
+}

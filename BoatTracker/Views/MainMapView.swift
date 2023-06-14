@@ -75,7 +75,7 @@ struct MainMapView<T>: View where T: MapViewModelLike {
         }
         .sheet(item: $profileInfo) { info in
             NavigationView {
-                ProfileView(info: info)
+                ProfileView<ProfileVM>(info: info, vm: ProfileVM())
                     .navigationBarTitleDisplayMode(.large)
                     .navigationTitle(info.lang.appName)
                     .toolbar {
