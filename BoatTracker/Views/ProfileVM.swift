@@ -1,23 +1,5 @@
 import Foundation
 
-//protocol ModulesProtocol {
-//    var languages: any LanguageProtocol { get }
-//    var tracks: any TracksProtocol { get }
-//    var boats: any BoatTokensProtocol { get }
-//    var stats: any StatsProtocol { get }
-//}
-//
-//class Modules: ModulesProtocol {
-//    let ls = LanguageVM()
-//    let ts = TracksViewModel()
-//    let bs = BoatTokensVM()
-//    let ss = StatsViewModel()
-//    var languages: any LanguageProtocol { ls }
-//    var tracks: any TracksProtocol { ts }
-//    var boats: any BoatTokensProtocol { bs }
-//    var stats: any StatsProtocol { ss }
-//}
-
 protocol ProfileProtocol: ObservableObject {
     var state: ViewState { get }
     var summary: TrackRef? { get }
@@ -38,8 +20,6 @@ class ProfileVM: ProfileProtocol, TracksDelegate {
         log.info("Init PVM")
     }
     
-//    let ms = Modules()
-//    var modules: ModulesProtocol { ms }
     var summary: TrackRef? {
         tracks.first { ref in
             ref.trackName == current

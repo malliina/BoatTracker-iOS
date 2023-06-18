@@ -45,10 +45,8 @@ struct AttributionsView: View {
     }
 }
 
-struct AttributionsViewPreviews: PreviewProvider {
-    static var previews: some View {
-        Group {
-            AttributionsView(info: lang.attributions)
-        }
+struct AttributionsViewPreviews: BoatPreviewProvider, PreviewProvider {
+    static var preview: some View {
+        AttributionsView(info: lang.attributions)
     }
 }

@@ -40,13 +40,12 @@ struct BoatTokensView<T>: View where T: BoatTokensProtocol {
                         Button {
                             rename = boat
                         } label: {
-                            HStack {
-                                Spacer()
+                            HStack(spacing: 30) {
                                 StatView(label: lang.boat, value: boat.name, style: .large)
-                                Spacer()
+                                    .frame(maxWidth: .infinity)
                                 StatView(label: lang.token, value: boat.token, style: .large)
-                                Spacer()
-                            }
+                                    .frame(maxWidth: .infinity)
+                            }.frame(maxWidth: 600)
                         }
                     }
                 }
@@ -69,17 +68,15 @@ struct BoatTokensView<T>: View where T: BoatTokensProtocol {
     }
 }
 
-struct BoatTokensPreview: PreviewProvider {
+struct BoatTokensPreview: BoatPreviewProvider, PreviewProvider {
     class PreviewsVM: BoatTokensProtocol {
         var notificationsEnabled: Bool = false
-        var userProfile: UserProfile? = UserProfile(id: 1, username: Username("Jack"), email: "a@b.com", language: Language.en, boats: [Boat(id: 1, name: BoatName("Titanic"), token: "token123", addedMillis: 1)], addedMillis: 1)
+        var userProfile: UserProfile? = UserProfile(id: 1, username: Username("Jack"), email: "a@b.com", language: Language.en, boats: [Boat(id: 1, name: BoatName("Titanic"), token: "token123", addedMillis: 1), Boat(id: 2, name: BoatName("Silja Serenade"), token: "token124", addedMillis: 2)], addedMillis: 1)
         func load() async { }
         func rename(boat: Boat, newName: String) async { }
     }
-    static var previews: some View {
-        Group {
-            BoatTokensView(lang: TokensLang.build(lang: lang), vm: PreviewsVM())
-        }
+    static var preview: some View {
+        BoatTokensView(lang: TokensLang.build(lang: lang), vm: PreviewsVM())
     }
 }
 

@@ -104,11 +104,9 @@ struct TrackSummaryView: View {
     }
 }
 
-struct TrackSummaryPreviews: PreviewProvider {
-    static var previews: some View {
+struct TrackSummaryPreviews: BoatPreviewProvider, PreviewProvider {
+    static var preview: some View {
         let info = TrackInfo2(duration: 1200.seconds, distanceMeters: 2000.meters, topSpeed: 40.knots, avgSpeed: 32.knots, avgWaterTemp: 14.celsius, avgOutsideTemp: 11.celsius, startDate: "Today", sourceType: .boat)
-        Group {
-            TrackSummaryView(track: info, lang: SummaryLang.build(lang))
-        }
+        return TrackSummaryView(track: info, lang: SummaryLang.build(lang))
     }
 }

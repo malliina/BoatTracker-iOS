@@ -81,18 +81,16 @@ class LanguageVM: LanguageProtocol {
     }
 }
 
-struct LanguagePreviews: PreviewProvider {
+struct LanguagePreviews: BoatPreviewProvider, PreviewProvider {
     class PreviewsVM: LanguageProtocol {
         var currentLanguage: Language { Language.en }
         
         func changeLanguage(to language: Language) async {
         }
     }
-    static var previews: some View {
-        Group {
-            NavigationView {
-                SelectLanguageView(lang: lang.profile.languages, vm: PreviewsVM())
-            }
+    static var preview: some View {
+        NavigationView {
+            SelectLanguageView(lang: lang.profile.languages, vm: PreviewsVM())
         }
     }
 }

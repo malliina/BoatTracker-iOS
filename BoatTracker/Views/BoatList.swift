@@ -8,5 +8,5 @@ func BoatList<Content: View>(rowSeparator: Visibility = .hidden, @ViewBuilder co
             
     }
     .listStyle(.plain)
-    .frame( maxWidth: .infinity)
+    .frame(maxWidth: .infinity)
 }

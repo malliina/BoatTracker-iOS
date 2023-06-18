@@ -32,17 +32,16 @@ struct StatsView<T>: View where T: StatsProtocol {
     }
 }
 
-struct StatsPreview: PreviewProvider {
+struct StatsPreview: BoatPreviewProvider, PreviewProvider {
     class PreviewsVM: StatsProtocol {
         var stats: StatsResponse? { StatsResponse(allTime: Stats(from: DateVal("today"), to: DateVal("tomorrow"), days: 32, trackCount: 12, distance: 10.meters, duration: 42.seconds), yearly: [YearlyStats(year: YearVal(2023), days: 13, trackCount: 155, distance: 2000.meters, duration: 53.seconds, monthly: [MonthlyStats(label: "June", year: YearVal(2023), month: MonthVal(6), days: 11, trackCount: 16, distance: 1000.meters, duration: 101.seconds),MonthlyStats(label: "July", year: YearVal(2023), month: MonthVal(7), days: 13, trackCount: 16, distance: 12110.meters, duration: 504.seconds)])])}
         
         func load() async {
         }
     }
-    static var previews: some View {
-        Group {
-            StatsView(lang: lang, vm: PreviewsVM())
-        }
+    
+    static var preview: some View {
+        StatsView(lang: lang, vm: PreviewsVM())
     }
 }
 

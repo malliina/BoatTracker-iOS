@@ -52,11 +52,9 @@ struct EditDialog: View {
     }
 }
 
-struct EditDialogPreviews: PreviewProvider {
-    static var previews: some View {
-        Group {
-            EditDialog(navTitle: "Edit", title: "Some title", message: "Edit here below", initialValue: "", ctaTitle: "Save", cancel: "Cancel") { _ in
-            }
+struct EditDialogPreviews: BoatPreviewProvider, PreviewProvider {
+    static var preview: some View {
+        EditDialog(navTitle: "Edit", title: "Some title", message: "Edit here below", initialValue: "", ctaTitle: "Save", cancel: "Cancel") { _ in
         }
     }
 }

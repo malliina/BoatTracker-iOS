@@ -154,7 +154,7 @@ struct ProfileView<T>: View where T: ProfileProtocol  {
     }
 }
 
-struct ProfilePreviews: PreviewProvider {
+struct ProfilePreviews: BoatPreviewProvider, PreviewProvider {
     class PreviewsVM: ProfileProtocol {
         var state: ViewState { .content }
         
@@ -174,9 +174,7 @@ struct ProfilePreviews: PreviewProvider {
             false
         }
     }
-    static var previews: some View {
-        Group {
-            ProfileView<PreviewsVM>(info: ProfileInfo(user: UserToken(email: "a@b.com", token: AccessToken("abc")), current: nil, lang: lang), vm: PreviewsVM())
-        }
+    static var preview: some View {
+        ProfileView<PreviewsVM>(info: ProfileInfo(user: UserToken(email: "a@b.com", token: AccessToken("abc")), current: nil, lang: lang), vm: PreviewsVM())
     }
 }

@@ -84,7 +84,7 @@ protocol TracksProtocol: ObservableObject {
     func changeTitle(track: TrackName, title: TrackTitle) async
 }
 
-struct TracksPreviews: PreviewProvider {
+struct TracksPreviews: BoatPreviewProvider, PreviewProvider {
     class PreviewsVM: TracksProtocol {
         var tracks: [TrackRef] { [] }
         func load() async {
@@ -92,12 +92,10 @@ struct TracksPreviews: PreviewProvider {
         func changeTitle(track: TrackName, title: TrackTitle) async {
         }
     }
-    static var previews: some View {
-        Group {
-            NavigationView {
-                TracksView<PreviewsVM>(lang: SummaryLang.build(lang), vm: PreviewsVM()) {
-                    
-                }
+    static var preview: some View {
+        NavigationView {
+            TracksView<PreviewsVM>(lang: SummaryLang.build(lang), vm: PreviewsVM()) {
+                
             }
         }
     }
