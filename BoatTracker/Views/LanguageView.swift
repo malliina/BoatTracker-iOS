@@ -3,7 +3,7 @@ import SwiftUI
 
 struct SelectLanguageView<T>: View where T: LanguageProtocol {
     let lang: LanguageLang
-    @ObservedObject var vm: T
+    @EnvironmentObject var vm: T
     var languages: [LangInfo] {
         [
             LangInfo(language: Language.se, title: lang.swedish),
@@ -90,7 +90,7 @@ struct LanguagePreviews: BoatPreviewProvider, PreviewProvider {
     }
     static var preview: some View {
         NavigationView {
-            SelectLanguageView(lang: lang.profile.languages, vm: PreviewsVM())
+            SelectLanguageView<PreviewsVM>(lang: lang.profile.languages).environmentObject(PreviewsVM())
         }
     }
 }

@@ -4,7 +4,7 @@ import SwiftUI
 struct StatsView<T>: View where T: StatsProtocol {
     private let log = LoggerFactory.shared.vc(StatsView.self)
     let lang: Lang
-    @ObservedObject var vm: T
+    @EnvironmentObject var vm: T
     
     var body: some View {
         BoatList(rowSeparator: .automatic) {
@@ -41,7 +41,7 @@ struct StatsPreview: BoatPreviewProvider, PreviewProvider {
     }
     
     static var preview: some View {
-        StatsView(lang: lang, vm: PreviewsVM())
+        StatsView<PreviewsVM>(lang: lang).environmentObject(PreviewsVM())
     }
 }
 
@@ -51,7 +51,6 @@ protocol StatsProtocol: ObservableObject {
 }
 
 class StatsViewModel: StatsProtocol {
-    static let shared = StatsViewModel()
     private let log = LoggerFactory.shared.vc(StatsViewModel.self)
     
     @Published var stats: StatsResponse?

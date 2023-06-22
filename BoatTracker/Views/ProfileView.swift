@@ -12,7 +12,7 @@ struct ProfileView<T>: View where T: ProfileProtocol  {
     let log = LoggerFactory.shared.view(ProfileView.self)
     @Environment(\.dismiss) var dismiss
     let info: ProfileInfo
-    @ObservedObject var vm: T
+    @EnvironmentObject var vm: T
     
     var lang: Lang { info.lang }
     var summaryLang: SummaryLang { SummaryLang.build(lang) }
@@ -53,26 +53,26 @@ struct ProfileView<T>: View where T: ProfileProtocol  {
                     }
                 }
                 NavigationLink {
-                    TracksView<TracksViewModel>(lang: summaryLang, vm: TracksViewModel.shared) {
+                    TracksView<TracksViewModel>(lang: summaryLang) {
                         dismiss()
                     }
                 } label: {
                     Text(lang.track.trackHistory)
                 }
                 NavigationLink {
-                    StatsView(lang: lang, vm: StatsViewModel.shared)
+                    StatsView<StatsViewModel>(lang: lang)
                 } label: {
                     Text(lang.labels.statistics)
                 }
                 NavigationLink {
-                    BoatTokensView(lang: TokensLang.build(lang: lang), vm: BoatTokensVM.shared)
+                    BoatTokensView<BoatTokensVM>(lang: TokensLang.build(lang: lang))
                 } label: {
                     Text(lang.track.boats)
                 }
             }
             BoatSection {
                 NavigationLink {
-                    SelectLanguageView(lang: profileLang.languages, vm: LanguageVM.shared)
+                    SelectLanguageView<LanguageVM>(lang: profileLang.languages)
                 } label: {
                     Text(lang.profile.language)
                 }
@@ -175,6 +175,7 @@ struct ProfilePreviews: BoatPreviewProvider, PreviewProvider {
         }
     }
     static var preview: some View {
-        ProfileView<PreviewsVM>(info: ProfileInfo(user: UserToken(email: "a@b.com", token: AccessToken("abc")), current: nil, lang: lang), vm: PreviewsVM())
+        ProfileView<PreviewsVM>(info: ProfileInfo(user: UserToken(email: "a@b.com", token: AccessToken("abc")), current: nil, lang: lang))
+            .environmentObject(PreviewsVM())
     }
 }

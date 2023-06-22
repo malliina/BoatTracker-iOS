@@ -3,7 +3,7 @@ import SwiftUI
 
 struct TracksView<T>: View where T: TracksProtocol {
     let lang: SummaryLang
-    @ObservedObject var vm: T
+    @EnvironmentObject var vm: T
     @State var rename: TrackRef? = nil
     
     let onSelect: () -> Void
@@ -41,7 +41,7 @@ struct TracksLang {
 
 class TracksViewModel: TracksProtocol {
     private let log = LoggerFactory.shared.vc(TracksViewModel.self)
-    static let shared = TracksViewModel()
+    
     @Published var tracks: [TrackRef] = []
     @Published var error: Error?
     
@@ -94,9 +94,9 @@ struct TracksPreviews: BoatPreviewProvider, PreviewProvider {
     }
     static var preview: some View {
         NavigationView {
-            TracksView<PreviewsVM>(lang: SummaryLang.build(lang), vm: PreviewsVM()) {
+            TracksView<PreviewsVM>(lang: SummaryLang.build(lang)) {
                 
-            }
+            }.environmentObject(PreviewsVM())
         }
     }
 }

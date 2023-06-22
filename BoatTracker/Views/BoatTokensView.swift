@@ -15,7 +15,7 @@ struct BoatTokensView<T>: View where T: BoatTokensProtocol {
     let log = LoggerFactory.shared.vc(BoatTokensView.self)
     let spacing: CGFloat = 12
     let lang: TokensLang
-    @ObservedObject var vm: T
+    @EnvironmentObject var vm: T
     
     @State var rename: Boat? = nil
     @State var newName: String = ""
@@ -76,7 +76,7 @@ struct BoatTokensPreview: BoatPreviewProvider, PreviewProvider {
         func rename(boat: Boat, newName: String) async { }
     }
     static var preview: some View {
-        BoatTokensView(lang: TokensLang.build(lang: lang), vm: PreviewsVM())
+        BoatTokensView<PreviewsVM>(lang: TokensLang.build(lang: lang)).environmentObject(PreviewsVM())
     }
 }
 

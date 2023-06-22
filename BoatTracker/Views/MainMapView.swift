@@ -12,17 +12,13 @@ struct WelcomeInfo: Identifiable {
 struct MainMapView<T>: View where T: MapViewModelLike {
     let log = LoggerFactory.shared.view(MainMapView.self)
     
-    @ObservedObject var viewModel: T
+    @EnvironmentObject var viewModel: T
     
     @State var welcomeInfo: WelcomeInfo? = nil
     @State var authInfo: Lang? = nil
     @State var profileInfo: ProfileInfo? = nil
     @State var tapResult: Tapped? = nil
     @State var showPopover: Bool = false
-    
-    init(viewModel: T) {
-        self.viewModel = viewModel
-    }
     
     var body: some View {
         VStack {
@@ -75,7 +71,7 @@ struct MainMapView<T>: View where T: MapViewModelLike {
         }
         .sheet(item: $profileInfo) { info in
             NavigationView {
-                ProfileView<ProfileVM>(info: info, vm: ProfileVM())
+                ProfileView<ProfileVM>(info: info)
                     .navigationBarTitleDisplayMode(.large)
                     .navigationTitle(info.lang.appName)
                     .toolbar {

@@ -20,13 +20,27 @@ struct BoatApp: App {
         ])
     }
     
-    let viewModel = MapViewModel()
+    @StateObject var viewModel = MapViewModel()
+    @StateObject var profileVm = ProfileVM()
+    @StateObject var tracksVm = TracksViewModel()
+    @StateObject var statsVm = StatsViewModel()
+    @StateObject var chartVm = ChartVM()
+    @StateObject var languageVm = LanguageVM()
+    @StateObject var tokensVm = BoatTokensVM()
     
     var body: some Scene {
         WindowGroup {
-            MainMapView(viewModel: viewModel).task {
-                await viewModel.prepare()
-            }
+            MainMapView<MapViewModel>()
+                .environmentObject(viewModel)
+                .environmentObject(profileVm)
+                .environmentObject(tracksVm)
+                .environmentObject(statsVm)
+                .environmentObject(languageVm)
+                .environmentObject(chartVm)
+                .environmentObject(tokensVm)
+                .task {
+                    await viewModel.prepare()
+                }
         }
         .onChange(of: scenePhase) { phase in
             if phase == .background {

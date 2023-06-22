@@ -16,10 +16,10 @@ struct ChartsView: View {
     let title: String
     let trackName: TrackName
     
-    @StateObject var vm: ChartVM = ChartVM()
+    @EnvironmentObject var vm: ChartVM
     
     var body: some View {
-        ChartRepresentable(lang: lang, vm: vm)
+        ChartRepresentable(lang: lang)
             .onAppear() {
                 vm.connect(track: trackName)
             }
@@ -33,11 +33,10 @@ struct ChartsView: View {
 
 struct ChartRepresentable: UIViewRepresentable {
     let lang: ChartLang
-    @ObservedObject var vm: ChartVM
+    @EnvironmentObject var vm: ChartVM
     
-    init(lang: ChartLang, vm: ChartVM) {
+    init(lang: ChartLang) {
         self.lang = lang
-        self.vm = vm
     }
     
     func makeCoordinator() -> Coordinator {
