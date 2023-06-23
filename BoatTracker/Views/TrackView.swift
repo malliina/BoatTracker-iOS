@@ -16,6 +16,10 @@ struct TrackView: View {
                         .foregroundColor(color.lightGray)
                 }
                 Spacer()
+                Text(track.boatName.name)
+                    .font(.system(size: 14))
+                    .padding(.horizontal, 12)
+                
             }
             .padding(.bottom, 8)
             HStack(spacing: 30) {

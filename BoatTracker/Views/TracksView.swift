@@ -86,13 +86,13 @@ protocol TracksProtocol: ObservableObject {
 struct TracksPreviews: BoatPreviewProvider, PreviewProvider {
     class PreviewsVM: TracksProtocol {
         let timing = Timing(date: "Today", time: "Time", dateTime: "Date time", millis: 1)
-        var tracks: [TrackRef] { [ previewTrack(name: "N1", source: .boat), previewTrack(name: "N2", source: .vehicle), previewTrack(name: "N3", source: .boat) ] }
+        var tracks: [TrackRef] { [ previewTrack(name: "N1", title: "Hej", boatName: "Titanic", source: .boat), previewTrack(name: "N2", title: "Very long evening ride from the harbor home", boatName: "Mos", source: .vehicle), previewTrack(name: "N3", title: nil, boatName: "Amina", source: .boat) ] }
         func load() async { }
         func selectTrack(track: TrackName) { }
         func changeTitle(track: TrackName, title: TrackTitle) async { }
         
-        func previewTrack(name: String, source: SourceType) -> TrackRef {
-            TrackRef(trackName: TrackName(name), trackTitle: nil, boatName: BoatName("Titanic"), username: Username("Jack"), sourceType: source, topSpeed: 14.knots, avgSpeed: 11.knots, distanceMeters: 12121.meters, duration: 14.seconds, avgWaterTemp: 14.celsius, avgOutsideTemp: 18.celsius, topPoint: CoordBody(coord: CLLocationCoordinate2D(latitude: 24, longitude: 64), boatTimeMillis: 1, speed: 18.knots, depthMeters: 10.meters, waterTemp: 10.celsius, outsideTemp: 11.celsius, altitude: 111.meters, time: timing), times: Times(start: timing, end: timing, range: "Yesterday - today"))
+        func previewTrack(name: String, title: String?, boatName: String, source: SourceType) -> TrackRef {
+            TrackRef(trackName: TrackName(name), trackTitle: title != nil ? TrackTitle(title!) : nil, boatName: BoatName(boatName), username: Username("Jack"), sourceType: source, topSpeed: 14.knots, avgSpeed: 11.knots, distanceMeters: 12121.meters, duration: 14.seconds, avgWaterTemp: 14.celsius, avgOutsideTemp: 18.celsius, topPoint: CoordBody(coord: CLLocationCoordinate2D(latitude: 24, longitude: 64), boatTimeMillis: 1, speed: 18.knots, depthMeters: 10.meters, waterTemp: 10.celsius, outsideTemp: 11.celsius, altitude: 111.meters, time: timing), times: Times(start: timing, end: timing, range: "Yesterday - today"))
         }
     }
     static var preview: some View {
