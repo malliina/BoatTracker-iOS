@@ -9,25 +9,17 @@ protocol ProfileProtocol: ObservableObject {
     func deleteMe(from: UIViewController) async -> Bool
 }
 
-class ProfileVM: ProfileProtocol, TracksDelegate {
+class ProfileVM: ProfileProtocol {
     let log = LoggerFactory.shared.vc(ProfileVM.self)
     
     @Published var state: ViewState = .idle
     @Published var tracks: [TrackRef] = []
     @Published var current: TrackName? = nil
     
-    init() {
-        log.info("Init PVM")
-    }
-    
     var summary: TrackRef? {
         tracks.first { ref in
             ref.trackName == current
         }
-    }
-    
-    func onTrack(_ track: TrackName) {
-        ActiveTrack.shared.selectedTrack = track
     }
     
     private var socket: BoatSocket { Backend.shared.socket }

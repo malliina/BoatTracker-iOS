@@ -72,6 +72,7 @@ struct MainMapView<T>: View where T: MapViewModelLike {
         .sheet(item: $profileInfo) { info in
             NavigationView {
                 ProfileView<ProfileVM>(info: info)
+                    .environmentObject(viewModel.activeTrack)
                     .navigationBarTitleDisplayMode(.large)
                     .navigationTitle(info.lang.appName)
                     .toolbar {
@@ -111,12 +112,9 @@ struct MainMapView<T>: View where T: MapViewModelLike {
     }
 }
 
-//struct MapView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ForEach(["iPhone 12 mini", "iPad Pro (11-inch) (3rd generation)"], id: \.self) { deviceName in
-//            MainMapView(viewModel: PreviewMapViewModel())
-//                .previewDevice(PreviewDevice(rawValue: deviceName))
-//                .previewDisplayName(deviceName)
-//        }
-//    }
-//}
+struct MainMapViewPreviews: BoatPreviewProvider, PreviewProvider {
+    static var preview: some View {
+        MainMapView<PreviewMapViewModel>()
+            .environmentObject(PreviewMapViewModel())
+    }
+}

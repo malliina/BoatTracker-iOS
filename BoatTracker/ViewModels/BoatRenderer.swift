@@ -11,7 +11,6 @@ struct TrophyPoint: Codable {
 
 class BoatRenderer {
     let log = LoggerFactory.shared.vc(BoatRenderer.self)
-    var app: UIApplication { UIApplication.shared }
     // state of boat trails and icons
     private var trails: [TrackName: GeoJSONSource] = [:]
     var isEmpty: Bool { trails.isEmpty }

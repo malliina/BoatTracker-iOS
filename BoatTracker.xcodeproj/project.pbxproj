@@ -55,7 +55,6 @@
 		61BCBE7B220768AB00EE74EB /* AISRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61BCBE7A220768AB00EE74EB /* AISRenderer.swift */; };
 		61BCBE7D2207730400EE74EB /* BoatRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61BCBE7C2207730400EE74EB /* BoatRenderer.swift */; };
 		61BCBE7F2208CC1C00EE74EB /* Layers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61BCBE7E2208CC1C00EE74EB /* Layers.swift */; };
-		61CD40CF211635FD00F31AA5 /* Dummy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61CD40CE211635FD00F31AA5 /* Dummy.swift */; };
 		61CD40D121163E0E00F31AA5 /* StatBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61CD40D021163E0E00F31AA5 /* StatBox.swift */; };
 		61DCDA3C21D02693009A75EB /* BoatGoogleAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DCDA3B21D02693009A75EB /* BoatGoogleAuth.swift */; };
 		61DE7F3F20F29F6900C95B3F /* BoatSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DE7F3E20F29F6900C95B3F /* BoatSocket.swift */; };
@@ -170,7 +169,6 @@
 		61BCBE7A220768AB00EE74EB /* AISRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AISRenderer.swift; sourceTree = "<group>"; };
 		61BCBE7C2207730400EE74EB /* BoatRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatRenderer.swift; sourceTree = "<group>"; };
 		61BCBE7E2208CC1C00EE74EB /* Layers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Layers.swift; sourceTree = "<group>"; };
-		61CD40CE211635FD00F31AA5 /* Dummy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dummy.swift; sourceTree = "<group>"; };
 		61CD40D021163E0E00F31AA5 /* StatBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatBox.swift; sourceTree = "<group>"; };
 		61DCDA3B21D02693009A75EB /* BoatGoogleAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatGoogleAuth.swift; sourceTree = "<group>"; };
 		61DE7F3E20F29F6900C95B3F /* BoatSocket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatSocket.swift; sourceTree = "<group>"; };
@@ -316,39 +314,39 @@
 			path = Styles;
 			sourceTree = "<group>";
 		};
-		6199E0E620F2319700A4009A /* ViewControllers */ = {
+		6199E0E620F2319700A4009A /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
 				61BCBE7A220768AB00EE74EB /* AISRenderer.swift */,
 				61F4199021206A5600B1ED7D /* AttributionModels.swift */,
-				61DE7F4420F3E6D100C95B3F /* AuthVM.swift */,
 				61BCBE7C2207730400EE74EB /* BoatRenderer.swift */,
-				B0799D662A3640AE00925784 /* BoatTokensViewModel.swift */,
-				B02EC50D2909B41A00D21793 /* MapViewModel.swift */,
 				6173F248228CB99000A1E9B9 /* PathFinder.swift */,
 				61832AAD220B69D400413FD0 /* TapListener.swift */,
 				613E82CF21A0789000D3C412 /* TimeFormatter.swift */,
 				619679F920FBCDB100432672 /* TrackModels.swift */,
-				61F4199A2120B2F700B1ED7D /* ViewState.swift */,
-				61ACE5C62130956A00925265 /* WelcomeSignedIn.swift */,
 			);
-			path = ViewControllers;
+			path = ViewModels;
 			sourceTree = "<group>";
 		};
 		6199E0E720F2324400A4009A /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				61ACE5C62130956A00925265 /* WelcomeSignedIn.swift */,
+				61F4199A2120B2F700B1ED7D /* ViewState.swift */,
 				61F4199221206C4C00B1ED7D /* AttributionsView.swift */,
 				B0C59819291ED81E00439237 /* authViews.swift */,
+				61DE7F4420F3E6D100C95B3F /* AuthVM.swift */,
 				B03F58A22940FEC0006B5DC1 /* BoatList.swift */,
 				B0799D622A3636E200925784 /* BoatPreviews.swift */,
 				B0485D5F292414AE005A1FC5 /* BoatTokensView.swift */,
+				B0799D662A3640AE00925784 /* BoatTokensViewModel.swift */,
 				B052E838292AA5FE00C09B89 /* ChartsView.swift */,
 				B052E836292A360F00C09B89 /* EditDialog.swift */,
 				B0799D642A363CF100925784 /* extensions.swift */,
 				613D5D232220AC09003FF8EB /* LabeledValue.swift */,
 				B02A812D2922C46900848949 /* LanguageView.swift */,
 				B03BC559290D31EE00BA38EF /* MainMapView.swift */,
+				B02EC50D2909B41A00D21793 /* MapViewModel.swift */,
 				61DE7F4A20F3ED3900C95B3F /* MapButtonView.swift */,
 				B02EC50B2909AE2700D21793 /* MapViewRepresentable.swift */,
 				B0C598232921159900439237 /* NavLink.swift */,
@@ -381,7 +379,6 @@
 			children = (
 				61F4199421206F9200B1ED7D /* Arrays.swift */,
 				6199E0F820F25EA100A4009A /* Credentials.swift */,
-				61CD40CE211635FD00F31AA5 /* Dummy.swift */,
 				613669BD217117390043494A /* generalExtensions.swift */,
 				6199E0EE20F24EC300A4009A /* Log.swift */,
 				61DE7F4020F2A23100C95B3F /* StringUtils.swift */,
@@ -428,7 +425,7 @@
 				613669BA216FDB320043494A /* Notifications */,
 				61967A052103CAF200432672 /* Styles */,
 				6199E0ED20F24EB800A4009A /* Util */,
-				6199E0E620F2319700A4009A /* ViewControllers */,
+				6199E0E620F2319700A4009A /* ViewModels */,
 				6199E0E720F2324400A4009A /* Views */,
 				1A6A633812206E4A035E56A6 /* Credentials.plist */,
 			);
@@ -641,7 +638,6 @@
 				613E82D021A0789000D3C412 /* TimeFormatter.swift in Sources */,
 				B03F58A5294287FF006B5DC1 /* popupViews.swift in Sources */,
 				B03F58A32940FEC0006B5DC1 /* BoatList.swift in Sources */,
-				61CD40CF211635FD00F31AA5 /* Dummy.swift in Sources */,
 				61F4199521206F9200B1ED7D /* Arrays.swift in Sources */,
 				61BCBE7B220768AB00EE74EB /* AISRenderer.swift in Sources */,
 				613669B7216FDAD10043494A /* BoatNotifications.swift in Sources */,

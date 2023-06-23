@@ -13,6 +13,7 @@ struct ProfileView<T>: View where T: ProfileProtocol  {
     @Environment(\.dismiss) var dismiss
     let info: ProfileInfo
     @EnvironmentObject var vm: T
+    @EnvironmentObject var activeTrack: ActiveTrack
     
     var lang: Lang { info.lang }
     var summaryLang: SummaryLang { SummaryLang.build(lang) }
@@ -53,7 +54,7 @@ struct ProfileView<T>: View where T: ProfileProtocol  {
                     }
                 }
                 NavigationLink {
-                    TracksView<TracksViewModel>(lang: summaryLang) {
+                    TracksView<TracksViewModel>(lang: summaryLang, activeTrack: activeTrack) {
                         dismiss()
                     }
                 } label: {

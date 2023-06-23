@@ -3,6 +3,8 @@ import SwiftUI
 
 struct TracksView<T>: View where T: TracksProtocol {
     let lang: SummaryLang
+    @ObservedObject var activeTrack: ActiveTrack
+    
     @EnvironmentObject var vm: T
     @State var rename: TrackRef? = nil
     
@@ -12,7 +14,7 @@ struct TracksView<T>: View where T: TracksProtocol {
         BoatList(rowSeparator: .automatic) {
             ForEach(vm.tracks) { track in
                 Button {
-                    ActiveTrack.shared.selectedTrack = track.trackName
+                    activeTrack.selectedTrack = track.trackName
                     onSelect()
                 } label: {
                     TrackView(lang: lang, track: track) {
@@ -45,10 +47,6 @@ class TracksViewModel: TracksProtocol {
     @Published var tracks: [TrackRef] = []
     @Published var error: Error?
     
-    init() {
-        log.info("Init TVM")
-    }
-    
     func load() async {
         do {
             await update(ts: try await http.tracks())
@@ -57,6 +55,10 @@ class TracksViewModel: TracksProtocol {
             await update(error: error)
         }
     }
+    
+//    func selectTrack(track: TrackName) {
+//        ActiveTrack.shared.selectedTrack = track
+//    }
     
     func changeTitle(track: TrackName, title: TrackTitle) async {
         do {
@@ -81,20 +83,20 @@ class TracksViewModel: TracksProtocol {
 protocol TracksProtocol: ObservableObject {
     var tracks: [TrackRef] { get }
     func load() async
+//    func selectTrack(track: TrackName)
     func changeTitle(track: TrackName, title: TrackTitle) async
 }
 
 struct TracksPreviews: BoatPreviewProvider, PreviewProvider {
     class PreviewsVM: TracksProtocol {
         var tracks: [TrackRef] { [] }
-        func load() async {
-        }
-        func changeTitle(track: TrackName, title: TrackTitle) async {
-        }
+        func load() async { }
+        func selectTrack(track: TrackName) { }
+        func changeTitle(track: TrackName, title: TrackTitle) async { }
     }
     static var preview: some View {
         NavigationView {
-            TracksView<PreviewsVM>(lang: SummaryLang.build(lang)) {
+            TracksView<PreviewsVM>(lang: SummaryLang.build(lang), activeTrack: ActiveTrack()) {
                 
             }.environmentObject(PreviewsVM())
         }

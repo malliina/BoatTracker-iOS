@@ -13,6 +13,7 @@ protocol MapViewModelLike: ObservableObject {
     var isFollowButtonHidden: Bool { get }
     var mapMode: MapMode { get set }
     var styleUri: StyleURI? { get set }
+    var activeTrack: ActiveTrack { get }
     func toggleFollow()
 }
 
@@ -71,6 +72,8 @@ class MapViewModel: MapViewModelLike {
     
     private var cancellables: Set<AnyCancellable> = .init()
     
+    @Published var activeTrack = ActiveTrack()
+    
     init() {
         Auth.shared.$tokens.sink { state in
             switch state {
@@ -88,7 +91,7 @@ class MapViewModel: MapViewModelLike {
                 self.log.info("Waiting for proper auth state...")
             }
         }.store(in: &cancellables)
-        ActiveTrack.shared.$selectedTrack.removeDuplicates().sink { trackName in
+        activeTrack.$selectedTrack.removeDuplicates().sink { trackName in
             if let trackName = trackName {
                 self.log.info("Changed to \(trackName)")
                 Task {
@@ -140,7 +143,6 @@ class MapViewModel: MapViewModelLike {
     
     private func change(to track: TrackName) async {
         await disconnect()
-        await update(latest: track)
         //log.info("Changing to \(track)...")
         backend.open(track: track, delegate: self)
     }
@@ -157,10 +159,6 @@ class MapViewModel: MapViewModelLike {
     }
     @MainActor private func update(profileHidden: Bool) {
         isProfileButtonHidden = profileHidden
-    }
-    
-    @MainActor private func update(latest: TrackName) {
-        ActiveTrack.shared.selectedTrack = latest
     }
     
     @MainActor func toggleFollow() {
@@ -182,6 +180,7 @@ class PreviewMapViewModel: MapViewModelLike {
     var isProfileButtonHidden: Bool = false
     var isFollowButtonHidden: Bool = false
     var styleUri: StyleURI? = nil
+    var activeTrack: ActiveTrack = ActiveTrack()
     func toggleFollow() { }
     func onTrack(_ track: TrackName) { }
 }

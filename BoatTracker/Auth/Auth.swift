@@ -6,6 +6,7 @@ enum AuthState {
 
 class Auth {
     static let shared = Auth()
+    
     let log = LoggerFactory.shared.system(Auth.self)
     
     private var prefs: BoatPrefs { BoatPrefs.shared }

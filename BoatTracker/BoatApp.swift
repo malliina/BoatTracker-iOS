@@ -20,13 +20,14 @@ struct BoatApp: App {
         ])
     }
     
-    @StateObject var viewModel = MapViewModel()
-    @StateObject var profileVm = ProfileVM()
-    @StateObject var tracksVm = TracksViewModel()
-    @StateObject var statsVm = StatsViewModel()
-    @StateObject var chartVm = ChartVM()
-    @StateObject var languageVm = LanguageVM()
-    @StateObject var tokensVm = BoatTokensVM()
+    @StateObject private var viewModel = MapViewModel()
+    @StateObject private var profileVm = ProfileVM()
+    @StateObject private var tracksVm = TracksViewModel()
+    @StateObject private var statsVm = StatsViewModel()
+    @StateObject private var chartVm = ChartVM()
+    @StateObject private var languageVm = LanguageVM()
+    @StateObject private var tokensVm = BoatTokensVM()
+//    @StateObject var activeTrack = ActiveTrack()
     
     var body: some Scene {
         WindowGroup {
@@ -38,6 +39,7 @@ struct BoatApp: App {
                 .environmentObject(languageVm)
                 .environmentObject(chartVm)
                 .environmentObject(tokensVm)
+//                .environmentObject(activeTrack)
                 .task {
                     await viewModel.prepare()
                 }

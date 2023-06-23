@@ -1,11 +1,3 @@
-//
-//  PathFinder.swift
-//  BoatTracker
-//
-//  Created by Michael Skogberg on 16/05/2019.
-//  Copyright © 2019 Michael Skogberg. All rights reserved.
-//
-
 import Foundation
 import MapboxMaps
 

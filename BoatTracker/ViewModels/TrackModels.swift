@@ -1,12 +1,6 @@
 import Foundation
 
-protocol TracksDelegate {
-    func onTrack(_ track: TrackName)
-}
-
 class ActiveTrack: ObservableObject {
-    static let shared = ActiveTrack()
-    
     @Published var selectedTrack: TrackName?
 }
 
