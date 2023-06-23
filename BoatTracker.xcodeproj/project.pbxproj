@@ -76,6 +76,7 @@
 		7D2CC0F3264D6EBD0091E05C /* MicrosoftAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D2CC0F2264D6EBD0091E05C /* MicrosoftAuth.swift */; };
 		7D528E6227B9682F00C55F06 /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D528E6127B9682F00C55F06 /* WebSocket.swift */; };
 		7DDBA9A727773D3900108B24 /* AppleAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DDBA9A627773D3900108B24 /* AppleAuth.swift */; };
+		B01251A72A4582C600A267C9 /* conf.json in Resources */ = {isa = PBXBuildFile; fileRef = B01251A62A4582C600A267C9 /* conf.json */; };
 		B02A812E2922C46900848949 /* LanguageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02A812D2922C46900848949 /* LanguageView.swift */; };
 		B02EC50C2909AE2700D21793 /* MapViewRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02EC50B2909AE2700D21793 /* MapViewRepresentable.swift */; };
 		B02EC50E2909B41A00D21793 /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02EC50D2909B41A00D21793 /* MapViewModel.swift */; };
@@ -184,6 +185,7 @@
 		7D2CC0F2264D6EBD0091E05C /* MicrosoftAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrosoftAuth.swift; sourceTree = "<group>"; };
 		7D528E6127B9682F00C55F06 /* WebSocket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocket.swift; sourceTree = "<group>"; };
 		7DDBA9A627773D3900108B24 /* AppleAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleAuth.swift; sourceTree = "<group>"; };
+		B01251A62A4582C600A267C9 /* conf.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = conf.json; path = BoatTracker/conf.json; sourceTree = "<group>"; };
 		B02A812D2922C46900848949 /* LanguageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageView.swift; sourceTree = "<group>"; };
 		B02EC50B2909AE2700D21793 /* MapViewRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewRepresentable.swift; sourceTree = "<group>"; };
 		B02EC50D2909B41A00D21793 /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
@@ -199,7 +201,6 @@
 		B052E836292A360F00C09B89 /* EditDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditDialog.swift; sourceTree = "<group>"; };
 		B052E838292AA5FE00C09B89 /* ChartsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartsView.swift; sourceTree = "<group>"; };
 		B05D66962A01780B002E784F /* ci_post_clone.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_post_clone.sh; sourceTree = "<group>"; };
-		B0799D5D2A3631BE00925784 /* conf.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = conf.json; sourceTree = "<group>"; };
 		B0799D622A3636E200925784 /* BoatPreviews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatPreviews.swift; sourceTree = "<group>"; };
 		B0799D642A363CF100925784 /* extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = extensions.swift; sourceTree = "<group>"; };
 		B0799D662A3640AE00925784 /* BoatTokensViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatTokensViewModel.swift; sourceTree = "<group>"; };
@@ -331,8 +332,6 @@
 		6199E0E720F2324400A4009A /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				61ACE5C62130956A00925265 /* WelcomeSignedIn.swift */,
-				61F4199A2120B2F700B1ED7D /* ViewState.swift */,
 				61F4199221206C4C00B1ED7D /* AttributionsView.swift */,
 				B0C59819291ED81E00439237 /* authViews.swift */,
 				61DE7F4420F3E6D100C95B3F /* AuthVM.swift */,
@@ -346,8 +345,8 @@
 				613D5D232220AC09003FF8EB /* LabeledValue.swift */,
 				B02A812D2922C46900848949 /* LanguageView.swift */,
 				B03BC559290D31EE00BA38EF /* MainMapView.swift */,
-				B02EC50D2909B41A00D21793 /* MapViewModel.swift */,
 				61DE7F4A20F3ED3900C95B3F /* MapButtonView.swift */,
+				B02EC50D2909B41A00D21793 /* MapViewModel.swift */,
 				B02EC50B2909AE2700D21793 /* MapViewRepresentable.swift */,
 				B0C598232921159900439237 /* NavLink.swift */,
 				B0485D6129256907005A1FC5 /* PeriodStatView.swift */,
@@ -360,6 +359,8 @@
 				B0C598212920F02900439237 /* TrackSummaryView.swift */,
 				B052E832292A286E00C09B89 /* TracksView.swift */,
 				B052E834292A2BEB00C09B89 /* TrackView.swift */,
+				61F4199A2120B2F700B1ED7D /* ViewState.swift */,
+				61ACE5C62130956A00925265 /* WelcomeSignedIn.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -390,6 +391,7 @@
 		61B07C5320F21DC300D8B7E0 = {
 			isa = PBXGroup;
 			children = (
+				B01251A62A4582C600A267C9 /* conf.json */,
 				B05D66952A0177BF002E784F /* ci_scripts */,
 				61B07C5E20F21DC300D8B7E0 /* BoatTracker */,
 				61B07C7320F21DC400D8B7E0 /* BoatTrackerTests */,
@@ -409,7 +411,6 @@
 		61B07C5E20F21DC300D8B7E0 /* BoatTracker */ = {
 			isa = PBXGroup;
 			children = (
-				B0799D5C2A3631AF00925784 /* Resources */,
 				61B07C5F20F21DC300D8B7E0 /* BoatApp.swift */,
 				61B07C6620F21DC400D8B7E0 /* Assets.xcassets */,
 				619679EC20F89F6300432672 /* Auth */,
@@ -464,14 +465,6 @@
 				B05D66962A01780B002E784F /* ci_post_clone.sh */,
 			);
 			path = ci_scripts;
-			sourceTree = "<group>";
-		};
-		B0799D5C2A3631AF00925784 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				B0799D5D2A3631BE00925784 /* conf.json */,
-			);
-			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -581,6 +574,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				61B07C6A20F21DC400D8B7E0 /* LaunchScreen.storyboard in Resources */,
+				B01251A72A4582C600A267C9 /* conf.json in Resources */,
 				61B07C6720F21DC400D8B7E0 /* Assets.xcassets in Resources */,
 				610EE3E62172524C0040FBC6 /* FontAwesome.ttf in Resources */,
 				1A6A675D048DFF6E1E0BE701 /* Credentials.plist in Resources */,

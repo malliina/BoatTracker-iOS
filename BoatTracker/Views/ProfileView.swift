@@ -178,5 +178,6 @@ struct ProfilePreviews: BoatPreviewProvider, PreviewProvider {
     static var preview: some View {
         ProfileView<PreviewsVM>(info: ProfileInfo(user: UserToken(email: "a@b.com", token: AccessToken("abc")), current: nil, lang: lang))
             .environmentObject(PreviewsVM())
+            .environmentObject(ActiveTrack())
     }
 }

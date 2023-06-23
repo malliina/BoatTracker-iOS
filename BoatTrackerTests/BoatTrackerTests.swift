@@ -37,6 +37,10 @@ class BoatTrackerTests: XCTestCase {
         XCTAssertNil(try kc.findToken())
     }
     
+    func testReadConf() throws {
+        try BoatPreviews.shared.readLocalConf()
+    }
+    
     func testPerformanceExample() {
         // This is an example of a performance test case.
         self.measure {
