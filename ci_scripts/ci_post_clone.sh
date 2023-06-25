@@ -1,5 +1,6 @@
 #!/bin/sh
 set -e
+mkdir ~/.apple/
 echo "$CREDENTIALS_PLIST" > ~/.apple/Credentials.plist.b64
 base64 -d -i ~/.apple/Credentials.plist.b64 > BoatTracker/Credentials.plist
 echo "$NETRC" > ~/.apple/netrc.b64
