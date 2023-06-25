@@ -18,6 +18,7 @@ Pods
 .idea
 
 BoatTracker/Credentials.plist
+BoatTracker.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
 
 fastlane/report.xml
 fastlane/test_output
