@@ -1,7 +1,3 @@
-//
-// Created by Michael Skogberg on 29.10.2020.
-// Copyright (c) 2020 Michael Skogberg. All rights reserved.
-//
 
 import Foundation
 

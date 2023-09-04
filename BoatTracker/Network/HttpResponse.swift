@@ -52,9 +52,6 @@ class HttpParser {
     func parseAs<T: Decodable>(_ t: T.Type, response: HttpResponse) throws -> T {
         do {
             let decoder = JSONDecoder()
-//            if let str = String(data: response.data, encoding: .utf8) {
-//                log.info("Response is: \(str)")
-//            }
             return try decoder.decode(t, from: response.data)
         } catch let error as JsonError {
             log.error(error.describe)

@@ -86,10 +86,6 @@ extension AppleAuth: ASAuthorizationControllerDelegate {
         guard let idToken = String(data: idTokenData, encoding: .utf8) else {
             throw AppError.simple("ID token is not a string. \(idCredential)")
         }
-//        guard let email = idCredential.email else {
-//            let givenName = idCredential.fullName?.givenName ?? "unknown"
-//            return subject.onError(AppError.simple("No email in credential. Given name \(givenName). Token was '\(idToken)'. \(idCredential)"))
-//        }
         guard let authCodeData = idCredential.authorizationCode, let authCodeStr = String(data: authCodeData, encoding: .utf8) else {
             throw AppError.simple("ID token is not a string. \(idCredential)")
         }
