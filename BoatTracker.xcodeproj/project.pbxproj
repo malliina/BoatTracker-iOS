@@ -717,10 +717,10 @@
 			);
 			mainGroup = 61B07C5320F21DC300D8B7E0;
 			packageReferences = (
-				7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple.git" */,
-				7D175C4827BD85300050E29B /* XCRemoteSwiftPackageReference "mapbox-maps-ios.git" */,
+				7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */,
+				7D175C4827BD85300050E29B /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */,
 				7D175C4B27BD85AE0050E29B /* XCRemoteSwiftPackageReference "microsoft-authentication-library-for-objc" */,
-				7D175C4E27BD87110050E29B /* XCRemoteSwiftPackageReference "Charts.git" */,
+				7D175C4E27BD87110050E29B /* XCRemoteSwiftPackageReference "Charts" */,
 				7D175C5127BD876F0050E29B /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 			);
 			productRefGroup = 61B07C5D20F21DC300D8B7E0 /* Products */;
@@ -998,6 +998,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = CarMapAppIcon;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = BoatTracker/BoatTracker.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
@@ -1028,6 +1029,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = CarMapAppIcon;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = BoatTracker/BoatTracker.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
@@ -1129,7 +1131,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple.git" */ = {
+		7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/microsoft/appcenter-sdk-apple.git";
 			requirement = {
@@ -1137,7 +1139,7 @@
 				version = 5.0.0;
 			};
 		};
-		7D175C4827BD85300050E29B /* XCRemoteSwiftPackageReference "mapbox-maps-ios.git" */ = {
+		7D175C4827BD85300050E29B /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/mapbox/mapbox-maps-ios.git";
 			requirement = {
@@ -1153,7 +1155,7 @@
 				version = 1.2.5;
 			};
 		};
-		7D175C4E27BD87110050E29B /* XCRemoteSwiftPackageReference "Charts.git" */ = {
+		7D175C4E27BD87110050E29B /* XCRemoteSwiftPackageReference "Charts" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/danielgindi/Charts.git";
 			requirement = {
@@ -1174,17 +1176,17 @@
 /* Begin XCSwiftPackageProductDependency section */
 		7D175C4427BD84990050E29B /* AppCenterAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple.git" */;
+			package = 7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */;
 			productName = AppCenterAnalytics;
 		};
 		7D175C4627BD84990050E29B /* AppCenterCrashes */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple.git" */;
+			package = 7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */;
 			productName = AppCenterCrashes;
 		};
 		7D175C4927BD85300050E29B /* MapboxMaps */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 7D175C4827BD85300050E29B /* XCRemoteSwiftPackageReference "mapbox-maps-ios.git" */;
+			package = 7D175C4827BD85300050E29B /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */;
 			productName = MapboxMaps;
 		};
 		7D175C4C27BD85AE0050E29B /* MSAL */ = {
@@ -1194,7 +1196,7 @@
 		};
 		7D175C4F27BD87110050E29B /* Charts */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 7D175C4E27BD87110050E29B /* XCRemoteSwiftPackageReference "Charts.git" */;
+			package = 7D175C4E27BD87110050E29B /* XCRemoteSwiftPackageReference "Charts" */;
 			productName = Charts;
 		};
 		7D175C5227BD876F0050E29B /* GoogleSignIn */ = {
