@@ -3,9 +3,11 @@ import Foundation
 protocol BoatTokensProtocol: ObservableObject {
     var notificationsEnabled: Bool { get set }
     var userProfile: UserProfile? { get }
+    var appIcon: String { get }
     
     func load() async
     func rename(boat: Boat, newName: String) async
+    func changeAppIcon(to: String) async
 }
 
 class BoatTokensVM: BoatTokensProtocol {
@@ -15,11 +17,15 @@ class BoatTokensVM: BoatTokensProtocol {
     @Published var notificationsEnabled: Bool
     @Published var userProfile: UserProfile?
     @Published var loadError: Error?
+    @Published var appIcon: String
     
     let boatSettings = BoatPrefs.shared
+    var app: UIApplication { UIApplication.shared }
+    static let defaultAppIcon = "AppIcon"
     
     init() {
         notificationsEnabled = boatSettings.notificationsAllowed
+        appIcon = UIApplication.shared.alternateIconName ?? BoatTokensVM.defaultAppIcon
         Task {
             for await isEnabled in $notificationsEnabled.values {
                 await toggleNotifications(isEnabled: isEnabled)
@@ -43,6 +49,24 @@ class BoatTokensVM: BoatTokensProtocol {
             await load()
         } catch {
             log.error("Unable to rename. \(error.describe)")
+        }
+    }
+    
+    @MainActor
+    func changeAppIcon(to: String) async {
+        let next = to == BoatTokensVM.defaultAppIcon ? nil : to
+        log.info("Changing app icon to \(to)...")
+        guard app.alternateIconName != next else {
+            log.info("App icon is already \(to), ignoring change request.")
+            return
+        }
+        log.info("Supports alternate icons: \(app.supportsAlternateIcons)")
+        do {
+            try await app.setAlternateIconName(next)
+            log.info("Alternate icon set to \(to).")
+            appIcon = to
+        } catch {
+            log.info("Failed to change alternate app icon. \(error)")
         }
     }
     

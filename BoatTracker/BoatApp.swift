@@ -8,7 +8,8 @@ import SwiftUI
 
 @main
 struct BoatApp: App {
-    let log = LoggerFactory.shared.system(BoatApp.self)
+    static let logger = LoggerFactory.shared.system(BoatApp.self)
+    var log: Logger { BoatApp.logger }
     
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @Environment(\.scenePhase) private var scenePhase
@@ -27,7 +28,6 @@ struct BoatApp: App {
     @StateObject private var chartVm = ChartVM()
     @StateObject private var languageVm = LanguageVM()
     @StateObject private var tokensVm = BoatTokensVM()
-//    @StateObject var activeTrack = ActiveTrack()
     
     var body: some Scene {
         WindowGroup {
@@ -39,7 +39,6 @@ struct BoatApp: App {
                 .environmentObject(languageVm)
                 .environmentObject(chartVm)
                 .environmentObject(tokensVm)
-//                .environmentObject(activeTrack)
                 .task {
                     await viewModel.prepare()
                 }
@@ -60,7 +59,6 @@ struct BoatApp: App {
     }
 }
 
-//@UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     static let log = LoggerFactory.shared.system(AppDelegate.self)
     
@@ -68,10 +66,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     let notifications = BoatNotifications.shared
 
     var window: UIWindow?
-
-//    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
-//        UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
-//    }
     
     /// https://developer.apple.com/documentation/uikit/core_app/allowing_apps_and_websites_to_link_to_your_content/handling_universal_links
     func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
@@ -131,4 +125,3 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         notifications.handleNotification(application, window: window, data: userInfo)
     }
 }
-

@@ -3,11 +3,31 @@ import SwiftUI
 import Combine
 
 struct TokensLang {
-    let notificationsText, notifications, boat, boats, token, tokenText, renameBoat, newName, failText, cancel: String
+    let appIcon, notificationsText, notifications, boat, boats, token, tokenText, renameBoat, newName, failText, cancel: String
     
     static func build(lang: Lang) -> TokensLang {
         let settings = lang.settings
-        return TokensLang(notificationsText: settings.notificationsText, notifications: settings.notifications, boat: settings.boat, boats: lang.track.boats, token: settings.token, tokenText: settings.tokenText, renameBoat: settings.renameBoat, newName: settings.newName, failText: lang.messages.failedToLoadProfile, cancel: settings.cancel)
+        return TokensLang(appIcon: settings.appIcon, notificationsText: settings.notificationsText, notifications: settings.notifications, boat: settings.boat, boats: lang.track.boats, token: settings.token, tokenText: settings.tokenText, renameBoat: settings.renameBoat, newName: settings.newName, failText: lang.messages.failedToLoadProfile, cancel: settings.cancel)
+    }
+}
+
+struct IconImage: View {
+    let iconName: String
+    let isSelected: Bool
+
+    var body: some View {
+        Label {
+            Text(iconName)
+        } icon: {
+            Image(uiImage: UIImage(named: iconName) ?? UIImage())
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(minHeight: 64, maxHeight: isSelected ? 96 : 64)
+                .cornerRadius(10)
+                .shadow(radius: 10)
+                .padding(.horizontal)
+        }
+            .labelStyle(.iconOnly)
     }
 }
 
@@ -24,36 +44,49 @@ struct BoatTokensView<T>: View where T: BoatTokensProtocol {
     }
     
     var body: some View {
-        BoatList {
-            Section {
-                Toggle(lang.notifications, isOn: $vm.notificationsEnabled)
-            } header: {
-                Spacer().frame(height: 8)
-            } footer: {
-                Text(lang.notificationsText)
-                    .font(.system(size: 16))
-                    .foregroundColor(color.secondaryText)
-            }
-            Section {
-                if let boats = vm.userProfile?.boats {
-                    ForEach(boats) { boat in
-                        Button {
-                            rename = boat
-                        } label: {
-                            HStack(spacing: 30) {
-                                StatView(label: lang.boat, value: boat.name, style: .large)
-                                    .frame(maxWidth: .infinity)
-                                StatView(label: lang.token, value: boat.token, style: .large)
-                                    .frame(maxWidth: .infinity)
-                            }.frame(maxWidth: 600)
+        ScrollView {
+            Text(lang.appIcon)
+                .padding(.bottom)
+            HStack {
+                ForEach(["AppIcon", "CarMapAppIcon"], id: \.self) { icon in
+                    Button {
+                        Task {
+                            await vm.changeAppIcon(to: icon)
                         }
+                    } label: {
+                        IconImage(iconName: icon, isSelected: vm.appIcon == icon)
                     }
                 }
-            } footer: {
-                Text(lang.tokenText)
-                    .font(.system(size: 16))
-                    .foregroundColor(color.secondaryText)
             }
+            .padding(.vertical)
+            Toggle(lang.notifications, isOn: $vm.notificationsEnabled)
+                .padding(.horizontal)
+            Text(lang.notificationsText)
+                .font(.system(size: 16))
+                .foregroundColor(color.secondaryText)
+                .padding(.horizontal)
+                .padding(.bottom)
+            Text(lang.renameBoat)
+                .padding(.bottom)
+            if let boats = vm.userProfile?.boats {
+                ForEach(boats) { boat in
+                    Button {
+                        rename = boat
+                    } label: {
+                        HStack(spacing: 30) {
+                            StatView(label: lang.boat, value: boat.name, style: .large)
+                                .frame(maxWidth: .infinity)
+                            StatView(label: lang.token, value: boat.token, style: .large)
+                                .frame(maxWidth: .infinity)
+                        }.frame(maxWidth: 600)
+                            .padding(.bottom)
+                    }
+                }.padding(.horizontal)
+            }
+            Text(lang.tokenText)
+                .font(.system(size: 16))
+                .foregroundColor(color.secondaryText)
+                .padding(.horizontal)
         }
         .navigationBarTitleDisplayMode(.large)
         .navigationTitle(lang.boats)
@@ -70,13 +103,16 @@ struct BoatTokensView<T>: View where T: BoatTokensProtocol {
 
 struct BoatTokensPreview: BoatPreviewProvider, PreviewProvider {
     class PreviewsVM: BoatTokensProtocol {
+        var appIcon: String = BoatTokensVM.defaultAppIcon
         var notificationsEnabled: Bool = false
         var userProfile: UserProfile? = UserProfile(id: 1, username: Username("Jack"), email: "a@b.com", language: Language.en, boats: [Boat(id: 1, name: BoatName("Titanic"), token: "token123", addedMillis: 1), Boat(id: 2, name: BoatName("Silja Serenade"), token: "token124", addedMillis: 2)], addedMillis: 1)
         func load() async { }
         func rename(boat: Boat, newName: String) async { }
+        func changeAppIcon(to: String) async {}
     }
     static var preview: some View {
-        BoatTokensView<PreviewsVM>(lang: TokensLang.build(lang: lang)).environmentObject(PreviewsVM())
+        BoatTokensView<PreviewsVM>(lang: TokensLang.build(lang: lang))
+            .environmentObject(PreviewsVM())
+            .previewDevice("iPhone 13 mini")
     }
 }
-
