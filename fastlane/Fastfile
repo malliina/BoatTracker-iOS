@@ -6,9 +6,9 @@ platform :ios do
 
   desc "Release"
   lane :release do
-    # prepare
+    prepare
     cibuild
-    # upload
+    upload
   end
 
   desc "Prepare for release"
