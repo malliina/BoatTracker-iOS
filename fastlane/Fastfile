@@ -7,6 +7,7 @@ platform :ios do
   desc "Release"
   lane :release do
     prepare
+    cibuild
     upload
   end
 
@@ -21,7 +22,7 @@ platform :ios do
   end
 
   desc "Build and upload"
-  lane :upload do
+  lane :cibuild do
     setup_ci if ENV['CI']
     unlock_keychain(
       path: "fastlane_tmp_keychain",
@@ -44,11 +45,13 @@ platform :ios do
     )
     get_provisioning_profile(filename: "App.mobileprovision")
     build_app(scheme: "BoatTracker")
-    # upload_to_testflight
+  end
+  
+  lane :upload do
     upload_to_app_store(
-      force: true, 
-      submit_for_review: true, 
-      automatic_release: true, 
+      force: true,
+      submit_for_review: true,
+      automatic_release: true,
       precheck_include_in_app_purchases: false,
       submission_information: {
         export_compliance_uses_encryption: false,

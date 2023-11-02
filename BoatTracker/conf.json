@@ -249,6 +249,7 @@
                 "notAvailable": "N/A"
             },
             "settings": {
+                "appIcon": "App icon",
                 "boat": "Vene",
                 "rename": "Uusi nimi",
                 "renameBoat": "Nimeä vene",
@@ -644,6 +645,7 @@
                 "notAvailable": "N/A"
             },
             "settings": {
+                "appIcon": "App icon",
                 "boat": "Båt",
                 "rename": "Ändra namn",
                 "renameBoat": "Namnge båt",
@@ -1039,6 +1041,7 @@
                 "notAvailable": "N/A"
             },
             "settings": {
+                "appIcon": "App icon",
                 "boat": "Boat",
                 "rename": "Rename",
                 "renameBoat": "Rename Boat",

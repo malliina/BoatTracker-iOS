@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -26,7 +26,6 @@
 		613669B7216FDAD10043494A /* BoatNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613669B6216FDAD10043494A /* BoatNotifications.swift */; };
 		613669BC216FDB3E0043494A /* notificationModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613669BB216FDB3E0043494A /* notificationModels.swift */; };
 		613669BE217117390043494A /* generalExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613669BD217117390043494A /* generalExtensions.swift */; };
-		613D5D242220AC0A003FF8EB /* LabeledValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613D5D232220AC09003FF8EB /* LabeledValue.swift */; };
 		613E82D021A0789000D3C412 /* TimeFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613E82CF21A0789000D3C412 /* TimeFormatter.swift */; };
 		614221B6222C10A700FD1FF3 /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614221B5222C10A700FD1FF3 /* UserSettings.swift */; };
 		614221B82231779000FD1FF3 /* httpPayloads.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614221B72231778F00FD1FF3 /* httpPayloads.swift */; };
@@ -67,6 +66,8 @@
 		61F4199521206F9200B1ED7D /* Arrays.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61F4199421206F9200B1ED7D /* Arrays.swift */; };
 		61F4199B2120B2F700B1ED7D /* ViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61F4199A2120B2F700B1ED7D /* ViewState.swift */; };
 		7D045D6A265A54A300B92EE8 /* Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D045D69265A54A300B92EE8 /* Auth.swift */; };
+		7D15B6E02AE575E600C47F76 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 7D15B6DF2AE575E600C47F76 /* README.md */; };
+		7D15B6E22AE5760100C47F76 /* .github in Resources */ = {isa = PBXBuildFile; fileRef = 7D15B6E12AE5760100C47F76 /* .github */; };
 		7D175C4527BD84990050E29B /* AppCenterAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 7D175C4427BD84990050E29B /* AppCenterAnalytics */; };
 		7D175C4727BD84990050E29B /* AppCenterCrashes in Frameworks */ = {isa = PBXBuildFile; productRef = 7D175C4627BD84990050E29B /* AppCenterCrashes */; };
 		7D175C4A27BD85300050E29B /* MapboxMaps in Frameworks */ = {isa = PBXBuildFile; productRef = 7D175C4927BD85300050E29B /* MapboxMaps */; };
@@ -137,7 +138,6 @@
 		613669BB216FDB3E0043494A /* notificationModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = notificationModels.swift; sourceTree = "<group>"; };
 		613669BD217117390043494A /* generalExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = generalExtensions.swift; sourceTree = "<group>"; };
 		613669BF217124560043494A /* BoatTracker.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BoatTracker.entitlements; sourceTree = "<group>"; };
-		613D5D232220AC09003FF8EB /* LabeledValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabeledValue.swift; sourceTree = "<group>"; };
 		613E82CF21A0789000D3C412 /* TimeFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeFormatter.swift; sourceTree = "<group>"; };
 		614221B5222C10A700FD1FF3 /* UserSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettings.swift; sourceTree = "<group>"; };
 		614221B72231778F00FD1FF3 /* httpPayloads.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = httpPayloads.swift; sourceTree = "<group>"; };
@@ -182,6 +182,61 @@
 		61F4199421206F9200B1ED7D /* Arrays.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Arrays.swift; sourceTree = "<group>"; };
 		61F4199A2120B2F700B1ED7D /* ViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewState.swift; sourceTree = "<group>"; };
 		7D045D69265A54A300B92EE8 /* Auth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Auth.swift; sourceTree = "<group>"; };
+		7D15B6DF2AE575E600C47F76 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		7D15B6E12AE5760100C47F76 /* .github */ = {isa = PBXFileReference; lastKnownFileType = folder; path = .github; sourceTree = "<group>"; };
+		7D15B6E52AE5761400C47F76 /* README.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
+		7D15B6E72AE5761400C47F76 /* 1_APP_IPAD_PRO_3GEN_129_1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 1_APP_IPAD_PRO_3GEN_129_1.png; sourceTree = "<group>"; };
+		7D15B6E82AE5761400C47F76 /* 4_APP_IPAD_PRO_3GEN_129_4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 4_APP_IPAD_PRO_3GEN_129_4.png; sourceTree = "<group>"; };
+		7D15B6E92AE5761400C47F76 /* 1_APP_IPHONE_55_1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 1_APP_IPHONE_55_1.png; sourceTree = "<group>"; };
+		7D15B6EA2AE5761400C47F76 /* 0_APP_IPHONE_55_0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_APP_IPHONE_55_0.png; sourceTree = "<group>"; };
+		7D15B6EB2AE5761400C47F76 /* 3_APP_IPHONE_55_3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 3_APP_IPHONE_55_3.png; sourceTree = "<group>"; };
+		7D15B6EC2AE5761400C47F76 /* 0_APP_IPAD_PRO_3GEN_129_0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_APP_IPAD_PRO_3GEN_129_0.png; sourceTree = "<group>"; };
+		7D15B6ED2AE5761400C47F76 /* 2_APP_IPHONE_55_2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 2_APP_IPHONE_55_2.png; sourceTree = "<group>"; };
+		7D15B6EE2AE5761400C47F76 /* 5_APP_IPAD_PRO_3GEN_129_5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 5_APP_IPAD_PRO_3GEN_129_5.png; sourceTree = "<group>"; };
+		7D15B6EF2AE5761400C47F76 /* 0_APP_IPAD_PRO_129_0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_APP_IPAD_PRO_129_0.png; sourceTree = "<group>"; };
+		7D15B6F02AE5761400C47F76 /* 3_APP_IPAD_PRO_129_3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 3_APP_IPAD_PRO_129_3.png; sourceTree = "<group>"; };
+		7D15B6F12AE5761400C47F76 /* 3_APP_IPAD_PRO_3GEN_129_3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 3_APP_IPAD_PRO_3GEN_129_3.png; sourceTree = "<group>"; };
+		7D15B6F22AE5761400C47F76 /* 2_APP_IPAD_PRO_129_2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 2_APP_IPAD_PRO_129_2.png; sourceTree = "<group>"; };
+		7D15B6F32AE5761400C47F76 /* 2_APP_IPHONE_65_2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 2_APP_IPHONE_65_2.png; sourceTree = "<group>"; };
+		7D15B6F42AE5761400C47F76 /* 3_APP_IPHONE_65_3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 3_APP_IPHONE_65_3.png; sourceTree = "<group>"; };
+		7D15B6F52AE5761400C47F76 /* 0_APP_IPHONE_65_0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_APP_IPHONE_65_0.png; sourceTree = "<group>"; };
+		7D15B6F62AE5761400C47F76 /* 1_APP_IPHONE_65_1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 1_APP_IPHONE_65_1.png; sourceTree = "<group>"; };
+		7D15B6F72AE5761400C47F76 /* 2_APP_IPAD_PRO_3GEN_129_2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 2_APP_IPAD_PRO_3GEN_129_2.png; sourceTree = "<group>"; };
+		7D15B6F82AE5761400C47F76 /* 1_APP_IPAD_PRO_129_1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 1_APP_IPAD_PRO_129_1.png; sourceTree = "<group>"; };
+		7D15B6F92AE5761400C47F76 /* 4_APP_IPHONE_65_4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 4_APP_IPHONE_65_4.png; sourceTree = "<group>"; };
+		7D15B6FA2AE5761400C47F76 /* 5_APP_IPHONE_65_5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 5_APP_IPHONE_65_5.png; sourceTree = "<group>"; };
+		7D15B6FC2AE5761400C47F76 /* report.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = report.html; sourceTree = "<group>"; };
+		7D15B6FD2AE5761400C47F76 /* report.junit */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = report.junit; sourceTree = "<group>"; };
+		7D15B6FE2AE5761400C47F76 /* Pluginfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Pluginfile; sourceTree = "<group>"; };
+		7D15B6FF2AE5761400C47F76 /* Appfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Appfile; sourceTree = "<group>"; };
+		7D15B7002AE5761400C47F76 /* Deliverfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Deliverfile; sourceTree = "<group>"; };
+		7D15B7012AE5761400C47F76 /* Fastfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Fastfile; sourceTree = "<group>"; };
+		7D15B7022AE5761400C47F76 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		7D15B7042AE5761400C47F76 /* copyright.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = copyright.txt; sourceTree = "<group>"; };
+		7D15B7052AE5761400C47F76 /* secondary_first_sub_category.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = secondary_first_sub_category.txt; sourceTree = "<group>"; };
+		7D15B7062AE5761400C47F76 /* secondary_category.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = secondary_category.txt; sourceTree = "<group>"; };
+		7D15B7072AE5761400C47F76 /* secondary_second_sub_category.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = secondary_second_sub_category.txt; sourceTree = "<group>"; };
+		7D15B7082AE5761400C47F76 /* primary_second_sub_category.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = primary_second_sub_category.txt; sourceTree = "<group>"; };
+		7D15B70A2AE5761400C47F76 /* phone_number.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = phone_number.txt; sourceTree = "<group>"; };
+		7D15B70B2AE5761400C47F76 /* demo_user.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = demo_user.txt; sourceTree = "<group>"; };
+		7D15B70C2AE5761400C47F76 /* notes.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = notes.txt; sourceTree = "<group>"; };
+		7D15B70D2AE5761400C47F76 /* email_address.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = email_address.txt; sourceTree = "<group>"; };
+		7D15B70E2AE5761400C47F76 /* last_name.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = last_name.txt; sourceTree = "<group>"; };
+		7D15B70F2AE5761400C47F76 /* first_name.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = first_name.txt; sourceTree = "<group>"; };
+		7D15B7102AE5761400C47F76 /* demo_password.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = demo_password.txt; sourceTree = "<group>"; };
+		7D15B7112AE5761400C47F76 /* primary_first_sub_category.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = primary_first_sub_category.txt; sourceTree = "<group>"; };
+		7D15B7132AE5761400C47F76 /* privacy_url.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = privacy_url.txt; sourceTree = "<group>"; };
+		7D15B7142AE5761400C47F76 /* subtitle.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = subtitle.txt; sourceTree = "<group>"; };
+		7D15B7152AE5761400C47F76 /* support_url.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = support_url.txt; sourceTree = "<group>"; };
+		7D15B7162AE5761400C47F76 /* keywords.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = keywords.txt; sourceTree = "<group>"; };
+		7D15B7172AE5761400C47F76 /* apple_tv_privacy_policy.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = apple_tv_privacy_policy.txt; sourceTree = "<group>"; };
+		7D15B7182AE5761400C47F76 /* promotional_text.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = promotional_text.txt; sourceTree = "<group>"; };
+		7D15B7192AE5761400C47F76 /* release_notes.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = release_notes.txt; sourceTree = "<group>"; };
+		7D15B71A2AE5761400C47F76 /* name.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = name.txt; sourceTree = "<group>"; };
+		7D15B71B2AE5761400C47F76 /* marketing_url.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = marketing_url.txt; sourceTree = "<group>"; };
+		7D15B71C2AE5761400C47F76 /* description.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = description.txt; sourceTree = "<group>"; };
+		7D15B71D2AE5761400C47F76 /* primary_category.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = primary_category.txt; sourceTree = "<group>"; };
+		7D15B71E2AE5761400C47F76 /* report.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = report.xml; sourceTree = "<group>"; };
 		7D2CC0F2264D6EBD0091E05C /* MicrosoftAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrosoftAuth.swift; sourceTree = "<group>"; };
 		7D528E6127B9682F00C55F06 /* WebSocket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocket.swift; sourceTree = "<group>"; };
 		7DDBA9A627773D3900108B24 /* AppleAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleAuth.swift; sourceTree = "<group>"; };
@@ -342,7 +397,6 @@
 				B052E838292AA5FE00C09B89 /* ChartsView.swift */,
 				B052E836292A360F00C09B89 /* EditDialog.swift */,
 				B0799D642A363CF100925784 /* extensions.swift */,
-				613D5D232220AC09003FF8EB /* LabeledValue.swift */,
 				B02A812D2922C46900848949 /* LanguageView.swift */,
 				B03BC559290D31EE00BA38EF /* MainMapView.swift */,
 				61DE7F4A20F3ED3900C95B3F /* MapButtonView.swift */,
@@ -391,7 +445,10 @@
 		61B07C5320F21DC300D8B7E0 = {
 			isa = PBXGroup;
 			children = (
+				7D15B6E12AE5760100C47F76 /* .github */,
+				7D15B6E32AE5761400C47F76 /* fastlane */,
 				B01251A62A4582C600A267C9 /* conf.json */,
+				7D15B6DF2AE575E600C47F76 /* README.md */,
 				B05D66952A0177BF002E784F /* ci_scripts */,
 				61B07C5E20F21DC300D8B7E0 /* BoatTracker */,
 				61B07C7320F21DC400D8B7E0 /* BoatTrackerTests */,
@@ -457,6 +514,114 @@
 				7D528E6127B9682F00C55F06 /* WebSocket.swift */,
 			);
 			path = Backend;
+			sourceTree = "<group>";
+		};
+		7D15B6E32AE5761400C47F76 /* fastlane */ = {
+			isa = PBXGroup;
+			children = (
+				7D15B6E42AE5761400C47F76 /* screenshots */,
+				7D15B6FB2AE5761400C47F76 /* test_output */,
+				7D15B6FE2AE5761400C47F76 /* Pluginfile */,
+				7D15B6FF2AE5761400C47F76 /* Appfile */,
+				7D15B7002AE5761400C47F76 /* Deliverfile */,
+				7D15B7012AE5761400C47F76 /* Fastfile */,
+				7D15B7022AE5761400C47F76 /* README.md */,
+				7D15B7032AE5761400C47F76 /* metadata */,
+				7D15B71E2AE5761400C47F76 /* report.xml */,
+			);
+			path = fastlane;
+			sourceTree = "<group>";
+		};
+		7D15B6E42AE5761400C47F76 /* screenshots */ = {
+			isa = PBXGroup;
+			children = (
+				7D15B6E52AE5761400C47F76 /* README.txt */,
+				7D15B6E62AE5761400C47F76 /* en-US */,
+			);
+			path = screenshots;
+			sourceTree = "<group>";
+		};
+		7D15B6E62AE5761400C47F76 /* en-US */ = {
+			isa = PBXGroup;
+			children = (
+				7D15B6E72AE5761400C47F76 /* 1_APP_IPAD_PRO_3GEN_129_1.png */,
+				7D15B6E82AE5761400C47F76 /* 4_APP_IPAD_PRO_3GEN_129_4.png */,
+				7D15B6E92AE5761400C47F76 /* 1_APP_IPHONE_55_1.png */,
+				7D15B6EA2AE5761400C47F76 /* 0_APP_IPHONE_55_0.png */,
+				7D15B6EB2AE5761400C47F76 /* 3_APP_IPHONE_55_3.png */,
+				7D15B6EC2AE5761400C47F76 /* 0_APP_IPAD_PRO_3GEN_129_0.png */,
+				7D15B6ED2AE5761400C47F76 /* 2_APP_IPHONE_55_2.png */,
+				7D15B6EE2AE5761400C47F76 /* 5_APP_IPAD_PRO_3GEN_129_5.png */,
+				7D15B6EF2AE5761400C47F76 /* 0_APP_IPAD_PRO_129_0.png */,
+				7D15B6F02AE5761400C47F76 /* 3_APP_IPAD_PRO_129_3.png */,
+				7D15B6F12AE5761400C47F76 /* 3_APP_IPAD_PRO_3GEN_129_3.png */,
+				7D15B6F22AE5761400C47F76 /* 2_APP_IPAD_PRO_129_2.png */,
+				7D15B6F32AE5761400C47F76 /* 2_APP_IPHONE_65_2.png */,
+				7D15B6F42AE5761400C47F76 /* 3_APP_IPHONE_65_3.png */,
+				7D15B6F52AE5761400C47F76 /* 0_APP_IPHONE_65_0.png */,
+				7D15B6F62AE5761400C47F76 /* 1_APP_IPHONE_65_1.png */,
+				7D15B6F72AE5761400C47F76 /* 2_APP_IPAD_PRO_3GEN_129_2.png */,
+				7D15B6F82AE5761400C47F76 /* 1_APP_IPAD_PRO_129_1.png */,
+				7D15B6F92AE5761400C47F76 /* 4_APP_IPHONE_65_4.png */,
+				7D15B6FA2AE5761400C47F76 /* 5_APP_IPHONE_65_5.png */,
+			);
+			path = "en-US";
+			sourceTree = "<group>";
+		};
+		7D15B6FB2AE5761400C47F76 /* test_output */ = {
+			isa = PBXGroup;
+			children = (
+				7D15B6FC2AE5761400C47F76 /* report.html */,
+				7D15B6FD2AE5761400C47F76 /* report.junit */,
+			);
+			path = test_output;
+			sourceTree = "<group>";
+		};
+		7D15B7032AE5761400C47F76 /* metadata */ = {
+			isa = PBXGroup;
+			children = (
+				7D15B7042AE5761400C47F76 /* copyright.txt */,
+				7D15B7052AE5761400C47F76 /* secondary_first_sub_category.txt */,
+				7D15B7062AE5761400C47F76 /* secondary_category.txt */,
+				7D15B7072AE5761400C47F76 /* secondary_second_sub_category.txt */,
+				7D15B7082AE5761400C47F76 /* primary_second_sub_category.txt */,
+				7D15B7092AE5761400C47F76 /* review_information */,
+				7D15B7112AE5761400C47F76 /* primary_first_sub_category.txt */,
+				7D15B7122AE5761400C47F76 /* en-US */,
+				7D15B71D2AE5761400C47F76 /* primary_category.txt */,
+			);
+			path = metadata;
+			sourceTree = "<group>";
+		};
+		7D15B7092AE5761400C47F76 /* review_information */ = {
+			isa = PBXGroup;
+			children = (
+				7D15B70A2AE5761400C47F76 /* phone_number.txt */,
+				7D15B70B2AE5761400C47F76 /* demo_user.txt */,
+				7D15B70C2AE5761400C47F76 /* notes.txt */,
+				7D15B70D2AE5761400C47F76 /* email_address.txt */,
+				7D15B70E2AE5761400C47F76 /* last_name.txt */,
+				7D15B70F2AE5761400C47F76 /* first_name.txt */,
+				7D15B7102AE5761400C47F76 /* demo_password.txt */,
+			);
+			path = review_information;
+			sourceTree = "<group>";
+		};
+		7D15B7122AE5761400C47F76 /* en-US */ = {
+			isa = PBXGroup;
+			children = (
+				7D15B7132AE5761400C47F76 /* privacy_url.txt */,
+				7D15B7142AE5761400C47F76 /* subtitle.txt */,
+				7D15B7152AE5761400C47F76 /* support_url.txt */,
+				7D15B7162AE5761400C47F76 /* keywords.txt */,
+				7D15B7172AE5761400C47F76 /* apple_tv_privacy_policy.txt */,
+				7D15B7182AE5761400C47F76 /* promotional_text.txt */,
+				7D15B7192AE5761400C47F76 /* release_notes.txt */,
+				7D15B71A2AE5761400C47F76 /* name.txt */,
+				7D15B71B2AE5761400C47F76 /* marketing_url.txt */,
+				7D15B71C2AE5761400C47F76 /* description.txt */,
+			);
+			path = "en-US";
 			sourceTree = "<group>";
 		};
 		B05D66952A0177BF002E784F /* ci_scripts */ = {
@@ -573,8 +738,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7D15B6E02AE575E600C47F76 /* README.md in Resources */,
 				61B07C6A20F21DC400D8B7E0 /* LaunchScreen.storyboard in Resources */,
 				B01251A72A4582C600A267C9 /* conf.json in Resources */,
+				7D15B6E22AE5760100C47F76 /* .github in Resources */,
 				61B07C6720F21DC400D8B7E0 /* Assets.xcassets in Resources */,
 				610EE3E62172524C0040FBC6 /* FontAwesome.ttf in Resources */,
 				1A6A675D048DFF6E1E0BE701 /* Credentials.plist in Resources */,
@@ -663,7 +830,6 @@
 				61B07C6020F21DC300D8B7E0 /* BoatApp.swift in Sources */,
 				612F46B720F646A0001A3003 /* Temperature.swift in Sources */,
 				B0C598222920F02900439237 /* TrackSummaryView.swift in Sources */,
-				613D5D242220AC0A003FF8EB /* LabeledValue.swift in Sources */,
 				6101D549220F75200051A427 /* languages.swift in Sources */,
 				B052E835292A2BEB00C09B89 /* TrackView.swift in Sources */,
 				614221B6222C10A700FD1FF3 /* UserSettings.swift in Sources */,
@@ -714,6 +880,8 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = CarMapAppIcon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -776,6 +944,8 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = CarMapAppIcon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -830,12 +1000,14 @@
 		61B07C8520F21DC500D8B7E0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = CarMapAppIcon;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = BoatTracker/BoatTracker.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 42;
+				CURRENT_PROJECT_VERSION = 50;
 				DEVELOPMENT_TEAM = D2T2QC36Z9;
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = D2T2QC36Z9;
 				INFOPLIST_FILE = BoatTracker/Info.plist;
@@ -844,11 +1016,10 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.47.27;
+				MARKETING_VERSION = 1.47.35;
 				PRODUCT_BUNDLE_IDENTIFIER = com.malliina.BoatTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = BoatSiwaProfile;
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "com.malliina.BoatTracker AppStore";
+				PROVISIONING_PROFILE_SPECIFIER = BoatProfileAug2023;
 				SWIFT_OBJC_BRIDGING_HEADER = "BoatTracker/FontAwesome/BoatTracker-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -859,12 +1030,14 @@
 		61B07C8620F21DC500D8B7E0 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = CarMapAppIcon;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = BoatTracker/BoatTracker.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 42;
+				CURRENT_PROJECT_VERSION = 50;
 				DEVELOPMENT_TEAM = D2T2QC36Z9;
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = D2T2QC36Z9;
 				INFOPLIST_FILE = BoatTracker/Info.plist;
@@ -873,11 +1046,10 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.47.27;
+				MARKETING_VERSION = 1.47.35;
 				PRODUCT_BUNDLE_IDENTIFIER = com.malliina.BoatTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = BoatSiwaProfile;
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "com.malliina.BoatTracker AppStore";
+				PROVISIONING_PROFILE_SPECIFIER = BoatProfileAug2023;
 				SWIFT_OBJC_BRIDGING_HEADER = "BoatTracker/FontAwesome/BoatTracker-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -897,7 +1069,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.47.27;
+				MARKETING_VERSION = 1.47.35;
 				PRODUCT_BUNDLE_IDENTIFIER = com.malliina.BoatTrackerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -919,7 +1091,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.47.27;
+				MARKETING_VERSION = 1.47.35;
 				PRODUCT_BUNDLE_IDENTIFIER = com.malliina.BoatTrackerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;

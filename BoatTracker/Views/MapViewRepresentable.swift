@@ -4,7 +4,8 @@ import SwiftUI
 import Combine
 
 struct MapViewRepresentable: UIViewRepresentable {
-    let log = LoggerFactory.shared.vc(MapViewRepresentable.self)
+    static let logger = LoggerFactory.shared.vc(MapViewRepresentable.self)
+    var log: Logger { MapViewRepresentable.logger }
     
     @Binding var styleUri: StyleURI?
     @Binding var tapped: Tapped?
@@ -193,7 +194,7 @@ struct MapViewRepresentable: UIViewRepresentable {
     
     static func readMapboxToken(key: String = "MapboxAccessToken") throws -> ResourceOptions {
         let token = try Credentials.read(key: key)
-//        log.info("Using token \(token)")
+//        MapViewRepresentable.logger.info("Using token \(token)")
         return ResourceOptions(accessToken: token)
     }
 }
