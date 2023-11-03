@@ -41,16 +41,16 @@ class Backend {
         }
     }
     
-    func open(track: TrackName, delegate: BoatSocketDelegate) {
+    func open(track: TrackName?, delegate: BoatSocketDelegate) {
         socket.delegate = nil
         socket.close()
         socket = openStandalone(track: track, delegate: delegate)
     }
     
-    func openStandalone(track: TrackName, delegate: BoatSocketDelegate) -> BoatSocket {
+    func openStandalone(track: TrackName?, delegate: BoatSocketDelegate) -> BoatSocket {
         let s = BoatSocket(token: latestToken?.token, track: track)
         s.delegate = delegate
-        log.info("Opening standalone...")
+        // log.info("Opening standalone...")
         s.open()
         return s
     }

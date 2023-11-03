@@ -48,12 +48,15 @@ struct BoatApp: App {
                 MapEvents.shared.onBackground()
             }
             if phase == .active {
+                // App comes to foreground
                 let reconnect = MapEvents.shared.onForeground()
                 if reconnect {
                     Task {
                         await Auth.shared.signInSilentlyNow()
                     }
                 }
+                // log.info("Active phase.")
+                viewModel.activeTrack.clearIfOld()
             }
         }
     }

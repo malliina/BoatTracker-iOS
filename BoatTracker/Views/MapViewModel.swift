@@ -26,7 +26,7 @@ extension MapViewModel: BoatSocketDelegate {
     
     @MainActor private func update(coordsData: CoordsData) {
         coords = coordsData
-        log.info("Got \(coordsData.coords.count) coords")
+        // log.info("Got \(coordsData.coords.count) coords")
     }
 }
 
@@ -91,12 +91,10 @@ class MapViewModel: MapViewModelLike {
                 self.log.info("Waiting for proper auth state...")
             }
         }.store(in: &cancellables)
-        activeTrack.$selectedTrack.removeDuplicates().sink { trackName in
-            if let trackName = trackName {
-                self.log.info("Changed to \(trackName)")
-                Task {
-                    await self.change(to: trackName)
-                }
+        activeTrack.$selectedTrack.map { $0?.track }.removeDuplicates().sink { trackName in
+            self.log.info("Changing track to \(trackName?.name ?? "no track")")
+            Task {
+                await self.change(to: trackName)
             }
         }.store(in: &cancellables)
     }
@@ -141,7 +139,7 @@ class MapViewModel: MapViewModelLike {
         }
     }
     
-    private func change(to track: TrackName) async {
+    private func change(to track: TrackName?) async {
         await disconnect()
         //log.info("Changing to \(track)...")
         backend.open(track: track, delegate: self)

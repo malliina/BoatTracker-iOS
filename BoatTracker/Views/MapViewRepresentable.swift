@@ -152,7 +152,7 @@ struct MapViewRepresentable: UIViewRepresentable {
         }
         
         @objc func handleMapTap(sender: UITapGestureRecognizer) {
-            log.info("Tapped map...")
+            // log.info("Tapped map...")
             let point = sender.location(in: sender.view)
             if sender.state == .ended {
                 Task {

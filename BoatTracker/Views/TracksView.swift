@@ -15,7 +15,7 @@ struct TracksView<T>: View where T: TracksProtocol {
         BoatList(rowSeparator: .automatic) {
             ForEach(vm.tracks) { track in
                 Button {
-                    activeTrack.selectedTrack = track.trackName
+                    activeTrack.select(track.trackName)
                     onSelect()
                 } label: {
                     TrackView(lang: lang, track: track) {
