@@ -1,5 +1,5 @@
 import Foundation
-import Charts
+import DGCharts
 
 class TimeFormatter: AxisValueFormatter {
     let formatter: DateFormatter
