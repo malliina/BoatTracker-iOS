@@ -33,6 +33,7 @@ class AppleAuth: NSObject {
         return UserToken(email: res.email, token: res.idToken)
     }
     
+    @MainActor
     func signInInteractive(from: UIViewController) async throws -> UserToken {
         self.from = from
         let appleIDProvider = ASAuthorizationAppleIDProvider()
@@ -46,7 +47,8 @@ class AppleAuth: NSObject {
         return try await installPresentation(to: authorizationController)
     }
     
-    @MainActor private func installPresentation(to: ASAuthorizationController) async throws -> UserToken {
+    @MainActor 
+    private func installPresentation(to: ASAuthorizationController) async throws -> UserToken {
         to.delegate = self
         self.log.info("Installing presentation delegate...")
         to.presentationContextProvider = self
@@ -65,7 +67,7 @@ extension AppleAuth: ASAuthorizationControllerDelegate {
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
         Task {
             do {
-                let userToken = try await authController(controller: controller, didCompleteWithAuthorization: authorization)
+                let userToken = try await authController(didCompleteWithAuthorization: authorization)
                 await update(token: userToken)
             } catch {
                 await update(error: error)
@@ -73,7 +75,7 @@ extension AppleAuth: ASAuthorizationControllerDelegate {
         }
     }
     
-    private func authController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) async throws -> UserToken {
+    private func authController(didCompleteWithAuthorization authorization: ASAuthorization) async throws -> UserToken {
         guard let nonce = currentNonce else {
             throw AppError.simple("No nonce.")
         }

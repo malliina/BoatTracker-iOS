@@ -5,42 +5,15 @@ class BoatGoogleAuth: NSObject {
     let log = LoggerFactory.shared.system(BoatGoogleAuth.self)
     static let shared = BoatGoogleAuth()
     let google = GIDSignIn.sharedInstance
-//    var signInConfig: GIDConfiguration? = nil
-    
-    override init() {
-        super.init()
-    }
     
     @MainActor
     func signIn(from: UIViewController) async throws -> GIDGoogleUser {
         let result = try await google.signIn(withPresenting: from)
         return result.user
-//        google.signIn
-//        return try await withCheckedThrowingContinuation { cont in
-//            google.signIn(with: conf, presenting: from) { user, error in
-//                if let error = error {
-//                    cont.resume(throwing: error)
-//                } else if let user = user {
-//                    cont.resume(returning: user)
-//                } else {
-//                    cont.resume(throwing: AppError.simple("Failed to sign in."))
-//                }
-//            }
-//        }
     }
     
     func signInSilently() async throws -> GIDGoogleUser {
-        return try await withCheckedThrowingContinuation { cont in
-            google.restorePreviousSignIn { user, error in
-                if let error = error {
-                    cont.resume(throwing: error)
-                } else if let user = user {
-                    cont.resume(returning: user)
-                } else {
-                    cont.resume(throwing: AppError.simple("Failed to sign in silently."))
-                }
-            }
-        }
+        try await google.restorePreviousSignIn()
     }
     
     func obtainUser(from: UIViewController?, restore: Bool) async throws -> GIDGoogleUser {

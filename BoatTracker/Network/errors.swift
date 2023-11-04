@@ -97,6 +97,6 @@ enum AppError: Error {
     }
     
     static func simple(_ message: String) -> AppError {
-        return AppError.simpleError(SingleError(key: "error", message: message))
+        AppError.simpleError(SingleError(key: "error", message: message))
     }
 }
