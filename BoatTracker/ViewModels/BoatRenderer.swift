@@ -9,15 +9,24 @@ struct TrophyPoint: Codable {
     var isBoat: Bool { sourceType == .boat }
 }
 
+struct TrackIds: Hashable {
+    let track: TrackName
+    let boat: BoatName
+    var trail: String { "\(track)-trail" }
+    var icon: String { "\(track)-icon" }
+    var trophy: String { "\(track)-trophy" }
+    var all: [String] { [ trail, icon, trophy ] }
+}
+
 class BoatRenderer {
     let log = LoggerFactory.shared.vc(BoatRenderer.self)
     // state of boat trails and icons
-    private var trails: [TrackName: GeoJSONSource] = [:]
+    private var trails: [TrackIds: GeoJSONSource] = [:]
     var isEmpty: Bool { trails.isEmpty }
     // The history data is in the above trails also because it is difficult to read an MGLShapeSource. This is more suitable for our purposes.
     private var history: [TrackName: [MeasuredCoord]] = [:]
-    private var boatIcons: [TrackName: SymbolLayer] = [:]
-    private var trophyIcons: [TrackName: SymbolLayer] = [:]
+    private var boatIcons: [TrackIds: SymbolLayer] = [:]
+    private var trophyIcons: [TrackIds: SymbolLayer] = [:]
     var latestTrack: TrackName? = nil
     private var hasBeenFollowing: Bool = false
     
@@ -33,11 +42,11 @@ class BoatRenderer {
     }
     
     func layers() -> Set<String> {
-        Set(boatIcons.map { (track, layer) -> String in iconName(for: track) })
+        Set(boatIcons.map { (track, layer) -> String in track.icon })
     }
     
     func trophyLayers() -> Set<String> {
-        Set(trophyIcons.map { (track, layer) -> String in trophyName(for: track) })
+        Set(trophyIcons.map { (track, layer) -> String in track.trophy })
     }
     
     @MainActor
@@ -63,6 +72,7 @@ class BoatRenderer {
     func addCoords(event: CoordsData) throws {
         let from = event.from
         let track = from.trackName
+        let ids = TrackIds(track: track, boat: from.boatName)
         latestTrack = track
         let coords = event.coords
         // Updates boat trail
@@ -71,20 +81,24 @@ class BoatRenderer {
         let isUpdate = previousTrail != nil && !coords.isEmpty
         history.updateValue(newTrail, forKey: track)
         let polyline: FeatureCollection = speedFeatures(coords: newTrail)
-        var trail: GeoJSONSource = try trails[track] ?? initEmptyLayers(track: from, to: style)
+        var trail: GeoJSONSource = try trails[ids] ?? initEmptyLayers(track: from, to: style, ids: ids)
         let coll = GeoJSONSourceData.featureCollection(polyline)
         trail.data = coll
-        try style.updateGeoJSONSource(withId: trailName(for: from.trackName), geoJSON: .featureCollection(polyline))
-        // Updates boat icon position
-        guard let lastCoord = coords.last, let iconLayer = boatIcons[track] else { return }
+        try style.updateGeoJSONSource(withId: ids.trail, geoJSON: .featureCollection(polyline))
+        // Updates car/boat icon position
+        guard let lastCoord = coords.last, let iconLayer = boatIcons[ids] else { return }
         let dict = try Json.shared.write(from: BoatPoint(from: from, coord: lastCoord))
+        dict.forEach { key, value in
+            log.info("\(key) = \(value)")
+        }
+//        log.info("Wrote depth meters as \(from.topPoint.depthMeters)")
         let geo = Geometry.point(.init(lastCoord.coord))
         var feature = Feature(geometry: geo)
         feature.properties = dict
         if let iconSourceId = iconLayer.source {
             try style.updateGeoJSONSource(withId: iconSourceId, geoJSON: .feature(feature))
         }
-        // Updates boat icon bearing
+        // Updates car/boat icon bearing
         let lastTwo = Array(newTrail.suffix(2)).map { $0.coord }
         let bearing = lastTwo.count == 2 ? Geo.shared.bearing(from: lastTwo[0], to: lastTwo[1]) : nil
         if let bearing = bearing {
@@ -95,7 +109,7 @@ class BoatRenderer {
         }
         // Updates trophy
         let top = from.topPoint
-        guard let trophyLayer = trophyIcons[track] else { return }
+        guard let trophyLayer = trophyIcons[ids] else { return }
         var trophyFeature = Feature(geometry: .point(.init(top.coord)))
         trophyFeature.properties = try Json.shared.write(from: TrophyPoint(top: top, sourceType: from.sourceType))
         if let trophySourceId = trophyLayer.source {
@@ -131,29 +145,39 @@ class BoatRenderer {
     }
     
     // https://www.mapbox.com/ios-sdk/examples/runtime-animate-line/
-    private func initEmptyLayers(track: TrackRef, to style: Style) throws -> GeoJSONSource {
-        let trackName = track.trackName
-        let trailId = trailName(for: trackName)
+    private func initEmptyLayers(track: TrackRef, to style: Style, ids: TrackIds) throws -> GeoJSONSource {
+        // Removes old trophies and boat icons of the same boat, as we only display one at a time
+        let sameBoatIds = trails.keys
+            .filter { olds in olds.boat == ids.boat }
+        let removableIds = sameBoatIds
+            .flatMap { ids in [ ids.icon, ids.trophy ] }
+        removeIfExists(ids: removableIds)
+        try sameBoatIds.map { ids in ids.trail }.forEach { trailId in
+            if style.layerExists(withId: trailId) {
+                try style.updateLayer(withId: trailId, type: LineLayer.self) { layer in
+                    layer.lineOpacity = .constant(0.4)
+                }
+            }
+        }
         // Boat trail
-        let trailData = LayerSource(lineId: trailId)
+        let trailData = LayerSource(lineId: ids.trail)
         // The line width should gradually increase based on the zoom level
         //        layer.lineWidth = NSExpression(format: "mgl_interpolate:withCurveType:parameters:stops:($zoomLevel, 'linear', nil, %@)", [18: 3, 9: 10])
-        try trailData.install(to: style, id: trailId)
-        trails.updateValue(trailData.source, forKey: trackName)
+        try trailData.install(to: style, id: ids.trail)
+        trails.updateValue(trailData.source, forKey: ids)
         
         // Boat icon
-        let iconId = iconName(for: trackName)
+        let iconId = ids.icon
         let iconData = track.sourceType.isBoat ?
             LayerSource(iconId: iconId, iconImageName: Layers.boatIcon, iconSize: 0.7) :
             LayerSource(iconId: iconId, iconImageName: Layers.carIcon, iconSize: 0.5)
         try iconData.install(to: style, id: iconId)
-        boatIcons.updateValue(iconData.layer, forKey: trackName)
+        boatIcons.updateValue(iconData.layer, forKey: ids)
         
         // Trophy icon
-        let trophyId = trophyName(for: trackName)
-        let trophyData = LayerSource(iconId: trophyId, iconImageName: Layers.trophyIcon, iconSize: 1.0)
-        try trophyData.install(to: style, id: trophyId)
-        trophyIcons.updateValue(trophyData.layer, forKey: trackName)
+        let trophyData = LayerSource(iconId: ids.trophy, iconImageName: Layers.trophyIcon, iconSize: 1.0)
+        try trophyData.install(to: style, id: ids.trophy)
+        trophyIcons.updateValue(trophyData.layer, forKey: ids)
         
         return trailData.source
     }
@@ -170,13 +194,9 @@ class BoatRenderer {
         return FeatureCollection(features: features)
     }
     
-    private func trailName(for track: TrackName) -> String { "\(track)-trail" }
-    private func iconName(for track: TrackName) -> String { "\(track)-icon" }
-    private func trophyName(for track: TrackName) -> String { "\(track)-trophy" }
-    
     func clear() {
-        trails.forEach { (track, _) in
-            removeTrack(track: track)
+        trails.forEach { (ids, _) in
+            removeTrack(ids: ids)
         }
         trails = [:]
         history = [:]
@@ -185,9 +205,13 @@ class BoatRenderer {
         latestTrack = nil
     }
     
-    private func removeTrack(track: TrackName) {
-        style.removeSourceAndLayer(id: trailName(for: track))
-        style.removeSourceAndLayer(id: iconName(for: track))
-        style.removeSourceAndLayer(id: trophyName(for: track))
+    private func removeTrack(ids: TrackIds) {
+        removeIfExists(ids: ids.all)
+    }
+    
+    private func removeIfExists(ids: [String]) {
+        ids.forEach { id in
+            style.removeSourceAndLayer(id: id)
+        }
     }
 }

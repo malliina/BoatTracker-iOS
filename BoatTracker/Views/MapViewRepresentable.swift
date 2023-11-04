@@ -83,7 +83,10 @@ struct MapViewRepresentable: UIViewRepresentable {
             cancellable = map.coords.sink { coords in
                 if let coords = coords {
                     do {
-                        self.log.info("Handling event with \(coords.coords.count) coords...")
+                        let cs = coords.coords
+                        if let first = cs.first, let last = cs.last {
+                            self.log.info("Handling \(cs.count) coords with start date \(coords.from.start), first \(first.time.dateTime), last \(last.time.dateTime)")
+                        }
                         try boats.addCoords(event: coords)
                     } catch {
                         self.log.error("Failed to handle coords. \(error)")
