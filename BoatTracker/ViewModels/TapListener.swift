@@ -157,7 +157,6 @@ class TapListener {
             let features = try await queryFeatures(at: point, layerIds: layers)
             return try features.first.flatMap { feature in
                 let props = feature.feature.properties ?? [:]
-                self.log.info("Found \(props)")
                 return try props.parse(t)
             }
         } catch {

@@ -88,10 +88,6 @@ class BoatRenderer {
         // Updates car/boat icon position
         guard let lastCoord = coords.last, let iconLayer = boatIcons[ids] else { return }
         let dict = try Json.shared.write(from: BoatPoint(from: from, coord: lastCoord))
-        dict.forEach { key, value in
-            log.info("\(key) = \(value)")
-        }
-//        log.info("Wrote depth meters as \(from.topPoint.depthMeters)")
         let geo = Geometry.point(.init(lastCoord.coord))
         var feature = Feature(geometry: geo)
         feature.properties = dict

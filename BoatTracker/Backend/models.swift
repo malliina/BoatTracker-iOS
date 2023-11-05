@@ -893,8 +893,15 @@ protocol DoubleCodable: Codable {
 extension DoubleCodable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
-        let raw = try container.decode(Double.self)
-        self.init(raw)
+        // Hack around Turf JSON BS that encodes a 0 or 1 to a boolean...
+        do {
+            let raw = try container.decode(Double.self)
+            self.init(raw)
+        } catch {
+            let fromBool = try container.decode(Bool.self)
+            let raw = fromBool ? 1.0 : 0.0
+            self.init(raw)
+        }
     }
     
     public func encode(to encoder: Encoder) throws {

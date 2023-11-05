@@ -31,12 +31,10 @@ class Json {
     func write<T: Encodable>(from: T) throws -> JSONObject {
         let data = try encoder.encode(from)
         let json = try JSONSerialization.jsonObject(with: data, options: [.allowFragments])
-        guard let dict = json as? [String: Any?] else {
+        guard let dict = json as? [String: Any?], let turfJson = JSONObject(rawValue: dict) else {
             throw JsonError.notJson(data)
         }
-        log.info("Dict \(dict)")
-        return dict.mapValues { $0.flatMap(parse(rawValue:)) }
-        
+        return turfJson
     }
     /// Turf parses doubles to bool if the value is 0 or 1 in a dict like [String: Any?].
     /// To workaround, we manually parse & check if Any is a number before checking if it's a bool (rearranged from Turf sources).

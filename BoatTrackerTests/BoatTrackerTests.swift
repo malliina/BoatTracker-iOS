@@ -4,9 +4,9 @@ import BoatTracker
 @testable import BoatTracker
 
 struct Joo: Codable {
-    let distance: Double
-    let distance2: Double
-    let distance3: Double
+    let distance: Distance
+    let distance2: Distance
+    let distance3: Distance
 }
 
 class BoatTrackerTests: XCTestCase {
@@ -31,10 +31,11 @@ class BoatTrackerTests: XCTestCase {
     }
     
     func testDistance() throws {
-        let v = Joo(distance: 0.0, distance2: 1.0, distance3: 2.0)
-        let obj = try Json.shared.write(from: v)
-        let back = try Json.shared.parse(Joo.self, from: obj)
-        XCTAssert(back.distance == 0)
+        let json = Json.shared
+        let v = Joo(distance: 0.0.meters, distance2: 1.0.meters, distance3: 2.0.meters)
+        let obj = try json.write(from: v)
+        let back = try json.parse(Joo.self, from: obj)
+        XCTAssert(back.distance == 0.meters)
     }
     
     func testKeychain() throws {
