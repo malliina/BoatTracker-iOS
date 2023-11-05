@@ -160,7 +160,7 @@ class TapListener {
                 return try props.parse(t)
             }
         } catch {
-            log.warn("Failed to parse props. \(error)")
+            log.warn("Failed to parse props from layers \(layers.joined(separator: ", ")). \(error)")
             return nil
         }
     }

@@ -1,6 +1,6 @@
 import Foundation
 import SwiftUI
-import Charts
+import DGCharts
 
 struct ChartLang {
     let tracks: TrackLang

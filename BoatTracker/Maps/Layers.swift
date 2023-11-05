@@ -43,12 +43,13 @@ class Layers {
         customLine(id: id, color: StyleColor(color), minimumZoomLevel: minimumZoomLevel)
     }
 
-    static func customLine(id: String, color: StyleColor, minimumZoomLevel: Double? = nil) -> LineLayer {
+    static func customLine(id: String, color: StyleColor, minimumZoomLevel: Double? = nil, opacity: Double = 1.0) -> LineLayer {
         var lineLayer = LineLayer(id: id)
         lineLayer.lineJoin = .constant(.round)
         lineLayer.lineCap = .constant(.round)
         lineLayer.lineColor = .constant(color)
         lineLayer.lineWidth = .constant(1)
+        lineLayer.lineOpacity = .constant(opacity)
         if let minimumZoomLevel = minimumZoomLevel {
             lineLayer.minZoom = minimumZoomLevel
         }
@@ -98,9 +99,11 @@ extension LayerSource where L == SymbolLayer {
 
 extension Style {
     func removeSourceAndLayer(id: String) {
-        if let layer = try? self.layer(withId: id) {
-            try? self.removeLayer(withId: layer.id)
+        if self.layerExists(withId: id) {
+            try? self.removeLayer(withId: id)
         }
-        try? self.removeSource(withId: id)
+        if self.sourceExists(withId: id) {
+            try? self.removeSource(withId: id)
+        }
     }
 }

@@ -3,6 +3,12 @@ import BoatTracker
 
 @testable import BoatTracker
 
+struct Joo: Codable {
+    let distance: Distance
+    let distance2: Distance
+    let distance3: Distance
+}
+
 class BoatTrackerTests: XCTestCase {
     override func setUp() {
         super.setUp()
@@ -22,6 +28,14 @@ class BoatTrackerTests: XCTestCase {
     func testWriteJson() throws {
         let _ = try Json.shared.write(from: VesselMeta(mmsi: Mmsi("boat"), name: "Na", heading: 12))
         XCTAssert(true)
+    }
+    
+    func testDistance() throws {
+        let json = Json.shared
+        let v = Joo(distance: 0.0.meters, distance2: 1.0.meters, distance3: 2.0.meters)
+        let obj = try json.write(from: v)
+        let back = try json.parse(Joo.self, from: obj)
+        XCTAssert(back.distance == 0.meters)
     }
     
     func testKeychain() throws {

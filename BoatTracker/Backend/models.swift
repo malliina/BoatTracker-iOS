@@ -732,7 +732,7 @@ struct TrackStats: Codable {
 
 struct AccessToken: Equatable, Hashable, CustomStringConvertible, StringCodable {
     let token: String
-    var description: String { return token }
+    var description: String { token }
     
     init(_ value: String) {
         self.token = value
@@ -743,7 +743,7 @@ struct AccessToken: Equatable, Hashable, CustomStringConvertible, StringCodable 
 
 struct AuthorizationCode: Equatable, Hashable, CustomStringConvertible, StringCodable {
     let code: String
-    var description: String { return code }
+    var description: String { code }
     
     init(_ value: String) {
         self.code = value
@@ -755,7 +755,7 @@ struct AuthorizationCode: Equatable, Hashable, CustomStringConvertible, StringCo
 struct BoatName: Equatable, Hashable, CustomStringConvertible, StringCodable {
     static let key = "boatName"
     let name: String
-    var description: String { return name }
+    var description: String { name }
     
     init(_ name: String) {
         self.name = name
@@ -767,7 +767,7 @@ struct BoatName: Equatable, Hashable, CustomStringConvertible, StringCodable {
 struct TrackName: Hashable, CustomStringConvertible, StringCodable {
     static let key = "trackName"
     let name: String
-    var description: String { return name }
+    var description: String { name }
     
     init(_ name: String) {
         self.name = name
@@ -815,7 +815,7 @@ struct NonEmptyString: Equatable, Hashable, CustomStringConvertible, Codable, No
     static func == (lhs: NonEmptyString, rhs: NonEmptyString) -> Bool { lhs.value == rhs.value }
     
     static func transform(raw: String) -> String? {
-        return validate(raw)?.value
+        validate(raw)?.value
     }
     
     static func validate(_ raw: String) -> NonEmptyString? {
@@ -893,8 +893,15 @@ protocol DoubleCodable: Codable {
 extension DoubleCodable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
-        let raw = try container.decode(Double.self)
-        self.init(raw)
+        // Hack around Turf JSON BS that encodes a 0 or 1 to a boolean...
+        do {
+            let raw = try container.decode(Double.self)
+            self.init(raw)
+        } catch {
+            let fromBool = try container.decode(Bool.self)
+            let raw = fromBool ? 1.0 : 0.0
+            self.init(raw)
+        }
     }
     
     public func encode(to encoder: Encoder) throws {

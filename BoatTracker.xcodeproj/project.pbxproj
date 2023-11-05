@@ -72,7 +72,6 @@
 		7D175C4727BD84990050E29B /* AppCenterCrashes in Frameworks */ = {isa = PBXBuildFile; productRef = 7D175C4627BD84990050E29B /* AppCenterCrashes */; };
 		7D175C4A27BD85300050E29B /* MapboxMaps in Frameworks */ = {isa = PBXBuildFile; productRef = 7D175C4927BD85300050E29B /* MapboxMaps */; };
 		7D175C4D27BD85AE0050E29B /* MSAL in Frameworks */ = {isa = PBXBuildFile; productRef = 7D175C4C27BD85AE0050E29B /* MSAL */; };
-		7D175C5027BD87110050E29B /* Charts in Frameworks */ = {isa = PBXBuildFile; productRef = 7D175C4F27BD87110050E29B /* Charts */; };
 		7D175C5327BD876F0050E29B /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 7D175C5227BD876F0050E29B /* GoogleSignIn */; };
 		7D2CC0F3264D6EBD0091E05C /* MicrosoftAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D2CC0F2264D6EBD0091E05C /* MicrosoftAuth.swift */; };
 		7D528E6227B9682F00C55F06 /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D528E6127B9682F00C55F06 /* WebSocket.swift */; };
@@ -92,6 +91,7 @@
 		B052E835292A2BEB00C09B89 /* TrackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B052E834292A2BEB00C09B89 /* TrackView.swift */; };
 		B052E837292A360F00C09B89 /* EditDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = B052E836292A360F00C09B89 /* EditDialog.swift */; };
 		B052E839292AA5FE00C09B89 /* ChartsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B052E838292AA5FE00C09B89 /* ChartsView.swift */; };
+		B05A708A2AF6498300D0BAF1 /* DGCharts in Frameworks */ = {isa = PBXBuildFile; productRef = B05A70892AF6498300D0BAF1 /* DGCharts */; };
 		B0799D632A3636E200925784 /* BoatPreviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0799D622A3636E200925784 /* BoatPreviews.swift */; };
 		B0799D652A363CF100925784 /* extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0799D642A363CF100925784 /* extensions.swift */; };
 		B0799D672A3640AE00925784 /* BoatTokensViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0799D662A3640AE00925784 /* BoatTokensViewModel.swift */; };
@@ -275,8 +275,8 @@
 				7D175C4A27BD85300050E29B /* MapboxMaps in Frameworks */,
 				7D175C4527BD84990050E29B /* AppCenterAnalytics in Frameworks */,
 				7D175C4727BD84990050E29B /* AppCenterCrashes in Frameworks */,
-				7D175C5027BD87110050E29B /* Charts in Frameworks */,
 				7D175C4D27BD85AE0050E29B /* MSAL in Frameworks */,
+				B05A708A2AF6498300D0BAF1 /* DGCharts in Frameworks */,
 				7D175C5327BD876F0050E29B /* GoogleSignIn in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -453,6 +453,7 @@
 				61B07C5E20F21DC300D8B7E0 /* BoatTracker */,
 				61B07C7320F21DC400D8B7E0 /* BoatTrackerTests */,
 				61B07C5D20F21DC300D8B7E0 /* Products */,
+				B05A70882AF6498300D0BAF1 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -624,6 +625,13 @@
 			path = "en-US";
 			sourceTree = "<group>";
 		};
+		B05A70882AF6498300D0BAF1 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		B05D66952A0177BF002E784F /* ci_scripts */ = {
 			isa = PBXGroup;
 			children = (
@@ -653,8 +661,8 @@
 				7D175C4627BD84990050E29B /* AppCenterCrashes */,
 				7D175C4927BD85300050E29B /* MapboxMaps */,
 				7D175C4C27BD85AE0050E29B /* MSAL */,
-				7D175C4F27BD87110050E29B /* Charts */,
 				7D175C5227BD876F0050E29B /* GoogleSignIn */,
+				B05A70892AF6498300D0BAF1 /* DGCharts */,
 			);
 			productName = BoatTracker;
 			productReference = 61B07C5C20F21DC300D8B7E0 /* BoatTracker.app */;
@@ -717,10 +725,10 @@
 			);
 			mainGroup = 61B07C5320F21DC300D8B7E0;
 			packageReferences = (
-				7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple.git" */,
-				7D175C4827BD85300050E29B /* XCRemoteSwiftPackageReference "mapbox-maps-ios.git" */,
+				7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */,
+				7D175C4827BD85300050E29B /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */,
 				7D175C4B27BD85AE0050E29B /* XCRemoteSwiftPackageReference "microsoft-authentication-library-for-objc" */,
-				7D175C4E27BD87110050E29B /* XCRemoteSwiftPackageReference "Charts.git" */,
+				7D175C4E27BD87110050E29B /* XCRemoteSwiftPackageReference "Charts" */,
 				7D175C5127BD876F0050E29B /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 			);
 			productRefGroup = 61B07C5D20F21DC300D8B7E0 /* Products */;
@@ -1133,20 +1141,20 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple.git" */ = {
+		7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/microsoft/appcenter-sdk-apple.git";
 			requirement = {
 				kind = exactVersion;
-				version = 5.0.0;
+				version = 5.0.4;
 			};
 		};
-		7D175C4827BD85300050E29B /* XCRemoteSwiftPackageReference "mapbox-maps-ios.git" */ = {
+		7D175C4827BD85300050E29B /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/mapbox/mapbox-maps-ios.git";
 			requirement = {
 				kind = exactVersion;
-				version = 10.8.1;
+				version = 10.16.1;
 			};
 		};
 		7D175C4B27BD85AE0050E29B /* XCRemoteSwiftPackageReference "microsoft-authentication-library-for-objc" */ = {
@@ -1154,15 +1162,15 @@
 			repositoryURL = "https://github.com/AzureAD/microsoft-authentication-library-for-objc";
 			requirement = {
 				kind = exactVersion;
-				version = 1.2.5;
+				version = 1.2.18;
 			};
 		};
-		7D175C4E27BD87110050E29B /* XCRemoteSwiftPackageReference "Charts.git" */ = {
+		7D175C4E27BD87110050E29B /* XCRemoteSwiftPackageReference "Charts" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/danielgindi/Charts.git";
 			requirement = {
 				kind = exactVersion;
-				version = 4.1.0;
+				version = 5.0.0;
 			};
 		};
 		7D175C5127BD876F0050E29B /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
@@ -1170,7 +1178,7 @@
 			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
 			requirement = {
 				kind = exactVersion;
-				version = 6.2.4;
+				version = 7.0.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -1178,17 +1186,17 @@
 /* Begin XCSwiftPackageProductDependency section */
 		7D175C4427BD84990050E29B /* AppCenterAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple.git" */;
+			package = 7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */;
 			productName = AppCenterAnalytics;
 		};
 		7D175C4627BD84990050E29B /* AppCenterCrashes */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple.git" */;
+			package = 7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */;
 			productName = AppCenterCrashes;
 		};
 		7D175C4927BD85300050E29B /* MapboxMaps */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 7D175C4827BD85300050E29B /* XCRemoteSwiftPackageReference "mapbox-maps-ios.git" */;
+			package = 7D175C4827BD85300050E29B /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */;
 			productName = MapboxMaps;
 		};
 		7D175C4C27BD85AE0050E29B /* MSAL */ = {
@@ -1196,15 +1204,15 @@
 			package = 7D175C4B27BD85AE0050E29B /* XCRemoteSwiftPackageReference "microsoft-authentication-library-for-objc" */;
 			productName = MSAL;
 		};
-		7D175C4F27BD87110050E29B /* Charts */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 7D175C4E27BD87110050E29B /* XCRemoteSwiftPackageReference "Charts.git" */;
-			productName = Charts;
-		};
 		7D175C5227BD876F0050E29B /* GoogleSignIn */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 7D175C5127BD876F0050E29B /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
 			productName = GoogleSignIn;
+		};
+		B05A70892AF6498300D0BAF1 /* DGCharts */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7D175C4E27BD87110050E29B /* XCRemoteSwiftPackageReference "Charts" */;
+			productName = DGCharts;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
