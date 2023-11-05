@@ -1,8 +1,7 @@
-
 import Foundation
 
 class ProfileTableVC: BaseTableVC {
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    }
+  override func viewDidLoad() {
+    super.viewDidLoad()
+  }
 }
