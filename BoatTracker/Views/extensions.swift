@@ -2,56 +2,56 @@ import Foundation
 import SwiftUI
 
 extension ObservableObject {
-    var http: BoatHttpClient { Backend.shared.http }
+  var http: BoatHttpClient { Backend.shared.http }
 }
 
 extension View {
-    var color: BoatColor { BoatColor.shared }
+  var color: BoatColor { BoatColor.shared }
 }
 
 extension UIView {
-    var colors: BoatColors { BoatColors.shared }
+  var colors: BoatColors { BoatColors.shared }
 }
 
 class Margins {
-    static let shared = Margins()
-    
-    let xxs: CGFloat = 4
-    let small: CGFloat = 8
-    let medium: CGFloat = 12
+  static let shared = Margins()
+
+  let xxs: CGFloat = 4
+  let small: CGFloat = 8
+  let medium: CGFloat = 12
 }
 
 extension View {
-    var margin: Margins { Margins.shared }
+  var margin: Margins { Margins.shared }
 }
 
 extension Optional {
-    var toList: [Wrapped] {
-        guard let s = self else { return [] }
-        return [s]
-    }
+  var toList: [Wrapped] {
+    guard let s = self else { return [] }
+    return [s]
+  }
 }
 
 struct ControllerRepresentable: UIViewControllerRepresentable {
-    let log = LoggerFactory.shared.view(ControllerRepresentable.self)
-    @Binding var vc: UIViewController?
-    
-    func makeCoordinator() -> Coordinator {
-        Coordinator()
-    }
-    
-    func makeUIViewController(context: Context) -> UIViewController {
-        let vc = UIViewController()
-        self.vc = vc
-        return vc
-    }
-    
-    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
-    }
-    
-    typealias UIViewControllerType = UIViewController
+  let log = LoggerFactory.shared.view(ControllerRepresentable.self)
+  @Binding var vc: UIViewController?
+
+  func makeCoordinator() -> Coordinator {
+    Coordinator()
+  }
+
+  func makeUIViewController(context: Context) -> UIViewController {
+    let vc = UIViewController()
+    self.vc = vc
+    return vc
+  }
+
+  func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
+  }
+
+  typealias UIViewControllerType = UIViewController
 }
 
 extension PreviewProvider {
-    static var lang: Lang { BoatPreviews.conf.languages.english }
+  static var lang: Lang { BoatPreviews.conf.languages.english }
 }

@@ -12,6 +12,16 @@ To run tests from the command line:
 
     xcodebuild test -workspace BoatTracker.xcworkspace -scheme BoatTracker -destination 'platform=iOS Simulator,name=iPhone 13 mini,OS=17.0.1'
 
+### Formatting
+
+    brew install swift-format
+    
+To format all files in the current directory recursively:
+
+    swift-format format --configuration swift-format.json -i -r .
+
+To format the file currently open in XCode using a keyboard shortcut, see https://stackoverflow.com/a/73511410. The sample AppleScript is in [xcode-swift-format.scpt](xcode-swift-format.scpt). Follow the instructions, then hit the keyboard shortcut you defined in System Settings to format the current file.
+
 ## Releasing
 
 1. Update the version number. It appears that the App Store does not allow version number reuse.

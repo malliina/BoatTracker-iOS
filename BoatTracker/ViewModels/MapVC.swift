@@ -1,10 +1,10 @@
-import MapboxMaps
+import Combine
 import MSAL
+import MapboxMaps
 import SnapKit
 import UIKit
-import Combine
 
 struct ActiveMarker {
-    let annotation: TrophyAnnotation
-    let coord: CoordBody
+  let annotation: TrophyAnnotation
+  let coord: CoordBody
 }
