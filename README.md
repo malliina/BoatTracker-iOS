@@ -15,7 +15,7 @@ To run tests from the command line:
 ### Formatting
 
     brew install swift-format
-    swift-format format -i -r .
+    swift-format format --configuration swift-format.json -i -r .
 
 ## Releasing
 
