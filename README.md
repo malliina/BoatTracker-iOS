@@ -12,6 +12,11 @@ To run tests from the command line:
 
     xcodebuild test -workspace BoatTracker.xcworkspace -scheme BoatTracker -destination 'platform=iOS Simulator,name=iPhone 13 mini,OS=17.0.1'
 
+### Formatting
+
+    brew install swift-format
+    swift-format format -i -r .
+
 ## Releasing
 
 1. Update the version number. It appears that the App Store does not allow version number reuse.
