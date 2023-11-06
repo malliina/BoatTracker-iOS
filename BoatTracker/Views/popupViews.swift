@@ -191,7 +191,7 @@ struct AreaView: View {
   }
 
   func items() -> [InfoItem] {
-    return [
+    [
       InfoItem(fairwayLang.fairwayType, info.fairwayType.translate(lang: fairwayLang.types)),
       InfoItem(fairwayLang.fairwayDepth, info.fairwayDepth.formatMeters),
       InfoItem(fairwayLang.harrowDepth, info.harrowDepth.formatMeters),
@@ -200,6 +200,32 @@ struct AreaView: View {
 
   var body: some View {
     InfoView(title: info.owner, items: items(), leftColumnSize: .fixed(limit != nil ? 100 : 80))
+  }
+}
+
+struct TrailView: View {
+  let info: TrackPoint
+  let lang: Lang
+  var coord: CoordBody { info.start } // we use the start coord arbitrarily, close enough, could be end coord just as well
+  
+  func altitudeItem() -> InfoItem? {
+    guard let altitude = coord.altitude else { return nil }
+    return InfoItem(lang.track.env.altitude, altitude.formatMeters)
+  }
+  
+  func temperatureItem() -> InfoItem? {
+    guard let outsideTemp = coord.outsideTemp else { return nil }
+    return InfoItem(lang.track.temperature, outsideTemp.formatCelsius)
+  }
+  
+  func items() -> [InfoItem] {
+    [
+      InfoItem(lang.track.speed, info.avgSpeed.formatted(isBoat: info.isBoat))
+    ] + temperatureItem().toList + altitudeItem().toList
+  }
+  
+  var body: some View {
+    InfoView(title: info.boatName.name, items: items(), footer: info.start.time.dateTime)
   }
 }
 

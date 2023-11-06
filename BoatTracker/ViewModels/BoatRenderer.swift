@@ -13,6 +13,7 @@ struct TrackIds: Hashable {
   let track: TrackName
   let boat: BoatName
   var trail: String { "\(track)-trail" }
+  var tappableTrail: String { "\(track)-thick" }
   var icon: String { "\(track)-icon" }
   var trophy: String { "\(track)-trophy" }
   var all: [String] { [trail, icon, trophy] }
@@ -24,11 +25,16 @@ class BoatRenderer {
   private var trails: [TrackIds: GeoJSONSource] = [:]
   var isEmpty: Bool { trails.isEmpty }
   // The history data is in the above trails also because it is difficult to read an MGLShapeSource. This is more suitable for our purposes.
-  private var history: [TrackName: [MeasuredCoord]] = [:]
+  private var history: [TrackName: [CoordBody]] = [:]
   private var boatIcons: [TrackIds: SymbolLayer] = [:]
   private var trophyIcons: [TrackIds: SymbolLayer] = [:]
   var latestTrack: TrackName? = nil
   private var hasBeenFollowing: Bool = false
+  var trailLayerIds: [String] {
+    trails.keys.map { ids in
+      ids.tappableTrail
+    }
+  }
 
   private let mapView: MapView
   private let style: Style
@@ -80,11 +86,12 @@ class BoatRenderer {
     let newTrail = (previousTrail ?? []) + coords
     let isUpdate = previousTrail != nil && !coords.isEmpty
     history.updateValue(newTrail, forKey: track)
-    let polyline: FeatureCollection = speedFeatures(coords: newTrail)
+    let polyline: FeatureCollection = speedFeatures(coords: newTrail, from: from)
     var trail: GeoJSONSource = try trails[ids] ?? initEmptyLayers(track: from, to: style, ids: ids)
     let coll = GeoJSONSourceData.featureCollection(polyline)
     trail.data = coll
     try style.updateGeoJSONSource(withId: ids.trail, geoJSON: .featureCollection(polyline))
+    try style.updateGeoJSONSource(withId: ids.tappableTrail, geoJSON: .featureCollection(polyline))
     // Updates car/boat icon position
     guard let lastCoord = coords.last, let iconLayer = boatIcons[ids] else { return }
     let dict = try Json.shared.write(from: BoatPoint(from: from, coord: lastCoord))
@@ -164,12 +171,16 @@ class BoatRenderer {
       }
     }
     // Boat trail
-    let trailData = LayerSource(lineId: ids.trail)
+    let trailData = LayerSource(lineId: ids.trail, width: 1.0)
     // The line width should gradually increase based on the zoom level
     //        layer.lineWidth = NSExpression(format: "mgl_interpolate:withCurveType:parameters:stops:($zoomLevel, 'linear', nil, %@)", [18: 3, 9: 10])
     try trailData.install(to: style, id: ids.trail)
     trails.updateValue(trailData.source, forKey: ids)
-
+    
+    // Tappable trail; apparently opacity must be >0 for taps to register; 0.01 is seemingly invisible
+    let tappableTrailData = LayerSource(lineId: ids.tappableTrail, opacity: 0.01, width: 10.0)
+    try tappableTrailData.install(to: style, id: ids.tappableTrail)
+    
     // Boat icon
     let iconId = ids.icon
     let iconData =
@@ -188,10 +199,9 @@ class BoatRenderer {
     return trailData.source
   }
 
-  private func speedFeatures(coords: [MeasuredCoord]) -> FeatureCollection {
+  private func speedFeatures(coords: [CoordBody], from: TrackRef) -> FeatureCollection {
     let features = Array(zip(coords, coords.tail())).map { p1, p2 -> Feature in
-      let avgSpeed = [p1.speed.knots, p2.speed.knots].reduce(0, +) / 2.0
-      let meta = try? Json.shared.write(from: TrackPoint(speed: avgSpeed.knots))
+      let meta = try? Json.shared.write(from: TrackPoint(from: from, start: p1, end: p2))
       let edge = [p1.coord, p2.coord]
       var feature = Feature(geometry: Geometry.multiPoint(MultiPoint(edge)))
       feature.properties = (meta ?? [:])

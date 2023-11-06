@@ -1,7 +1,7 @@
 import Foundation
 
 protocol WebSocketMessageDelegate {
-  func on(message: String)
+  func on(message: String) async
 }
 
 class WebSocket: NSObject, URLSessionWebSocketDelegate {
@@ -71,7 +71,9 @@ class WebSocket: NSObject, URLSessionWebSocketDelegate {
   ) {
     log.info("Connected to \(urlString).")
     isConnected = true
-    receive()
+    Task {
+      await receive()
+    }
   }
 
   func urlSession(
@@ -82,23 +84,20 @@ class WebSocket: NSObject, URLSessionWebSocketDelegate {
     isConnected = false
   }
 
-  private func receive() {
-    task?.receive { result in
+  private func receive() async {
+    do {
+      guard let result = try await task?.receive() else { return }
       switch result {
-      case .success(let message):
-        switch message {
-        case .data(let data):
-          self.log.warn("Data received \(data)")
-        case .string(let text):
-          //            self.log.debug("Text received \(text)")
-          self.delegate?.on(message: text)
-          self.receive()
-        default:
-          self.log.info("Received something.")
-        }
-      case .failure(let error):
-        self.log.error("Error when receiving \(error)")
+      case .data(let data):
+        self.log.warn("Data received \(data)")
+      case .string(let text):
+        await self.delegate?.on(message: text)
+        await self.receive()
+      default:
+        self.log.info("Received something.")
       }
+    } catch {
+      self.log.error("Error when receiving \(error)")
     }
   }
 

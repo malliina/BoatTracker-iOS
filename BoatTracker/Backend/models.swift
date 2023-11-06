@@ -684,7 +684,12 @@ struct CoordBody: Codable, MeasuredCoord {
 }
 
 struct TrackPoint: Codable {
-  let speed: Speed
+  let from: TrackRef
+  let start: CoordBody
+  let end: CoordBody
+  var boatName: BoatName { from.boatName }
+  var avgSpeed: Speed { ([start.speed.knots, end.speed.knots].reduce(0, +) / 2.0).knots }
+  var isBoat: Bool { from.sourceType == .boat }
 }
 
 struct BoatPoint: Codable {

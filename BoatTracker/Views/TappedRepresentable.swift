@@ -51,6 +51,8 @@ struct TappedRepresentable: UIViewControllerRepresentable {
       VesselView(vessel: info, lang: lang)
     case .area(let info, let limit):
       AreaView(info: info, limit: limit, lang: lang)
+    case .trail(let info):
+      TrailView(info: info, lang: lang)
     }
   }
 

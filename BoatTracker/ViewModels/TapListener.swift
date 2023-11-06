@@ -9,6 +9,7 @@ enum TapResult {
   case boat(info: BoatPoint)
   case vessel(info: Vessel)
   case area(info: FairwayArea, limit: LimitArea?)
+  case trail(info: TrackPoint)
 }
 
 struct Tapped {
@@ -56,6 +57,8 @@ class TapListener {
     guard trophy == nil else { return trophy }
     let mark = await handleMarks(point)
     guard mark == nil else { return mark }
+    let trail = await handleTrail(point)
+    guard trail == nil else { return trail }
     let area = await handleArea(point)
     guard area == nil else { return area }
     return await handleLimits(point)
@@ -63,6 +66,7 @@ class TapListener {
 
   private func handleMarks(_ point: CGPoint) async -> TapResult? {
     let features = (try? await queryFeatures(at: point, layerIds: Array(marksLayers))) ?? []
+    guard !features.isEmpty else { return nil }
     //        log.info("Tapped \(features.count) mark features.")
     guard let coordinate = self.markCoordinate(features.first) else {
       log.warn("No coordinate for mark feature. Found \(features.count) features at \(point).")
@@ -148,6 +152,15 @@ class TapListener {
       return .limit(area: area, at: mapView.mapboxMap.coordinate(for: point))
     }
   }
+  
+  @MainActor
+  private func handleTrail(_ point: CGPoint) async -> TapResult? {
+    guard !boats.trailLayerIds.isEmpty else { return nil }
+//    log.info("Checking trails at \(boats.trailLayerIds)...")
+    let result = await queryVisibleFeatureProps(point, layers: boats.trailLayerIds, t: TrackPoint.self)
+    guard let result = result else { return nil }
+    return .trail(info: result)
+  }
 
   @MainActor
   private func pointAt(coord: CLLocationCoordinate2D) -> CGPoint {
@@ -177,7 +190,7 @@ class TapListener {
 
   @MainActor
   func queryFeatures(at: CGPoint, layerIds: [String]) async throws -> [QueriedFeature] {
-    return try await withCheckedThrowingContinuation { cont in
+    try await withCheckedThrowingContinuation { cont in
       mapView.mapboxMap.queryRenderedFeatures(
         with: at, options: RenderedQueryOptions(layerIds: layerIds, filter: nil)
       ) { result in

@@ -39,20 +39,20 @@ class Layers {
     return iconLayer
   }
 
-  static func line(id: String, color: UIColor = .black, minimumZoomLevel: Double? = nil)
+  static func line(id: String, color: UIColor = .black, minimumZoomLevel: Double? = nil, opacity: Double = 1.0, width: Double = 1.0)
     -> LineLayer
   {
-    customLine(id: id, color: StyleColor(color), minimumZoomLevel: minimumZoomLevel)
+    customLine(id: id, color: StyleColor(color), minimumZoomLevel: minimumZoomLevel, opacity: opacity, width: width)
   }
 
   static func customLine(
-    id: String, color: StyleColor, minimumZoomLevel: Double? = nil, opacity: Double = 1.0
+    id: String, color: StyleColor, minimumZoomLevel: Double? = nil, opacity: Double = 1.0, width: Double = 1.0
   ) -> LineLayer {
     var lineLayer = LineLayer(id: id)
     lineLayer.lineJoin = .constant(.round)
     lineLayer.lineCap = .constant(.round)
     lineLayer.lineColor = .constant(color)
-    lineLayer.lineWidth = .constant(1)
+    lineLayer.lineWidth = .constant(width)
     lineLayer.lineOpacity = .constant(opacity)
     if let minimumZoomLevel = minimumZoomLevel {
       lineLayer.minZoom = minimumZoomLevel
@@ -83,8 +83,8 @@ class LayerSource<L: Layer> {
 }
 
 extension LayerSource where L == LineLayer {
-  convenience init(lineId: String, lineColor: UIColor = .black, minimumZoomLevel: Double? = nil) {
-    let layer = Layers.line(id: lineId, color: lineColor, minimumZoomLevel: minimumZoomLevel)
+  convenience init(lineId: String, lineColor: UIColor = .black, minimumZoomLevel: Double? = nil, opacity: Double = 1.0, width: Double = 1.0) {
+    let layer = Layers.line(id: lineId, color: lineColor, minimumZoomLevel: minimumZoomLevel, opacity: opacity, width: width)
     self.init(layer: layer)
   }
 

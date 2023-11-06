@@ -21,7 +21,8 @@ public struct Temperature: Comparable, CustomStringConvertible, DoubleCodable {
 
   var rounded: String { String(format: "%.2f", celsius) }
 
-  public var description: String { "\(rounded) ℃" }
+  var formatCelsius: String { "\(rounded) ℃" }
+  public var description: String { formatCelsius }
 
   public static func == (lhs: Temperature, rhs: Temperature) -> Bool {
     return lhs.celsius == rhs.celsius
