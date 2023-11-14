@@ -16,7 +16,7 @@ struct TrackIds: Hashable {
   var tappableTrail: String { "\(track)-thick" }
   var icon: String { "\(track)-icon" }
   var trophy: String { "\(track)-trophy" }
-  var all: [String] { [trail, icon, trophy] }
+  var all: [String] { [trail, tappableTrail, icon, trophy] }
 }
 
 class BoatRenderer {
