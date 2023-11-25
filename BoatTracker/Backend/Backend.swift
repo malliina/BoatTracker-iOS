@@ -18,7 +18,6 @@ class Backend {
   }
   
   func prepare() async {
-    log.info("Prep backend...")
     Task {
       for await state in Auth.shared.$tokens.values {
         switch state {
@@ -28,7 +27,6 @@ class Backend {
         }
       }
     }
-    log.info("Prepped backend...")
   }
 
   private func updateToken(new token: UserToken?) {

@@ -6,7 +6,7 @@ protocol NotificationPermissionDelegate {
   func didFailToRegister(_ error: Error) async
 }
 
-open class BoatNotifications {
+class BoatNotifications {
   let log = LoggerFactory.shared.system(BoatNotifications.self)
   static let shared = BoatNotifications()
 
@@ -26,7 +26,7 @@ open class BoatNotifications {
       return true
     } else {
       log.info("The user did not grant permission to send notifications")
-      disableNotifications()
+      settings.notificationsAllowed = false
       return false
     }
   }
@@ -35,19 +35,12 @@ open class BoatNotifications {
     let hexToken = deviceToken.hexString()
     let token = PushToken(hexToken)
     log.info("Got device token \(hexToken)")
-    settings.pushToken = token
-    settings.notificationsAllowed = true
     await permissionDelegate?.didRegister(token)
   }
 
   func didFailToRegister(_ error: Error) async {
     log.error("Remote notifications registration failure \(error.describe)")
-    disableNotifications()
     await permissionDelegate?.didFailToRegister(error)
-  }
-
-  func disableNotifications() {
-    settings.pushToken = PushToken(BoatPrefs.shared.noPushTokenValue)
     settings.notificationsAllowed = false
   }
 

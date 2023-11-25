@@ -79,11 +79,12 @@ class BoatTokensVM: BoatTokensProtocol {
   }
 
   func toggleNotifications(isEnabled: Bool) async {
+    boatSettings.notificationsAllowed = isEnabled
     do {
       if isEnabled {
         try await registerNotifications()
       } else {
-        try await disableNotifications()
+        
       }
     } catch {
       let word = isEnabled ? "enable" : "disable"
@@ -91,21 +92,16 @@ class BoatTokensVM: BoatTokensProtocol {
     }
   }
 
-  func registerNotifications() async throws {
+  private func registerNotifications() async throws {
     notifications.permissionDelegate = self
-    if let token = boatSettings.pushToken {
-      log.info("Registering with previously saved push token...")
-      try await registerWithToken(token: token)
-    } else {
-      log.info("No saved push token. Asking for permission...")
-      let granted = try await notifications.initNotifications(.shared)
-      if !granted {
-        await update(isEnabled: false)
-        await openNotificationSettings()
-      }
+    log.info("No saved push token. Asking for permission...")
+    let granted = try await notifications.initNotifications(.shared)
+    if !granted {
+      await update(isEnabled: false)
+      await openNotificationSettings()
     }
   }
-
+  
   @MainActor
   func openNotificationSettings() {
     if let url = URL(string: appNotificationSettingsUrl) {
@@ -123,15 +119,7 @@ class BoatTokensVM: BoatTokensProtocol {
     }
   }
 
-  func disableNotifications() async throws {
-    if let token = boatSettings.pushToken {
-      _ = try await http.disableNotifications(token: token)
-      log.info("Disabled notifications with backend.")
-    }
-    notifications.disableNotifications()
-  }
-
-  func registerWithToken(token: PushToken) async throws {
+  private func registerWithToken(token: PushToken) async throws {
     _ = try await http.enableNotifications(token: token)
     log.info("Enabled notifications with backend.")
   }
@@ -139,15 +127,16 @@ class BoatTokensVM: BoatTokensProtocol {
 
 extension BoatTokensVM: NotificationPermissionDelegate {
   func didRegister(_ token: PushToken) async {
-    log.info("Permission granted.")
-    if let token = boatSettings.pushToken {
+    if boatSettings.notificationsAllowed {
       do {
         try await registerWithToken(token: token)
+      } catch AppError.responseFailure(let details) {
+        log.info("APNS registration failed. \(details.message ?? "Status \(details.code)")")
       } catch {
         log.info("Failed to register \(token). \(error)")
       }
     } else {
-      log.info("Permission granted, but no token available.")
+      log.info("Got APNS token, but notifications are not enabled on this device.")
     }
   }
 

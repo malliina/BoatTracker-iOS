@@ -6,9 +6,7 @@ class BoatPrefs {
 
   let authProviderKey = "authProvider"
   let welcomeKey = "welcome"
-  let pushTokenKey = "pushToken"
   let notificationsAllowedKey = "notificationsAllowed"
-  let noPushTokenValue = "none"
   let aisKey = "aisEnabled"
 
   var showWelcome: Bool {
@@ -17,22 +15,6 @@ class BoatPrefs {
     }
     set(newValue) {
       prefs.set(newValue, forKey: welcomeKey)
-    }
-  }
-
-  var pushToken: PushToken? {
-    get {
-      let tokenString = prefs.string(forKey: pushTokenKey)
-      if let tokenString = tokenString {
-        if tokenString != noPushTokenValue {
-          return PushToken(tokenString)
-        }
-      }
-      return nil
-    }
-    set(newToken) {
-      let token = newToken?.token ?? noPushTokenValue
-      prefs.set(token, forKey: pushTokenKey)
     }
   }
 
