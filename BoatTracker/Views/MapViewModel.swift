@@ -31,10 +31,8 @@ extension MapViewModel: BoatSocketDelegate {
 }
 
 extension MapViewModel: VesselDelegate {
-  func on(vessels: [Vessel]) {
-    Task {
+  func on(vessels: [Vessel]) async {
       await update(vessels: vessels)
-    }
   }
 
   @MainActor private func update(vessels: [Vessel]) {
@@ -69,37 +67,34 @@ class MapViewModel: MapViewModelLike {
   @Published var command: MapCommand? = nil
   var commands: Published<MapCommand?>.Publisher { $command }
   @Published var welcomeInfo: WelcomeInfo? = nil
-
-  private var cancellables: Set<AnyCancellable> = .init()
-
   @Published var activeTrack = ActiveTrack()
-
-  init() {
-    Auth.shared.$tokens.sink { state in
-      switch state {
-      case .authenticated(let token):
-        self.log.info("Got user '\(token.email)'.")
-        Task {
-          await self.reload(token: token)
-        }
-      case .unauthenticated:
-        self.log.info("Got no user.")
-        Task {
-          await self.reload(token: nil)
-        }
-      case .unknown:
-        self.log.info("Waiting for proper auth state...")
-      }
-    }.store(in: &cancellables)
-    activeTrack.$selectedTrack.map { $0?.track }.removeDuplicates().sink { trackName in
-      self.log.info("Changing track to \(trackName?.name ?? "no track")")
-      Task {
-        await self.change(to: trackName)
-      }
-    }.store(in: &cancellables)
-  }
-
+  
   func prepare() async {
+    Task {
+      for await state in Auth.shared.$tokens.values {
+        switch state {
+        case .authenticated(let token):
+          self.log.info("Got user '\(token.email)'.")
+          await self.reload(token: token)
+        case .unauthenticated:
+          self.log.info("Got no user.")
+          await self.reload(token: nil)
+        case .unknown:
+          self.log.info("Waiting for proper auth state...")
+        }
+      }
+    }
+    Task {
+      for await track in activeTrack.$selectedTrack.map({ $0?.track }).removeDuplicates().values {
+        log.info("Changed to \(track?.name ?? "no track").")
+        await change(to: track)
+      }
+    }
+    Task {
+      for await isConnected in backend.socket.$isConnected.removeDuplicates().values {
+        await update(isConnected: isConnected)
+      }
+    }
     do {
       let conf = try await http.conf()
       settings.conf = conf
@@ -109,6 +104,11 @@ class MapViewModel: MapViewModelLike {
     } catch {
       log.error("Failed to load conf and style: '\(error.describe)'.")
     }
+  }
+  
+  @MainActor
+  private func update(isConnected: Bool) {
+    isFollowButtonHidden = !isConnected
   }
 
   @MainActor
@@ -121,7 +121,7 @@ class MapViewModel: MapViewModelLike {
     socket.updateToken(token: token?.token)
     socket.delegate = self
     socket.vesselDelegate = self
-    socket.open()
+    socket.reconnect(token: token?.token, track: nil) // is nil correct?
     await setupUser(token: token?.token)
   }
 
@@ -149,7 +149,6 @@ class MapViewModel: MapViewModelLike {
     socket.delegate = nil
     socket.close()
     command = .clearAll
-    isFollowButtonHidden = true
   }
 
   @MainActor private func update(style: StyleURI) {

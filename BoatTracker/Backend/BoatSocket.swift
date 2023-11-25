@@ -6,18 +6,25 @@ protocol BoatSocketDelegate {
 }
 
 protocol VesselDelegate {
-  func on(vessels: [Vessel])
+  func on(vessels: [Vessel]) async
 }
 
 extension BoatSocket: WebSocketMessageDelegate {
-  func on(message: String) {
+  func on(isConnected: Bool) async {
+    await update(isConnected: isConnected)
+  }
+  
+  @MainActor
+  private func update(isConnected: Bool) {
+    self.isConnected = isConnected
+  }
+  
+  func on(message: String) async {
     do {
       guard let json = message.data(using: .utf8) else {
         throw JsonError.invalid("Not JSON.", message)
       }
-      Task {
-        await onMessage(json: json)
-      }
+      await onMessage(json: json)
     } catch {
       log.warn("Not JSON: '\(message)'.")
     }
@@ -27,15 +34,38 @@ extension BoatSocket: WebSocketMessageDelegate {
 class BoatSocket {
   private let log = LoggerFactory.shared.network(BoatSocket.self)
 
-  private let socket: WebSocket
+  private let baseUrl: URL
+  
+  private var socket: WebSocket? = nil
 
   // Delegate for the map view
   var delegate: BoatSocketDelegate? = nil
   // Delegate for the profile page with a summary view of the current track
   var statsDelegate: BoatSocketDelegate? = nil
   var vesselDelegate: VesselDelegate? = nil
-
-  init(token: AccessToken?, track: TrackName?) {
+  
+  @Published var isConnected: Bool = false
+  
+  init(_ baseUrl: URL) {
+    self.baseUrl = baseUrl
+  }
+  
+  private func open() {
+    if let socket = socket {
+      log.info("Opening socket to \(socket.baseURL.absoluteString)...")
+      socket.connect()
+    } else {
+      log.warn("Opening non-existing socket? Seems like a user error.")
+    }
+  }
+  
+  func reconnect(token: AccessToken?, track: TrackName?) {
+    close()
+    prep(token: token, track: track)
+    open()
+  }
+  
+  private func prep(token: AccessToken?, track: TrackName?) {
     var headers: [String: String] = [:]
     if let token = token {
       headers = [
@@ -48,19 +78,14 @@ class BoatSocket {
       ]
     }
     let trackQuery = track.map { "?track=\($0.name)" } ?? ""
-    let url = URL(string: "/ws/updates\(trackQuery)", relativeTo: EnvConf.shared.baseUrl)!
+    let url = URL(string: "/ws/updates\(trackQuery)", relativeTo: baseUrl)!
     //        log.info("Opening socket with \(track?.name ?? "no track") and token \(token?.token ?? "no token")")
     socket = WebSocket(baseURL: url, headers: headers)
-    socket.delegate = self
-  }
-
-  func open() {
-    log.info("Opening socket to \(socket.baseURL.absoluteString)...")
-    socket.connect()
+    socket?.delegate = self
   }
 
   func updateToken(token: AccessToken?) {
-    socket.updateAuthHeader(newValue: token.map(BoatHttpClient.authValue))
+    socket?.updateAuthHeader(newValue: token.map(BoatHttpClient.authValue))
   }
 
   func onMessage(json: Data) async {
@@ -84,7 +109,9 @@ class BoatSocket {
         }
       case "vessels":
         let data = try decoder.decode(VesselsBody.self, from: json)
-        vesselDelegate?.on(vessels: data.body.vessels)
+        if let vesselDelegate = vesselDelegate {
+          await vesselDelegate.on(vessels: data.body.vessels)
+        }
       default:
         log.info("Unknown event: '\(event)'.")
       }
@@ -111,7 +138,7 @@ class BoatSocket {
     guard let asString = try? Json.shared.stringify(t) else {
       return failWith("Unable to send data, cannot stringify payload.")
     }
-    let isSuccess = socket.send(asString)
+    let isSuccess = socket?.send(asString) ?? false
     return isSuccess ? nil : SingleError(message: "Failed to send message over socket.")
   }
 
@@ -121,7 +148,7 @@ class BoatSocket {
   }
 
   func close() {
-    socket.disconnect()
+    socket?.disconnect()
   }
 }
 

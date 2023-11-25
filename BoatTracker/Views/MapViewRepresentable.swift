@@ -70,9 +70,6 @@ struct MapViewRepresentable: UIViewRepresentable {
     private var taps: TapListener? = nil
     private var settings: UserSettings { UserSettings.shared }
     private var firstInit: Bool = true
-    private var cancellable: AnyCancellable? = nil
-    private var vesselJob: AnyCancellable? = nil
-    private var followJob: AnyCancellable? = nil
 
     init(map: MapViewRepresentable) {
       self.map = map
@@ -81,34 +78,37 @@ struct MapViewRepresentable: UIViewRepresentable {
     func onStyleLoaded(_ mapView: MapView, didFinishLoading style: Style) async {
       self.style = style
       let boats = BoatRenderer(mapView: mapView, style: style, mapMode: map._mapMode)
-      log.info("Subscribing to coords events...")
-      cancellable = map.coords.sink { coords in
-        if let coords = coords {
-          do {
-            let cs = coords.coords
-            if let first = cs.first, let last = cs.last {
-              self.log.info(
-                "Handling \(cs.count) coords with start date \(coords.from.start), first \(first.time.dateTime), last \(last.time.dateTime)"
-              )
-            }
-            try boats.addCoords(event: coords)
-          } catch {
-            self.log.error("Failed to handle coords. \(error)")
-          }
-        }
-      }
-
       boatRenderer = boats
       let paths = PathFinder(mapView: mapView, style: style)
       pathFinder = paths
-      followJob = map.commands.sink { cmd in
-        if let cmd = cmd {
-          switch cmd {
-          case .toggleFollow:
-            boats.toggleFollow()
-          case .clearAll:
-            boats.clear()
-            paths.clear()
+      Task {
+        log.info("Subscribing to coords events...")
+        for await coords in map.coords.values {
+          if let coords = coords {
+            do {
+              let cs = coords.coords
+              if let first = cs.first, let last = cs.last {
+                self.log.info(
+                  "Handling \(cs.count) coords with start date \(coords.from.start), first \(first.time.dateTime), last \(last.time.dateTime)"
+                )
+              }
+              try boats.addCoords(event: coords)
+            } catch {
+              self.log.error("Failed to handle coords. \(error)")
+            }
+          }
+        }
+      }
+      Task {
+        for await cmd in map.commands.values {
+          if let cmd = cmd {
+            switch cmd {
+            case .toggleFollow:
+              boats.toggleFollow()
+            case .clearAll:
+              boats.clear()
+              paths.clear()
+            }
           }
         }
       }
@@ -139,11 +139,13 @@ struct MapViewRepresentable: UIViewRepresentable {
         if BoatPrefs.shared.isAisEnabled {
           do {
             let ais = try AISRenderer(mapView: mapView, style: style, conf: layers.ais)
-            vesselJob = map.vessels.sink { vs in
-              do {
-                try ais.update(vessels: vs)
-              } catch {
-                self.log.error("Failed to update AIS. \(error)")
+            Task {
+              for await vessels in map.vessels.values {
+                do {
+                  try ais.update(vessels: vessels)
+                } catch {
+                  self.log.error("Failed to update AIS. \(error)")
+                }
               }
             }
             aisRenderer = ais

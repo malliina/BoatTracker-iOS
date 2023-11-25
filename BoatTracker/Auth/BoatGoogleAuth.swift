@@ -33,7 +33,7 @@ class BoatGoogleAuth: NSObject {
       throw AppError.simple("No email in Google sign in response.")
     }
     BoatPrefs.shared.authProvider = .google
-    log.info("Got email '\(email)' with token '\(idToken)'.")
+    log.info("Got email '\(email)' with token '\(idToken.tokenString)'.")
     return UserToken(email: email, token: AccessToken(idToken.tokenString))
   }
 

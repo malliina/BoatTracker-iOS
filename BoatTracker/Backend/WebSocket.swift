@@ -2,6 +2,7 @@ import Foundation
 
 protocol WebSocketMessageDelegate {
   func on(message: String) async
+  func on(isConnected: Bool) async
 }
 
 class WebSocket: NSObject, URLSessionWebSocketDelegate {
@@ -72,6 +73,9 @@ class WebSocket: NSObject, URLSessionWebSocketDelegate {
     log.info("Connected to \(urlString).")
     isConnected = true
     Task {
+      if let delegate = delegate {
+        await delegate.on(isConnected: true)
+      }
       await receive()
     }
   }
@@ -82,6 +86,11 @@ class WebSocket: NSObject, URLSessionWebSocketDelegate {
   ) {
     log.info("Disconnected from \(urlString).")
     isConnected = false
+    if let delegate = delegate {
+      Task {
+        await delegate.on(isConnected: false)
+      }
+    }
   }
 
   private func receive() async {

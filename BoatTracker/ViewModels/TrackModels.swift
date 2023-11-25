@@ -10,6 +10,7 @@ class ActiveTrack: ObservableObject {
   @Published var selectedTrack: SelectedTrack?
 
   func select(_ track: TrackName?) {
+    log.info("Selecting \(track?.name ?? "no track")")
     selectedTrack = SelectedTrack(track: track, selectedAt: Date.now)
   }
 

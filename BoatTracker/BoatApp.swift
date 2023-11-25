@@ -42,6 +42,7 @@ struct BoatApp: App {
         .environmentObject(chartVm)
         .environmentObject(tokensVm)
         .task {
+          await Backend.shared.prepare()
           await viewModel.prepare()
         }
     }
