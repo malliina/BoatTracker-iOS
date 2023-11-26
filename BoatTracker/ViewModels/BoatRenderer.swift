@@ -21,9 +21,12 @@ struct TrackIds: Hashable {
 
 class BoatRenderer {
   let log = LoggerFactory.shared.vc(BoatRenderer.self)
+  
+  private let mapView: MapView
+  private let style: Style
+
   // state of boat trails and icons
   private var trails: [TrackIds: GeoJSONSource] = [:]
-  var isEmpty: Bool { trails.isEmpty }
   // The history data is in the above trails also because it is difficult to read an MGLShapeSource. This is more suitable for our purposes.
   private var history: [TrackName: [CoordBody]] = [:]
   private var boatIcons: [TrackIds: SymbolLayer] = [:]
@@ -35,10 +38,7 @@ class BoatRenderer {
       ids.tappableTrail
     }
   }
-
-  private let mapView: MapView
-  private let style: Style
-
+  
   @Binding var mapMode: MapMode
 
   init(mapView: MapView, style: Style, mapMode: Binding<MapMode>) {
@@ -133,7 +133,7 @@ class BoatRenderer {
     case .fit:
       if coords.count > 1 {
         let edgePadding = UIEdgeInsets(top: 30, left: 20, bottom: 30, right: 20)
-        let allCoords = newTrail.map { $0.coord }
+        let allCoords = history.values.flatMap { trail in trail.map { point in point.coord } }
         let camera = mapView.mapboxMap.camera(
           for: allCoords, padding: edgePadding, bearing: nil, pitch: nil)
         mapView.camera.fly(to: camera, duration: nil, completion: nil)

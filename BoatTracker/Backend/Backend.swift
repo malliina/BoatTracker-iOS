@@ -19,7 +19,7 @@ class Backend {
   
   func prepare() async {
     Task {
-      for await state in Auth.shared.$tokens.values {
+      for await state in Auth.shared.$authState.values {
         switch state {
         case .authenticated(let token): self.updateToken(new: token)
         case .unauthenticated: self.updateToken(new: nil)

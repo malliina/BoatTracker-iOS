@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 enum AuthState {
   case unknown, unauthenticated
@@ -12,7 +13,14 @@ class Auth {
 
   private var prefs: BoatPrefs { BoatPrefs.shared }
 
-  @Published var tokens: AuthState = .unknown
+  @Published var authState: AuthState = .unknown
+  
+  var tokens: AnyPublisher<UserToken, Never> { $authState.compactMap { state in
+    switch state {
+    case .authenticated(let token): return token
+    default: return nil
+    }
+  }.removeDuplicates().eraseToAnyPublisher() }
 
   private var google: BoatGoogleAuth { BoatGoogleAuth.shared }
   private var microsoft: MicrosoftAuth { MicrosoftAuth.shared }
@@ -26,14 +34,14 @@ class Auth {
     do {
       let token = try await obtainToken(from: from, restore: restore)
       if let token = token {
-        tokens = .authenticated(token: token)
+        authState = .authenticated(token: token)
       } else {
-        tokens = .unauthenticated
+        authState = .unauthenticated
       }
       return token
     } catch {
       log.error("Failed to authenticate: '\(error.describe)'.")
-      tokens = .unknown
+      authState = .unknown
       return nil
     }
   }
@@ -59,7 +67,7 @@ class Auth {
       log.info("Nothing to sign out from.")
     }
     prefs.authProvider = .none
-    tokens = .unauthenticated
+    authState = .unauthenticated
   }
 
   @MainActor

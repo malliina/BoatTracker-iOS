@@ -27,8 +27,12 @@ class BoatTokensVM: BoatTokensProtocol {
     notificationsEnabled = boatSettings.notificationsAllowed
     appIcon = UIApplication.shared.alternateIconName ?? BoatTokensVM.defaultAppIcon
     Task {
-      for await isEnabled in $notificationsEnabled.values {
-        await toggleNotifications(isEnabled: isEnabled)
+      // Waits for an ID token to be available before doing notification actions,
+      // because toggling notifications on the backend requires an auth token.
+      for await _ in Auth.shared.tokens.first().values {
+        for await isEnabled in $notificationsEnabled.values {
+          await toggleNotifications(isEnabled: isEnabled)
+        }
       }
     }
   }
@@ -118,18 +122,14 @@ class BoatTokensVM: BoatTokensProtocol {
       return UIApplication.openSettingsURLString
     }
   }
-
-  private func registerWithToken(token: PushToken) async throws {
-    _ = try await http.enableNotifications(token: token)
-    log.info("Enabled notifications with backend.")
-  }
 }
 
 extension BoatTokensVM: NotificationPermissionDelegate {
   func didRegister(_ token: PushToken) async {
     if boatSettings.notificationsAllowed {
       do {
-        try await registerWithToken(token: token)
+        _ = try await http.enableNotifications(token: token)
+        log.info("Enabled notifications with backend.")
       } catch AppError.responseFailure(let details) {
         log.info("APNS registration failed. \(details.message ?? "Status \(details.code)")")
       } catch {
