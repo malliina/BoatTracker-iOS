@@ -14,5 +14,5 @@ class Geo {
     return 360 - ((brng + 360).truncatingRemainder(dividingBy: 360))
   }
 
-  func toDeg(rad: Double) -> Double { return rad * 180 / Double.pi }
+  func toDeg(rad: Double) -> Double { rad * 180 / Double.pi }
 }

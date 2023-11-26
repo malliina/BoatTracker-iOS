@@ -54,7 +54,6 @@
 		61BCBE7B220768AB00EE74EB /* AISRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61BCBE7A220768AB00EE74EB /* AISRenderer.swift */; };
 		61BCBE7D2207730400EE74EB /* BoatRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61BCBE7C2207730400EE74EB /* BoatRenderer.swift */; };
 		61BCBE7F2208CC1C00EE74EB /* Layers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61BCBE7E2208CC1C00EE74EB /* Layers.swift */; };
-		61CD40D121163E0E00F31AA5 /* StatBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61CD40D021163E0E00F31AA5 /* StatBox.swift */; };
 		61DCDA3C21D02693009A75EB /* BoatGoogleAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DCDA3B21D02693009A75EB /* BoatGoogleAuth.swift */; };
 		61DE7F3F20F29F6900C95B3F /* BoatSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DE7F3E20F29F6900C95B3F /* BoatSocket.swift */; };
 		61DE7F4120F2A23100C95B3F /* StringUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DE7F4020F2A23100C95B3F /* StringUtils.swift */; };
@@ -64,7 +63,6 @@
 		61F4199121206A5600B1ED7D /* AttributionModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61F4199021206A5600B1ED7D /* AttributionModels.swift */; };
 		61F4199321206C4C00B1ED7D /* AttributionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61F4199221206C4C00B1ED7D /* AttributionsView.swift */; };
 		61F4199521206F9200B1ED7D /* Arrays.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61F4199421206F9200B1ED7D /* Arrays.swift */; };
-		61F4199B2120B2F700B1ED7D /* ViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61F4199A2120B2F700B1ED7D /* ViewState.swift */; };
 		7D045D6A265A54A300B92EE8 /* Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D045D69265A54A300B92EE8 /* Auth.swift */; };
 		7D15B6E02AE575E600C47F76 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 7D15B6DF2AE575E600C47F76 /* README.md */; };
 		7D15B6E22AE5760100C47F76 /* .github in Resources */ = {isa = PBXBuildFile; fileRef = 7D15B6E12AE5760100C47F76 /* .github */; };
@@ -77,6 +75,7 @@
 		7D528E6227B9682F00C55F06 /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D528E6127B9682F00C55F06 /* WebSocket.swift */; };
 		7DDBA9A727773D3900108B24 /* AppleAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DDBA9A627773D3900108B24 /* AppleAuth.swift */; };
 		B01251A72A4582C600A267C9 /* conf.json in Resources */ = {isa = PBXBuildFile; fileRef = B01251A62A4582C600A267C9 /* conf.json */; };
+		B01EE5982B13466500BBB8DA /* views.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01EE5972B13466500BBB8DA /* views.swift */; };
 		B02A812E2922C46900848949 /* LanguageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02A812D2922C46900848949 /* LanguageView.swift */; };
 		B02EC50C2909AE2700D21793 /* MapViewRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02EC50B2909AE2700D21793 /* MapViewRepresentable.swift */; };
 		B02EC50E2909B41A00D21793 /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02EC50D2909B41A00D21793 /* MapViewModel.swift */; };
@@ -100,7 +99,6 @@
 		B0C5981E2920258B00439237 /* Tasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C5981D2920258B00439237 /* Tasks.swift */; };
 		B0C598202920EF8300439237 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C5981F2920EF8300439237 /* ProfileView.swift */; };
 		B0C598222920F02900439237 /* TrackSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C598212920F02900439237 /* TrackSummaryView.swift */; };
-		B0C598242921159900439237 /* NavLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C598232921159900439237 /* NavLink.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -170,7 +168,6 @@
 		61BCBE7A220768AB00EE74EB /* AISRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AISRenderer.swift; sourceTree = "<group>"; };
 		61BCBE7C2207730400EE74EB /* BoatRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatRenderer.swift; sourceTree = "<group>"; };
 		61BCBE7E2208CC1C00EE74EB /* Layers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Layers.swift; sourceTree = "<group>"; };
-		61CD40D021163E0E00F31AA5 /* StatBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatBox.swift; sourceTree = "<group>"; };
 		61DCDA3B21D02693009A75EB /* BoatGoogleAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatGoogleAuth.swift; sourceTree = "<group>"; };
 		61DE7F3E20F29F6900C95B3F /* BoatSocket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatSocket.swift; sourceTree = "<group>"; };
 		61DE7F4020F2A23100C95B3F /* StringUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringUtils.swift; sourceTree = "<group>"; };
@@ -180,7 +177,6 @@
 		61F4199021206A5600B1ED7D /* AttributionModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributionModels.swift; sourceTree = "<group>"; };
 		61F4199221206C4C00B1ED7D /* AttributionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributionsView.swift; sourceTree = "<group>"; };
 		61F4199421206F9200B1ED7D /* Arrays.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Arrays.swift; sourceTree = "<group>"; };
-		61F4199A2120B2F700B1ED7D /* ViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewState.swift; sourceTree = "<group>"; };
 		7D045D69265A54A300B92EE8 /* Auth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Auth.swift; sourceTree = "<group>"; };
 		7D15B6DF2AE575E600C47F76 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		7D15B6E12AE5760100C47F76 /* .github */ = {isa = PBXFileReference; lastKnownFileType = folder; path = .github; sourceTree = "<group>"; };
@@ -205,8 +201,6 @@
 		7D15B6F82AE5761400C47F76 /* 1_APP_IPAD_PRO_129_1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 1_APP_IPAD_PRO_129_1.png; sourceTree = "<group>"; };
 		7D15B6F92AE5761400C47F76 /* 4_APP_IPHONE_65_4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 4_APP_IPHONE_65_4.png; sourceTree = "<group>"; };
 		7D15B6FA2AE5761400C47F76 /* 5_APP_IPHONE_65_5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 5_APP_IPHONE_65_5.png; sourceTree = "<group>"; };
-		7D15B6FC2AE5761400C47F76 /* report.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = report.html; sourceTree = "<group>"; };
-		7D15B6FD2AE5761400C47F76 /* report.junit */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = report.junit; sourceTree = "<group>"; };
 		7D15B6FE2AE5761400C47F76 /* Pluginfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Pluginfile; sourceTree = "<group>"; };
 		7D15B6FF2AE5761400C47F76 /* Appfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Appfile; sourceTree = "<group>"; };
 		7D15B7002AE5761400C47F76 /* Deliverfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Deliverfile; sourceTree = "<group>"; };
@@ -236,11 +230,11 @@
 		7D15B71B2AE5761400C47F76 /* marketing_url.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = marketing_url.txt; sourceTree = "<group>"; };
 		7D15B71C2AE5761400C47F76 /* description.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = description.txt; sourceTree = "<group>"; };
 		7D15B71D2AE5761400C47F76 /* primary_category.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = primary_category.txt; sourceTree = "<group>"; };
-		7D15B71E2AE5761400C47F76 /* report.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = report.xml; sourceTree = "<group>"; };
 		7D2CC0F2264D6EBD0091E05C /* MicrosoftAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrosoftAuth.swift; sourceTree = "<group>"; };
 		7D528E6127B9682F00C55F06 /* WebSocket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocket.swift; sourceTree = "<group>"; };
 		7DDBA9A627773D3900108B24 /* AppleAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleAuth.swift; sourceTree = "<group>"; };
 		B01251A62A4582C600A267C9 /* conf.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = conf.json; path = BoatTracker/conf.json; sourceTree = "<group>"; };
+		B01EE5972B13466500BBB8DA /* views.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = views.swift; sourceTree = "<group>"; };
 		B02A812D2922C46900848949 /* LanguageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageView.swift; sourceTree = "<group>"; };
 		B02EC50B2909AE2700D21793 /* MapViewRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewRepresentable.swift; sourceTree = "<group>"; };
 		B02EC50D2909B41A00D21793 /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
@@ -264,7 +258,6 @@
 		B0C5981D2920258B00439237 /* Tasks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tasks.swift; sourceTree = "<group>"; };
 		B0C5981F2920EF8300439237 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		B0C598212920F02900439237 /* TrackSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackSummaryView.swift; sourceTree = "<group>"; };
-		B0C598232921159900439237 /* NavLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavLink.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -402,19 +395,17 @@
 				61DE7F4A20F3ED3900C95B3F /* MapButtonView.swift */,
 				B02EC50D2909B41A00D21793 /* MapViewModel.swift */,
 				B02EC50B2909AE2700D21793 /* MapViewRepresentable.swift */,
-				B0C598232921159900439237 /* NavLink.swift */,
 				B0485D6129256907005A1FC5 /* PeriodStatView.swift */,
 				B03F58A4294287FF006B5DC1 /* popupViews.swift */,
 				B0C5981F2920EF8300439237 /* ProfileView.swift */,
 				B0799D682A36492000925784 /* ProfileVM.swift */,
-				61CD40D021163E0E00F31AA5 /* StatBox.swift */,
 				B03383B22928E3D800974FFE /* StatsView.swift */,
 				B03F58A629428DB0006B5DC1 /* TappedRepresentable.swift */,
 				B0C598212920F02900439237 /* TrackSummaryView.swift */,
 				B052E832292A286E00C09B89 /* TracksView.swift */,
 				B052E834292A2BEB00C09B89 /* TrackView.swift */,
-				61F4199A2120B2F700B1ED7D /* ViewState.swift */,
 				61ACE5C62130956A00925265 /* WelcomeSignedIn.swift */,
+				B01EE5972B13466500BBB8DA /* views.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -521,14 +512,12 @@
 			isa = PBXGroup;
 			children = (
 				7D15B6E42AE5761400C47F76 /* screenshots */,
-				7D15B6FB2AE5761400C47F76 /* test_output */,
 				7D15B6FE2AE5761400C47F76 /* Pluginfile */,
 				7D15B6FF2AE5761400C47F76 /* Appfile */,
 				7D15B7002AE5761400C47F76 /* Deliverfile */,
 				7D15B7012AE5761400C47F76 /* Fastfile */,
 				7D15B7022AE5761400C47F76 /* README.md */,
 				7D15B7032AE5761400C47F76 /* metadata */,
-				7D15B71E2AE5761400C47F76 /* report.xml */,
 			);
 			path = fastlane;
 			sourceTree = "<group>";
@@ -567,15 +556,6 @@
 				7D15B6FA2AE5761400C47F76 /* 5_APP_IPHONE_65_5.png */,
 			);
 			path = "en-US";
-			sourceTree = "<group>";
-		};
-		7D15B6FB2AE5761400C47F76 /* test_output */ = {
-			isa = PBXGroup;
-			children = (
-				7D15B6FC2AE5761400C47F76 /* report.html */,
-				7D15B6FD2AE5761400C47F76 /* report.junit */,
-			);
-			path = test_output;
 			sourceTree = "<group>";
 		};
 		7D15B7032AE5761400C47F76 /* metadata */ = {
@@ -725,10 +705,10 @@
 			);
 			mainGroup = 61B07C5320F21DC300D8B7E0;
 			packageReferences = (
-				7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple.git" */,
-				7D175C4827BD85300050E29B /* XCRemoteSwiftPackageReference "mapbox-maps-ios.git" */,
+				7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */,
+				7D175C4827BD85300050E29B /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */,
 				7D175C4B27BD85AE0050E29B /* XCRemoteSwiftPackageReference "microsoft-authentication-library-for-objc" */,
-				7D175C4E27BD87110050E29B /* XCRemoteSwiftPackageReference "Charts.git" */,
+				7D175C4E27BD87110050E29B /* XCRemoteSwiftPackageReference "Charts" */,
 				7D175C5127BD876F0050E29B /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 			);
 			productRefGroup = 61B07C5D20F21DC300D8B7E0 /* Products */;
@@ -773,7 +753,6 @@
 				7D045D6A265A54A300B92EE8 /* Auth.swift in Sources */,
 				61F4199121206A5600B1ED7D /* AttributionModels.swift in Sources */,
 				61ACE5C72130956A00925265 /* WelcomeSignedIn.swift in Sources */,
-				61F4199B2120B2F700B1ED7D /* ViewState.swift in Sources */,
 				B0799D692A36492000925784 /* ProfileVM.swift in Sources */,
 				610EE3E321724CE10040FBC6 /* String+FontAwesome.swift in Sources */,
 				61DE7F3F20F29F6900C95B3F /* BoatSocket.swift in Sources */,
@@ -794,6 +773,7 @@
 				B0C5981A291ED81E00439237 /* authViews.swift in Sources */,
 				619679F220FB39CF00432672 /* MapEvents.swift in Sources */,
 				B0C598202920EF8300439237 /* ProfileView.swift in Sources */,
+				B01EE5982B13466500BBB8DA /* views.swift in Sources */,
 				6199E0F120F24F1800A4009A /* HttpResponse.swift in Sources */,
 				61832AAE220B69D400413FD0 /* TapListener.swift in Sources */,
 				7D528E6227B9682F00C55F06 /* WebSocket.swift in Sources */,
@@ -825,7 +805,6 @@
 				B052E839292AA5FE00C09B89 /* ChartsView.swift in Sources */,
 				610EE3E221724CE10040FBC6 /* UIFont+FontAwesome.m in Sources */,
 				612F46B320F6418B001A3003 /* Speed.swift in Sources */,
-				B0C598242921159900439237 /* NavLink.swift in Sources */,
 				612F46A420F4A99E001A3003 /* EnvConf.swift in Sources */,
 				6199E0EC20F24DC700A4009A /* HttpClient.swift in Sources */,
 				612F46B520F644B7001A3003 /* Distance.swift in Sources */,
@@ -847,7 +826,6 @@
 				612F46B920F66854001A3003 /* Geo.swift in Sources */,
 				619679EB20F78B5900432672 /* MapMode.swift in Sources */,
 				6173F249228CB99000A1E9B9 /* PathFinder.swift in Sources */,
-				61CD40D121163E0E00F31AA5 /* StatBox.swift in Sources */,
 				B0799D632A3636E200925784 /* BoatPreviews.swift in Sources */,
 				1A6A6531279059D19746CE2B /* Files.swift in Sources */,
 			);
@@ -1141,7 +1119,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple.git" */ = {
+		7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/microsoft/appcenter-sdk-apple.git";
 			requirement = {
@@ -1149,7 +1127,7 @@
 				version = 5.0.4;
 			};
 		};
-		7D175C4827BD85300050E29B /* XCRemoteSwiftPackageReference "mapbox-maps-ios.git" */ = {
+		7D175C4827BD85300050E29B /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/mapbox/mapbox-maps-ios.git";
 			requirement = {
@@ -1165,7 +1143,7 @@
 				version = 1.2.18;
 			};
 		};
-		7D175C4E27BD87110050E29B /* XCRemoteSwiftPackageReference "Charts.git" */ = {
+		7D175C4E27BD87110050E29B /* XCRemoteSwiftPackageReference "Charts" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/danielgindi/Charts.git";
 			requirement = {
@@ -1186,17 +1164,17 @@
 /* Begin XCSwiftPackageProductDependency section */
 		7D175C4427BD84990050E29B /* AppCenterAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple.git" */;
+			package = 7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */;
 			productName = AppCenterAnalytics;
 		};
 		7D175C4627BD84990050E29B /* AppCenterCrashes */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple.git" */;
+			package = 7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */;
 			productName = AppCenterCrashes;
 		};
 		7D175C4927BD85300050E29B /* MapboxMaps */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 7D175C4827BD85300050E29B /* XCRemoteSwiftPackageReference "mapbox-maps-ios.git" */;
+			package = 7D175C4827BD85300050E29B /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */;
 			productName = MapboxMaps;
 		};
 		7D175C4C27BD85AE0050E29B /* MSAL */ = {
@@ -1211,7 +1189,7 @@
 		};
 		B05A70892AF6498300D0BAF1 /* DGCharts */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 7D175C4E27BD87110050E29B /* XCRemoteSwiftPackageReference "Charts.git" */;
+			package = 7D175C4E27BD87110050E29B /* XCRemoteSwiftPackageReference "Charts" */;
 			productName = DGCharts;
 		};
 /* End XCSwiftPackageProductDependency section */

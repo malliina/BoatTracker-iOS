@@ -58,7 +58,6 @@ protocol LanguageProtocol: ObservableObject {
 class LanguageVM: LanguageProtocol {
   static let shared = LanguageVM()
   let log = LoggerFactory.shared.vc(LanguageVM.self)
-  var settings: UserSettings { UserSettings.shared }
   private var current: Language { settings.currentLanguage }
 
   @Published var currentLanguage: Language

@@ -2,7 +2,10 @@ import Foundation
 import SwiftUI
 
 extension ObservableObject {
-  var http: BoatHttpClient { Backend.shared.http }
+  var backend: Backend { Backend.shared }
+  var http: BoatHttpClient { backend.http }
+  var prefs: BoatPrefs { BoatPrefs.shared }
+  var settings: UserSettings { UserSettings.shared }
 }
 
 extension View {

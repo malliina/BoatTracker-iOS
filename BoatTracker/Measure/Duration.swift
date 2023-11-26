@@ -18,20 +18,20 @@ public struct Duration: Comparable, CustomStringConvertible, DoubleCodable {
   public var description: String { return Formatting.shared.format(duration: self) }
 
   public static func == (lhs: Duration, rhs: Duration) -> Bool {
-    return lhs.seconds == rhs.seconds
+    lhs.seconds == rhs.seconds
   }
 
   public static func < (lhs: Duration, rhs: Duration) -> Bool {
-    return lhs.seconds < rhs.seconds
+    lhs.seconds < rhs.seconds
   }
 }
 
 extension Int {
-  public var ms: Duration { return Duration(seconds: Double(self) / Duration.k) }
-  public var seconds: Duration { return Duration(seconds: Double(self)) }
+  public var ms: Duration { Duration(seconds: Double(self) / Duration.k) }
+  public var seconds: Duration { Duration(seconds: Double(self)) }
 }
 
 extension Double {
-  public var ms: Duration { return Duration(seconds: Double(self) / Duration.k) }
-  public var seconds: Duration { return Duration(seconds: Double(self)) }
+  public var ms: Duration { Duration(seconds: Double(self) / Duration.k) }
+  public var seconds: Duration { Duration(seconds: Double(self)) }
 }

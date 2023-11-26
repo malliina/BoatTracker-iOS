@@ -2,11 +2,11 @@ import Foundation
 
 public struct Temperature: Comparable, CustomStringConvertible, DoubleCodable {
   static func fahrenheitToCelsius(f: Double) -> Double {
-    return (f - 32) * 5 / 9
+    (f - 32) * 5 / 9
   }
 
   static func kelvinToCelsius(k: Double) -> Double {
-    return k + 273.15
+    k + 273.15
   }
 
   static let zero = Temperature(0)
@@ -25,11 +25,11 @@ public struct Temperature: Comparable, CustomStringConvertible, DoubleCodable {
   public var description: String { formatCelsius }
 
   public static func == (lhs: Temperature, rhs: Temperature) -> Bool {
-    return lhs.celsius == rhs.celsius
+    lhs.celsius == rhs.celsius
   }
 
   public static func < (lhs: Temperature, rhs: Temperature) -> Bool {
-    return lhs.celsius < rhs.celsius
+    lhs.celsius < rhs.celsius
   }
 }
 

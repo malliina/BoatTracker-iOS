@@ -43,11 +43,7 @@ extension MapViewModel: VesselDelegate {
 class MapViewModel: MapViewModelLike {
   let log = LoggerFactory.shared.vc(MapViewModel.self)
 
-  private var backend: Backend { Backend.shared }
   private var socket: BoatSocket { backend.socket }
-  private var http: BoatHttpClient { backend.http }
-  var settings: UserSettings { UserSettings.shared }
-  private var prefs: BoatPrefs { BoatPrefs.shared }
   private var clientConf: ClientConf? { settings.conf }
 
   @Published var latestToken: UserToken? = nil

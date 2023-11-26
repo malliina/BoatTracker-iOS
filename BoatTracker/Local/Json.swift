@@ -19,7 +19,7 @@ class Json {
   }
 
   func parse<T: Decodable>(_ t: T.Type, data: Data) throws -> T {
-    return try decoder.decode(t, from: data)
+    try decoder.decode(t, from: data)
   }
 
   func read<T: Decodable>(_ t: T.Type, dict: [String: Any]) throws -> T {
