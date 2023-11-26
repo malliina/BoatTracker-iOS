@@ -40,11 +40,25 @@ class BoatRenderer {
   }
   
   @Binding var mapMode: MapMode
+  
+  @Published var latestBatch: [CoordBody] = []
 
   init(mapView: MapView, style: Style, mapMode: Binding<MapMode>) {
     self.mapView = mapView
     self.style = style
     self._mapMode = mapMode
+    Task {
+      for await _ in $latestBatch.debounce(for: .seconds(1), scheduler: RunLoop.main).values {
+        let edgePadding = UIEdgeInsets(top: 30, left: 20, bottom: 30, right: 20)
+        let allCoords = history.values.flatMap { trail in trail.map { point in point.coord } }
+        if allCoords.count > 2 {
+          log.info("Fitting camera to \(allCoords.count) coords.")
+          let camera = await mapView.mapboxMap.camera(
+            for: allCoords, padding: edgePadding, bearing: nil, pitch: nil)
+          await mapView.camera.fly(to: camera, duration: nil, completion: nil)
+        }
+      }
+    }
   }
 
   func layers() -> Set<String> {
@@ -83,6 +97,15 @@ class BoatRenderer {
     }
   }
 
+  /// Returns true if the input contains a coord less than 10 seconds old, false otherwise
+  private func isRecent(coords: [CoordBody]) -> Bool {
+    let mostRecentTime = coords.map { body in body.time.millis / 1000 }.max()
+    guard let mostRecentTime = mostRecentTime else { return false }
+    let ageSeconds = Date.now.timeIntervalSince1970 - Double(mostRecentTime)
+    log.debug("Age of \(coords.count) coords is \(ageSeconds) seconds.")
+    return ageSeconds < 10
+  }
+  
   func addCoords(event: CoordsData) throws {
     let from = event.from
     let track = from.trackName
@@ -92,7 +115,7 @@ class BoatRenderer {
     // Updates boat trail
     let previousTrail = history[track]
     let newTrail = (previousTrail ?? []) + coords
-    let isUpdate = previousTrail != nil && !coords.isEmpty
+//    let isUpdate = previousTrail != nil && !coords.isEmpty
     history.updateValue(newTrail, forKey: track)
     let polyline: FeatureCollection = speedFeatures(coords: newTrail, from: from)
     var trail: GeoJSONSource = try trails[ids] ?? initEmptyLayers(track: from, to: style, ids: ids)
@@ -131,15 +154,10 @@ class BoatRenderer {
     // Updates map position
     switch mapMode {
     case .fit:
-      if coords.count > 1 {
-        let edgePadding = UIEdgeInsets(top: 30, left: 20, bottom: 30, right: 20)
-        let allCoords = history.values.flatMap { trail in trail.map { point in point.coord } }
-        let camera = mapView.mapboxMap.camera(
-          for: allCoords, padding: edgePadding, bearing: nil, pitch: nil)
-        mapView.camera.fly(to: camera, duration: nil, completion: nil)
-        if isUpdate {
-          mapMode = .follow
-        }
+      let shouldFollow = isRecent(coords: coords)
+      if shouldFollow && mapMode != .follow {
+        log.info("Got realtime update, following...")
+        mapMode = .follow
       }
     case .follow:
       guard let lastCoord = coords.last else { return }
