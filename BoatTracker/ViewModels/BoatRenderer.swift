@@ -70,9 +70,17 @@ class BoatRenderer {
   }
 
   private func flyToLatest() {
-    guard let last = history.first?.value.last else { return }
-    let options = CameraOptions(center: last.coord)
+    guard let latest = latestCoord() else { return }
+    let options = CameraOptions(center: latest.coord)
     mapView.camera?.fly(to: options)
+  }
+  
+  private func latestCoord() -> CoordBody? {
+    if let latestTrack = latestTrack, let latest = history[latestTrack]?.last {
+      return latest
+    } else {
+      return history.first?.value.last
+    }
   }
 
   func addCoords(event: CoordsData) throws {
@@ -124,7 +132,7 @@ class BoatRenderer {
     switch mapMode {
     case .fit:
       if coords.count > 1 {
-        let edgePadding = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
+        let edgePadding = UIEdgeInsets(top: 30, left: 20, bottom: 30, right: 20)
         let allCoords = newTrail.map { $0.coord }
         let camera = mapView.mapboxMap.camera(
           for: allCoords, padding: edgePadding, bearing: nil, pitch: nil)
@@ -139,10 +147,10 @@ class BoatRenderer {
         let initialFollowPitch: CGFloat = 60
         let pitch = hasBeenFollowing ? mapView.cameraState.pitch : initialFollowPitch
         hasBeenFollowing = true
-        let camera = CameraOptions(
+        let options = CameraOptions(
           center: lastCoord.coord, padding: .zero, zoom: mapView.cameraState.zoom, bearing: bearing,
           pitch: pitch)
-        mapView.camera.fly(to: camera, duration: 0.8, completion: nil)
+        mapView.camera.fly(to: options, duration: 0.8, completion: nil)
       } else {
         let camera = CameraOptions(center: lastCoord.coord, zoom: mapView.cameraState.zoom)
         mapView.camera.fly(to: camera, duration: nil, completion: nil)
