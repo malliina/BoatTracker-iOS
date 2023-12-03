@@ -14,7 +14,9 @@ protocol MapViewModelLike: ObservableObject {
   var mapMode: MapMode { get set }
   var styleUri: StyleURI? { get set }
   var activeTrack: ActiveTrack { get }
+  var locationState: LocationState { get }
   func toggleFollow()
+  func toggleLocation()
 }
 
 extension MapViewModel: BoatSocketDelegate {
@@ -64,6 +66,9 @@ class MapViewModel: MapViewModelLike {
   var commands: Published<MapCommand?>.Publisher { $command }
   @Published var welcomeInfo: WelcomeInfo? = nil
   @Published var activeTrack = ActiveTrack()
+  @Published var locationState: LocationState = LocationState.idle
+  
+  let locations = BoatLocationManager.shared
   
   func prepare() async {
     Task {
@@ -91,6 +96,11 @@ class MapViewModel: MapViewModelLike {
         await update(isConnected: isConnected)
       }
     }
+    Task {
+      for await tracking in locations.$isTracking.values {
+        await update(isTracking: tracking)
+      }
+    }
     do {
       let conf = try await http.conf()
       settings.conf = conf
@@ -105,6 +115,11 @@ class MapViewModel: MapViewModelLike {
   @MainActor
   private func update(isConnected: Bool) {
     isFollowButtonHidden = !isConnected
+  }
+  
+  @MainActor
+  private func update(isTracking: Bool) {
+    locationState = isTracking ? .tracking : .notTracking
   }
 
   @MainActor
@@ -157,6 +172,15 @@ class MapViewModel: MapViewModelLike {
   @MainActor func toggleFollow() {
     command = .toggleFollow
   }
+  
+  @MainActor func toggleLocation() {
+    log.info("Toggling location...")
+    if locations.isTracking {
+      locations.stopTracking()
+    } else {
+      locations.startOrRequestAuthorization()
+    }
+  }
 }
 
 class PreviewMapViewModel: MapViewModelLike {
@@ -174,6 +198,8 @@ class PreviewMapViewModel: MapViewModelLike {
   var isFollowButtonHidden: Bool = false
   var styleUri: StyleURI? = nil
   var activeTrack: ActiveTrack = ActiveTrack()
+  var locationState: LocationState = LocationState.notTracking
   func toggleFollow() {}
+  func toggleLocation() {}
   func onTrack(_ track: TrackName) {}
 }

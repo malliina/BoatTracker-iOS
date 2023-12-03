@@ -30,6 +30,7 @@ struct BoatApp: App {
   @StateObject private var chartVm = ChartVM()
   @StateObject private var languageVm = LanguageVM()
   @StateObject private var tokensVm = BoatTokensVM()
+  let locations = BoatLocationManager()
 
   var body: some Scene {
     WindowGroup {

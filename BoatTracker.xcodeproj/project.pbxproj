@@ -77,6 +77,7 @@
 		B01251A72A4582C600A267C9 /* conf.json in Resources */ = {isa = PBXBuildFile; fileRef = B01251A62A4582C600A267C9 /* conf.json */; };
 		B01EE5982B13466500BBB8DA /* views.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01EE5972B13466500BBB8DA /* views.swift */; };
 		B02A812E2922C46900848949 /* LanguageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02A812D2922C46900848949 /* LanguageView.swift */; };
+		B02EBB0A2B1CFD5000995000 /* BoatLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02EBB092B1CFD5000995000 /* BoatLocationManager.swift */; };
 		B02EC50C2909AE2700D21793 /* MapViewRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02EC50B2909AE2700D21793 /* MapViewRepresentable.swift */; };
 		B02EC50E2909B41A00D21793 /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02EC50D2909B41A00D21793 /* MapViewModel.swift */; };
 		B03383B32928E3D800974FFE /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B03383B22928E3D800974FFE /* StatsView.swift */; };
@@ -236,6 +237,7 @@
 		B01251A62A4582C600A267C9 /* conf.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = conf.json; path = BoatTracker/conf.json; sourceTree = "<group>"; };
 		B01EE5972B13466500BBB8DA /* views.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = views.swift; sourceTree = "<group>"; };
 		B02A812D2922C46900848949 /* LanguageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageView.swift; sourceTree = "<group>"; };
+		B02EBB092B1CFD5000995000 /* BoatLocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoatLocationManager.swift; sourceTree = "<group>"; };
 		B02EC50B2909AE2700D21793 /* MapViewRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewRepresentable.swift; sourceTree = "<group>"; };
 		B02EC50D2909B41A00D21793 /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
 		B03383B22928E3D800974FFE /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
@@ -460,15 +462,17 @@
 		61B07C5E20F21DC300D8B7E0 /* BoatTracker */ = {
 			isa = PBXGroup;
 			children = (
-				61B07C5F20F21DC300D8B7E0 /* BoatApp.swift */,
 				61B07C6620F21DC400D8B7E0 /* Assets.xcassets */,
 				619679EC20F89F6300432672 /* Auth */,
 				61DE7F3D20F29F5800C95B3F /* Backend */,
+				61B07C5F20F21DC300D8B7E0 /* BoatApp.swift */,
 				613669BF217124560043494A /* BoatTracker.entitlements */,
+				1A6A633812206E4A035E56A6 /* Credentials.plist */,
 				610EE3D821724C7C0040FBC6 /* FontAwesome */,
 				61B07C6B20F21DC400D8B7E0 /* Info.plist */,
 				61B07C6820F21DC400D8B7E0 /* LaunchScreen.storyboard */,
 				612F46AA20F5276C001A3003 /* Local */,
+				B02EBB082B1CFD4200995000 /* Location */,
 				619679E920F78B4800432672 /* Maps */,
 				612F46B120F64182001A3003 /* Measure */,
 				6199E0EA20F24DAE00A4009A /* Network */,
@@ -477,7 +481,6 @@
 				6199E0ED20F24EB800A4009A /* Util */,
 				6199E0E620F2319700A4009A /* ViewModels */,
 				6199E0E720F2324400A4009A /* Views */,
-				1A6A633812206E4A035E56A6 /* Credentials.plist */,
 			);
 			path = BoatTracker;
 			sourceTree = "<group>";
@@ -605,6 +608,14 @@
 			path = "en-US";
 			sourceTree = "<group>";
 		};
+		B02EBB082B1CFD4200995000 /* Location */ = {
+			isa = PBXGroup;
+			children = (
+				B02EBB092B1CFD5000995000 /* BoatLocationManager.swift */,
+			);
+			path = Location;
+			sourceTree = "<group>";
+		};
 		B05A70882AF6498300D0BAF1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -705,10 +716,10 @@
 			);
 			mainGroup = 61B07C5320F21DC300D8B7E0;
 			packageReferences = (
-				7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple.git" */,
-				7D175C4827BD85300050E29B /* XCRemoteSwiftPackageReference "mapbox-maps-ios.git" */,
+				7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */,
+				7D175C4827BD85300050E29B /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */,
 				7D175C4B27BD85AE0050E29B /* XCRemoteSwiftPackageReference "microsoft-authentication-library-for-objc" */,
-				7D175C4E27BD87110050E29B /* XCRemoteSwiftPackageReference "Charts.git" */,
+				7D175C4E27BD87110050E29B /* XCRemoteSwiftPackageReference "Charts" */,
 				7D175C5127BD876F0050E29B /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 			);
 			productRefGroup = 61B07C5D20F21DC300D8B7E0 /* Products */;
@@ -771,6 +782,7 @@
 				B0485D60292414AE005A1FC5 /* BoatTokensView.swift in Sources */,
 				61999FFD22A3286F003BD037 /* seaModels.swift in Sources */,
 				B0C5981A291ED81E00439237 /* authViews.swift in Sources */,
+				B02EBB0A2B1CFD5000995000 /* BoatLocationManager.swift in Sources */,
 				619679F220FB39CF00432672 /* MapEvents.swift in Sources */,
 				B0C598202920EF8300439237 /* ProfileView.swift in Sources */,
 				B01EE5982B13466500BBB8DA /* views.swift in Sources */,
@@ -1119,7 +1131,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple.git" */ = {
+		7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/microsoft/appcenter-sdk-apple.git";
 			requirement = {
@@ -1127,7 +1139,7 @@
 				version = 5.0.4;
 			};
 		};
-		7D175C4827BD85300050E29B /* XCRemoteSwiftPackageReference "mapbox-maps-ios.git" */ = {
+		7D175C4827BD85300050E29B /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/mapbox/mapbox-maps-ios.git";
 			requirement = {
@@ -1143,7 +1155,7 @@
 				version = 1.2.18;
 			};
 		};
-		7D175C4E27BD87110050E29B /* XCRemoteSwiftPackageReference "Charts.git" */ = {
+		7D175C4E27BD87110050E29B /* XCRemoteSwiftPackageReference "Charts" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/danielgindi/Charts.git";
 			requirement = {
@@ -1164,17 +1176,17 @@
 /* Begin XCSwiftPackageProductDependency section */
 		7D175C4427BD84990050E29B /* AppCenterAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple.git" */;
+			package = 7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */;
 			productName = AppCenterAnalytics;
 		};
 		7D175C4627BD84990050E29B /* AppCenterCrashes */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple.git" */;
+			package = 7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */;
 			productName = AppCenterCrashes;
 		};
 		7D175C4927BD85300050E29B /* MapboxMaps */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 7D175C4827BD85300050E29B /* XCRemoteSwiftPackageReference "mapbox-maps-ios.git" */;
+			package = 7D175C4827BD85300050E29B /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */;
 			productName = MapboxMaps;
 		};
 		7D175C4C27BD85AE0050E29B /* MSAL */ = {
@@ -1189,7 +1201,7 @@
 		};
 		B05A70892AF6498300D0BAF1 /* DGCharts */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 7D175C4E27BD87110050E29B /* XCRemoteSwiftPackageReference "Charts.git" */;
+			package = 7D175C4E27BD87110050E29B /* XCRemoteSwiftPackageReference "Charts" */;
 			productName = DGCharts;
 		};
 /* End XCSwiftPackageProductDependency section */

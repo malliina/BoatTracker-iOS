@@ -51,6 +51,11 @@ struct MainMapView<T>: View where T: MapViewModelLike {
           .offset(x: 16, y: 60)
           .opacity(viewModel.mapMode == .follow ? 0.3 : 0.6)
         }
+        MapButtonView(imageResource: viewModel.locationState == .tracking ? "CircleStop" : "RecordVinyl") {
+          viewModel.toggleLocation()
+        }
+        .offset(x: 16, y: 104)
+        .opacity(0.6)
       }
     }
     .sheet(item: $welcomeInfo) { info in

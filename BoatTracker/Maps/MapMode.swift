@@ -20,3 +20,7 @@ enum VerticalPlacement {
   case top
   case bottom
 }
+
+enum LocationState {
+  case idle, tracking, notTracking
+}
