@@ -5,24 +5,40 @@ protocol ProfileProtocol: ObservableObject {
   var summary: TrackRef? { get }
   func versionText(lang: Lang) -> String?
   func loadTracks(latest: TrackName?) async
+  func disconnect()
   func signOut(from: UIViewController) async
   func deleteMe(from: UIViewController) async -> Bool
 }
 
-class ProfileVM: ProfileProtocol {
+class ProfileVM: ProfileProtocol, BoatSocketDelegate {
   let log = LoggerFactory.shared.vc(ProfileVM.self)
 
   @Published var state: ViewState = .idle
   @Published var tracks: [TrackRef] = []
   @Published var current: TrackName? = nil
 
-  var summary: TrackRef? {
+  var summary: TrackRef? = nil
+  
+  private var summaryFromList: TrackRef? {
     tracks.first { ref in
       ref.trackName == current
     }
   }
 
-  private var socket: BoatSocket { Backend.shared.socket }
+  private var socket: BoatSocket? = nil
+    
+  func connect(track: TrackName) {
+    socket = Backend.shared.openStandalone(track: track, delegate: self)
+  }
+  
+  func disconnect() {
+    socket?.close()
+    socket = nil
+  }
+  
+  func onCoords(event: CoordsData) async {
+    await update(ref: event.from)
+  }
 
   func versionText(lang: Lang) -> String? {
     if let bundleMeta = Bundle.main.infoDictionary,
@@ -41,6 +57,9 @@ class ProfileVM: ProfileProtocol {
       let ts = try await http.tracks()
       log.info("Got \(ts.count) tracks.")
       await update(ts: ts, trackName: latest)
+      if let latest = latest {
+        connect(track: latest)
+      }
     } catch {
       log.error("Unable to load tracks. \(error.describe)")
       await update(viewState: .failed)
@@ -65,6 +84,10 @@ class ProfileVM: ProfileProtocol {
 
   }
 
+  @MainActor private func update(ref: TrackRef) {
+    summary = ref
+  }
+  
   @MainActor private func update(viewState: ViewState) {
     state = viewState
   }
@@ -73,6 +96,9 @@ class ProfileVM: ProfileProtocol {
     tracks = ts
     current = trackName
     state = ts.isEmpty ? .empty : .content
+    summary = ts.first { ref in
+      ref.trackName == trackName
+    }
   }
 
   @MainActor private func update(err: Error) {

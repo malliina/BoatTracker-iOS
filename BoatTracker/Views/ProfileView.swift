@@ -149,6 +149,9 @@ struct ProfileView<T>: View where T: ProfileProtocol {
     .task {
       await vm.loadTracks(latest: info.current)
     }
+    .onDisappear {
+      vm.disconnect()
+    }
   }
 
   func BoatSection<Content: View>(@ViewBuilder content: () -> Content) -> some View {
@@ -174,6 +177,9 @@ struct ProfilePreviews: BoatPreviewProvider, PreviewProvider {
     func loadTracks(latest: TrackName?) async {
     }
 
+    func disconnect() {
+    }
+    
     func signOut(from: UIViewController) async {
     }
 
