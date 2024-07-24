@@ -58,7 +58,6 @@ struct BoatApp: App {
             await Auth.shared.signInSilentlyNow()
           }
         }
-        // log.info("Active phase.")
         viewModel.activeTrack.clearIfOld()
       }
     }
