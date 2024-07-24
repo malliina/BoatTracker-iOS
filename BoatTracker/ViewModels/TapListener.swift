@@ -68,13 +68,13 @@ class TapListener {
     let features = (try? await queryFeatures(at: point, layerIds: Array(marksLayers))) ?? []
     guard !features.isEmpty else { return nil }
     //        log.info("Tapped \(features.count) mark features.")
-    guard let coordinate = self.markCoordinate(features.first) else {
+    guard let coordinate = self.markCoordinate(features.first?.queriedFeature) else {
       log.warn("No coordinate for mark feature. Found \(features.count) features at \(point).")
       return nil
     }
     let point = await pointAt(coord: coordinate)
     return features.first.flatMap { feature in
-      let props = feature.feature.properties ?? [:]
+      let props = feature.queriedFeature.feature.properties ?? [:]
       let full: TapResult? = props.parseOpt(MarineSymbol.self).map { symbol in
         .mark(info: symbol, point: point, at: coordinate)
       }
@@ -179,7 +179,7 @@ class TapListener {
     do {
       let features = try await queryFeatures(at: point, layerIds: layers)
       return try features.first.flatMap { feature in
-        let props = feature.feature.properties ?? [:]
+        let props = feature.queriedFeature.feature.properties ?? [:]
         return try props.parse(t)
       }
     } catch {
@@ -189,7 +189,7 @@ class TapListener {
   }
 
   @MainActor
-  func queryFeatures(at: CGPoint, layerIds: [String]) async throws -> [QueriedFeature] {
+  func queryFeatures(at: CGPoint, layerIds: [String]) async throws -> [QueriedRenderedFeature] {
     try await withCheckedThrowingContinuation { cont in
       mapView.mapboxMap.queryRenderedFeatures(
         with: at, options: RenderedQueryOptions(layerIds: layerIds, filter: nil)

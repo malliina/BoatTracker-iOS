@@ -12,10 +12,10 @@ class AISRenderer {
   private var vesselIcons: [Mmsi: Layer] = [:]
 
   private let mapView: MapView
-  private let style: Style
+  private let style: MapboxMap
   private let conf: AisConf
 
-  init(mapView: MapView, style: Style, conf: AisConf) throws {
+  init(mapView: MapView, style: MapboxMap, conf: AisConf) throws {
     self.mapView = mapView
     self.style = style
     self.conf = conf
@@ -59,7 +59,7 @@ class AISRenderer {
       }
     }
 
-    try style.updateGeoJSONSource(
+    style.updateGeoJSONSource(
       withId: "ais-vessels",
       geoJSON: .featureCollection(FeatureCollection(features: updatedVessels)))
     vesselShape.data = .featureCollection(FeatureCollection(features: updatedVessels))
@@ -68,7 +68,7 @@ class AISRenderer {
       guard !tail.isEmpty else { return nil }
       return Feature(geometry: Geometry.lineString(.init(tail.map { $0.coord })))
     }
-    try style.updateGeoJSONSource(
+    style.updateGeoJSONSource(
       withId: "ais-trails", geoJSON: .featureCollection(FeatureCollection(features: updatedTrails)))
     vesselTrails.data = .featureCollection(FeatureCollection(features: updatedTrails))
     log.info("Updated vessel source which now has \(updatedVessels.count) locations.")
@@ -88,7 +88,7 @@ class AISRenderer {
     log.info("Clearing vessels")
     vesselHistory.removeAll()
     vesselIcons.removeAll()
-    vesselTrails.data = .empty
-    vesselShape.data = .empty
+    vesselTrails.data = nil
+    vesselShape.data = nil
   }
 }

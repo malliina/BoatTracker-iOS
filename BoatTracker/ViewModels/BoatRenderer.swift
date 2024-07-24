@@ -23,7 +23,7 @@ class BoatRenderer {
   let log = LoggerFactory.shared.vc(BoatRenderer.self)
   
   private let mapView: MapView
-  private let style: Style
+  private let style: MapboxMap
 
   // state of boat trails and icons
   private var trails: [TrackIds: GeoJSONSource] = [:]
@@ -43,7 +43,7 @@ class BoatRenderer {
   
   @Published var latestBatch: [CoordBody] = []
 
-  init(mapView: MapView, style: Style, mapMode: Binding<MapMode>) {
+  init(mapView: MapView, style: MapboxMap, mapMode: Binding<MapMode>) {
     self.mapView = mapView
     self.style = style
     self._mapMode = mapMode
@@ -121,8 +121,8 @@ class BoatRenderer {
     var trail: GeoJSONSource = try trails[ids] ?? initEmptyLayers(track: from, to: style, ids: ids)
     let coll = GeoJSONSourceData.featureCollection(polyline)
     trail.data = coll
-    try style.updateGeoJSONSource(withId: ids.trail, geoJSON: .featureCollection(polyline))
-    try style.updateGeoJSONSource(withId: ids.tappableTrail, geoJSON: .featureCollection(polyline))
+    style.updateGeoJSONSource(withId: ids.trail, geoJSON: .featureCollection(polyline))
+    style.updateGeoJSONSource(withId: ids.tappableTrail, geoJSON: .featureCollection(polyline))
     // Updates car/boat icon position
     guard let lastCoord = coords.last, let iconLayer = boatIcons[ids] else { return }
     let dict = try Json.shared.write(from: BoatPoint(from: from, coord: lastCoord))
@@ -130,7 +130,7 @@ class BoatRenderer {
     var feature = Feature(geometry: geo)
     feature.properties = dict
     if let iconSourceId = iconLayer.source {
-      try style.updateGeoJSONSource(withId: iconSourceId, geoJSON: .feature(feature))
+      style.updateGeoJSONSource(withId: iconSourceId, geoJSON: .feature(feature))
     }
     // Updates car/boat icon bearing
     let lastTwo = Array(newTrail.suffix(2)).map { $0.coord }
@@ -149,7 +149,7 @@ class BoatRenderer {
     trophyFeature.properties = try Json.shared.write(
       from: TrophyPoint(top: top, sourceType: from.sourceType))
     if let trophySourceId = trophyLayer.source {
-      try style.updateGeoJSONSource(withId: trophySourceId, geoJSON: .feature(trophyFeature))
+      style.updateGeoJSONSource(withId: trophySourceId, geoJSON: .feature(trophyFeature))
     }
     // Updates map position
     switch mapMode {
@@ -179,7 +179,7 @@ class BoatRenderer {
   }
 
   // https://www.mapbox.com/ios-sdk/examples/runtime-animate-line/
-  private func initEmptyLayers(track: TrackRef, to style: Style, ids: TrackIds) throws
+  private func initEmptyLayers(track: TrackRef, to style: MapboxMap, ids: TrackIds) throws
     -> GeoJSONSource
   {
     // Removes old trophies and boat icons of the same boat, as we only display one at a time

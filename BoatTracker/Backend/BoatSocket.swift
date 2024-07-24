@@ -112,6 +112,8 @@ class BoatSocket {
         if let vesselDelegate = vesselDelegate {
           await vesselDelegate.on(vessels: data.body.vessels)
         }
+      case "loading":
+        ()
       default:
         log.info("Unknown event: '\(event)'.")
       }

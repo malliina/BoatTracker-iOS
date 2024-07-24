@@ -2,7 +2,7 @@ import Foundation
 import MapboxMaps
 
 class RouteLayers {
-  static func empty(style: Style) -> RouteLayers {
+  static func empty(style: MapboxMap) -> RouteLayers {
     RouteLayers(
       start: LayerSource(
         iconId: "route-start", iconImageName: Layers.routeStartIcon, iconSize: 0.04),
@@ -19,12 +19,12 @@ class RouteLayers {
   let fairways: LayerSource<LineLayer>
   let tail: LayerSource<LineLayer>
   let finish: LayerSource<SymbolLayer>
-  let style: Style
+  let style: MapboxMap
 
   init(
     start: LayerSource<SymbolLayer>, initial: LayerSource<LineLayer>,
     fairways: LayerSource<LineLayer>, tail: LayerSource<LineLayer>,
-    finish: LayerSource<SymbolLayer>, style: Style
+    finish: LayerSource<SymbolLayer>, style: MapboxMap
   ) {
     self.start = start
     self.initial = initial
@@ -42,20 +42,20 @@ class RouteLayers {
   ) throws {
     let route = initial + fairways + tail
     if let first = route.first {
-      try style.updateGeoJSONSource(
+      style.updateGeoJSONSource(
         withId: start.sourceId, geoJSON: .feature(.init(geometry: .point(.init(first)))))
     }
     try update(self.initial, initial)
     try update(self.fairways, fairways)
     try update(self.tail, tail)
     if let last = route.last {
-      try style.updateGeoJSONSource(
+      style.updateGeoJSONSource(
         withId: finish.sourceId, geoJSON: .feature(.init(geometry: .point(.init(last)))))
     }
   }
 
   func update(_ src: LayerSource<LineLayer>, _ coords: [CLLocationCoordinate2D]) throws {
-    try style.updateGeoJSONSource(
+    style.updateGeoJSONSource(
       withId: src.sourceId, geoJSON: .feature(Feature(geometry: .multiPoint(.init(coords)))))
   }
 
@@ -72,7 +72,7 @@ class PathFinder: NSObject, UIGestureRecognizerDelegate {
   let log = LoggerFactory.shared.vc(PathFinder.self)
 
   private let mapView: MapView
-  private let style: Style
+  private let style: MapboxMap
 
   private let edgePadding = UIEdgeInsets(top: 40, left: 40, bottom: 40, right: 40)
 
@@ -81,7 +81,7 @@ class PathFinder: NSObject, UIGestureRecognizerDelegate {
 
   private var current: RouteLayers? = nil
 
-  init(mapView: MapView, style: Style) {
+  init(mapView: MapView, style: MapboxMap) {
     self.mapView = mapView
     self.style = style
     super.init()

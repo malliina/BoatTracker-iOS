@@ -26,12 +26,12 @@ class Layers {
   ]
   // static let trackColor = NSExpression(format: "mgl_step:from:stops:(\(Speed.key), %@, %@)", UIColor.green, stops)
 
-  static func boatIcon(id: String) -> SymbolLayer {
-    icon(id: id, iconImageName: boatIcon)
+  static func boatIcon(id: String, source: String) -> SymbolLayer {
+    icon(id: id, source: source, iconImageName: boatIcon)
   }
 
-  static func icon(id: String, iconImageName: String, iconSize: Double = 0.7) -> SymbolLayer {
-    var iconLayer = SymbolLayer(id: id)
+  static func icon(id: String, source: String, iconImageName: String, iconSize: Double = 0.7) -> SymbolLayer {
+    var iconLayer = SymbolLayer(id: id, source: source)
     iconLayer.iconImage = .constant(.name(iconImageName))
     iconLayer.iconSize = .constant(iconSize)
     iconLayer.iconHaloColor = .constant(StyleColor(.white))
@@ -39,16 +39,16 @@ class Layers {
     return iconLayer
   }
 
-  static func line(id: String, color: UIColor = .black, minimumZoomLevel: Double? = nil, opacity: Double = 1.0, width: Double = 1.0)
+  static func line(id: String, source: String, color: UIColor = .black, minimumZoomLevel: Double? = nil, opacity: Double = 1.0, width: Double = 1.0)
     -> LineLayer
   {
-    customLine(id: id, color: StyleColor(color), minimumZoomLevel: minimumZoomLevel, opacity: opacity, width: width)
+    customLine(id: id, source: source, color: StyleColor(color), minimumZoomLevel: minimumZoomLevel, opacity: opacity, width: width)
   }
 
   static func customLine(
-    id: String, color: StyleColor, minimumZoomLevel: Double? = nil, opacity: Double = 1.0, width: Double = 1.0
+    id: String, source: String, color: StyleColor, minimumZoomLevel: Double? = nil, opacity: Double = 1.0, width: Double = 1.0
   ) -> LineLayer {
-    var lineLayer = LineLayer(id: id)
+    var lineLayer = LineLayer(id: id, source: source)
     lineLayer.lineJoin = .constant(.round)
     lineLayer.lineCap = .constant(.round)
     lineLayer.lineColor = .constant(color)
@@ -66,17 +66,16 @@ class LayerSource<L: Layer> {
   let log = LoggerFactory.shared.vc(LayerSource.self)
   var source: GeoJSONSource
   var layer: L
-  var sourceId: String { layer.id }
+  var sourceId: String { source.id }
 
-  init(layer: L) {
-    self.source = GeoJSONSource()
-    self.source.data = .empty
+  init(layer: L, source: String) {
+    self.source = GeoJSONSource(id: source)
+    self.source.data = nil
     self.layer = layer
   }
 
-  func install(to style: Style, id: String) throws {
-    try style.addSource(source, id: id)
-    layer.source = id
+  func install(to style: MapboxMap, id: String) throws {
+    try style.addSource(source)
     try style.addLayer(layer)
     log.info("Added source \(id) and layer to style.")
   }
@@ -84,24 +83,24 @@ class LayerSource<L: Layer> {
 
 extension LayerSource where L == LineLayer {
   convenience init(lineId: String, lineColor: UIColor = .black, minimumZoomLevel: Double? = nil, opacity: Double = 1.0, width: Double = 1.0) {
-    let layer = Layers.line(id: lineId, color: lineColor, minimumZoomLevel: minimumZoomLevel, opacity: opacity, width: width)
-    self.init(layer: layer)
+    let layer = Layers.line(id: lineId, source: lineId, color: lineColor, minimumZoomLevel: minimumZoomLevel, opacity: opacity, width: width)
+    self.init(layer: layer, source: lineId)
   }
 
   convenience init(lineId: String, lineColor: StyleColor, minimumZoomLevel: Double? = nil) {
-    let layer = Layers.customLine(id: lineId, color: lineColor, minimumZoomLevel: minimumZoomLevel)
-    self.init(layer: layer)
+    let layer = Layers.customLine(id: lineId, source: lineId, color: lineColor, minimumZoomLevel: minimumZoomLevel)
+    self.init(layer: layer, source: lineId)
   }
 }
 
 extension LayerSource where L == SymbolLayer {
   convenience init(iconId: String, iconImageName: String, iconSize: Double) {
-    let layer = Layers.icon(id: iconId, iconImageName: iconImageName, iconSize: iconSize)
-    self.init(layer: layer)
+    let layer = Layers.icon(id: iconId, source: iconId, iconImageName: iconImageName, iconSize: iconSize)
+    self.init(layer: layer, source: iconId)
   }
 }
 
-extension Style {
+extension MapboxMap {
   func removeSourceAndLayer(id: String) {
     if self.layerExists(withId: id) {
       try? self.removeLayer(withId: id)

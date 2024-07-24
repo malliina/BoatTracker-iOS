@@ -19,15 +19,15 @@ struct MapViewRepresentable: UIViewRepresentable {
 
   func makeUIView(context: Context) -> MapView {
     let camera = CameraOptions(center: defaultCenter, zoom: 10)
-    let token = try! MapViewRepresentable.readMapboxToken()
-    let options = MapInitOptions(resourceOptions: token, cameraOptions: camera, styleURI: nil)
+    MapboxOptions.accessToken = try! MapViewRepresentable.readMapboxToken()
+    let options = MapInitOptions(cameraOptions: camera, styleURI: nil)
     let mapView = MapView(frame: viewFrame, mapInitOptions: options)
     mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
     return mapView
   }
 
   func updateUIView(_ uiView: MapView, context: Context) {
-    if let styleUri = styleUri, !uiView.mapboxMap.style.isLoaded, !context.coordinator.isStyleLoaded
+    if let styleUri = styleUri, !uiView.mapboxMap.isStyleLoaded, !context.coordinator.isStyleLoaded
     {
       context.coordinator.isStyleLoaded = true
       log.info("Loading style at \(styleUri.rawValue)...")
@@ -44,12 +44,13 @@ struct MapViewRepresentable: UIViewRepresentable {
   }
 
   @MainActor
-  private func loadStyle(map: MapView, uri: StyleURI) async throws -> Style {
+  private func loadStyle(map: MapView, uri: StyleURI) async throws -> MapboxMap {
     try await withUnsafeThrowingContinuation { cont in
-      map.mapboxMap.loadStyleURI(uri) { result in
-        switch result {
-        case .success(let style): cont.resume(returning: style)
-        case let .failure(error): cont.resume(throwing: error)
+      map.mapboxMap.loadStyle(uri) { err in
+        if let error = err {
+          cont.resume(throwing: error)
+        } else {
+          cont.resume(returning: map.mapboxMap)
         }
       }
     }
@@ -63,7 +64,7 @@ struct MapViewRepresentable: UIViewRepresentable {
     var isStyleLoaded = false
     let map: MapViewRepresentable
 
-    private var style: Style? = nil
+    private var style: MapboxMap? = nil
     private var boatRenderer: BoatRenderer? = nil
     private var pathFinder: PathFinder? = nil
     private var aisRenderer: AISRenderer? = nil
@@ -75,7 +76,7 @@ struct MapViewRepresentable: UIViewRepresentable {
       self.map = map
     }
 
-    func onStyleLoaded(_ mapView: MapView, didFinishLoading style: Style) async {
+    func onStyleLoaded(_ mapView: MapView, didFinishLoading style: MapboxMap) async {
       self.style = style
       let boats = BoatRenderer(mapView: mapView, style: style, mapMode: map._mapMode)
       boatRenderer = boats
@@ -131,7 +132,7 @@ struct MapViewRepresentable: UIViewRepresentable {
       }
     }
 
-    func initInteractive(mapView: MapView, style: Style, layers: MapboxLayers, boats: BoatRenderer)
+    func initInteractive(mapView: MapView, style: MapboxMap, layers: MapboxLayers, boats: BoatRenderer)
       async
     {
       if firstInit {
@@ -211,9 +212,8 @@ struct MapViewRepresentable: UIViewRepresentable {
     }
   }
 
-  static func readMapboxToken(key: String = "MapboxAccessToken") throws -> ResourceOptions {
-    let token = try Credentials.read(key: key)
+  static func readMapboxToken(key: String = "MapboxAccessToken") throws -> String {
     //        MapViewRepresentable.logger.info("Using token \(token)")
-    return ResourceOptions(accessToken: token)
+    return try Credentials.read(key: key)
   }
 }
