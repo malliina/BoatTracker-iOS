@@ -2,6 +2,11 @@ import CoreLocation
 import Foundation
 import SwiftUI
 
+enum DataState {
+  case idle
+  case loading
+}
+
 struct TracksView<T>: View where T: TracksProtocol {
   let lang: SummaryLang
   @ObservedObject var activeTrack: ActiveTrack
@@ -21,6 +26,15 @@ struct TracksView<T>: View where T: TracksProtocol {
           TrackView(lang: lang, track: track) {
             rename = track
           }
+        }
+      }
+      if vm.hasMore {
+        HStack {
+          Spacer()
+          ProgressView().task {
+            await vm.loadMore()
+          }
+          Spacer()
         }
       }
     }
@@ -50,14 +64,23 @@ class TracksViewModel: TracksProtocol {
 
   @Published var tracks: [TrackRef] = []
   @Published var error: Error?
-
+  @Published private(set) var hasMore = false
+  
+  let limit = 50
+  
   func load() async {
     do {
-      await update(ts: try await http.tracks())
+      let batch = try await http.tracks(limit: limit, offset: self.tracks.count)
+      await update(ts: self.tracks + batch, hasMore: batch.count == limit)
     } catch {
       log.error("Failed to load tracks. \(error.describe)")
       await update(error: error)
     }
+  }
+  
+  func loadMore() async {
+    log.info("Loading more tracks with limit \(limit) and offset \(self.tracks.count)...")
+    await load()
   }
 
   func changeTitle(track: TrackName, title: TrackTitle) async {
@@ -65,15 +88,16 @@ class TracksViewModel: TracksProtocol {
       let res = try await http.changeTrackTitle(name: track, title: title)
       log.info(
         "Updated title of \(res.track.trackName) to \(res.track.trackTitle?.title ?? "no title")")
-      await update(ts: try await http.tracks())
+      await update(ts: try await http.tracks(limit: self.tracks.count, offset: 0), hasMore: self.hasMore)
     } catch {
       log.error("Failed to rename track \(track) to \(title).")
       await update(error: error)
     }
   }
 
-  @MainActor private func update(ts: [TrackRef]) {
-    self.tracks = ts
+  @MainActor private func update(ts: [TrackRef], hasMore: Bool) {
+    tracks = ts
+    self.hasMore = hasMore
   }
 
   @MainActor private func update(error: Error) {
@@ -83,12 +107,15 @@ class TracksViewModel: TracksProtocol {
 
 protocol TracksProtocol: ObservableObject {
   var tracks: [TrackRef] { get }
+  var hasMore: Bool { get }
   func load() async
+  func loadMore() async
   func changeTitle(track: TrackName, title: TrackTitle) async
 }
 
 struct TracksPreviews: BoatPreviewProvider, PreviewProvider {
   class PreviewsVM: TracksProtocol {
+    var hasMore: Bool = true
     let timing = Timing(date: "Today", time: "Time", dateTime: "Date time", millis: 1)
     var tracks: [TrackRef] {
       [
@@ -99,6 +126,7 @@ struct TracksPreviews: BoatPreviewProvider, PreviewProvider {
       ]
     }
     func load() async {}
+    func loadMore() async {}
     func selectTrack(track: TrackName) {}
     func changeTitle(track: TrackName, title: TrackTitle) async {}
 

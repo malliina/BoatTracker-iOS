@@ -16,7 +16,7 @@ class ProfileVM: ProfileProtocol, BoatSocketDelegate {
   @Published var state: ViewState = .idle
   @Published var tracks: [TrackRef] = []
   @Published var current: TrackName? = nil
-
+  
   var summary: TrackRef? = nil
   
   private var summaryFromList: TrackRef? {
@@ -54,7 +54,7 @@ class ProfileVM: ProfileProtocol, BoatSocketDelegate {
   func loadTracks(latest: TrackName?) async {
     await update(viewState: .loading)
     do {
-      let ts = try await http.tracks()
+      let ts = try await http.tracks(limit: 10, offset: 0)
       log.info("Got \(ts.count) tracks.")
       await update(ts: ts, trackName: latest)
       if let latest = latest {
