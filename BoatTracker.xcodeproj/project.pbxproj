@@ -993,8 +993,7 @@
 				MARKETING_VERSION = 1.47.52;
 				PRODUCT_BUNDLE_IDENTIFIER = com.malliina.BoatTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = BoatProfileAug2023;
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "com.malliina.BoatTracker AppStore";
+				PROVISIONING_PROFILE_SPECIFIER = "com.malliina.BoatTracker AppStore";
 				SWIFT_OBJC_BRIDGING_HEADER = "BoatTracker/FontAwesome/BoatTracker-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -1024,8 +1023,7 @@
 				MARKETING_VERSION = 1.47.52;
 				PRODUCT_BUNDLE_IDENTIFIER = com.malliina.BoatTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = BoatProfileAug2023;
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "com.malliina.BoatTracker AppStore";
+				PROVISIONING_PROFILE_SPECIFIER = "com.malliina.BoatTracker AppStore";
 				SWIFT_OBJC_BRIDGING_HEADER = "BoatTracker/FontAwesome/BoatTracker-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
