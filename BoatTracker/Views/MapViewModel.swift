@@ -19,6 +19,7 @@ protocol MapViewModelLike: ObservableObject {
   var mapMode: MapMode { get set }
   var styleUri: StyleURI? { get set }
   var activeTrack: ActiveTrack { get }
+  // result from shortest path goes here
   var routeResult: RouteResult? { get set }
   
   func shortest(from: CLLocationCoordinate2D, to: CLLocationCoordinate2D)
