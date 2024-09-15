@@ -26,6 +26,11 @@ struct CoordDistance {
   var distance: LocationDistance { from.distance(to: to.coord) }
 }
 
+struct RouteState {
+  let start: CLLocationCoordinate2D?
+  let end: CLLocationCoordinate2D?
+}
+
 struct MainMapView<T>: View where T: MapViewModelLike {
   let log = LoggerFactory.shared.view(MainMapView.self)
 
@@ -41,6 +46,8 @@ struct MainMapView<T>: View where T: MapViewModelLike {
   @State var viewport: Viewport = .overview(geometry: Polygon(center: MapViewRepresentable.defaultCenter, radius: 10000, vertices: 30))
   @State var cameraFitted = false
   @State var hasBeenFollowing = false
+  @State var routeState: RouteState = RouteState(start: nil, end: nil)
+  
   var settings: UserSettings { viewModel.settings }
   
   let boatIconsId = "boat-icons"
@@ -171,6 +178,14 @@ struct MainMapView<T>: View where T: MapViewModelLike {
                       return true
                     }
                 }
+                if let route = viewModel.routeResult {
+                  let fairwayPath = route.route.links.map { $0.to }
+                  PolylineAnnotation(lineCoordinates: fairwayPath)
+                  PolylineAnnotationGroup {
+                    PolylineAnnotation(lineCoordinates: [route.from, fairwayPath.first ?? route.from])
+                    PolylineAnnotation(lineCoordinates: [fairwayPath.last ?? route.from, route.to])
+                  }.lineDasharray([2, 4])
+                }
               }
               .mapStyle(.init(uri: styleUri))
               .onLayersTapGesture(conf.layers.marks) { qf, ctx in
@@ -246,6 +261,18 @@ struct MainMapView<T>: View where T: MapViewModelLike {
                   viewModel.mapMode = .stay
                 }
               }))
+              .onMapLongPressGesture { ctx in
+                let coord = ctx.coordinate
+                if let _ = routeState.start, let end = routeState.end {
+                  routeState = RouteState(start: end, end: coord)
+                  viewModel.shortest(from: end, to: coord)
+                } else if let start = routeState.start {
+                  routeState = RouteState(start: start, end: coord)
+                  viewModel.shortest(from: start, to: coord)
+                } else {
+                  routeState = RouteState(start: coord, end: nil)
+                }
+              }
               .onReceive(viewModel.coordsPublisher.debounce(for: .seconds(1), scheduler: RunLoop.main).first()) { coords in
                 if !cameraFitted {
                   cameraFitted = true
@@ -261,7 +288,6 @@ struct MainMapView<T>: View where T: MapViewModelLike {
               }
               .onReceive(viewModel.coordsPublisher) { coords in
                 if let coords = coords, let latest = coords.coords.last, viewModel.mapMode == .follow {
-                  let opts = viewport.overview
                   let defaultPitch: CGFloat = 60
                   let pitch = hasBeenFollowing ? viewport.camera?.pitch ?? viewport.overview?.pitch ?? defaultPitch : defaultPitch
                   hasBeenFollowing = true

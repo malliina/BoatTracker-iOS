@@ -19,6 +19,9 @@ protocol MapViewModelLike: ObservableObject {
   var mapMode: MapMode { get set }
   var styleUri: StyleURI? { get set }
   var activeTrack: ActiveTrack { get }
+  var routeResult: RouteResult? { get set }
+  
+  func shortest(from: CLLocationCoordinate2D, to: CLLocationCoordinate2D)
   func toggleFollow()
 }
 
@@ -96,6 +99,7 @@ class MapViewModel: MapViewModelLike {
       stp.from.boatName
     }
   }
+  @Published var routeResult: RouteResult? = nil
   
   func prepare() async {
     Task {
@@ -132,6 +136,23 @@ class MapViewModel: MapViewModelLike {
     } catch {
       log.error("Failed to load conf and style: '\(error.describe)'.")
     }
+  }
+  
+  func shortest(from: CLLocationCoordinate2D, to: CLLocationCoordinate2D) {
+    log.info("Loading shortest route from \(from) to \(to)...")
+    Task {
+      do {
+        let route = try await Backend.shared.http.shortestRoute(from: from, to: to)
+        log.info("Loaded shortest route from \(from) to \(to).")
+        await update(route: route)
+      } catch {
+        log.error("Failed to load shortest route from \(from) to \(to). \(error.describe)")
+      }
+    }
+  }
+  
+  @MainActor private func update(route: RouteResult) {
+    routeResult = route
   }
   
   @MainActor
@@ -214,6 +235,8 @@ class PreviewMapViewModel: MapViewModelLike {
   var isFollowButtonHidden: Bool = false
   var styleUri: StyleURI? = nil
   var activeTrack: ActiveTrack = ActiveTrack()
+  var routeResult: RouteResult? = nil
+  func shortest(from: CLLocationCoordinate2D, to: CLLocationCoordinate2D) {}
   func toggleFollow() {}
   func onTrack(_ track: TrackName) {}
 }
