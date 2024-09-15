@@ -73,6 +73,7 @@
 		7D175C5327BD876F0050E29B /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 7D175C5227BD876F0050E29B /* GoogleSignIn */; };
 		7D2CC0F3264D6EBD0091E05C /* MicrosoftAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D2CC0F2264D6EBD0091E05C /* MicrosoftAuth.swift */; };
 		7D528E6227B9682F00C55F06 /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D528E6127B9682F00C55F06 /* WebSocket.swift */; };
+		7DAE8A812C8C392600FB797E /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 7DAE8A802C8C392600FB797E /* Algorithms */; };
 		7DDBA9A727773D3900108B24 /* AppleAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DDBA9A627773D3900108B24 /* AppleAuth.swift */; };
 		B01251A72A4582C600A267C9 /* conf.json in Resources */ = {isa = PBXBuildFile; fileRef = B01251A62A4582C600A267C9 /* conf.json */; };
 		B01EE5982B13466500BBB8DA /* views.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01EE5972B13466500BBB8DA /* views.swift */; };
@@ -266,6 +267,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7D175C4A27BD85300050E29B /* MapboxMaps in Frameworks */,
+				7DAE8A812C8C392600FB797E /* Algorithms in Frameworks */,
 				7D175C4527BD84990050E29B /* AppCenterAnalytics in Frameworks */,
 				7D175C4727BD84990050E29B /* AppCenterCrashes in Frameworks */,
 				7D175C4D27BD85AE0050E29B /* MSAL in Frameworks */,
@@ -643,6 +645,7 @@
 				7D175C4C27BD85AE0050E29B /* MSAL */,
 				7D175C5227BD876F0050E29B /* GoogleSignIn */,
 				B05A70892AF6498300D0BAF1 /* DGCharts */,
+				7DAE8A802C8C392600FB797E /* Algorithms */,
 			);
 			productName = BoatTracker;
 			productReference = 61B07C5C20F21DC300D8B7E0 /* BoatTracker.app */;
@@ -710,6 +713,7 @@
 				7D175C4B27BD85AE0050E29B /* XCRemoteSwiftPackageReference "microsoft-authentication-library-for-objc" */,
 				7D175C4E27BD87110050E29B /* XCRemoteSwiftPackageReference "Charts" */,
 				7D175C5127BD876F0050E29B /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+				7DAE8A7F2C8C392600FB797E /* XCRemoteSwiftPackageReference "swift-algorithms" */,
 			);
 			productRefGroup = 61B07C5D20F21DC300D8B7E0 /* Products */;
 			projectDirPath = "";
@@ -1159,6 +1163,14 @@
 				version = 7.1.0;
 			};
 		};
+		7DAE8A7F2C8C392600FB797E /* XCRemoteSwiftPackageReference "swift-algorithms" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-algorithms.git";
+			requirement = {
+				kind = exactVersion;
+				version = 1.2.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1186,6 +1198,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 7D175C5127BD876F0050E29B /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
 			productName = GoogleSignIn;
+		};
+		7DAE8A802C8C392600FB797E /* Algorithms */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7DAE8A7F2C8C392600FB797E /* XCRemoteSwiftPackageReference "swift-algorithms" */;
+			productName = Algorithms;
 		};
 		B05A70892AF6498300D0BAF1 /* DGCharts */ = {
 			isa = XCSwiftPackageProductDependency;

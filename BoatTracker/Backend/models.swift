@@ -662,9 +662,11 @@ struct CoordsBody: Codable {
   let body: CoordsData
 }
 
-struct CoordsData: Codable {
+struct CoordsData: Codable, Identifiable {
   let coords: [CoordBody]
   let from: TrackRef
+  
+  var id: String { from.id }
 }
 
 protocol MeasuredCoord {
@@ -689,6 +691,15 @@ struct TrackPoint: Codable {
   let end: CoordBody
   var boatName: BoatName { from.boatName }
   var avgSpeed: Speed { ([start.speed.knots, end.speed.knots].reduce(0, +) / 2.0).knots }
+  var isBoat: Bool { from.sourceType == .boat }
+}
+
+struct SingleTrackPoint: Codable {
+  let from: TrackRef
+  let point: CoordBody
+  let bearing: CLLocationDirection?
+  var boatName: BoatName { from.boatName }
+  var avgSpeed: Speed { point.speed }
   var isBoat: Bool { from.sourceType == .boat }
 }
 

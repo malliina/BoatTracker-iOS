@@ -2,31 +2,44 @@ import Foundation
 import SwiftUI
 
 struct TrophyInfo {
+  let name: BoatName
   let speed: Speed
   let dateTime: String
   let outsideTemp: Temperature?
   let altitude: Distance?
   let isBoat: Bool
+  
+  static func fromPoint(trophyPoint: TrophyPoint) -> TrophyInfo {
+    return TrophyInfo(
+      name: trophyPoint.from.boatName,
+      speed: trophyPoint.top.speed, dateTime: trophyPoint.top.time.dateTime,
+      outsideTemp: trophyPoint.top.outsideTemp, altitude: trophyPoint.top.altitude,
+      isBoat: trophyPoint.isBoat)
+  }
 }
 
 struct TrophyView: View {
   let info: TrophyInfo
-  let lang: TrackLang
+  let lang: Lang
 
   func tempItem() -> InfoItem? {
     guard let temp = info.outsideTemp else { return nil }
-    return InfoItem(lang.temperature, temp.description)
+    return InfoItem(lang.track.temperature, temp.description)
   }
 
   func altitudeItem() -> InfoItem? {
     guard let altitude = info.altitude else { return nil }
-    return InfoItem(lang.env.altitude, altitude.formatMeters)
+    return InfoItem(lang.track.env.altitude, altitude.formatMeters)
+  }
+  
+  func boatNameItem() -> InfoItem {
+    return InfoItem(lang.settings.boat, info.name.name)
   }
 
   var body: some View {
     InfoView(
       title: info.speed.formatted(isBoat: info.isBoat),
-      items: tempItem().toList + altitudeItem().toList, footer: info.dateTime)
+      items: [boatNameItem()] + tempItem().toList + altitudeItem().toList, footer: info.dateTime, leftColumnSize: .fixed(120))
   }
 }
 
@@ -100,7 +113,7 @@ struct LimitView: View {
   let limit: LimitArea
   let lang: Lang
 
-  let columns = [GridItem(.fixed(100)), GridItem(.flexible())]
+  let columns = [GridItem(.fixed(120)), GridItem(.flexible())]
 
   func items() -> [InfoItem] {
     [
@@ -229,6 +242,33 @@ struct TrailView: View {
   }
 }
 
+struct TrailPointView: View {
+  let info: SingleTrackPoint
+  let lang: Lang
+  var coord: CoordBody { info.point } // we use the start coord arbitrarily, close enough, could be end coord just as well
+  
+  func altitudeItem() -> InfoItem? {
+    guard let altitude = coord.altitude else { return nil }
+    return InfoItem(lang.track.env.altitude, altitude.formatMeters)
+  }
+  
+  func temperatureItem() -> InfoItem? {
+    guard let outsideTemp = coord.outsideTemp else { return nil }
+    return InfoItem(lang.track.temperature, outsideTemp.formatCelsius)
+  }
+  
+  func items() -> [InfoItem] {
+    [
+      InfoItem(lang.track.speed, info.avgSpeed.formatted(isBoat: info.isBoat))
+    ] + temperatureItem().toList + altitudeItem().toList
+  }
+  
+  var body: some View {
+    InfoView(title: info.boatName.name, items: items(), footer: info.point.time.dateTime, leftColumnSize: .fixed(100))
+  }
+}
+
+
 struct InfoItem {
   let key, value: String
 
@@ -256,7 +296,7 @@ struct InfoView: View {
     self.gridAlignment = gridAlignment
   }
 
-  var columns: [GridItem] { [GridItem(leftColumnSize), GridItem(.flexible())] }
+  var columns: [GridItem] { [GridItem(leftColumnSize), GridItem(.flexible(minimum: 140))] }
 
   var body: some View {
     VStack {
@@ -270,7 +310,7 @@ struct InfoView: View {
             /*@START_MENU_TOKEN@*/Text(item.key) /*@END_MENU_TOKEN@*/
               .font(.subheadline)
             Text(item.value)
-              .lineLimit(2)
+              .lineLimit(nil)
           }
         }
       } else {
@@ -281,5 +321,6 @@ struct InfoView: View {
           .font(.subheadline)
       }
     }
+    .padding(.all)
   }
 }

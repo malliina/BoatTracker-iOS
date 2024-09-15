@@ -2,19 +2,42 @@ import Foundation
 import MapboxMaps
 import UIKit
 
+class AISState {
+  static let shared = AISState()
+  private let maxTrailLength = 200
+  
+  private var vesselHistory: [Mmsi: [Vessel]] = [:]
+  
+  var history: [Mmsi: [Vessel]] { vesselHistory }
+  
+  func info(_ mmsi: Mmsi) -> Vessel? {
+    vesselHistory[mmsi]?.first
+  }
+  
+  func update(vessels: [Vessel]) {
+    vessels.forEach { v in
+      vesselHistory.updateValue(
+        ([v] + (vesselHistory[v.mmsi] ?? [])).take(maxTrailLength), forKey: v.mmsi)
+    }
+  }
+  
+  func clear() {
+    vesselHistory.removeAll()
+  }
+}
+
 class AISRenderer {
   let log = LoggerFactory.shared.vc(AISRenderer.self)
 
   private let maxTrailLength = 200
   private var vesselTrails: GeoJSONSource
   private var vesselShape: GeoJSONSource
-  private var vesselHistory: [Mmsi: [Vessel]] = [:]
-  private var vesselIcons: [Mmsi: Layer] = [:]
 
   private let mapView: MapView
   private let style: MapboxMap
   private let conf: AisConf
-
+  private let state = AISState.shared
+  
   init(mapView: MapView, style: MapboxMap, conf: AisConf) throws {
     self.mapView = mapView
     self.style = style
@@ -35,15 +58,12 @@ class AISRenderer {
   }
 
   func info(_ mmsi: Mmsi) -> Vessel? {
-    vesselHistory[mmsi]?.first
+    state.info(mmsi)
   }
 
   func update(vessels: [Vessel]) throws {
-    vessels.forEach { v in
-      vesselHistory.updateValue(
-        ([v] + (vesselHistory[v.mmsi] ?? [])).take(maxTrailLength), forKey: v.mmsi)
-    }
-    let updatedVessels: [Feature] = vesselHistory.values.compactMap { v in
+    state.update(vessels: vessels)
+    let updatedVessels: [Feature] = state.history.values.compactMap { v in
       guard let latest: Vessel = v.first else { return nil }
       let geo = Geometry.point(.init(latest.coord))
       var feature = Feature(geometry: geo)
@@ -63,7 +83,7 @@ class AISRenderer {
       withId: "ais-vessels",
       geoJSON: .featureCollection(FeatureCollection(features: updatedVessels)))
     vesselShape.data = .featureCollection(FeatureCollection(features: updatedVessels))
-    let updatedTrails: [Feature] = vesselHistory.values.compactMap { v in
+    let updatedTrails: [Feature] = state.history.values.compactMap { v in
       let tail = v.dropFirst()
       guard !tail.isEmpty else { return nil }
       return Feature(geometry: Geometry.lineString(.init(tail.map { $0.coord })))
@@ -86,8 +106,7 @@ class AISRenderer {
   /// (unless we have persistence, which we don't).
   func clear() {
     log.info("Clearing vessels")
-    vesselHistory.removeAll()
-    vesselIcons.removeAll()
+    state.clear()
     vesselTrails.data = nil
     vesselShape.data = nil
   }

@@ -14,11 +14,11 @@ struct MapViewRepresentable: UIViewRepresentable {
   let vessels: Published<[Vessel]>.Publisher
   let commands: Published<MapCommand?>.Publisher
 
-  let defaultCenter = CLLocationCoordinate2D(latitude: 60.14, longitude: 24.9)
+  static let defaultCenter = CLLocationCoordinate2D(latitude: 60.14, longitude: 24.9)
   let viewFrame: CGRect = CGRect(x: 0, y: 0, width: 64, height: 64)
 
   func makeUIView(context: Context) -> MapView {
-    let camera = CameraOptions(center: defaultCenter, zoom: 10)
+    let camera = CameraOptions(center: MapViewRepresentable.defaultCenter, zoom: 10)
     MapboxOptions.accessToken = try! MapViewRepresentable.readMapboxToken()
     let options = MapInitOptions(cameraOptions: camera, styleURI: nil)
     let mapView = MapView(frame: viewFrame, mapInitOptions: options)

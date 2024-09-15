@@ -17,6 +17,11 @@ class Json {
     let data = try JSONSerialization.data(withJSONObject: from.rawValue, options: .prettyPrinted)
     return try parse(t, data: data)
   }
+  
+  func parse<T: Decodable>(_ t: T.Type, from: JSONValue) throws -> T {
+    let data = try JSONSerialization.data(withJSONObject: from.rawValue, options: .prettyPrinted)
+    return try parse(t, data: data)
+  }
 
   func parse<T: Decodable>(_ t: T.Type, data: Data) throws -> T {
     try decoder.decode(t, from: data)

@@ -1,8 +1,13 @@
 import Combine
 import Foundation
 import MapboxMaps
+import Algorithms
 
 protocol MapViewModelLike: ObservableObject {
+  var vessels: [Vessel] { get }
+  var allVessels: [Vessel] { get }
+  var tracks: [CoordsData] { get }
+  var latestTrackPoints: [SingleTrackPoint] { get }
   var coordsPublisher: Published<CoordsData?>.Publisher { get }
   var latestTrack: TrackName? { get }
   var vesselsPublisher: Published<[Vessel]>.Publisher { get }
@@ -26,7 +31,17 @@ extension MapViewModel: BoatSocketDelegate {
 
   @MainActor private func update(coordsData: CoordsData) {
     coords = coordsData
-    // log.info("Got \(coordsData.coords.count) coords")
+    var modified = tracks
+    let idx = modified.indexOf { data in
+      data.from.trackName == coordsData.from.trackName
+    }
+    if let idx = idx {
+      modified[idx] = CoordsData(coords: modified[idx].coords + coordsData.coords, from: coordsData.from)
+    } else {
+      modified.append(coordsData)
+    }
+    tracks = modified
+    log.info("Got \(coordsData.coords.count) coords, tracks now has \(tracks.count) elements")
   }
 }
 
@@ -37,6 +52,9 @@ extension MapViewModel: VesselDelegate {
 
   @MainActor private func update(vessels: [Vessel]) {
     self.vessels = vessels
+    self.allVessels = (self.allVessels + vessels).uniqued { vessel in
+      vessel.mmsi
+    }
   }
 }
 
@@ -59,11 +77,25 @@ class MapViewModel: MapViewModelLike {
   }
   var coordsPublisher: Published<CoordsData?>.Publisher { $coords }
   @Published var vessels: [Vessel] = []
+  @Published var allVessels: [Vessel] = []
   var vesselsPublisher: Published<[Vessel]>.Publisher { $vessels }
   @Published var command: MapCommand? = nil
   var commands: Published<MapCommand?>.Publisher { $command }
   @Published var welcomeInfo: WelcomeInfo? = nil
   @Published var activeTrack = ActiveTrack()
+  
+  @Published var tracks: [CoordsData] = []
+  var latestTrackPoints: [SingleTrackPoint] { 
+    tracks.compactMap { cd in
+      if let last = cd.coords.last, let bearing = BoatRenderer.adjustedBearing(data: cd) {
+        SingleTrackPoint(from: cd.from, point: last, bearing: bearing)
+      } else {
+        nil
+      }
+    }.reversed().uniqued { stp in
+      stp.from.boatName
+    }
+  }
   
   func prepare() async {
     Task {
@@ -113,6 +145,9 @@ class MapViewModel: MapViewModelLike {
     latestToken = token
     socket.delegate = nil
     socket.close()
+    allVessels = []
+    tracks = []
+    coords = nil
     command = .clearAll
     socket.updateToken(token: token?.token)
     socket.delegate = self
@@ -145,6 +180,8 @@ class MapViewModel: MapViewModelLike {
     socket.delegate = nil
     socket.close()
     command = .clearAll
+    tracks = []
+    coords = nil
   }
 
   @MainActor private func update(style: StyleURI) {
@@ -163,6 +200,9 @@ class PreviewMapViewModel: MapViewModelLike {
   @Published var coords: CoordsData? = nil
   var latestTrack: TrackName? { nil }
   @Published var vessels: [Vessel] = []
+  var allVessels: [Vessel] = []
+  var tracks: [CoordsData] = []
+  var latestTrackPoints: [SingleTrackPoint] = []
   var coordsPublisher: Published<CoordsData?>.Publisher { $coords }
   var vesselsPublisher: Published<[Vessel]>.Publisher { $vessels }
   @Published var command: MapCommand? = nil

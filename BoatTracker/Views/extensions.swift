@@ -1,5 +1,58 @@
 import Foundation
 import SwiftUI
+import MapboxMaps
+
+extension Map {
+  func onLayersTapGesture(_ layerIds: [String], perform action: @escaping MapLayerGestureHandler) -> Self {
+    layerIds.foldLeft(self) { m, layerId in
+      m.onLayerTapGesture(layerId, perform: action)
+    }
+  }
+}
+
+extension GeometryProxy {
+  var realSize: CGSize {
+    return CGSize(width: size.width + safeAreaInsets.leading + safeAreaInsets.trailing, height: size.height + safeAreaInsets.top + safeAreaInsets.bottom)
+  }
+}
+
+extension MapboxMap {
+  @MainActor
+  func queryFeatures(at: CGPoint, layerIds: [String]) async throws -> [QueriedRenderedFeature] {
+    try await withCheckedThrowingContinuation { cont in
+      queryRenderedFeatures(
+        with: at, options: RenderedQueryOptions(layerIds: layerIds, filter: nil)
+      ) { result in
+        switch result {
+        case .success(let features):
+          cont.resume(returning: features)
+        case .failure(let error):
+//          self.log.warn("Failed to query rendered features. \(error)")
+          cont.resume(throwing: error)
+        }
+      }
+    }
+  }
+  
+  struct CameraInfo {
+    let bearing, pitch: CGFloat
+  }
+  
+  func queryVisibleFeatureProps<T: Decodable>(_ point: CGPoint, layers: [String], t: T.Type) async
+    -> T?
+  {
+    do {
+      let features = try await queryFeatures(at: point, layerIds: layers)
+      return try features.first.flatMap { feature in
+        let props = feature.queriedFeature.feature.properties ?? [:]
+        return try props.parse(t)
+      }
+    } catch {
+//      log.warn("Failed to parse props from layers \(layers.joined(separator: ", ")). \(error)")
+      return nil
+    }
+  }
+}
 
 extension ObservableObject {
   var backend: Backend { Backend.shared }

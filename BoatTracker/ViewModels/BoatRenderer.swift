@@ -4,9 +4,9 @@ import SwiftUI
 import UIKit
 
 struct TrophyPoint: Codable {
-  let top: CoordBody
-  let sourceType: SourceType
-  var isBoat: Bool { sourceType == .boat }
+  let from: TrackRef
+  var top: CoordBody { from.topPoint }
+  var isBoat: Bool { from.sourceType == .boat }
 }
 
 struct TrackIds: Hashable {
@@ -19,16 +19,31 @@ struct TrackIds: Hashable {
   var all: [String] { [trail, tappableTrail, icon, trophy] }
 }
 
+class TrackState {
+  static let shared = TrackState()
+  
+  private var history: [TrackName: [CoordBody]] = [:]
+  var tracks: [TrackName: [CoordBody]] { history }
+  
+  func update(track: TrackName, trail: [CoordBody]) {
+    history.updateValue(trail, forKey: track)
+  }
+  
+  func clear() {
+    history.removeAll()
+  }
+}
+
 class BoatRenderer {
   let log = LoggerFactory.shared.vc(BoatRenderer.self)
   
   private let mapView: MapView
   private let style: MapboxMap
-
+  private let state = TrackState.shared
   // state of boat trails and icons
   private var trails: [TrackIds: GeoJSONSource] = [:]
   // The history data is in the above trails also because it is difficult to read an MGLShapeSource. This is more suitable for our purposes.
-  private var history: [TrackName: [CoordBody]] = [:]
+  private var history: [TrackName: [CoordBody]] { state.tracks }
   private var boatIcons: [TrackIds: SymbolLayer] = [:]
   private var trophyIcons: [TrackIds: SymbolLayer] = [:]
   var latestTrack: TrackName? = nil
@@ -41,7 +56,7 @@ class BoatRenderer {
   
   @Binding var mapMode: MapMode
   
-  @Published var latestBatch: [CoordBody] = []
+  @Published private var latestBatch: [CoordBody] = []
 
   init(mapView: MapView, style: MapboxMap, mapMode: Binding<MapMode>) {
     self.mapView = mapView
@@ -106,6 +121,15 @@ class BoatRenderer {
     return ageSeconds < 10
   }
   
+  static func adjustedBearing(data: CoordsData) -> CLLocationDirection? {
+    let lastTwo = Array(data.coords.suffix(2)).map { $0.coord }
+    let bearing = lastTwo.count == 2 ? Geo.shared.bearing(from: lastTwo[0], to: lastTwo[1]) : nil
+    if let bearing = bearing {
+      return data.from.sourceType.isBoat ? bearing : (bearing + 90).truncatingRemainder(dividingBy: 360)
+    }
+    return nil
+  }
+  
   func addCoords(event: CoordsData) throws {
     let from = event.from
     let track = from.trackName
@@ -116,7 +140,7 @@ class BoatRenderer {
     let previousTrail = history[track]
     let newTrail = (previousTrail ?? []) + coords
 //    let isUpdate = previousTrail != nil && !coords.isEmpty
-    history.updateValue(newTrail, forKey: track)
+    state.update(track: track, trail: newTrail)
     let polyline: FeatureCollection = speedFeatures(coords: newTrail, from: from)
     var trail: GeoJSONSource = try trails[ids] ?? initEmptyLayers(track: from, to: style, ids: ids)
     let coll = GeoJSONSourceData.featureCollection(polyline)
@@ -132,14 +156,11 @@ class BoatRenderer {
     if let iconSourceId = iconLayer.source {
       style.updateGeoJSONSource(withId: iconSourceId, geoJSON: .feature(feature))
     }
+    let bearing = BoatRenderer.adjustedBearing(data: CoordsData(coords: newTrail, from: from))
     // Updates car/boat icon bearing
-    let lastTwo = Array(newTrail.suffix(2)).map { $0.coord }
-    let bearing = lastTwo.count == 2 ? Geo.shared.bearing(from: lastTwo[0], to: lastTwo[1]) : nil
     if let bearing = bearing {
-      let adjustedBearing =
-        from.sourceType.isBoat ? bearing : (bearing + 90).truncatingRemainder(dividingBy: 360)
       try style.updateLayer(withId: iconLayer.id, type: SymbolLayer.self) { layer in
-        layer.iconRotate = .constant(adjustedBearing)
+        layer.iconRotate = .constant(bearing)
       }
     }
     // Updates trophy
@@ -147,7 +168,7 @@ class BoatRenderer {
     guard let trophyLayer = trophyIcons[ids] else { return }
     var trophyFeature = Feature(geometry: .point(.init(top.coord)))
     trophyFeature.properties = try Json.shared.write(
-      from: TrophyPoint(top: top, sourceType: from.sourceType))
+      from: TrophyPoint(from: from))
     if let trophySourceId = trophyLayer.source {
       style.updateGeoJSONSource(withId: trophySourceId, geoJSON: .feature(trophyFeature))
     }
@@ -158,6 +179,8 @@ class BoatRenderer {
       if shouldFollow && mapMode != .follow {
         log.info("Got realtime update, following...")
         mapMode = .follow
+      } else {
+        log.info("Not following, mode is fit")
       }
     case .follow:
       guard let lastCoord = coords.last else { return }
@@ -168,9 +191,11 @@ class BoatRenderer {
         let options = CameraOptions(
           center: lastCoord.coord, padding: .zero, zoom: mapView.cameraState.zoom, bearing: bearing,
           pitch: pitch)
+        log.info("Flying with bearing...")
         mapView.camera.fly(to: options, duration: 0.8, completion: nil)
       } else {
         let camera = CameraOptions(center: lastCoord.coord, zoom: mapView.cameraState.zoom)
+        log.info("Flying...")
         mapView.camera.fly(to: camera, duration: nil, completion: nil)
       }
     case .stay:
@@ -241,7 +266,7 @@ class BoatRenderer {
       removeTrack(ids: ids)
     }
     trails = [:]
-    history = [:]
+    state.clear()
     boatIcons = [:]
     trophyIcons = [:]
     latestTrack = nil

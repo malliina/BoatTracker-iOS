@@ -10,6 +10,7 @@ enum TapResult {
   case vessel(info: Vessel)
   case area(info: FairwayArea, limit: LimitArea?)
   case trail(info: TrackPoint)
+  case trailPoint(info: SingleTrackPoint)
 }
 
 struct Tapped {
@@ -64,6 +65,26 @@ class TapListener {
     return await handleLimits(point)
   }
 
+  static func markCoordinate(_ feature: Feature) -> CLLocationCoordinate2D? {
+    switch feature.geometry {
+    case .point(let point): return point.coordinates
+    default: return nil
+    }
+  }
+  
+  static func markResult(_ feature: Feature, point: CGPoint) -> TapResult? {
+    guard let coordinate = markCoordinate(feature) else { return nil }
+    let props = feature.properties ?? [:]
+    let full: TapResult? = props.parseOpt(MarineSymbol.self).map { symbol in
+      .mark(info: symbol, point: point, at: coordinate)
+    }
+
+    let minimal: TapResult? = props.parseOpt(MinimalMarineSymbol.self).map { symbol in
+      .miniMark(info: symbol, at: coordinate)
+    }
+    return full ?? minimal
+  }
+  
   private func handleMarks(_ point: CGPoint) async -> TapResult? {
     let features = (try? await queryFeatures(at: point, layerIds: Array(marksLayers))) ?? []
     guard !features.isEmpty else { return nil }
@@ -74,15 +95,7 @@ class TapListener {
     }
     let point = await pointAt(coord: coordinate)
     return features.first.flatMap { feature in
-      let props = feature.queriedFeature.feature.properties ?? [:]
-      let full: TapResult? = props.parseOpt(MarineSymbol.self).map { symbol in
-        .mark(info: symbol, point: point, at: coordinate)
-      }
-
-      let minimal: TapResult? = props.parseOpt(MinimalMarineSymbol.self).map { symbol in
-        .miniMark(info: symbol, at: coordinate)
-      }
-      return full ?? minimal
+      return TapListener.markResult(feature.queriedFeature.feature, point: point)
     }
   }
 
@@ -112,10 +125,7 @@ class TapListener {
       let result = await queryVisibleFeatureProps(point, layers: Array(layers), t: TrophyPoint.self)
       return result.map { trophyPoint in
         .trophy(
-          info: TrophyInfo(
-            speed: trophyPoint.top.speed, dateTime: trophyPoint.top.time.dateTime,
-            outsideTemp: trophyPoint.top.outsideTemp, altitude: trophyPoint.top.altitude,
-            isBoat: trophyPoint.isBoat), at: trophyPoint.top.coord)
+          info: TrophyInfo.fromPoint(trophyPoint: trophyPoint), at: trophyPoint.top.coord)
       }
     } else {
       return nil
@@ -190,18 +200,6 @@ class TapListener {
 
   @MainActor
   func queryFeatures(at: CGPoint, layerIds: [String]) async throws -> [QueriedRenderedFeature] {
-    try await withCheckedThrowingContinuation { cont in
-      mapView.mapboxMap.queryRenderedFeatures(
-        with: at, options: RenderedQueryOptions(layerIds: layerIds, filter: nil)
-      ) { result in
-        switch result {
-        case .success(let features):
-          cont.resume(returning: features)
-        case .failure(let error):
-          self.log.warn("Failed to query rendered features. \(error)")
-          cont.resume(throwing: error)
-        }
-      }
-    }
+    try await mapView.mapboxMap.queryFeatures(at: at, layerIds: layerIds)
   }
 }

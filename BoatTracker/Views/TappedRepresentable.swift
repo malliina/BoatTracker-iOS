@@ -22,6 +22,7 @@ struct TappedRepresentable: UIViewControllerRepresentable {
       ctrl.modalPresentationStyle = .popover
       if let popover = ctrl.popoverPresentationController {
         popover.delegate = context.coordinator
+        log.info("Source view is \(tapped.source)")
         popover.sourceView = tapped.source
         popover.sourceRect = CGRect(origin: tapped.point, size: .zero)
       } else {
@@ -38,7 +39,7 @@ struct TappedRepresentable: UIViewControllerRepresentable {
     let result = from.result
     switch result {
     case .trophy(let info, _):
-      TrophyView(info: info, lang: lang.track)
+      TrophyView(info: info, lang: lang)
     case .limit(let area, _):
       LimitView(limit: area, lang: lang)
     case .miniMark(let info, _):
@@ -53,6 +54,8 @@ struct TappedRepresentable: UIViewControllerRepresentable {
       AreaView(info: info, limit: limit, lang: lang)
     case .trail(let info):
       TrailView(info: info, lang: lang)
+    case .trailPoint(let info):
+      TrailPointView(info: info, lang: lang)
     }
   }
 

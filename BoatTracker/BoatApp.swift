@@ -14,15 +14,6 @@ struct BoatApp: App {
   @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
   @Environment(\.scenePhase) private var scenePhase
 
-  init() {
-    AppCenter.start(
-      withAppSecret: "adbb4491-3c8c-4893-bd16-cc8be65899a8",
-      services: [
-        Analytics.self,
-        Crashes.self,
-      ])
-  }
-
   @StateObject private var viewModel = MapViewModel()
   @StateObject private var profileVm = ProfileVM()
   @StateObject private var tracksVm = TracksViewModel()
