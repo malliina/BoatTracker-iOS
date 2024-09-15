@@ -33,7 +33,7 @@ struct RouteState {
 
 struct MainMapView<T>: View where T: MapViewModelLike {
   let log = LoggerFactory.shared.view(MainMapView.self)
-
+  
   @EnvironmentObject var viewModel: T
   
   @State var welcomeInfo: WelcomeInfo? = nil
@@ -43,7 +43,7 @@ struct MainMapView<T>: View where T: MapViewModelLike {
   @State var showPopover: Bool = false
   @State var tapInfo: TapInfo? = nil
   @State var tapPosition: TapPosition = TapPosition(x: 0, y: 0)
-  @State var viewport: Viewport = .overview(geometry: Polygon(center: MapViewRepresentable.defaultCenter, radius: 10000, vertices: 30))
+  @State var viewport: Viewport = .overview(geometry: Polygon(center: MapViewModel.defaultCenter, radius: 10000, vertices: 30))
   @State var cameraFitted = false
   @State var hasBeenFollowing = false
   @State var routeState: RouteState = RouteState(start: nil, end: nil)
@@ -189,7 +189,7 @@ struct MainMapView<T>: View where T: MapViewModelLike {
               }
               .mapStyle(.init(uri: styleUri))
               .onLayersTapGesture(conf.layers.marks) { qf, ctx in
-                if let result = TapListener.markResult(qf.feature, point: ctx.point) {
+                if let result = Tapped.markResult(qf.feature, point: ctx.point) {
                   updatePopup(tap: result, point: ctx.point, size: reader.realSize)
                   return true
                 } else {
@@ -291,7 +291,7 @@ struct MainMapView<T>: View where T: MapViewModelLike {
                   let defaultPitch: CGFloat = 60
                   let pitch = hasBeenFollowing ? viewport.camera?.pitch ?? viewport.overview?.pitch ?? defaultPitch : defaultPitch
                   hasBeenFollowing = true
-                  if let bearing = BoatRenderer.adjustedBearing(data: coords) {
+                  if let bearing = MapViewModel.adjustedBearing(data: coords) {
                     withViewportAnimation {
                       viewport = .camera(center: latest.coord, bearing: bearing, pitch: pitch)
                     }
@@ -395,13 +395,6 @@ struct MainMapView<T>: View where T: MapViewModelLike {
               }
             }
           }
-      }
-    }
-    .background {
-      if let lang = settings.lang,
-        let specials = settings.languages?.finnish.specialWords
-      {
-        TappedRepresentable(lang: lang, finnishWords: specials, tapped: $tapResult)
       }
     }
   }

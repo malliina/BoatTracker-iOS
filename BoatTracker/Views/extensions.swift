@@ -27,15 +27,10 @@ extension MapboxMap {
         case .success(let features):
           cont.resume(returning: features)
         case .failure(let error):
-//          self.log.warn("Failed to query rendered features. \(error)")
           cont.resume(throwing: error)
         }
       }
     }
-  }
-  
-  struct CameraInfo {
-    let bearing, pitch: CGFloat
   }
   
   func queryVisibleFeatureProps<T: Decodable>(_ point: CGPoint, layers: [String], t: T.Type) async
@@ -52,6 +47,12 @@ extension MapboxMap {
       return nil
     }
   }
+}
+
+struct TrophyPoint: Codable {
+  let from: TrackRef
+  var top: CoordBody { from.topPoint }
+  var isBoat: Bool { from.sourceType == .boat }
 }
 
 extension ObservableObject {

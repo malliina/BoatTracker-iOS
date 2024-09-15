@@ -90,7 +90,7 @@ class MapViewModel: MapViewModelLike {
   @Published var tracks: [CoordsData] = []
   var latestTrackPoints: [SingleTrackPoint] { 
     tracks.compactMap { cd in
-      if let last = cd.coords.last, let bearing = BoatRenderer.adjustedBearing(data: cd) {
+      if let last = cd.coords.last, let bearing = MapViewModel.adjustedBearing(data: cd) {
         SingleTrackPoint(from: cd.from, point: last, bearing: bearing)
       } else {
         nil
@@ -100,6 +100,17 @@ class MapViewModel: MapViewModelLike {
     }
   }
   @Published var routeResult: RouteResult? = nil
+  
+  static let defaultCenter = CLLocationCoordinate2D(latitude: 60.14, longitude: 24.9)
+  
+  static func adjustedBearing(data: CoordsData) -> CLLocationDirection? {
+    let lastTwo = Array(data.coords.suffix(2)).map { $0.coord }
+    let bearing = lastTwo.count == 2 ? Geo.shared.bearing(from: lastTwo[0], to: lastTwo[1]) : nil
+    if let bearing = bearing {
+      return data.from.sourceType.isBoat ? bearing : (bearing + 90).truncatingRemainder(dividingBy: 360)
+    }
+    return nil
+  }
   
   func prepare() async {
     Task {
@@ -164,12 +175,8 @@ class MapViewModel: MapViewModelLike {
   func reload(token: UserToken?) async {
     log.info("Reloading with \(token?.email ?? "no user")")
     latestToken = token
-    socket.delegate = nil
-    socket.close()
+    disconnect()
     allVessels = []
-    tracks = []
-    coords = nil
-    command = .clearAll
     socket.updateToken(token: token?.token)
     socket.delegate = self
     socket.vesselDelegate = self
@@ -203,6 +210,7 @@ class MapViewModel: MapViewModelLike {
     command = .clearAll
     tracks = []
     coords = nil
+    routeResult = nil
   }
 
   @MainActor private func update(style: StyleURI) {
