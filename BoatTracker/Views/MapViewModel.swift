@@ -114,6 +114,12 @@ class MapViewModel: MapViewModelLike {
   }
   
   func prepare() async {
+    do {
+      let token = try Credentials.read(key: "MapboxAccessToken")
+      MapboxOptions.accessToken = token
+    } catch {
+      log.info("Failed to read Mapbox token from credentials file. \(error)")
+    }
     Task {
       for await state in Auth.shared.$authState.values {
         switch state {
@@ -144,6 +150,7 @@ class MapViewModel: MapViewModelLike {
       settings.conf = conf
       await update(profileHidden: false)
       let url = conf.map.styleUrl
+      log.info("Using style '\(url)'...")
       await update(style: StyleURI(rawValue: url)!)
     } catch {
       log.error("Failed to load conf and style: '\(error.describe)'.")

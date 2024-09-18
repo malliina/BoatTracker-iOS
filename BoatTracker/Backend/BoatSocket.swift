@@ -114,6 +114,8 @@ class BoatSocket {
         }
       case "loading":
         ()
+      case "noData":
+        ()
       default:
         log.info("Unknown event: '\(event)'.")
       }
