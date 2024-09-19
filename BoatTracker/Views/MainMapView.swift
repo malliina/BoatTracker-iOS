@@ -151,6 +151,7 @@ struct MainMapView<T>: View where T: MapViewModelLike {
                   makeVesselPoint(vessel: vessel, icon: conf.layers.ais.vesselIcon)
                 }
                 .layerId(vesselIconsLayerId)
+                .iconRotationAlignment(.map)
                 // Visible
                 PolylineAnnotationGroup(viewModel.tracks) { track in
                   let isLatest = viewModel.latestTrackPoints.find { stp in
@@ -170,6 +171,7 @@ struct MainMapView<T>: View where T: MapViewModelLike {
                   makeBoatPoint(track: track)
                 }
                 .layerId(boatIconsId)
+                .iconRotationAlignment(.map)
                 if let latest = viewModel.tracks.last {
                   let point = TrophyPoint(from: latest.from)
                   makeTrophy(point: point)
@@ -220,7 +222,7 @@ struct MainMapView<T>: View where T: MapViewModelLike {
               }
               .onLayerTapGesture(vesselIconsLayerId) { (qf, ctx) in
                 if let meta = parseCustom(VesselMeta.self, from: qf.feature),
-                   let vessel = AISState.shared.info(meta.mmsi) {
+                   let vessel = viewModel.vesselInfo(meta.mmsi) {
                   updatePopup(tap: .vessel(info: vessel), point: ctx.point, size: reader.realSize)
                   return true
                 } else {

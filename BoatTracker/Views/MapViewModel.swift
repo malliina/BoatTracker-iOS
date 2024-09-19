@@ -24,6 +24,7 @@ protocol MapViewModelLike: ObservableObject {
   
   func shortest(from: CLLocationCoordinate2D, to: CLLocationCoordinate2D)
   func toggleFollow()
+  func vesselInfo(_ mmsi: Mmsi) -> Vessel?
 }
 
 extension MapViewModel: BoatSocketDelegate {
@@ -51,10 +52,11 @@ extension MapViewModel: BoatSocketDelegate {
 
 extension MapViewModel: VesselDelegate {
   func on(vessels: [Vessel]) async {
-      await update(vessels: vessels)
+    await update(vessels: vessels)
   }
 
   @MainActor private func update(vessels: [Vessel]) {
+    AISState.shared.update(vessels: vessels)
     self.vessels = vessels
     self.allVessels = (self.allVessels + vessels).uniqued { vessel in
       vessel.mmsi
@@ -231,6 +233,10 @@ class MapViewModel: MapViewModelLike {
   @MainActor func toggleFollow() {
     command = .toggleFollow
   }
+  
+  func vesselInfo(_ mmsi: Mmsi) -> Vessel? {
+    AISState.shared.info(mmsi)
+  }
 }
 
 class PreviewMapViewModel: MapViewModelLike {
@@ -255,4 +261,5 @@ class PreviewMapViewModel: MapViewModelLike {
   func shortest(from: CLLocationCoordinate2D, to: CLLocationCoordinate2D) {}
   func toggleFollow() {}
   func onTrack(_ track: TrackName) {}
+  func vesselInfo(_ mmsi: Mmsi) -> Vessel? { nil }
 }
