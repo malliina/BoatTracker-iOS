@@ -64,8 +64,6 @@
 		7D045D6A265A54A300B92EE8 /* Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D045D69265A54A300B92EE8 /* Auth.swift */; };
 		7D15B6E02AE575E600C47F76 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 7D15B6DF2AE575E600C47F76 /* README.md */; };
 		7D15B6E22AE5760100C47F76 /* .github in Resources */ = {isa = PBXBuildFile; fileRef = 7D15B6E12AE5760100C47F76 /* .github */; };
-		7D175C4527BD84990050E29B /* AppCenterAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 7D175C4427BD84990050E29B /* AppCenterAnalytics */; };
-		7D175C4727BD84990050E29B /* AppCenterCrashes in Frameworks */ = {isa = PBXBuildFile; productRef = 7D175C4627BD84990050E29B /* AppCenterCrashes */; };
 		7D175C4A27BD85300050E29B /* MapboxMaps in Frameworks */ = {isa = PBXBuildFile; productRef = 7D175C4927BD85300050E29B /* MapboxMaps */; };
 		7D175C4D27BD85AE0050E29B /* MSAL in Frameworks */ = {isa = PBXBuildFile; productRef = 7D175C4C27BD85AE0050E29B /* MSAL */; };
 		7D175C5327BD876F0050E29B /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 7D175C5227BD876F0050E29B /* GoogleSignIn */; };
@@ -260,8 +258,6 @@
 			files = (
 				7D175C4A27BD85300050E29B /* MapboxMaps in Frameworks */,
 				7DAE8A812C8C392600FB797E /* Algorithms in Frameworks */,
-				7D175C4527BD84990050E29B /* AppCenterAnalytics in Frameworks */,
-				7D175C4727BD84990050E29B /* AppCenterCrashes in Frameworks */,
 				7D175C4D27BD85AE0050E29B /* MSAL in Frameworks */,
 				B05A708A2AF6498300D0BAF1 /* DGCharts in Frameworks */,
 				7D175C5327BD876F0050E29B /* GoogleSignIn in Frameworks */,
@@ -627,8 +623,6 @@
 			);
 			name = BoatTracker;
 			packageProductDependencies = (
-				7D175C4427BD84990050E29B /* AppCenterAnalytics */,
-				7D175C4627BD84990050E29B /* AppCenterCrashes */,
 				7D175C4927BD85300050E29B /* MapboxMaps */,
 				7D175C4C27BD85AE0050E29B /* MSAL */,
 				7D175C5227BD876F0050E29B /* GoogleSignIn */,
@@ -696,7 +690,6 @@
 			);
 			mainGroup = 61B07C5320F21DC300D8B7E0;
 			packageReferences = (
-				7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */,
 				7D175C4827BD85300050E29B /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */,
 				7D175C4B27BD85AE0050E29B /* XCRemoteSwiftPackageReference "microsoft-authentication-library-for-objc" */,
 				7D175C4E27BD87110050E29B /* XCRemoteSwiftPackageReference "Charts" */,
@@ -1107,14 +1100,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/microsoft/appcenter-sdk-apple.git";
-			requirement = {
-				kind = exactVersion;
-				version = 5.0.4;
-			};
-		};
 		7D175C4827BD85300050E29B /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/mapbox/mapbox-maps-ios.git";
@@ -1158,16 +1143,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		7D175C4427BD84990050E29B /* AppCenterAnalytics */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */;
-			productName = AppCenterAnalytics;
-		};
-		7D175C4627BD84990050E29B /* AppCenterCrashes */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 7D175C4327BD84990050E29B /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */;
-			productName = AppCenterCrashes;
-		};
 		7D175C4927BD85300050E29B /* MapboxMaps */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 7D175C4827BD85300050E29B /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */;

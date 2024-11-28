@@ -1,13 +1,5 @@
 import Foundation
-import SwiftUI
-
-protocol BoatSocketDelegate {
-  func onCoords(event: CoordsData) async
-}
-
-protocol VesselDelegate {
-  func on(vessels: [Vessel]) async
-}
+import Combine
 
 extension BoatSocket: WebSocketMessageDelegate {
   func on(isConnected: Bool) async {
@@ -37,14 +29,19 @@ class BoatSocket {
   private let baseUrl: URL
   
   private var socket: WebSocket? = nil
-
-  // Delegate for the map view
-  var delegate: BoatSocketDelegate? = nil
-  // Delegate for the profile page with a summary view of the current track
-  var statsDelegate: BoatSocketDelegate? = nil
-  var vesselDelegate: VesselDelegate? = nil
   
   @Published var isConnected: Bool = false
+  @Published var coords: CoordsData? = nil
+  @Published var vessels: [Vessel] = []
+  
+  var updates: AnyPublisher<CoordsData, Never> {
+    $coords.compactMap { cd in
+      cd
+    }.eraseToAnyPublisher()
+  }
+  var vesselUpdates: AnyPublisher<[Vessel], Never> {
+    $vessels.eraseToAnyPublisher()
+  }
   
   init(_ baseUrl: URL) {
     self.baseUrl = baseUrl
@@ -98,20 +95,10 @@ class BoatSocket {
         ()
       case "coords":
         let data = try decoder.decode(CoordsBody.self, from: json)
-        if let delegate = delegate {
-          // log.info("Passing \(data.body.coords.count) coords to delegate.")
-          await delegate.onCoords(event: data.body)
-        } else {
-          log.warn("No delegate for coords. This is probably an error.")
-        }
-        if let delegate = statsDelegate {
-          await delegate.onCoords(event: data.body)
-        }
+        await update(coords: data.body)
       case "vessels":
         let data = try decoder.decode(VesselsBody.self, from: json)
-        if let vesselDelegate = vesselDelegate {
-          await vesselDelegate.on(vessels: data.body.vessels)
-        }
+        await update(vessels: data.body.vessels)
       case "loading":
         ()
       case "noData":
@@ -137,12 +124,20 @@ class BoatSocket {
       }
     }
   }
+  
+  @MainActor private func update(coords: CoordsData) {
+    self.coords = coords
+  }
 
-  func send<T: Encodable>(t: T) -> SingleError? {
+  @MainActor private func update(vessels: [Vessel]) {
+    self.vessels = vessels
+  }
+  
+  func send<T: Encodable>(t: T) async -> SingleError? {
     guard let asString = try? Json.shared.stringify(t) else {
       return failWith("Unable to send data, cannot stringify payload.")
     }
-    let isSuccess = socket?.send(asString) ?? false
+    let isSuccess = await socket?.send(asString) ?? false
     return isSuccess ? nil : SingleError(message: "Failed to send message over socket.")
   }
 

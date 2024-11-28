@@ -23,45 +23,8 @@ protocol MapViewModelLike: ObservableObject {
   var routeResult: RouteResult? { get set }
   
   func shortest(from: CLLocationCoordinate2D, to: CLLocationCoordinate2D)
-  func toggleFollow()
+  func toggleFollow() async
   func vesselInfo(_ mmsi: Mmsi) -> Vessel?
-}
-
-extension MapViewModel: BoatSocketDelegate {
-  func onCoords(event: CoordsData) {
-    Task {
-      await update(coordsData: event)
-    }
-  }
-
-  @MainActor private func update(coordsData: CoordsData) {
-    coords = coordsData
-    var modified = tracks
-    let idx = modified.indexOf { data in
-      data.from.trackName == coordsData.from.trackName
-    }
-    if let idx = idx {
-      modified[idx] = CoordsData(coords: modified[idx].coords + coordsData.coords, from: coordsData.from)
-    } else {
-      modified.append(coordsData)
-    }
-    tracks = modified
-    log.info("Got \(coordsData.coords.count) coords, tracks now has \(tracks.count) elements")
-  }
-}
-
-extension MapViewModel: VesselDelegate {
-  func on(vessels: [Vessel]) async {
-    await update(vessels: vessels)
-  }
-
-  @MainActor private func update(vessels: [Vessel]) {
-    AISState.shared.update(vessels: vessels)
-    self.vessels = vessels
-    self.allVessels = (self.allVessels + vessels).uniqued { vessel in
-      vessel.mmsi
-    }
-  }
 }
 
 class MapViewModel: MapViewModelLike {
@@ -105,6 +68,8 @@ class MapViewModel: MapViewModelLike {
   @Published var routeResult: RouteResult? = nil
   
   static let defaultCenter = CLLocationCoordinate2D(latitude: 60.14, longitude: 24.9)
+  
+  private var cancellables: [Task<(), Never>] = []
   
   static func adjustedBearing(data: CoordsData) -> CLLocationDirection? {
     let lastTwo = Array(data.coords.suffix(2)).map { $0.coord }
@@ -163,7 +128,7 @@ class MapViewModel: MapViewModelLike {
     log.info("Loading shortest route from \(from) to \(to)...")
     Task {
       do {
-        let route = try await Backend.shared.http.shortestRoute(from: from, to: to)
+        let route = try await http.shortestRoute(from: from, to: to)
         log.info("Loaded shortest route from \(from) to \(to).")
         await update(route: route)
       } catch {
@@ -171,25 +136,25 @@ class MapViewModel: MapViewModelLike {
       }
     }
   }
-  
-  @MainActor private func update(route: RouteResult) {
-    routeResult = route
-  }
-  
-  @MainActor
-  private func update(isConnected: Bool) {
-    isFollowButtonHidden = !isConnected
-  }
 
-  @MainActor
   func reload(token: UserToken?) async {
     log.info("Reloading with \(token?.email ?? "no user")")
-    latestToken = token
-    disconnect()
-    allVessels = []
+    await update(token: token)
+    await disconnect()
+    await update(allVessels: [])
     socket.updateToken(token: token?.token)
-    socket.delegate = self
-    socket.vesselDelegate = self
+    cancellables = [
+      Task {
+        for await cd in socket.updates.values {
+          await update(coordsData: cd)
+        }
+      },
+      Task {
+        for await vs in socket.vesselUpdates.values {
+          await update(vessels: vs)
+        }
+      }
+    ]
     socket.reconnect(token: token?.token, track: nil) // is nil correct?
     await setupUser(token: token?.token)
   }
@@ -210,28 +175,73 @@ class MapViewModel: MapViewModelLike {
 
   private func change(to track: TrackName?) async {
     await disconnect()
-    //log.info("Changing to \(track)...")
-    backend.open(track: track, delegate: self)
+    backend.open(track: track)
   }
 
-  @MainActor private func disconnect() {
-    socket.delegate = nil
+  private func disconnect() async {
+    cancellables.forEach { c in
+      c.cancel()
+    }
+    cancellables = []
     socket.close()
-    command = .clearAll
-    tracks = []
-    coords = nil
-    routeResult = nil
+    await update(command: .clearAll)
+    await update(tracks: [])
+    await update(coords: nil)
+    await update(route: nil)
   }
 
+  @MainActor private func update(coordsData: CoordsData) {
+    coords = coordsData
+    var modified = tracks
+    let idx = modified.indexOf { data in
+      data.from.trackName == coordsData.from.trackName
+    }
+    if let idx = idx {
+      modified[idx] = CoordsData(coords: modified[idx].coords + coordsData.coords, from: coordsData.from)
+    } else {
+      modified.append(coordsData)
+    }
+    tracks = modified
+    log.info("Got \(coordsData.coords.count) coords, tracks now has \(tracks.count) elements")
+  }
+  
+  @MainActor private func update(vessels: [Vessel]) {
+    AISState.shared.update(vessels: vessels)
+    self.vessels = vessels
+    self.allVessels = (self.allVessels + vessels).uniqued { vessel in
+      vessel.mmsi
+    }
+    log.info("Now got \(allVessels.count) vessels.")
+  }
+  @MainActor private func update(allVessels: [Vessel]) {
+    self.allVessels = allVessels
+  }
+  @MainActor private func update(coords: CoordsData?) {
+    self.coords = coords
+  }
+  @MainActor private func update(tracks: [CoordsData]) {
+    self.tracks = tracks
+  }
   @MainActor private func update(style: StyleURI) {
     styleUri = style
+  }
+  @MainActor private func update(command: MapCommand) {
+    self.command = command
   }
   @MainActor private func update(profileHidden: Bool) {
     isProfileButtonHidden = profileHidden
   }
-
-  @MainActor func toggleFollow() {
-    command = .toggleFollow
+  @MainActor func update(token: UserToken?) {
+    self.latestToken = token
+  }
+  @MainActor func toggleFollow() async {
+    update(command: .toggleFollow)
+  }
+  @MainActor private func update(route: RouteResult?) {
+    routeResult = route
+  }
+  @MainActor private func update(isConnected: Bool) {
+    isFollowButtonHidden = !isConnected
   }
   
   func vesselInfo(_ mmsi: Mmsi) -> Vessel? {

@@ -10,7 +10,7 @@ protocol ProfileProtocol: ObservableObject {
   func deleteMe(from: UIViewController) async -> Bool
 }
 
-class ProfileVM: ProfileProtocol, BoatSocketDelegate {
+class ProfileVM: ProfileProtocol {
   let log = LoggerFactory.shared.vc(ProfileVM.self)
 
   @Published var state: ViewState = .idle
@@ -26,18 +26,26 @@ class ProfileVM: ProfileProtocol, BoatSocketDelegate {
   }
 
   private var socket: BoatSocket? = nil
+  private var cancellables: [Task<(), Never>] = []
     
   func connect(track: TrackName) {
-    socket = Backend.shared.openStandalone(track: track, delegate: self)
+    let s = Backend.shared.openStandalone(track: track)
+    socket = s
+    let t = Task {
+      for await coords in s.updates.values {
+        await update(ref: coords.from)
+      }
+    }
+    cancellables = [t]
   }
   
   func disconnect() {
     socket?.close()
     socket = nil
-  }
-  
-  func onCoords(event: CoordsData) async {
-    await update(ref: event.from)
+    cancellables.forEach { t in
+      t.cancel()
+    }
+    cancellables = []
   }
 
   func versionText(lang: Lang) -> String? {

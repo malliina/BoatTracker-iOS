@@ -110,24 +110,32 @@ struct ChartRepresentable: UIViewRepresentable {
   typealias UIViewType = LineChartView
 }
 
-class ChartVM: ObservableObject, BoatSocketDelegate {
+class ChartVM: ObservableObject {
   let log = LoggerFactory.shared.vc(ChartVM.self)
 
   @Published var data: CoordsData?
 
   private var socket: BoatSocket? = nil
+  private var cancellables: [Task<(), Never>] = []
 
   func connect(track: TrackName) {
-    socket = Backend.shared.openStandalone(track: track, delegate: self)
+    let s = Backend.shared.openStandalone(track: track)
+    socket = s
+    let t = Task {
+      for await coords in s.updates.values {
+        await update(data: coords)
+      }
+    }
+    cancellables = [t]
   }
 
   func disconnect() {
     socket?.close()
     socket = nil
-  }
-
-  func onCoords(event: CoordsData) async {
-    await update(data: event)
+    cancellables.forEach { t in
+      t.cancel()
+    }
+    cancellables = []
   }
 
   @MainActor private func update(data: CoordsData) {

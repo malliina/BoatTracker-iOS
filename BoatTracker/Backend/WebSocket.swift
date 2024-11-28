@@ -39,16 +39,15 @@ class WebSocket: NSObject, URLSessionWebSocketDelegate {
     task?.resume()
   }
 
-  func send(_ msg: String) -> Bool {
+  func send(_ msg: String) async -> Bool {
     if let task = task {
-      task.send(
-        .string(msg),
-        completionHandler: { error in
-          if let error = error {
-            self.log.warn("Failed to send '\(msg)' over socket \(self.baseURL). \(error)")
-          }
-        })
-      return true
+      do {
+        try await task.send(.string(msg))
+        return true
+      } catch {
+        self.log.warn("Failed to send '\(msg)' over socket \(self.baseURL). \(error)")
+        return false
+      }
     } else {
       return false
     }
