@@ -1,28 +1,6 @@
 import Foundation
 import Combine
 
-extension BoatSocket: WebSocketMessageDelegate {
-  func on(isConnected: Bool) async {
-    await update(isConnected: isConnected)
-  }
-  
-  @MainActor
-  private func update(isConnected: Bool) {
-    self.isConnected = isConnected
-  }
-  
-  func on(message: String) async {
-    do {
-      guard let json = message.data(using: .utf8) else {
-        throw JsonError.invalid("Not JSON.", message)
-      }
-      await onMessage(json: json)
-    } catch {
-      log.warn("Not JSON: '\(message)'.")
-    }
-  }
-}
-
 class BoatSocket {
   private let log = LoggerFactory.shared.network(BoatSocket.self)
 
@@ -42,6 +20,8 @@ class BoatSocket {
   var vesselUpdates: AnyPublisher<[Vessel], Never> {
     $vessels.eraseToAnyPublisher()
   }
+  
+  private var cancellables: [Task<(), Never>] = []
   
   init(_ baseUrl: URL) {
     self.baseUrl = baseUrl
@@ -77,8 +57,20 @@ class BoatSocket {
     let trackQuery = track.map { "?track=\($0.name)" } ?? ""
     let url = URL(string: "/ws/updates\(trackQuery)", relativeTo: baseUrl)!
     //        log.info("Opening socket with \(track?.name ?? "no track") and token \(token?.token ?? "no token")")
-    socket = WebSocket(baseURL: url, headers: headers)
-    socket?.delegate = self
+    let s = WebSocket(baseURL: url, headers: headers)
+    socket = s
+    cancellables = [
+      Task {
+        for await message in s.updates.values {
+          await on(message: message)
+        }
+      },
+      Task {
+        for await isConnected in s.$isConnected.values {
+          await update(isConnected: isConnected)
+        }
+      }
+    ]
   }
 
   func updateToken(token: AccessToken?) {
@@ -133,6 +125,22 @@ class BoatSocket {
     self.vessels = vessels
   }
   
+  @MainActor
+  private func update(isConnected: Bool) {
+    self.isConnected = isConnected
+  }
+  
+  func on(message: String) async {
+    do {
+      guard let json = message.data(using: .utf8) else {
+        throw JsonError.invalid("Not JSON.", message)
+      }
+      await onMessage(json: json)
+    } catch {
+      log.warn("Not JSON: '\(message)'.")
+    }
+  }
+  
   func send<T: Encodable>(t: T) async -> SingleError? {
     guard let asString = try? Json.shared.stringify(t) else {
       return failWith("Unable to send data, cannot stringify payload.")
@@ -148,6 +156,10 @@ class BoatSocket {
 
   func close() {
     socket?.disconnect()
+    cancellables.forEach { c in
+      c.cancel()
+    }
+    cancellables = []
   }
 }
 

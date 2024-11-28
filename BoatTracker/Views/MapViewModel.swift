@@ -211,7 +211,6 @@ class MapViewModel: MapViewModelLike {
     self.allVessels = (self.allVessels + vessels).uniqued { vessel in
       vessel.mmsi
     }
-    log.info("Now got \(allVessels.count) vessels.")
   }
   @MainActor private func update(allVessels: [Vessel]) {
     self.allVessels = allVessels
