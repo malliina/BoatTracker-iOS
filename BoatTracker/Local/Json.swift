@@ -14,12 +14,14 @@ class Json {
   }
 
   func parse<T: Decodable>(_ t: T.Type, from: JSONObject) throws -> T {
-    let data = try JSONSerialization.data(withJSONObject: from.rawValue, options: .prettyPrinted)
+    let data = try JSONSerialization.data(
+      withJSONObject: from.rawValue, options: .prettyPrinted)
     return try parse(t, data: data)
   }
-  
+
   func parse<T: Decodable>(_ t: T.Type, from: JSONValue) throws -> T {
-    let data = try JSONSerialization.data(withJSONObject: from.rawValue, options: .prettyPrinted)
+    let data = try JSONSerialization.data(
+      withJSONObject: from.rawValue, options: .prettyPrinted)
     return try parse(t, data: data)
   }
 
@@ -34,8 +36,11 @@ class Json {
 
   func write<T: Encodable>(from: T) throws -> JSONObject {
     let data = try encoder.encode(from)
-    let json = try JSONSerialization.jsonObject(with: data, options: [.allowFragments])
-    guard let dict = json as? [String: Any?], let turfJson = JSONObject(rawValue: dict) else {
+    let json = try JSONSerialization.jsonObject(
+      with: data, options: [.allowFragments])
+    guard let dict = json as? [String: Any?],
+      let turfJson = JSONObject(rawValue: dict)
+    else {
       throw JsonError.notJson(data)
     }
     return turfJson
@@ -50,7 +55,8 @@ class Json {
     } else if let string = rawValue as? String {
       return .string(string)
     } else if let rawArray = rawValue as? JSONArray.RawValue {
-      return .array(rawArray.compactMap { e in e }.map { e in parse(rawValue: e) })
+      return .array(
+        rawArray.compactMap { e in e }.map { e in parse(rawValue: e) })
     } else if let rawObject = rawValue as? JSONObject.RawValue {
       return .object(rawObject.mapValues { $0.flatMap(parse(rawValue:)) })
     } else {
@@ -60,7 +66,9 @@ class Json {
 
   func stringify<T: Encodable>(_ t: T) throws -> String {
     let data = try encoder.encode(t)
-    guard let asString = String(data: data, encoding: .utf8) else { throw JsonError.notJson(data) }
+    guard let asString = String(data: data, encoding: .utf8) else {
+      throw JsonError.notJson(data)
+    }
     return asString
   }
 }

@@ -13,10 +13,11 @@ class Backend {
 
   init(_ baseUrl: URL) {
     self.baseUrl = baseUrl
-    self.http = BoatHttpClient(bearerToken: nil, baseUrl: baseUrl, client: HttpClient())
+    self.http = BoatHttpClient(
+      bearerToken: nil, baseUrl: baseUrl, client: HttpClient())
     self.socket = BoatSocket(baseUrl)
   }
-  
+
   func prepare() async {
     Task {
       for await state in Auth.shared.$authState.values {
@@ -50,7 +51,9 @@ class Backend {
     socket.reconnect(token: latestToken?.token, track: track)
   }
 
-  func openStandalone(track: TrackName?, delegate: BoatSocketDelegate) -> BoatSocket {
+  func openStandalone(track: TrackName?, delegate: BoatSocketDelegate)
+    -> BoatSocket
+  {
     let s = BoatSocket(baseUrl)
     s.delegate = delegate
     s.reconnect(token: latestToken?.token, track: track)

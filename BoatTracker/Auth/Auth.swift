@@ -1,5 +1,5 @@
-import Foundation
 import Combine
+import Foundation
 
 enum AuthState {
   case unknown, unauthenticated
@@ -14,13 +14,15 @@ class Auth {
   private var prefs: BoatPrefs { BoatPrefs.shared }
 
   @Published var authState: AuthState = .unknown
-  
-  var tokens: AnyPublisher<UserToken, Never> { $authState.compactMap { state in
-    switch state {
-    case .authenticated(let token): return token
-    default: return nil
-    }
-  }.removeDuplicates().eraseToAnyPublisher() }
+
+  var tokens: AnyPublisher<UserToken, Never> {
+    $authState.compactMap { state in
+      switch state {
+      case .authenticated(let token): return token
+      default: return nil
+      }
+    }.removeDuplicates().eraseToAnyPublisher()
+  }
 
   private var google: BoatGoogleAuth { BoatGoogleAuth.shared }
   private var microsoft: MicrosoftAuth { MicrosoftAuth.shared }
@@ -71,7 +73,9 @@ class Auth {
   }
 
   @MainActor
-  private func obtainToken(from: UIViewController?, restore: Bool) async throws -> UserToken? {
+  private func obtainToken(from: UIViewController?, restore: Bool) async throws
+    -> UserToken?
+  {
     switch prefs.authProvider {
     case .google:
       return try await google.obtainToken(from: from, restore: restore)

@@ -179,7 +179,7 @@ struct ProfilePreviews: BoatPreviewProvider, PreviewProvider {
 
     func disconnect() {
     }
-    
+
     func signOut(from: UIViewController) async {
     }
 

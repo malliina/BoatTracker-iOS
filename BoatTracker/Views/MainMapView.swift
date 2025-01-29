@@ -33,9 +33,9 @@ struct RouteState {
 
 struct MainMapView<T>: View where T: MapViewModelLike {
   let log = LoggerFactory.shared.view(MainMapView.self)
-  
+
   @EnvironmentObject var viewModel: T
-  
+
   @State var welcomeInfo: WelcomeInfo? = nil
   @State var authInfo: Lang? = nil
   @State var profileInfo: ProfileInfo? = nil
@@ -43,17 +43,18 @@ struct MainMapView<T>: View where T: MapViewModelLike {
   @State var showPopover: Bool = false
   @State var tapInfo: TapInfo? = nil
   @State var tapPosition: TapPosition = TapPosition(x: 0, y: 0)
-  @State var viewport: Viewport = .overview(geometry: Polygon(center: MapViewModel.defaultCenter, radius: 10000, vertices: 30))
+  @State var viewport: Viewport = .overview(
+    geometry: Polygon(center: MapViewModel.defaultCenter, radius: 10000, vertices: 30))
   @State var cameraFitted = false
   @State var hasBeenFollowing = false
   @State var routeState: RouteState = RouteState(start: nil, end: nil)
-  
+
   var settings: UserSettings { viewModel.settings }
-  
+
   let boatIconsId = "boat-icons"
   let vesselIconsLayerId = "vessel-icons"
   let trackLayerId = "track"
-  
+
   @ViewBuilder
   func makePopup(tap: TapResult, lang: Lang, specials: SpecialWords) -> some View {
     switch tap {
@@ -77,9 +78,10 @@ struct MainMapView<T>: View where T: MapViewModelLike {
       EmptyView()
     }
   }
-  
+
   private func makeVesselPoint(vessel: Vessel, icon: String) -> PointAnnotation {
-    let meta = VesselMeta(mmsi: vessel.mmsi, name: vessel.name, heading: vessel.heading ?? vessel.cog)
+    let meta = VesselMeta(
+      mmsi: vessel.mmsi, name: vessel.name, heading: vessel.heading ?? vessel.cog)
     var pa = PointAnnotation(coordinate: vessel.coord)
       .iconImage(icon)
       .iconSize(0.7)
@@ -88,7 +90,7 @@ struct MainMapView<T>: View where T: MapViewModelLike {
     pa.customData = (try? Json.shared.write(from: meta)) ?? [:]
     return pa
   }
-  
+
   private func makeBoatPoint(track: SingleTrackPoint) -> PointAnnotation {
     let from = track.from
     let isBoat = from.sourceType.isBoat
@@ -99,20 +101,20 @@ struct MainMapView<T>: View where T: MapViewModelLike {
     pa.customData = (try? Json.shared.write(from: track)) ?? [:]
     return pa
   }
-  
+
   private func makeTrophy(point: TrophyPoint) -> PointAnnotation {
     var pa = PointAnnotation(coordinate: point.top.coord)
       .iconImage(Layers.trophyIcon)
     pa.customData = (try? Json.shared.write(from: point)) ?? [:]
     return pa
   }
-  
+
   private func makePolyline(track: CoordsData) -> PolylineAnnotation {
     var polyline = PolylineAnnotation(lineCoordinates: track.coords.map { $0.coord })
     polyline.customData = (try? Json.shared.write(from: track.from)) ?? [:]
     return polyline
   }
-  
+
   private func parseCustom<C: Decodable>(_ t: C.Type, from: Feature) -> C? {
     if let props = from.properties, let custom = props["custom_data"], let value = custom {
       return try? Json.shared.parse(t, from: value)
@@ -120,26 +122,28 @@ struct MainMapView<T>: View where T: MapViewModelLike {
       return nil
     }
   }
-  
+
   private func parseProps<C: Decodable>(_ t: C.Type, from: Feature) -> C? {
     let props = from.properties ?? [:]
     return try? Json.shared.parse(t, from: props)
   }
-  
+
   private func updatePopup(tap: TapResult, point: CGPoint, size: CGSize) {
     tapPosition = TapPosition(x: point.x / size.width, y: point.y / size.height)
     tapInfo = TapInfo(id: "tap-\(Date.now.timeIntervalSince1970)", result: tap, point: point)
   }
-  
+
   private func queryLimits(at: CGPoint, map: MapboxMap) async -> LimitArea? {
-    if let conf = settings.conf, 
-        let raw = await map.queryVisibleFeatureProps(at, layers: conf.layers.limits, t: RawLimitArea.self),
-        let limits = try? raw.validate() {
+    if let conf = settings.conf,
+      let raw = await map.queryVisibleFeatureProps(
+        at, layers: conf.layers.limits, t: RawLimitArea.self),
+      let limits = try? raw.validate()
+    {
       return limits
     }
     return nil
   }
-  
+
   var body: some View {
     VStack {
       if let styleUri = viewModel.styleUri, let conf = settings.conf {
@@ -153,9 +157,10 @@ struct MainMapView<T>: View where T: MapViewModelLike {
                 .layerId(vesselIconsLayerId)
                 // Visible
                 PolylineAnnotationGroup(viewModel.tracks) { track in
-                  let isLatest = viewModel.latestTrackPoints.find { stp in
-                    stp.from.trackName == track.from.trackName
-                  } != nil
+                  let isLatest =
+                    viewModel.latestTrackPoints.find { stp in
+                      stp.from.trackName == track.from.trackName
+                    } != nil
                   return makePolyline(track: track)
                     .lineOpacity(isLatest ? 1.0 : 0.4)
                 }
@@ -174,7 +179,10 @@ struct MainMapView<T>: View where T: MapViewModelLike {
                   let point = TrophyPoint(from: latest.from)
                   makeTrophy(point: point)
                     .onTapGesture { ctx in
-                      updatePopup(tap: .trophy(info: TrophyInfo.fromPoint(trophyPoint: point), at: point.top.coord), point: ctx.point, size: reader.realSize)
+                      updatePopup(
+                        tap: .trophy(
+                          info: TrophyInfo.fromPoint(trophyPoint: point), at: point.top.coord),
+                        point: ctx.point, size: reader.realSize)
                       return true
                     }
                 }
@@ -182,7 +190,9 @@ struct MainMapView<T>: View where T: MapViewModelLike {
                   let fairwayPath = route.route.links.map { $0.to }
                   PolylineAnnotation(lineCoordinates: fairwayPath)
                   PolylineAnnotationGroup {
-                    PolylineAnnotation(lineCoordinates: [route.from, fairwayPath.first ?? route.from])
+                    PolylineAnnotation(lineCoordinates: [
+                      route.from, fairwayPath.first ?? route.from,
+                    ])
                     PolylineAnnotation(lineCoordinates: [fairwayPath.last ?? route.from, route.to])
                   }.lineDasharray([2, 4])
                 }
@@ -211,8 +221,12 @@ struct MainMapView<T>: View where T: MapViewModelLike {
                 }
               }
               .onLayersTapGesture(conf.layers.limits) { qf, ctx in
-                if let raw = parseProps(RawLimitArea.self, from: qf.feature), let limits = try? raw.validate() {
-                  updatePopup(tap: .limit(area: limits, at: ctx.coordinate), point: ctx.point, size: reader.realSize)
+                if let raw = parseProps(RawLimitArea.self, from: qf.feature),
+                  let limits = try? raw.validate()
+                {
+                  updatePopup(
+                    tap: .limit(area: limits, at: ctx.coordinate), point: ctx.point,
+                    size: reader.realSize)
                   return true
                 } else {
                   return false
@@ -220,7 +234,8 @@ struct MainMapView<T>: View where T: MapViewModelLike {
               }
               .onLayerTapGesture(vesselIconsLayerId) { (qf, ctx) in
                 if let meta = parseCustom(VesselMeta.self, from: qf.feature),
-                   let vessel = AISState.shared.info(meta.mmsi) {
+                  let vessel = AISState.shared.info(meta.mmsi)
+                {
                   updatePopup(tap: .vessel(info: vessel), point: ctx.point, size: reader.realSize)
                   return true
                 } else {
@@ -237,7 +252,8 @@ struct MainMapView<T>: View where T: MapViewModelLike {
                     tapCoord.distance(to: c1.coord) < tapCoord.distance(to: c2.coord)
                   }
                   if let closest = closest {
-                    let result: TapResult = .trailPoint(info: SingleTrackPoint(from: from, point: closest, bearing: nil))
+                    let result: TapResult = .trailPoint(
+                      info: SingleTrackPoint(from: from, point: closest, bearing: nil))
                     updatePopup(tap: result, point: ctx.point, size: reader.realSize)
                     return true
                   } else {
@@ -256,11 +272,13 @@ struct MainMapView<T>: View where T: MapViewModelLike {
                   return false
                 }
               }
-              .gestureHandlers(.init(onBegin: { gestureType in
-                if gestureType == .pan {
-                  viewModel.mapMode = .stay
-                }
-              }))
+              .gestureHandlers(
+                .init(onBegin: { gestureType in
+                  if gestureType == .pan {
+                    viewModel.mapMode = .stay
+                  }
+                })
+              )
               .onMapLongPressGesture { ctx in
                 let coord = ctx.coordinate
                 if let _ = routeState.start, let end = routeState.end {
@@ -273,7 +291,10 @@ struct MainMapView<T>: View where T: MapViewModelLike {
                   routeState = RouteState(start: coord, end: nil)
                 }
               }
-              .onReceive(viewModel.coordsPublisher.debounce(for: .seconds(1), scheduler: RunLoop.main).first()) { coords in
+              .onReceive(
+                viewModel.coordsPublisher.debounce(for: .seconds(1), scheduler: RunLoop.main)
+                  .first()
+              ) { coords in
                 if !cameraFitted {
                   cameraFitted = true
                   let coords = viewModel.tracks.flatMap { cd in
@@ -281,15 +302,22 @@ struct MainMapView<T>: View where T: MapViewModelLike {
                   }
                   if coords.count > 1 {
                     withViewportAnimation {
-                        viewport = .overview(geometry: LineString(coords.map { $0.coord}), geometryPadding: .init(top: 30, leading: 20, bottom: 30, trailing: 20))
-                      }
+                      viewport = .overview(
+                        geometry: LineString(coords.map { $0.coord }),
+                        geometryPadding: .init(top: 30, leading: 20, bottom: 30, trailing: 20))
+                    }
                   }
                 }
               }
               .onReceive(viewModel.coordsPublisher) { coords in
-                if let coords = coords, let latest = coords.coords.last, viewModel.mapMode == .follow {
+                if let coords = coords, let latest = coords.coords.last,
+                  viewModel.mapMode == .follow
+                {
                   let defaultPitch: CGFloat = 60
-                  let pitch = hasBeenFollowing ? viewport.camera?.pitch ?? viewport.overview?.pitch ?? defaultPitch : defaultPitch
+                  let pitch =
+                    hasBeenFollowing
+                    ? viewport.camera?.pitch ?? viewport.overview?.pitch ?? defaultPitch
+                    : defaultPitch
                   hasBeenFollowing = true
                   if let bearing = MapViewModel.adjustedBearing(data: coords) {
                     withViewportAnimation {
@@ -300,8 +328,11 @@ struct MainMapView<T>: View where T: MapViewModelLike {
                   }
                 }
               }
-              .popover(item: $tapInfo, attachmentAnchor: .point(.init(x: tapPosition.x, y: tapPosition.y))) { info in
-                if let lang = settings.lang, let specials = settings.languages?.finnish.specialWords {
+              .popover(
+                item: $tapInfo, attachmentAnchor: .point(.init(x: tapPosition.x, y: tapPosition.y))
+              ) { info in
+                if let lang = settings.lang, let specials = settings.languages?.finnish.specialWords
+                {
                   if #available(iOS 16.4, *) {
                     makePopup(tap: info.result, lang: lang, specials: specials)
                       .presentationCompactAdaptation(.popover)
@@ -331,9 +362,11 @@ struct MainMapView<T>: View where T: MapViewModelLike {
             MapButtonView(imageResource: "LocationArrow") {
               if viewModel.mapMode != .follow {
                 viewModel.mapMode = .follow
-                if let latestTrack = viewModel.latestTrack, let latest = viewModel.tracks.find({ cd in
-                  cd.from.trackName == latestTrack
-                }), let last = latest.coords.last {
+                if let latestTrack = viewModel.latestTrack,
+                  let latest = viewModel.tracks.find({ cd in
+                    cd.from.trackName == latestTrack
+                  }), let last = latest.coords.last
+                {
                   withViewportAnimation {
                     viewport = .camera(center: last.coord)
                   }

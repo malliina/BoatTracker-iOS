@@ -90,7 +90,7 @@ extension Array {
   }
 
   func flatMapOpt<U>(_ f: (Element) -> U?) -> [U] {
-    return self.map({ f($0) }).filter({ $0 != nil }).map({ $0! })
+    self.map({ f($0) }).filter({ $0 != nil }).map({ $0! })
   }
 
   func partition(_ f: (Element) -> Bool) -> ([Element], [Element]) {
@@ -115,11 +115,15 @@ extension Array {
   }
 
   func distinctIndices<U>(other: [U], compare: (Element, U) -> Bool) -> [Int] {
-    return self.indicesWhere { elem -> Bool in !other.contains { u -> Bool in compare(elem, u) } }
+    return self.indicesWhere { elem -> Bool in
+      !other.contains { u -> Bool in compare(elem, u) }
+    }
   }
 
   func indicesWhere(p: (Element) -> Bool) -> [Int] {
-    return self.enumerated().filter { (offset, elem) -> Bool in p(elem) }.map { $0.offset }
+    return self.enumerated().filter { (offset, elem) -> Bool in p(elem) }.map {
+      $0.offset
+    }
   }
 
   func mkString(_ sep: String) -> String {

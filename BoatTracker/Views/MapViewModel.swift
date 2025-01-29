@@ -1,7 +1,7 @@
+import Algorithms
 import Combine
 import Foundation
 import MapboxMaps
-import Algorithms
 
 protocol MapViewModelLike: ObservableObject {
   var vessels: [Vessel] { get }
@@ -21,7 +21,7 @@ protocol MapViewModelLike: ObservableObject {
   var activeTrack: ActiveTrack { get }
   // result from shortest path goes here
   var routeResult: RouteResult? { get set }
-  
+
   func shortest(from: CLLocationCoordinate2D, to: CLLocationCoordinate2D)
   func toggleFollow()
 }
@@ -40,7 +40,8 @@ extension MapViewModel: BoatSocketDelegate {
       data.from.trackName == coordsData.from.trackName
     }
     if let idx = idx {
-      modified[idx] = CoordsData(coords: modified[idx].coords + coordsData.coords, from: coordsData.from)
+      modified[idx] = CoordsData(
+        coords: modified[idx].coords + coordsData.coords, from: coordsData.from)
     } else {
       modified.append(coordsData)
     }
@@ -51,7 +52,7 @@ extension MapViewModel: BoatSocketDelegate {
 
 extension MapViewModel: VesselDelegate {
   func on(vessels: [Vessel]) async {
-      await update(vessels: vessels)
+    await update(vessels: vessels)
   }
 
   @MainActor private func update(vessels: [Vessel]) {
@@ -87,9 +88,9 @@ class MapViewModel: MapViewModelLike {
   var commands: Published<MapCommand?>.Publisher { $command }
   @Published var welcomeInfo: WelcomeInfo? = nil
   @Published var activeTrack = ActiveTrack()
-  
+
   @Published var tracks: [CoordsData] = []
-  var latestTrackPoints: [SingleTrackPoint] { 
+  var latestTrackPoints: [SingleTrackPoint] {
     tracks.compactMap { cd in
       if let last = cd.coords.last, let bearing = MapViewModel.adjustedBearing(data: cd) {
         SingleTrackPoint(from: cd.from, point: last, bearing: bearing)
@@ -101,18 +102,19 @@ class MapViewModel: MapViewModelLike {
     }
   }
   @Published var routeResult: RouteResult? = nil
-  
+
   static let defaultCenter = CLLocationCoordinate2D(latitude: 60.14, longitude: 24.9)
-  
+
   static func adjustedBearing(data: CoordsData) -> CLLocationDirection? {
     let lastTwo = Array(data.coords.suffix(2)).map { $0.coord }
     let bearing = lastTwo.count == 2 ? Geo.shared.bearing(from: lastTwo[0], to: lastTwo[1]) : nil
     if let bearing = bearing {
-      return data.from.sourceType.isBoat ? bearing : (bearing + 90).truncatingRemainder(dividingBy: 360)
+      return data.from.sourceType.isBoat
+        ? bearing : (bearing + 90).truncatingRemainder(dividingBy: 360)
     }
     return nil
   }
-  
+
   func prepare() async {
     do {
       let token = try Credentials.read(key: "MapboxAccessToken")
@@ -156,7 +158,7 @@ class MapViewModel: MapViewModelLike {
       log.error("Failed to load conf and style: '\(error.describe)'.")
     }
   }
-  
+
   func shortest(from: CLLocationCoordinate2D, to: CLLocationCoordinate2D) {
     log.info("Loading shortest route from \(from) to \(to)...")
     Task {
@@ -169,11 +171,11 @@ class MapViewModel: MapViewModelLike {
       }
     }
   }
-  
+
   @MainActor private func update(route: RouteResult) {
     routeResult = route
   }
-  
+
   @MainActor
   private func update(isConnected: Bool) {
     isFollowButtonHidden = !isConnected
@@ -188,7 +190,7 @@ class MapViewModel: MapViewModelLike {
     socket.updateToken(token: token?.token)
     socket.delegate = self
     socket.vesselDelegate = self
-    socket.reconnect(token: token?.token, track: nil) // is nil correct?
+    socket.reconnect(token: token?.token, track: nil)  // is nil correct?
     await setupUser(token: token?.token)
   }
 

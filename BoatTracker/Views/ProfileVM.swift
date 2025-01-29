@@ -16,9 +16,9 @@ class ProfileVM: ProfileProtocol, BoatSocketDelegate {
   @Published var state: ViewState = .idle
   @Published var tracks: [TrackRef] = []
   @Published var current: TrackName? = nil
-  
+
   var summary: TrackRef? = nil
-  
+
   private var summaryFromList: TrackRef? {
     tracks.first { ref in
       ref.trackName == current
@@ -26,16 +26,16 @@ class ProfileVM: ProfileProtocol, BoatSocketDelegate {
   }
 
   private var socket: BoatSocket? = nil
-    
+
   func connect(track: TrackName) {
     socket = Backend.shared.openStandalone(track: track, delegate: self)
   }
-  
+
   func disconnect() {
     socket?.close()
     socket = nil
   }
-  
+
   func onCoords(event: CoordsData) async {
     await update(ref: event.from)
   }
@@ -87,7 +87,7 @@ class ProfileVM: ProfileProtocol, BoatSocketDelegate {
   @MainActor private func update(ref: TrackRef) {
     summary = ref
   }
-  
+
   @MainActor private func update(viewState: ViewState) {
     state = viewState
   }

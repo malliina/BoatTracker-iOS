@@ -30,7 +30,8 @@ class WebSocket: NSObject, URLSessionWebSocketDelegate {
 
   private func prepTask() {
     session = URLSession(
-      configuration: sessionConfiguration, delegate: self, delegateQueue: OperationQueue())
+      configuration: sessionConfiguration, delegate: self,
+      delegateQueue: OperationQueue())
     task = session?.webSocketTask(with: request)
   }
 
@@ -45,7 +46,8 @@ class WebSocket: NSObject, URLSessionWebSocketDelegate {
         .string(msg),
         completionHandler: { error in
           if let error = error {
-            self.log.warn("Failed to send '\(msg)' over socket \(self.baseURL). \(error)")
+            self.log.warn(
+              "Failed to send '\(msg)' over socket \(self.baseURL). \(error)")
           }
         })
       return true
@@ -59,7 +61,9 @@ class WebSocket: NSObject, URLSessionWebSocketDelegate {
   func updateAuthHeader(newValue: String?) {
     request.setValue(newValue, forHTTPHeaderField: Headers.authorization)
     if let value = newValue {
-      sessionConfiguration.httpAdditionalHeaders = [Headers.authorization: value]
+      sessionConfiguration.httpAdditionalHeaders = [
+        Headers.authorization: value
+      ]
     } else {
       sessionConfiguration.httpAdditionalHeaders = [:]
     }

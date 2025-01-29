@@ -88,7 +88,7 @@ class BoatTokensVM: BoatTokensProtocol {
       if isEnabled {
         try await registerNotifications()
       } else {
-        
+
       }
     } catch {
       let word = isEnabled ? "enable" : "disable"
@@ -105,7 +105,7 @@ class BoatTokensVM: BoatTokensProtocol {
       await openNotificationSettings()
     }
   }
-  
+
   @MainActor
   func openNotificationSettings() {
     if let url = URL(string: appNotificationSettingsUrl) {

@@ -15,7 +15,8 @@ class MicrosoftAuth {
     // redirectUri: The redirect URI of the application. You can pass 'nil' to use the default value, or your custom redirect URI.
     let msalConfiguration = MSALPublicClientApplicationConfig(
       clientId: clientId, redirectUri: nil, authority: authority)
-    self.applicationContext = try! MSALPublicClientApplication(configuration: msalConfiguration)
+    self.applicationContext = try! MSALPublicClientApplication(
+      configuration: msalConfiguration)
   }
 
   func obtainToken(from: UIViewController?) async throws -> UserToken {
@@ -23,21 +24,27 @@ class MicrosoftAuth {
       MSALWebviewParameters(authPresentationViewController: vc)
     }
     let result = try await loadAccount(webViewParameter: webViewParameters)
-    if let claims = result.account.accountClaims, let email = claims["email"] as? String,
+    if let claims = result.account.accountClaims,
+      let email = claims["email"] as? String,
       let idToken = result.idToken
     {
       self.log.info("Email is \(email)")
       return UserToken(email: email, token: AccessToken(idToken))
     } else {
-      throw AppError.simple("Unable to extract email and ID token from Microsoft auth response.")
+      throw AppError.simple(
+        "Unable to extract email and ID token from Microsoft auth response.")
     }
   }
 
-  func loadAccount(webViewParameter: MSALWebviewParameters?) async throws -> MSALResult {
+  func loadAccount(webViewParameter: MSALWebviewParameters?) async throws
+    -> MSALResult
+  {
     if let account = try await loadCurrentAccount() {
-      return try await acquireTokenSilently(account, webViewParameters: webViewParameter)
+      return try await acquireTokenSilently(
+        account, webViewParameters: webViewParameter)
     } else if let webViewParameter = webViewParameter {
-      return try await acquireTokenInteractively(webViewParameters: webViewParameter)
+      return try await acquireTokenInteractively(
+        webViewParameters: webViewParameter)
     } else {
       throw AppError.simple("Account signed out and no interaction available.")
     }
@@ -53,7 +60,8 @@ class MicrosoftAuth {
           self.log.error("Couldn't query current account with error: \(error)")
           cont.resume(throwing: error)
         }
-        if let currentAccount = currentAccount, let username = currentAccount.username,
+        if let currentAccount = currentAccount,
+          let username = currentAccount.username,
           let email = currentAccount.accountClaims?["email"] as? String
         {
           self.log.info(
@@ -69,7 +77,8 @@ class MicrosoftAuth {
   }
 
   @MainActor
-  func acquireTokenInteractively(webViewParameters: MSALWebviewParameters) async throws
+  func acquireTokenInteractively(webViewParameters: MSALWebviewParameters)
+    async throws
     -> MSALResult
   {
     let parameters = MSALInteractiveTokenParameters(
@@ -83,7 +92,9 @@ class MicrosoftAuth {
     return result
   }
 
-  func acquireTokenSilently(_ account: MSALAccount, webViewParameters: MSALWebviewParameters?)
+  func acquireTokenSilently(
+    _ account: MSALAccount, webViewParameters: MSALWebviewParameters?
+  )
     async throws -> MSALResult
   {
     /**
@@ -101,8 +112,10 @@ class MicrosoftAuth {
 
     let parameters = MSALSilentTokenParameters(scopes: scopes, account: account)
     do {
-      let result = try await applicationContext.acquireTokenSilent(with: parameters)
-      if let claims = result.account.accountClaims, let email = claims["email"] {
+      let result = try await applicationContext.acquireTokenSilent(
+        with: parameters)
+      if let claims = result.account.accountClaims, let email = claims["email"]
+      {
         log.info("Email is \(email)")
       }
       return result
@@ -111,13 +124,16 @@ class MicrosoftAuth {
       // interactionRequired means we need to ask the user to sign-in. This usually happens
       // when the user's Refresh Token is expired or if the user has changed their password
       // among other possible reasons.
-      if nsError.domain == MSALErrorDomain && nsError.code == MSALError.interactionRequired.rawValue
+      if nsError.domain == MSALErrorDomain
+        && nsError.code == MSALError.interactionRequired.rawValue
       {
         if let webViewParameters = webViewParameters {
-          return try await acquireTokenInteractively(webViewParameters: webViewParameters)
+          return try await acquireTokenInteractively(
+            webViewParameters: webViewParameters)
         } else {
           throw AppError.simple(
-            "Interaction required to complete Microsoft auth, but not in an interactive context.")
+            "Interaction required to complete Microsoft auth, but not in an interactive context."
+          )
         }
       } else {
         log.warn("Could not acquire token silently: \(error)")
@@ -138,10 +154,12 @@ class MicrosoftAuth {
   @MainActor
   func signOutFromAccount(from: UIViewController) async throws -> MSALAccount? {
     let params = MSALSignoutParameters(
-      webviewParameters: MSALWebviewParameters(authPresentationViewController: from))
+      webviewParameters: MSALWebviewParameters(
+        authPresentationViewController: from))
     let account = try await loadCurrentAccount()
     if let account = account {
-      try await applicationContext.signout(with: account, signoutParameters: params)
+      try await applicationContext.signout(
+        with: account, signoutParameters: params)
       return account
     } else {
       return nil

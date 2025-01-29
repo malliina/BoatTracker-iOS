@@ -65,9 +65,9 @@ class TracksViewModel: TracksProtocol {
   @Published var tracks: [TrackRef] = []
   @Published var error: Error?
   @Published private(set) var hasMore = false
-  
+
   let limit = 50
-  
+
   func load() async {
     do {
       let batch = try await http.tracks(limit: limit, offset: self.tracks.count)
@@ -77,7 +77,7 @@ class TracksViewModel: TracksProtocol {
       await update(error: error)
     }
   }
-  
+
   func loadMore() async {
     log.info("Loading more tracks with limit \(limit) and offset \(self.tracks.count)...")
     await load()
@@ -88,7 +88,8 @@ class TracksViewModel: TracksProtocol {
       let res = try await http.changeTrackTitle(name: track, title: title)
       log.info(
         "Updated title of \(res.track.trackName) to \(res.track.trackTitle?.title ?? "no title")")
-      await update(ts: try await http.tracks(limit: self.tracks.count, offset: 0), hasMore: self.hasMore)
+      await update(
+        ts: try await http.tracks(limit: self.tracks.count, offset: 0), hasMore: self.hasMore)
     } catch {
       log.error("Failed to rename track \(track) to \(title).")
       await update(error: error)

@@ -39,7 +39,9 @@ class BoatPrefs {
 
   var authProvider: AuthProvider {
     get {
-      guard let str = prefs.string(forKey: authProviderKey) else { return .none }
+      guard let str = prefs.string(forKey: authProviderKey) else {
+        return .none
+      }
       return AuthProvider(rawValue: str) ?? .none
     }
     set(newValue) {

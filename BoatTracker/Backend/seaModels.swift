@@ -15,17 +15,17 @@ enum LimitType: Decodable {
 
   func translate(lang: LimitTypes) -> String {
     switch self {
-    case .speedLimit: return lang.speedLimit
-    case .noWaves: return lang.noWaves
-    case .noWindSurfing: return lang.noWindSurfing
-    case .noJetSkiing: return lang.noJetSkiing
-    case .noMotorPower: return lang.noMotorPower
-    case .noAnchoring: return lang.noAnchoring
-    case .noStopping: return lang.noStopping
-    case .noAttachment: return lang.noAttachment
-    case .noOvertaking: return lang.noOvertaking
-    case .noRendezVous: return lang.noRendezVous
-    case .speedRecommendation: return lang.speedRecommendation
+    case .speedLimit: lang.speedLimit
+    case .noWaves: lang.noWaves
+    case .noWindSurfing: lang.noWindSurfing
+    case .noJetSkiing: lang.noJetSkiing
+    case .noMotorPower: lang.noMotorPower
+    case .noAnchoring: lang.noAnchoring
+    case .noStopping: lang.noStopping
+    case .noAttachment: lang.noAttachment
+    case .noOvertaking: lang.noOvertaking
+    case .noRendezVous: lang.noRendezVous
+    case .speedRecommendation: lang.speedRecommendation
     }
   }
 
@@ -36,17 +36,17 @@ enum LimitType: Decodable {
 
   static func parse(input: String) throws -> LimitType {
     switch input {
-    case "01": return .speedLimit
-    case "02": return .noWaves
-    case "03": return .noWindSurfing
-    case "04": return .noJetSkiing
-    case "05": return .noMotorPower
-    case "06": return .noAnchoring
-    case "07": return .noStopping
-    case "08": return .noAttachment
-    case "09": return .noOvertaking
-    case "10": return .noRendezVous
-    case "11": return .speedRecommendation
+    case "01": .speedLimit
+    case "02": .noWaves
+    case "03": .noWindSurfing
+    case "04": .noJetSkiing
+    case "05": .noMotorPower
+    case "06": .noAnchoring
+    case "07": .noStopping
+    case "08": .noAttachment
+    case "09": .noOvertaking
+    case "10": .noRendezVous
+    case "11": .speedRecommendation
     default: throw JsonError.invalid("Unknown limit type: '\(input)'.", input)
     }
   }
@@ -63,7 +63,9 @@ struct RawLimitArea: Decodable {
 
   func validate() throws -> LimitArea {
     LimitArea(
-      types: try types.components(separatedBy: ", ").map { try LimitType.parse(input: $0) },
+      types: try types.components(separatedBy: ", ").map {
+        try LimitType.parse(input: $0)
+      },
       limit: limit.flatMap { $0.kmh },
       length: length.flatMap { Double($0)?.meters },
       responsible: responsible.flatMap { NonEmptyString.validate($0) },
