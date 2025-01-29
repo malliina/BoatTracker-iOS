@@ -74,6 +74,7 @@
 		7DAE8A812C8C392600FB797E /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 7DAE8A802C8C392600FB797E /* Algorithms */; };
 		7DDBA9A727773D3900108B24 /* AppleAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DDBA9A627773D3900108B24 /* AppleAuth.swift */; };
 		B01251A72A4582C600A267C9 /* conf.json in Resources */ = {isa = PBXBuildFile; fileRef = B01251A62A4582C600A267C9 /* conf.json */; };
+		B01E79342D4AAC68009EC1CF /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = B01E79332D4AAC68009EC1CF /* LICENSE */; };
 		B01EE5982B13466500BBB8DA /* views.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01EE5972B13466500BBB8DA /* views.swift */; };
 		B02A812E2922C46900848949 /* LanguageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02A812D2922C46900848949 /* LanguageView.swift */; };
 		B02EC50E2909B41A00D21793 /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02EC50D2909B41A00D21793 /* MapViewModel.swift */; };
@@ -229,6 +230,7 @@
 		7D528E6127B9682F00C55F06 /* WebSocket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocket.swift; sourceTree = "<group>"; };
 		7DDBA9A627773D3900108B24 /* AppleAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleAuth.swift; sourceTree = "<group>"; };
 		B01251A62A4582C600A267C9 /* conf.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = conf.json; path = BoatTracker/conf.json; sourceTree = "<group>"; };
+		B01E79332D4AAC68009EC1CF /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		B01EE5972B13466500BBB8DA /* views.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = views.swift; sourceTree = "<group>"; };
 		B02A812D2922C46900848949 /* LanguageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageView.swift; sourceTree = "<group>"; };
 		B02EC50D2909B41A00D21793 /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
@@ -430,6 +432,7 @@
 				7D15B6E32AE5761400C47F76 /* fastlane */,
 				B01251A62A4582C600A267C9 /* conf.json */,
 				7D15B6DF2AE575E600C47F76 /* README.md */,
+				B01E79332D4AAC68009EC1CF /* LICENSE */,
 				B05D66952A0177BF002E784F /* ci_scripts */,
 				61B07C5E20F21DC300D8B7E0 /* BoatTracker */,
 				61B07C7320F21DC400D8B7E0 /* BoatTrackerTests */,
@@ -720,6 +723,7 @@
 			files = (
 				7D15B6E02AE575E600C47F76 /* README.md in Resources */,
 				61B07C6A20F21DC400D8B7E0 /* LaunchScreen.storyboard in Resources */,
+				B01E79342D4AAC68009EC1CF /* LICENSE in Resources */,
 				B01251A72A4582C600A267C9 /* conf.json in Resources */,
 				7D15B6E22AE5760100C47F76 /* .github in Resources */,
 				61B07C6720F21DC400D8B7E0 /* Assets.xcassets in Resources */,
