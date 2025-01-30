@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import MapboxMaps
 
 struct ProfileInfo: Identifiable {
   let user: UserToken
@@ -34,11 +35,16 @@ struct ProfileView<T>: View where T: ProfileProtocol {
           Text(info.lang.messages.noSavedTracks)
             .foregroundColor(color.secondaryText)
         } else if vm.state == .loading {
-          HStack {
-            Spacer()
-            ProgressView()
-            Spacer()
-          }.frame(height: 228)
+          ZStack {
+            TrackSummaryView(track: ProfileVM.emptySummary, lang: summaryLang)
+              .frame(maxWidth: .infinity, alignment: .center)
+              .opacity(0)
+            HStack {
+              Spacer()
+              ProgressView()
+              Spacer()
+            }
+          }
         } else if vm.state == .failed {
           Text("Failed to load tracks.")
         } else {
@@ -46,16 +52,21 @@ struct ProfileView<T>: View where T: ProfileProtocol {
         }
       }
       BoatSection {
-        if let summary = vm.summary {
-          NavigationLink {
+        NavigationLink {
+          if let summary = vm.summary {
             ChartsView(
               lang: ChartLang.build(lang),
               title: summary.trackTitle?.description ?? summary.startDate,
               trackName: summary.trackName)
-          } label: {
-            Text(lang.track.graph)
+          } else {
+            ChartsView(
+              lang: ChartLang.build(lang),
+              title: "",
+              trackName: TrackName(""))
           }
-        }
+        } label: {
+          Text(lang.track.graph)
+        }.disabled(vm.summary == nil)
         NavigationLink {
           TracksView<TracksViewModel>(lang: summaryLang, activeTrack: activeTrack) {
             dismiss()
@@ -164,11 +175,16 @@ struct ProfileView<T>: View where T: ProfileProtocol {
   }
 }
 
-struct ProfilePreviews: BoatPreviewProvider, PreviewProvider {
+struct ProfilePreviews: PreviewProvider {
+  static let previewTrack = ProfileVM.emptySummary
   class PreviewsVM: ProfileProtocol {
-    var state: ViewState { .content }
-
-    var summary: TrackRef? { nil }
+    let state: ViewState
+    let summary: TrackInfo?
+    
+    init(state: ViewState, summary: TrackInfo?) {
+      self.state = state
+      self.summary = summary
+    }
 
     func versionText(lang: Lang) -> String? {
       "Version preview"
@@ -187,12 +203,25 @@ struct ProfilePreviews: BoatPreviewProvider, PreviewProvider {
       false
     }
   }
-  static var preview: some View {
-    ProfileView<PreviewsVM>(
-      info: ProfileInfo(
-        user: UserToken(email: "a@b.com", token: AccessToken("abc")), current: nil, lang: lang)
-    )
-    .environmentObject(PreviewsVM())
-    .environmentObject(ActiveTrack())
+  
+  static var previews: some View {
+    ForEach(BoatPreviews.shared.devices, id: \.self) { deviceName in
+      Group {
+        ProfileView<PreviewsVM>(
+          info: ProfileInfo(
+            user: UserToken(email: "a@b.com", token: AccessToken("abc")), current: nil, lang: lang)
+        )
+        .environmentObject(PreviewsVM(state: .content, summary: previewTrack))
+        .environmentObject(ActiveTrack())
+        ProfileView<PreviewsVM>(
+          info: ProfileInfo(
+            user: UserToken(email: "a@b.com", token: AccessToken("abc")), current: nil, lang: lang)
+        )
+        .environmentObject(PreviewsVM(state: .loading, summary: nil))
+        .environmentObject(ActiveTrack())
+      }
+      .previewDevice(PreviewDevice(rawValue: deviceName))
+      .previewDisplayName(deviceName)
+    }
   }
 }

@@ -1,8 +1,9 @@
 import Foundation
+import MapboxMaps
 
 protocol ProfileProtocol: ObservableObject {
   var state: ViewState { get }
-  var summary: TrackRef? { get }
+  var summary: TrackInfo? { get }
   func versionText(lang: Lang) -> String?
   func loadTracks(latest: TrackName?) async
   func disconnect()
@@ -17,7 +18,14 @@ class ProfileVM: ProfileProtocol, BoatSocketDelegate {
   @Published var tracks: [TrackRef] = []
   @Published var current: TrackName? = nil
 
-  var summary: TrackRef? = nil
+  static let emptySummary = TrackInfo2(
+    trackName: TrackName("Track"), trackTitle: nil,
+    duration: 10.seconds, distanceMeters: 20.meters, topSpeed: 30.knots,
+    avgSpeed: 24.knots,
+    avgWaterTemp: 14.celsius, avgOutsideTemp: 11.celsius, startDate: "Today",
+    sourceType: .boat)
+  
+  var summary: TrackInfo? = nil
 
   private var summaryFromList: TrackRef? {
     tracks.first { ref in

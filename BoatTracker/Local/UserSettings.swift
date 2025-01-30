@@ -1,9 +1,5 @@
 import Foundation
 
-protocol LanguageChangedDelegate {
-  func onLanguage(changed: Lang)
-}
-
 enum AuthProvider: String {
   case google = "google"
   case microsoft = "microsoft"

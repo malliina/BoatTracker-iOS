@@ -15,7 +15,7 @@ class Json {
 
   func parse<T: Decodable>(_ t: T.Type, from: JSONObject) throws -> T {
     let data = try JSONSerialization.data(
-      withJSONObject: from.rawValue, options: .prettyPrinted)
+      withJSONObject: from.turfRawValue, options: .prettyPrinted)
     return try parse(t, data: data)
   }
 
@@ -39,7 +39,7 @@ class Json {
     let json = try JSONSerialization.jsonObject(
       with: data, options: [.allowFragments])
     guard let dict = json as? [String: Any?],
-      let turfJson = JSONObject(rawValue: dict)
+      let turfJson = JSONObject(turfRawValue: dict)
     else {
       throw JsonError.notJson(data)
     }
@@ -54,10 +54,10 @@ class Json {
       return .boolean(bool)
     } else if let string = rawValue as? String {
       return .string(string)
-    } else if let rawArray = rawValue as? JSONArray.RawValue {
+    } else if let rawArray = rawValue as? JSONArray.TurfRawValue {
       return .array(
         rawArray.compactMap { e in e }.map { e in parse(rawValue: e) })
-    } else if let rawObject = rawValue as? JSONObject.RawValue {
+    } else if let rawObject = rawValue as? JSONObject.TurfRawValue {
       return .object(rawObject.mapValues { $0.flatMap(parse(rawValue:)) })
     } else {
       return nil
