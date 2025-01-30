@@ -97,6 +97,7 @@ class ProfileVM: ProfileProtocol, BoatSocketDelegate {
   }
 
   @MainActor private func update(viewState: ViewState) {
+    log.info("State to \(viewState)...")
     state = viewState
   }
 
@@ -106,7 +107,7 @@ class ProfileVM: ProfileProtocol, BoatSocketDelegate {
     state = ts.isEmpty ? .empty : .content
     summary = ts.first { ref in
       ref.trackName == trackName
-    }
+    } ?? ts.first
   }
 
   @MainActor private func update(err: Error) {

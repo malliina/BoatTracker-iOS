@@ -28,27 +28,23 @@ struct ProfileView<T>: View where T: ProfileProtocol {
   var body: some View {
     BoatList {
       BoatSection {
-        if let summary = vm.summary, vm.state == .content {
-          TrackSummaryView(track: summary, lang: summaryLang)
-            .frame(maxWidth: .infinity, alignment: .center)
-        } else if vm.state == .empty {
-          Text(info.lang.messages.noSavedTracks)
-            .foregroundColor(color.secondaryText)
-        } else if vm.state == .loading {
+        if vm.state == .loading {
           ZStack {
             TrackSummaryView(track: ProfileVM.emptySummary, lang: summaryLang)
               .frame(maxWidth: .infinity, alignment: .center)
               .opacity(0)
-            HStack {
-              Spacer()
-              ProgressView()
-              Spacer()
-            }
+            LoadingView()
           }
+        } else if let summary = vm.summary, vm.state == .content {
+          TrackSummaryView(track: summary, lang: summaryLang)
+            .frame(maxWidth: .infinity, alignment: .center)
+        } else if vm.state == .empty {
+          Text(lang.messages.noSavedTracks)
+            .foregroundColor(color.secondaryText)
         } else if vm.state == .failed {
-          Text("Failed to load tracks.")
+          Text(lang.messages.failedToLoadProfile)
         } else {
-          EmptyView()
+          Text("")
         }
       }
       BoatSection {

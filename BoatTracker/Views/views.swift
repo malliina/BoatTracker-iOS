@@ -13,6 +13,16 @@ struct NavLink: View {
   }
 }
 
+struct LoadingView: View {
+  var body: some View {
+    HStack {
+      Spacer()
+      ProgressView()
+      Spacer()
+    }
+  }
+}
+
 enum ViewState {
   case empty
   case content
