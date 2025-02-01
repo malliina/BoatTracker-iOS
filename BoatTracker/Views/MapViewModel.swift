@@ -1,7 +1,7 @@
+import Algorithms
 import Combine
 import Foundation
 import MapboxMaps
-import Algorithms
 
 protocol MapViewModelLike: ObservableObject {
   var vessels: [Vessel] { get }
@@ -21,10 +21,51 @@ protocol MapViewModelLike: ObservableObject {
   var activeTrack: ActiveTrack { get }
   // result from shortest path goes here
   var routeResult: RouteResult? { get set }
-  
+
   func shortest(from: CLLocationCoordinate2D, to: CLLocationCoordinate2D)
+<<<<<<< HEAD
   func toggleFollow() async
   func vesselInfo(_ mmsi: Mmsi) -> Vessel?
+=======
+  func toggleFollow()
+}
+
+extension MapViewModel: BoatSocketDelegate {
+  func onCoords(event: CoordsData) {
+    Task {
+      await update(coordsData: event)
+    }
+  }
+
+  @MainActor private func update(coordsData: CoordsData) {
+    coords = coordsData
+    var modified = tracks
+    let idx = modified.indexOf { data in
+      data.from.trackName == coordsData.from.trackName
+    }
+    if let idx = idx {
+      modified[idx] = CoordsData(
+        coords: modified[idx].coords + coordsData.coords, from: coordsData.from)
+    } else {
+      modified.append(coordsData)
+    }
+    tracks = modified
+    log.info("Got \(coordsData.coords.count) coords, tracks now has \(tracks.count) elements")
+  }
+}
+
+extension MapViewModel: VesselDelegate {
+  func on(vessels: [Vessel]) async {
+    await update(vessels: vessels)
+  }
+
+  @MainActor private func update(vessels: [Vessel]) {
+    self.vessels = vessels
+    self.allVessels = (self.allVessels + vessels).uniqued { vessel in
+      vessel.mmsi
+    }
+  }
+>>>>>>> dcc278cfef65e6695698ce53737e232a163e3dcb
 }
 
 class MapViewModel: MapViewModelLike {
@@ -52,9 +93,9 @@ class MapViewModel: MapViewModelLike {
   var commands: Published<MapCommand?>.Publisher { $command }
   @Published var welcomeInfo: WelcomeInfo? = nil
   @Published var activeTrack = ActiveTrack()
-  
+
   @Published var tracks: [CoordsData] = []
-  var latestTrackPoints: [SingleTrackPoint] { 
+  var latestTrackPoints: [SingleTrackPoint] {
     tracks.compactMap { cd in
       if let last = cd.coords.last, let bearing = MapViewModel.adjustedBearing(data: cd) {
         SingleTrackPoint(from: cd.from, point: last, bearing: bearing)
@@ -66,20 +107,25 @@ class MapViewModel: MapViewModelLike {
     }
   }
   @Published var routeResult: RouteResult? = nil
-  
+
   static let defaultCenter = CLLocationCoordinate2D(latitude: 60.14, longitude: 24.9)
+<<<<<<< HEAD
   
   private var cancellables: [Task<(), Never>] = []
   
+=======
+
+>>>>>>> dcc278cfef65e6695698ce53737e232a163e3dcb
   static func adjustedBearing(data: CoordsData) -> CLLocationDirection? {
     let lastTwo = Array(data.coords.suffix(2)).map { $0.coord }
     let bearing = lastTwo.count == 2 ? Geo.shared.bearing(from: lastTwo[0], to: lastTwo[1]) : nil
     if let bearing = bearing {
-      return data.from.sourceType.isBoat ? bearing : (bearing + 90).truncatingRemainder(dividingBy: 360)
+      return data.from.sourceType.isBoat
+        ? bearing : (bearing + 90).truncatingRemainder(dividingBy: 360)
     }
     return nil
   }
-  
+
   func prepare() async {
     do {
       let token = try Credentials.read(key: "MapboxAccessToken")
@@ -123,7 +169,7 @@ class MapViewModel: MapViewModelLike {
       log.error("Failed to load conf and style: '\(error.describe)'.")
     }
   }
-  
+
   func shortest(from: CLLocationCoordinate2D, to: CLLocationCoordinate2D) {
     log.info("Loading shortest route from \(from) to \(to)...")
     Task {
@@ -136,6 +182,18 @@ class MapViewModel: MapViewModelLike {
       }
     }
   }
+<<<<<<< HEAD
+=======
+
+  @MainActor private func update(route: RouteResult) {
+    routeResult = route
+  }
+
+  @MainActor
+  private func update(isConnected: Bool) {
+    isFollowButtonHidden = !isConnected
+  }
+>>>>>>> dcc278cfef65e6695698ce53737e232a163e3dcb
 
   func reload(token: UserToken?) async {
     log.info("Reloading with \(token?.email ?? "no user")")
@@ -143,6 +201,7 @@ class MapViewModel: MapViewModelLike {
     await disconnect()
     await update(allVessels: [])
     socket.updateToken(token: token?.token)
+<<<<<<< HEAD
     cancellables = [
       Task {
         for await cd in socket.updates.values {
@@ -156,6 +215,11 @@ class MapViewModel: MapViewModelLike {
       }
     ]
     socket.reconnect(token: token?.token, track: nil) // is nil correct?
+=======
+    socket.delegate = self
+    socket.vesselDelegate = self
+    socket.reconnect(token: token?.token, track: nil)  // is nil correct?
+>>>>>>> dcc278cfef65e6695698ce53737e232a163e3dcb
     await setupUser(token: token?.token)
   }
 

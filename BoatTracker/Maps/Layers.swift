@@ -30,7 +30,11 @@ class Layers {
     icon(id: id, source: source, iconImageName: boatIcon)
   }
 
-  static func icon(id: String, source: String, iconImageName: String, iconSize: Double = 0.7) -> SymbolLayer {
+  static func icon(
+    id: String, source: String, iconImageName: String, iconSize: Double = 0.7
+  )
+    -> SymbolLayer
+  {
     var iconLayer = SymbolLayer(id: id, source: source)
     iconLayer.iconImage = .constant(.name(iconImageName))
     iconLayer.iconSize = .constant(iconSize)
@@ -39,14 +43,23 @@ class Layers {
     return iconLayer
   }
 
-  static func line(id: String, source: String, color: UIColor = .black, minimumZoomLevel: Double? = nil, opacity: Double = 1.0, width: Double = 1.0)
+  static func line(
+    id: String, source: String, color: UIColor = .black,
+    minimumZoomLevel: Double? = nil,
+    opacity: Double = 1.0, width: Double = 1.0
+  )
     -> LineLayer
   {
-    customLine(id: id, source: source, color: StyleColor(color), minimumZoomLevel: minimumZoomLevel, opacity: opacity, width: width)
+    customLine(
+      id: id, source: source, color: StyleColor(color),
+      minimumZoomLevel: minimumZoomLevel,
+      opacity: opacity, width: width)
   }
 
   static func customLine(
-    id: String, source: String, color: StyleColor, minimumZoomLevel: Double? = nil, opacity: Double = 1.0, width: Double = 1.0
+    id: String, source: String, color: StyleColor,
+    minimumZoomLevel: Double? = nil,
+    opacity: Double = 1.0, width: Double = 1.0
   ) -> LineLayer {
     var lineLayer = LineLayer(id: id, source: source)
     lineLayer.lineJoin = .constant(.round)
@@ -82,20 +95,33 @@ class LayerSource<L: Layer> {
 }
 
 extension LayerSource where L == LineLayer {
-  convenience init(lineId: String, lineColor: UIColor = .black, minimumZoomLevel: Double? = nil, opacity: Double = 1.0, width: Double = 1.0) {
-    let layer = Layers.line(id: lineId, source: lineId, color: lineColor, minimumZoomLevel: minimumZoomLevel, opacity: opacity, width: width)
+  convenience init(
+    lineId: String, lineColor: UIColor = .black,
+    minimumZoomLevel: Double? = nil,
+    opacity: Double = 1.0, width: Double = 1.0
+  ) {
+    let layer = Layers.line(
+      id: lineId, source: lineId, color: lineColor,
+      minimumZoomLevel: minimumZoomLevel,
+      opacity: opacity, width: width)
     self.init(layer: layer, source: lineId)
   }
 
-  convenience init(lineId: String, lineColor: StyleColor, minimumZoomLevel: Double? = nil) {
-    let layer = Layers.customLine(id: lineId, source: lineId, color: lineColor, minimumZoomLevel: minimumZoomLevel)
+  convenience init(
+    lineId: String, lineColor: StyleColor, minimumZoomLevel: Double? = nil
+  ) {
+    let layer = Layers.customLine(
+      id: lineId, source: lineId, color: lineColor,
+      minimumZoomLevel: minimumZoomLevel)
     self.init(layer: layer, source: lineId)
   }
 }
 
 extension LayerSource where L == SymbolLayer {
   convenience init(iconId: String, iconImageName: String, iconSize: Double) {
-    let layer = Layers.icon(id: iconId, source: iconId, iconImageName: iconImageName, iconSize: iconSize)
+    let layer = Layers.icon(
+      id: iconId, source: iconId, iconImageName: iconImageName,
+      iconSize: iconSize)
     self.init(layer: layer, source: iconId)
   }
 }

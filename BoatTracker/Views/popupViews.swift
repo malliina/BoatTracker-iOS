@@ -8,7 +8,7 @@ struct TrophyInfo {
   let outsideTemp: Temperature?
   let altitude: Distance?
   let isBoat: Bool
-  
+
   static func fromPoint(trophyPoint: TrophyPoint) -> TrophyInfo {
     return TrophyInfo(
       name: trophyPoint.from.boatName,
@@ -31,7 +31,7 @@ struct TrophyView: View {
     guard let altitude = info.altitude else { return nil }
     return InfoItem(lang.track.env.altitude, altitude.formatMeters)
   }
-  
+
   func boatNameItem() -> InfoItem {
     return InfoItem(lang.settings.boat, info.name.name)
   }
@@ -39,7 +39,8 @@ struct TrophyView: View {
   var body: some View {
     InfoView(
       title: info.speed.formatted(isBoat: info.isBoat),
-      items: [boatNameItem()] + tempItem().toList + altitudeItem().toList, footer: info.dateTime, leftColumnSize: .fixed(120))
+      items: [boatNameItem()] + tempItem().toList + altitudeItem().toList, footer: info.dateTime,
+      leftColumnSize: .fixed(120))
   }
 }
 
@@ -219,24 +220,24 @@ struct AreaView: View {
 struct TrailView: View {
   let info: TrackPoint
   let lang: Lang
-  var coord: CoordBody { info.start } // we use the start coord arbitrarily, close enough, could be end coord just as well
-  
+  var coord: CoordBody { info.start }  // we use the start coord arbitrarily, close enough, could be end coord just as well
+
   func altitudeItem() -> InfoItem? {
     guard let altitude = coord.altitude else { return nil }
     return InfoItem(lang.track.env.altitude, altitude.formatMeters)
   }
-  
+
   func temperatureItem() -> InfoItem? {
     guard let outsideTemp = coord.outsideTemp else { return nil }
     return InfoItem(lang.track.temperature, outsideTemp.formatCelsius)
   }
-  
+
   func items() -> [InfoItem] {
     [
       InfoItem(lang.track.speed, info.avgSpeed.formatted(isBoat: info.isBoat))
     ] + temperatureItem().toList + altitudeItem().toList
   }
-  
+
   var body: some View {
     InfoView(title: info.boatName.name, items: items(), footer: info.start.time.dateTime)
   }
@@ -245,29 +246,30 @@ struct TrailView: View {
 struct TrailPointView: View {
   let info: SingleTrackPoint
   let lang: Lang
-  var coord: CoordBody { info.point } // we use the start coord arbitrarily, close enough, could be end coord just as well
-  
+  var coord: CoordBody { info.point }  // we use the start coord arbitrarily, close enough, could be end coord just as well
+
   func altitudeItem() -> InfoItem? {
     guard let altitude = coord.altitude else { return nil }
     return InfoItem(lang.track.env.altitude, altitude.formatMeters)
   }
-  
+
   func temperatureItem() -> InfoItem? {
     guard let outsideTemp = coord.outsideTemp else { return nil }
     return InfoItem(lang.track.temperature, outsideTemp.formatCelsius)
   }
-  
+
   func items() -> [InfoItem] {
     [
       InfoItem(lang.track.speed, info.avgSpeed.formatted(isBoat: info.isBoat))
     ] + temperatureItem().toList + altitudeItem().toList
   }
-  
+
   var body: some View {
-    InfoView(title: info.boatName.name, items: items(), footer: info.point.time.dateTime, leftColumnSize: .fixed(100))
+    InfoView(
+      title: info.boatName.name, items: items(), footer: info.point.time.dateTime,
+      leftColumnSize: .fixed(100))
   }
 }
-
 
 struct InfoItem {
   let key, value: String

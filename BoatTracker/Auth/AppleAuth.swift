@@ -13,7 +13,9 @@ class AppleAuth: NSObject {
   private var currentNonce: String? = nil
   private var cont: CheckedContinuation<UserToken, Error>? = nil
 
-  func obtainToken(from: UIViewController?, restore: Bool) async throws -> UserToken? {
+  func obtainToken(from: UIViewController?, restore: Bool) async throws
+    -> UserToken?
+  {
     do {
       return try await signInSilently()
     } catch let err {
@@ -43,12 +45,15 @@ class AppleAuth: NSObject {
     request.nonce = Randoms.shared.sha256(nonce)
     request.requestedScopes = [.fullName, .email]
     log.info("Attempting to login...")
-    let authorizationController = ASAuthorizationController(authorizationRequests: [request])
+    let authorizationController = ASAuthorizationController(
+      authorizationRequests: [request])
     return try await installPresentation(to: authorizationController)
   }
 
   @MainActor
-  private func installPresentation(to: ASAuthorizationController) async throws -> UserToken {
+  private func installPresentation(to: ASAuthorizationController) async throws
+    -> UserToken
+  {
     to.delegate = self
     self.log.info("Installing presentation delegate...")
     to.presentationContextProvider = self
@@ -70,7 +75,8 @@ extension AppleAuth: ASAuthorizationControllerDelegate {
   ) {
     Task {
       do {
-        let userToken = try await authController(didCompleteWithAuthorization: authorization)
+        let userToken = try await authController(
+          didCompleteWithAuthorization: authorization)
         await update(token: userToken)
       } catch {
         await update(error: error)
@@ -78,15 +84,21 @@ extension AppleAuth: ASAuthorizationControllerDelegate {
     }
   }
 
-  private func authController(didCompleteWithAuthorization authorization: ASAuthorization)
+  private func authController(
+    didCompleteWithAuthorization authorization: ASAuthorization
+  )
     async throws -> UserToken
   {
     guard let nonce = currentNonce else {
       throw AppError.simple("No nonce.")
     }
-    guard let idCredential = authorization.credential as? ASAuthorizationAppleIDCredential else {
+    guard
+      let idCredential = authorization.credential
+        as? ASAuthorizationAppleIDCredential
+    else {
       throw AppError.simple(
-        "Credential is not an ASAuthorizationAppleIDCredential. \(authorization.credential)")
+        "Credential is not an ASAuthorizationAppleIDCredential. \(authorization.credential)"
+      )
     }
     guard let idTokenData = idCredential.identityToken else {
       throw AppError.simple("No identity token. \(idCredential)")
@@ -100,7 +112,8 @@ extension AppleAuth: ASAuthorizationControllerDelegate {
       throw AppError.simple("ID token is not a string. \(idCredential)")
     }
     let reg = RegisterCode(code: AuthorizationCode(authCodeStr), nonce: nonce)
-    log.info("Auth complete, authorization code '\(reg.code)' token '\(idToken)'.")
+    log.info(
+      "Auth complete, authorization code '\(reg.code)' token '\(idToken)'.")
     let res = try await Backend.shared.http.register(code: reg)
     self.log.info("Obtained server token for \(res.email) from backend.")
     return UserToken(email: res.email, token: res.idToken)
@@ -125,7 +138,9 @@ extension AppleAuth: ASAuthorizationControllerDelegate {
 }
 
 extension AppleAuth: ASAuthorizationControllerPresentationContextProviding {
-  func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+  func presentationAnchor(for controller: ASAuthorizationController)
+    -> ASPresentationAnchor
+  {
     return from!.view.window!
   }
 }

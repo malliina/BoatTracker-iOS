@@ -17,14 +17,14 @@ struct Tapped {
   let source: UIView
   let point: CGPoint
   let result: TapResult
-  
+
   static func markCoordinate(_ feature: Feature) -> CLLocationCoordinate2D? {
     switch feature.geometry {
     case .point(let point): return point.coordinates
     default: return nil
     }
   }
-  
+
   static func markResult(_ feature: Feature, point: CGPoint) -> TapResult? {
     guard let coordinate = markCoordinate(feature) else { return nil }
     let props = feature.properties ?? [:]
@@ -32,7 +32,8 @@ struct Tapped {
       .mark(info: symbol, point: point, at: coordinate)
     }
 
-    let minimal: TapResult? = props.parseOpt(MinimalMarineSymbol.self).map { symbol in
+    let minimal: TapResult? = props.parseOpt(MinimalMarineSymbol.self).map {
+      symbol in
       .miniMark(info: symbol, at: coordinate)
     }
     return full ?? minimal

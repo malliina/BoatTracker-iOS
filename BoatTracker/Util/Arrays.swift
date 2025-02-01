@@ -43,11 +43,11 @@ extension Array {
   }
 
   func headOption() -> Element? {
-    return self.first
+    self.first
   }
 
   func tail() -> [Element] {
-    return Array(self[1..<self.count])
+    Array(self[1..<self.count])
   }
 
   func get(_ index: Int) -> Element? {
@@ -69,15 +69,15 @@ extension Array {
   }
 
   func find(_ predicate: (Element) -> Bool) -> Element? {
-    return self.filter(predicate).headOption()
+    self.filter(predicate).headOption()
   }
 
   func exists(_ predicate: (Element) -> Bool) -> Bool {
-    return self.find(predicate) != nil
+    self.find(predicate) != nil
   }
 
   func howMany(_ predicate: (Element) -> Bool) -> Int {
-    return self.filter(predicate).count
+    self.filter(predicate).count
   }
 
   func indexOf(_ predicate: (Element) -> Bool) -> Int? {
@@ -90,7 +90,7 @@ extension Array {
   }
 
   func flatMapOpt<U>(_ f: (Element) -> U?) -> [U] {
-    return self.map({ f($0) }).filter({ $0 != nil }).map({ $0! })
+    self.map({ f($0) }).filter({ $0 != nil }).map({ $0! })
   }
 
   func partition(_ f: (Element) -> Bool) -> ([Element], [Element]) {
@@ -107,7 +107,7 @@ extension Array {
   }
 
   func diff<U>(against: [U], compare: (Element, U) -> Bool) -> [Element] {
-    return self.filter { (elem) -> Bool in
+    self.filter { (elem) -> Bool in
       !against.exists({ (compareElement) -> Bool in
         compare(elem, compareElement)
       })
@@ -115,15 +115,19 @@ extension Array {
   }
 
   func distinctIndices<U>(other: [U], compare: (Element, U) -> Bool) -> [Int] {
-    return self.indicesWhere { elem -> Bool in !other.contains { u -> Bool in compare(elem, u) } }
+    self.indicesWhere { elem -> Bool in
+      !other.contains { u -> Bool in compare(elem, u) }
+    }
   }
 
   func indicesWhere(p: (Element) -> Bool) -> [Int] {
-    return self.enumerated().filter { (offset, elem) -> Bool in p(elem) }.map { $0.offset }
+    self.enumerated().filter { (offset, elem) -> Bool in p(elem) }.map {
+      $0.offset
+    }
   }
 
   func mkString(_ sep: String) -> String {
-    return mkString("", sep: sep, suffix: "")
+    mkString("", sep: sep, suffix: "")
   }
 
   func mkString(_ prefix: String, sep: String, suffix: String) -> String {

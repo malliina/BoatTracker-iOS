@@ -64,7 +64,10 @@
 		7D045D6A265A54A300B92EE8 /* Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D045D69265A54A300B92EE8 /* Auth.swift */; };
 		7D15B6E02AE575E600C47F76 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 7D15B6DF2AE575E600C47F76 /* README.md */; };
 		7D15B6E22AE5760100C47F76 /* .github in Resources */ = {isa = PBXBuildFile; fileRef = 7D15B6E12AE5760100C47F76 /* .github */; };
+<<<<<<< HEAD
 		7D175C4A27BD85300050E29B /* MapboxMaps in Frameworks */ = {isa = PBXBuildFile; productRef = 7D175C4927BD85300050E29B /* MapboxMaps */; };
+=======
+>>>>>>> dcc278cfef65e6695698ce53737e232a163e3dcb
 		7D175C4D27BD85AE0050E29B /* MSAL in Frameworks */ = {isa = PBXBuildFile; productRef = 7D175C4C27BD85AE0050E29B /* MSAL */; };
 		7D175C5327BD876F0050E29B /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 7D175C5227BD876F0050E29B /* GoogleSignIn */; };
 		7D2CC0F3264D6EBD0091E05C /* MicrosoftAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D2CC0F2264D6EBD0091E05C /* MicrosoftAuth.swift */; };
@@ -72,6 +75,8 @@
 		7DAE8A812C8C392600FB797E /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 7DAE8A802C8C392600FB797E /* Algorithms */; };
 		7DDBA9A727773D3900108B24 /* AppleAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DDBA9A627773D3900108B24 /* AppleAuth.swift */; };
 		B01251A72A4582C600A267C9 /* conf.json in Resources */ = {isa = PBXBuildFile; fileRef = B01251A62A4582C600A267C9 /* conf.json */; };
+		B01E79342D4AAC68009EC1CF /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = B01E79332D4AAC68009EC1CF /* LICENSE */; };
+		B01E79372D4AAED3009EC1CF /* MapboxMaps in Frameworks */ = {isa = PBXBuildFile; productRef = B01E79362D4AAED3009EC1CF /* MapboxMaps */; };
 		B01EE5982B13466500BBB8DA /* views.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01EE5972B13466500BBB8DA /* views.swift */; };
 		B02A812E2922C46900848949 /* LanguageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02A812D2922C46900848949 /* LanguageView.swift */; };
 		B02EC50E2909B41A00D21793 /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02EC50D2909B41A00D21793 /* MapViewModel.swift */; };
@@ -227,6 +232,7 @@
 		7D528E6127B9682F00C55F06 /* WebSocket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocket.swift; sourceTree = "<group>"; };
 		7DDBA9A627773D3900108B24 /* AppleAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleAuth.swift; sourceTree = "<group>"; };
 		B01251A62A4582C600A267C9 /* conf.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = conf.json; path = BoatTracker/conf.json; sourceTree = "<group>"; };
+		B01E79332D4AAC68009EC1CF /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		B01EE5972B13466500BBB8DA /* views.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = views.swift; sourceTree = "<group>"; };
 		B02A812D2922C46900848949 /* LanguageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageView.swift; sourceTree = "<group>"; };
 		B02EC50D2909B41A00D21793 /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
@@ -256,11 +262,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7D175C4A27BD85300050E29B /* MapboxMaps in Frameworks */,
 				7DAE8A812C8C392600FB797E /* Algorithms in Frameworks */,
 				7D175C4D27BD85AE0050E29B /* MSAL in Frameworks */,
 				B05A708A2AF6498300D0BAF1 /* DGCharts in Frameworks */,
 				7D175C5327BD876F0050E29B /* GoogleSignIn in Frameworks */,
+				B01E79372D4AAED3009EC1CF /* MapboxMaps in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -426,6 +432,7 @@
 				7D15B6E32AE5761400C47F76 /* fastlane */,
 				B01251A62A4582C600A267C9 /* conf.json */,
 				7D15B6DF2AE575E600C47F76 /* README.md */,
+				B01E79332D4AAC68009EC1CF /* LICENSE */,
 				B05D66952A0177BF002E784F /* ci_scripts */,
 				61B07C5E20F21DC300D8B7E0 /* BoatTracker */,
 				61B07C7320F21DC400D8B7E0 /* BoatTrackerTests */,
@@ -623,11 +630,15 @@
 			);
 			name = BoatTracker;
 			packageProductDependencies = (
+<<<<<<< HEAD
 				7D175C4927BD85300050E29B /* MapboxMaps */,
+=======
+>>>>>>> dcc278cfef65e6695698ce53737e232a163e3dcb
 				7D175C4C27BD85AE0050E29B /* MSAL */,
 				7D175C5227BD876F0050E29B /* GoogleSignIn */,
 				B05A70892AF6498300D0BAF1 /* DGCharts */,
 				7DAE8A802C8C392600FB797E /* Algorithms */,
+				B01E79362D4AAED3009EC1CF /* MapboxMaps */,
 			);
 			productName = BoatTracker;
 			productReference = 61B07C5C20F21DC300D8B7E0 /* BoatTracker.app */;
@@ -690,11 +701,15 @@
 			);
 			mainGroup = 61B07C5320F21DC300D8B7E0;
 			packageReferences = (
+<<<<<<< HEAD
 				7D175C4827BD85300050E29B /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */,
+=======
+>>>>>>> dcc278cfef65e6695698ce53737e232a163e3dcb
 				7D175C4B27BD85AE0050E29B /* XCRemoteSwiftPackageReference "microsoft-authentication-library-for-objc" */,
 				7D175C4E27BD87110050E29B /* XCRemoteSwiftPackageReference "Charts" */,
 				7D175C5127BD876F0050E29B /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 				7DAE8A7F2C8C392600FB797E /* XCRemoteSwiftPackageReference "swift-algorithms" */,
+				B01E79352D4AAED3009EC1CF /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */,
 			);
 			productRefGroup = 61B07C5D20F21DC300D8B7E0 /* Products */;
 			projectDirPath = "";
@@ -713,6 +728,7 @@
 			files = (
 				7D15B6E02AE575E600C47F76 /* README.md in Resources */,
 				61B07C6A20F21DC400D8B7E0 /* LaunchScreen.storyboard in Resources */,
+				B01E79342D4AAC68009EC1CF /* LICENSE in Resources */,
 				B01251A72A4582C600A267C9 /* conf.json in Resources */,
 				7D15B6E22AE5760100C47F76 /* .github in Resources */,
 				61B07C6720F21DC400D8B7E0 /* Assets.xcassets in Resources */,
@@ -974,7 +990,7 @@
 				CODE_SIGN_ENTITLEMENTS = BoatTracker/BoatTracker.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 69;
+				CURRENT_PROJECT_VERSION = 70;
 				DEVELOPMENT_TEAM = D2T2QC36Z9;
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = D2T2QC36Z9;
 				INFOPLIST_FILE = BoatTracker/Info.plist;
@@ -983,7 +999,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.47.54;
+				MARKETING_VERSION = 1.47.55;
 				PRODUCT_BUNDLE_IDENTIFIER = com.malliina.BoatTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "com.malliina.BoatTracker AppStore";
@@ -1004,7 +1020,7 @@
 				CODE_SIGN_ENTITLEMENTS = BoatTracker/BoatTracker.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 69;
+				CURRENT_PROJECT_VERSION = 70;
 				DEVELOPMENT_TEAM = D2T2QC36Z9;
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = D2T2QC36Z9;
 				INFOPLIST_FILE = BoatTracker/Info.plist;
@@ -1013,7 +1029,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.47.54;
+				MARKETING_VERSION = 1.47.55;
 				PRODUCT_BUNDLE_IDENTIFIER = com.malliina.BoatTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "com.malliina.BoatTracker AppStore";
@@ -1036,7 +1052,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.47.54;
+				MARKETING_VERSION = 1.47.55;
 				PRODUCT_BUNDLE_IDENTIFIER = com.malliina.BoatTrackerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -1058,7 +1074,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.47.54;
+				MARKETING_VERSION = 1.47.55;
 				PRODUCT_BUNDLE_IDENTIFIER = com.malliina.BoatTrackerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -1100,6 +1116,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+<<<<<<< HEAD
 		7D175C4827BD85300050E29B /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/mapbox/mapbox-maps-ios.git";
@@ -1108,12 +1125,14 @@
 				version = 11.6.0;
 			};
 		};
+=======
+>>>>>>> dcc278cfef65e6695698ce53737e232a163e3dcb
 		7D175C4B27BD85AE0050E29B /* XCRemoteSwiftPackageReference "microsoft-authentication-library-for-objc" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/AzureAD/microsoft-authentication-library-for-objc";
 			requirement = {
 				kind = exactVersion;
-				version = 1.4.0;
+				version = 1.6.3;
 			};
 		};
 		7D175C4E27BD87110050E29B /* XCRemoteSwiftPackageReference "Charts" */ = {
@@ -1129,7 +1148,7 @@
 			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
 			requirement = {
 				kind = exactVersion;
-				version = 7.1.0;
+				version = 8.0.0;
 			};
 		};
 		7DAE8A7F2C8C392600FB797E /* XCRemoteSwiftPackageReference "swift-algorithms" */ = {
@@ -1140,14 +1159,25 @@
 				version = 1.2.0;
 			};
 		};
+		B01E79352D4AAED3009EC1CF /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mapbox/mapbox-maps-ios.git";
+			requirement = {
+				kind = exactVersion;
+				version = 11.9.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+<<<<<<< HEAD
 		7D175C4927BD85300050E29B /* MapboxMaps */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 7D175C4827BD85300050E29B /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */;
 			productName = MapboxMaps;
 		};
+=======
+>>>>>>> dcc278cfef65e6695698ce53737e232a163e3dcb
 		7D175C4C27BD85AE0050E29B /* MSAL */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 7D175C4B27BD85AE0050E29B /* XCRemoteSwiftPackageReference "microsoft-authentication-library-for-objc" */;
@@ -1162,6 +1192,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 7DAE8A7F2C8C392600FB797E /* XCRemoteSwiftPackageReference "swift-algorithms" */;
 			productName = Algorithms;
+		};
+		B01E79362D4AAED3009EC1CF /* MapboxMaps */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B01E79352D4AAED3009EC1CF /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */;
+			productName = MapboxMaps;
 		};
 		B05A70892AF6498300D0BAF1 /* DGCharts */ = {
 			isa = XCSwiftPackageProductDependency;

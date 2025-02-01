@@ -75,7 +75,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   }
 
   func application(
-    _ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]
+    _ app: UIApplication, open url: URL,
+    options: [UIApplication.OpenURLOptionsKey: Any] = [:]
   ) -> Bool {
     let googleAttempt = BoatGoogleAuth.shared.open(url: url, options: options)
     if googleAttempt {
@@ -83,7 +84,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     } else {
       return MSALPublicClientApplication.handleMSALResponse(
         url,
-        sourceApplication: options[UIApplication.OpenURLOptionsKey.sourceApplication] as? String)
+        sourceApplication: options[
+          UIApplication.OpenURLOptionsKey.sourceApplication] as? String)
     }
   }
 
@@ -109,13 +111,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
   }
 
-  func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+  func application(
+    _ application: UIApplication,
+    didFinishLaunchingWithOptions launchOptions: [UIApplication
+      .LaunchOptionsKey: Any]? = nil
+  ) -> Bool {
     // BoatTokensVM.init() is initialized on app startup and calls registerForRemoteNotifications if enabled, so we don't need to do it here
     return true
   }
-  
+
   func application(
-    _ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
+    _ application: UIApplication,
+    didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
   ) {
     Task {
       await notifications.didRegister(deviceToken)
@@ -123,7 +130,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   }
 
   func application(
-    _ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error
+    _ application: UIApplication,
+    didFailToRegisterForRemoteNotificationsWithError error: Error
   ) {
     Task {
       await notifications.didFailToRegister(error)
@@ -131,9 +139,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   }
 
   func application(
-    _ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]
+    _ application: UIApplication,
+    didReceiveRemoteNotification userInfo: [AnyHashable: Any]
   ) {
     log.info("Received remote notification...")
-    notifications.handleNotification(application, window: window, data: userInfo)
+    notifications.handleNotification(
+      application, window: window, data: userInfo)
   }
 }
