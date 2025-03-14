@@ -96,9 +96,9 @@ class BoatHttpClient {
     try await get("/conf").to(ClientConf.self)
   }
 
-  func enableNotifications(token: PushToken) async throws -> SimpleMessage {
+  func enableNotifications(payload: PushPayload) async throws -> SimpleMessage {
     try await execute(
-      "/users/notifications", method: HttpClient.post, body: PushPayload(token)
+      "/users/notifications", method: HttpClient.post, body: payload
     )
     .to(SimpleMessage.self)
   }
@@ -160,8 +160,7 @@ class BoatHttpClient {
     try await make(request: build(path: path, method: method, body: body))
   }
 
-  func make(request: URLRequest, attempt: Int = 1) async throws -> HttpResponse
-  {
+  func make(request: URLRequest, attempt: Int = 1) async throws -> HttpResponse {
     let response = try await client.executeHttp(request)
     if response.isStatusOK {
       return response

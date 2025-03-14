@@ -82,8 +82,7 @@ struct MainMapView<T>: View where T: MapViewModelLike {
     }
   }
 
-  private func makeVesselPoint(vessel: Vessel, icon: String) -> PointAnnotation
-  {
+  private func makeVesselPoint(vessel: Vessel, icon: String) -> PointAnnotation {
     let meta = VesselMeta(
       mmsi: vessel.mmsi, name: vessel.name,
       heading: vessel.heading ?? vessel.cog)
@@ -217,8 +216,7 @@ struct MainMapView<T>: View where T: MapViewModelLike {
               }
               .mapStyle(.init(uri: styleUri))
               .onLayersTapGesture(conf.layers.marks) { qf, ctx in
-                if let result = Tapped.markResult(qf.feature, point: ctx.point)
-                {
+                if let result = Tapped.markResult(qf.feature, point: ctx.point) {
                   updatePopup(
                     tap: result, point: ctx.point, size: reader.realSize)
                   return true

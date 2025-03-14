@@ -12,7 +12,7 @@ class Backend {
   let socket: BoatSocket
 
   private var cancellables: [Task<(), Never>] = []
-  
+
   init(_ baseUrl: URL) {
     self.baseUrl = baseUrl
     self.http = BoatHttpClient(

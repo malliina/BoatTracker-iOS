@@ -784,8 +784,7 @@ struct TrackStats: Codable {
   let points: Int
 }
 
-struct AccessToken: Equatable, Hashable, CustomStringConvertible, StringCodable
-{
+struct AccessToken: Equatable, Hashable, CustomStringConvertible, StringCodable {
   let token: String
   var description: String { token }
 

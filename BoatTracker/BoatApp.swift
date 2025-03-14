@@ -32,6 +32,7 @@ struct BoatApp: App {
         .task {
           await Backend.shared.prepare()
           await viewModel.prepare()
+          BoatLiveActivities.shared.setup()
         }
     }
     .onChange(of: scenePhase) { phase in

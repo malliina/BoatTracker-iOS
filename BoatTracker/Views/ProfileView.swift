@@ -1,6 +1,6 @@
 import Foundation
-import SwiftUI
 import MapboxMaps
+import SwiftUI
 
 struct ProfileInfo: Identifiable {
   let user: UserToken
@@ -176,7 +176,7 @@ struct ProfilePreviews: PreviewProvider {
   class PreviewsVM: ProfileProtocol {
     let state: ViewState
     let summary: TrackInfo?
-    
+
     init(state: ViewState, summary: TrackInfo?) {
       self.state = state
       self.summary = summary
@@ -199,7 +199,7 @@ struct ProfilePreviews: PreviewProvider {
       false
     }
   }
-  
+
   static var previews: some View {
     ForEach(BoatPreviews.shared.devices, id: \.self) { deviceName in
       Group {

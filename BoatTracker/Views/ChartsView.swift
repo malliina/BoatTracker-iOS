@@ -117,7 +117,7 @@ class ChartVM: ObservableObject {
 
   private var socket: BoatSocket? = nil
   private var cancellables: [Task<(), Never>] = []
-  
+
   func connect(track: TrackName) {
     let s = Backend.shared.openStandalone(track: track)
     socket = s

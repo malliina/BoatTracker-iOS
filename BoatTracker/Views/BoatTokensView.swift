@@ -51,6 +51,21 @@ struct BoatTokensView<T>: View where T: BoatTokensProtocol {
 
   var body: some View {
     ScrollView {
+      Button {
+        Task {
+          do {
+            try await BoatLiveActivities.shared.startLiveActivity()
+            log.info("Started live activity!")
+          } catch {
+            log.error("Failed to start live activity \(error)")
+          }
+          
+        }
+        
+      } label: {
+        Text("Live activity")
+      }
+
       Text(lang.appIcon)
         .padding(.bottom)
       HStack {

@@ -114,8 +114,7 @@ class MicrosoftAuth {
     do {
       let result = try await applicationContext.acquireTokenSilent(
         with: parameters)
-      if let claims = result.account.accountClaims, let email = claims["email"]
-      {
+      if let claims = result.account.accountClaims, let email = claims["email"] {
         log.info("Email is \(email)")
       }
       return result

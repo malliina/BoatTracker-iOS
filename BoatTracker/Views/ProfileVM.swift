@@ -24,7 +24,7 @@ class ProfileVM: ProfileProtocol {
     avgSpeed: 24.knots,
     avgWaterTemp: 14.celsius, avgOutsideTemp: 11.celsius, startDate: "Today",
     sourceType: .boat)
-  
+
   var summary: TrackInfo? = nil
 
   private var summaryFromList: TrackRef? {
@@ -35,7 +35,7 @@ class ProfileVM: ProfileProtocol {
 
   private var socket: BoatSocket? = nil
   private var cancellables: [Task<(), Never>] = []
-  
+
   func connect(track: TrackName) {
     let s = Backend.shared.openStandalone(track: track)
     socket = s
@@ -113,9 +113,10 @@ class ProfileVM: ProfileProtocol {
     tracks = ts
     current = trackName
     state = ts.isEmpty ? .empty : .content
-    summary = ts.first { ref in
-      ref.trackName == trackName
-    } ?? ts.first
+    summary =
+      ts.first { ref in
+        ref.trackName == trackName
+      } ?? ts.first
   }
 
   @MainActor private func update(err: Error) {
