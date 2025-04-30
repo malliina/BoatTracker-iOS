@@ -1,5 +1,5 @@
-import Foundation
 import ActivityKit
+import Foundation
 import UserNotifications
 
 protocol NotificationPermissionDelegate {
@@ -15,7 +15,7 @@ class BoatNotifications {
 
   let noPushTokenValue = "none"
   var permissionDelegate: NotificationPermissionDelegate? = nil
-  
+
   func initNotifications(_ application: UIApplication) async throws -> Bool {
     let granted = try await UNUserNotificationCenter.current().requestAuthorization(options: [
       .alert, .sound, .badge,

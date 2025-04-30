@@ -37,7 +37,7 @@ class BoatTrackerTests: XCTestCase {
     let back = try json.parse(Joo.self, from: obj)
     XCTAssert(back.distance == 0.meters)
   }
-  
+
   func testTokenCodec() throws {
     let token = PushPayload(token: PushToken("t1"), device: TokenType.startLiveActivity)
     let obj = try Json.shared.write(from: token)

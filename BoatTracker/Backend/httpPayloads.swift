@@ -13,11 +13,9 @@ enum TokenType: String, Codable {
 struct PushPayload: Codable {
   let token: PushToken
   let device: TokenType
-
-//  init(_ token: PushToken) {
-//    self.token = token
-//    self.device = .notification
-//  }
+  let deviceId: String?
+  let liveActivityId: String?
+  let trackName: TrackName?
 }
 
 struct ChangeTrackTitle: Codable {

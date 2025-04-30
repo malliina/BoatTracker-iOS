@@ -7,7 +7,8 @@ struct BoatWidgetLiveActivity: Widget {
     ActivityConfiguration(for: BoatWidgetAttributes.self) { context in
       // Lock screen/banner UI goes here
       VStack {
-        Text("\(context.state.boatName)")
+        Text("\(context.attributes.boatName)")
+        Text("\(context.state.message)")
       }
       .activityBackgroundTint(Color.cyan)
       .activitySystemActionForegroundColor(Color.black)
@@ -40,23 +41,25 @@ struct BoatWidgetLiveActivity: Widget {
 
 extension BoatWidgetAttributes {
   fileprivate static var preview: BoatWidgetAttributes {
-    BoatWidgetAttributes(name: "World")
+    BoatWidgetAttributes(boatName: BoatName("Boatsy"), trackName: TrackName("t1"))
   }
 }
 
 extension BoatWidgetAttributes.ContentState {
-  fileprivate static var smiley: BoatWidgetAttributes.ContentState {
-    BoatWidgetAttributes.ContentState(boatName: "Titanic", message: "connected!")
+  fileprivate static var connected: BoatWidgetAttributes.ContentState {
+    BoatWidgetAttributes.ContentState(message: "connected!", distance: 10.meters,
+      duration: 123.seconds, address: "Road 1")
   }
 
-  fileprivate static var starEyes: BoatWidgetAttributes.ContentState {
-    BoatWidgetAttributes.ContentState(boatName: "Titanic", message: "on the move!")
+  fileprivate static var onTheMove: BoatWidgetAttributes.ContentState {
+    BoatWidgetAttributes.ContentState(message: "on the move!", distance: 24.meters,
+      duration: 13.seconds, address: "Road 2")
   }
 }
 
 #Preview("Notification", as: .content, using: BoatWidgetAttributes.preview) {
   BoatWidgetLiveActivity()
 } contentStates: {
-  BoatWidgetAttributes.ContentState.smiley
-  BoatWidgetAttributes.ContentState.starEyes
+  BoatWidgetAttributes.ContentState.connected
+  BoatWidgetAttributes.ContentState.onTheMove
 }

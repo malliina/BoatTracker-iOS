@@ -24,7 +24,7 @@ public struct Duration: Comparable, CustomStringConvertible, DoubleCodable, Hash
   public static func < (lhs: Duration, rhs: Duration) -> Bool {
     lhs.seconds < rhs.seconds
   }
-  
+
   public func hash(into hasher: inout Hasher) {
     hasher.combine(value)
   }

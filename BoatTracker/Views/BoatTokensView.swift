@@ -59,9 +59,7 @@ struct BoatTokensView<T>: View where T: BoatTokensProtocol {
           } catch {
             log.error("Failed to start live activity \(error)")
           }
-          
         }
-        
       } label: {
         Text("Live activity")
       }
