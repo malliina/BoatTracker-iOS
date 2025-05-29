@@ -130,7 +130,9 @@ extension BoatTokensVM: NotificationPermissionDelegate {
       do {
         let deviceId = BoatPrefs.shared.deviceId
         _ = try await http.enableNotifications(
-          payload: PushPayload(token: token, device: .notification, deviceId: deviceId, liveActivityId: nil, trackName: nil))
+          payload: PushPayload(
+            token: token, device: .notification, deviceId: deviceId, liveActivityId: nil,
+            trackName: nil))
         log.info("Enabled notifications for device \(deviceId) with backend.")
       } catch AppError.responseFailure(let details) {
         log.info("APNS registration failed. \(details.message ?? "Status \(details.code)")")

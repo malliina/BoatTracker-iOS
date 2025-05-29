@@ -51,8 +51,8 @@ struct BoatWidgetLiveActivity: Widget {
         }
       }
       .contentMargins(.all, 20, for: .expanded)
-//      .widgetURL(URL(string: "https://www.apple.com"))
-//      .keylineTint(Color.red)
+      //      .widgetURL(URL(string: "https://www.apple.com"))
+      //      .keylineTint(Color.red)
     }
   }
 }
@@ -65,12 +65,14 @@ extension BoatWidgetAttributes {
 
 extension BoatWidgetAttributes.ContentState {
   fileprivate static var connected: BoatWidgetAttributes.ContentState {
-    BoatWidgetAttributes.ContentState(message: "connected!", distance: 10.meters,
+    BoatWidgetAttributes.ContentState(
+      message: "connected!", distance: 10.meters,
       duration: 123.seconds, address: "Road 1")
   }
 
   fileprivate static var onTheMove: BoatWidgetAttributes.ContentState {
-    BoatWidgetAttributes.ContentState(message: "on the move!", distance: 24.meters,
+    BoatWidgetAttributes.ContentState(
+      message: "on the move!", distance: 24.meters,
       duration: 13.seconds, address: "Road 2")
   }
 }
@@ -82,21 +84,30 @@ extension BoatWidgetAttributes.ContentState {
   BoatWidgetAttributes.ContentState.onTheMove
 }
 
-#Preview("NotificationDynamicIslandCompact", as: .dynamicIsland(.compact), using: BoatWidgetAttributes.preview) {
+#Preview(
+  "NotificationDynamicIslandCompact", as: .dynamicIsland(.compact),
+  using: BoatWidgetAttributes.preview
+) {
   BoatWidgetLiveActivity()
 } contentStates: {
   BoatWidgetAttributes.ContentState.connected
   BoatWidgetAttributes.ContentState.onTheMove
 }
 
-#Preview("NotificationDynamicIslandExpanded", as: .dynamicIsland(.expanded), using: BoatWidgetAttributes.preview) {
+#Preview(
+  "NotificationDynamicIslandExpanded", as: .dynamicIsland(.expanded),
+  using: BoatWidgetAttributes.preview
+) {
   BoatWidgetLiveActivity()
 } contentStates: {
   BoatWidgetAttributes.ContentState.connected
   BoatWidgetAttributes.ContentState.onTheMove
 }
 
-#Preview("NotificationDynamicIslandMinimal", as: .dynamicIsland(.minimal), using: BoatWidgetAttributes.preview) {
+#Preview(
+  "NotificationDynamicIslandMinimal", as: .dynamicIsland(.minimal),
+  using: BoatWidgetAttributes.preview
+) {
   BoatWidgetLiveActivity()
 } contentStates: {
   BoatWidgetAttributes.ContentState.connected

@@ -11,7 +11,8 @@ final class BoatLiveActivities: ObservableObject {
       if ActivityAuthorizationInfo().areActivitiesEnabled {
         do {
           let up = BoatWidgetAttributes(boatName: BoatName("Boatsy"), trackName: TrackName("t1"))
-          let initialState = BoatWidgetAttributes.ContentState(message: "On the move!", distance: 1.meters,
+          let initialState = BoatWidgetAttributes.ContentState(
+            message: "On the move!", distance: 1.meters,
             duration: 10.seconds, address: "Road 1")
           let activity = try Activity.request(
             attributes: up, content: .init(state: initialState, staleDate: nil), pushType: .token)
@@ -68,7 +69,8 @@ final class BoatLiveActivities: ObservableObject {
                     let _ = try await http.enableNotifications(
                       payload: PushPayload(
                         token: PushToken(updateToken), device: .updateLiveActivity,
-                        deviceId: deviceId, liveActivityId: activityId, trackName: activity.attributes.trackName))
+                        deviceId: deviceId, liveActivityId: activityId,
+                        trackName: activity.attributes.trackName))
                     log.info(
                       "Sent update token '\(updateToken)' of Live Activity '\(activityId)' for device '\(deviceId)' to backend."
                     )
