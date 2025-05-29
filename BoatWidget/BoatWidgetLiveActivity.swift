@@ -6,35 +6,53 @@ struct BoatWidgetLiveActivity: Widget {
   var body: some WidgetConfiguration {
     ActivityConfiguration(for: BoatWidgetAttributes.self) { context in
       // Lock screen/banner UI goes here
-      VStack {
-        Text("\(context.attributes.boatName)")
-        Text("\(context.state.message)")
+      VStack(spacing: 4) {
+        Text("\(context.attributes.boatName) \(context.state.message)")
+        if let address = context.state.address {
+          Text(address)
+        }
+        HStack {
+          Spacer()
+          Text(context.state.duration.description)
+          Spacer()
+          Text(context.state.distance.description)
+          Spacer()
+        }
       }
       .activityBackgroundTint(Color.cyan)
       .activitySystemActionForegroundColor(Color.black)
+      .padding(.all, 12)
     } dynamicIsland: { context in
       DynamicIsland {
         // Expanded UI goes here.  Compose the expanded UI through
         // various regions, like leading/trailing/center/bottom
         DynamicIslandExpandedRegion(.leading) {
-          Text("Leading")
+          Text(context.state.duration.description)
         }
         DynamicIslandExpandedRegion(.trailing) {
-          Text("Trailing")
+          Text(context.state.distance.description)
         }
         DynamicIslandExpandedRegion(.bottom) {
-          Text("Bottom \(context.state.message)")
-          // more content
+          Text("\(context.attributes.boatName) \(context.state.message)")
+          if let address = context.state.address {
+            Text(address)
+          }
         }
       } compactLeading: {
-        Text("L")
+        Text(context.state.duration.description)
       } compactTrailing: {
-        Text("T \(context.state.message)")
+        Text(context.state.distance.description)
       } minimal: {
-        Text(context.state.message)
+        let kms = context.state.distance.kilometers
+        if let km = Int(exactly: kms.rounded(.toNearestOrEven)) {
+          Text("\(km)km")
+        } else {
+          Text(context.attributes.boatName.description)
+        }
       }
-      .widgetURL(URL(string: "https://www.apple.com"))
-      .keylineTint(Color.red)
+      .contentMargins(.all, 20, for: .expanded)
+//      .widgetURL(URL(string: "https://www.apple.com"))
+//      .keylineTint(Color.red)
     }
   }
 }
@@ -57,7 +75,28 @@ extension BoatWidgetAttributes.ContentState {
   }
 }
 
-#Preview("Notification", as: .content, using: BoatWidgetAttributes.preview) {
+#Preview("NotificationContent", as: .content, using: BoatWidgetAttributes.preview) {
+  BoatWidgetLiveActivity()
+} contentStates: {
+  BoatWidgetAttributes.ContentState.connected
+  BoatWidgetAttributes.ContentState.onTheMove
+}
+
+#Preview("NotificationDynamicIslandCompact", as: .dynamicIsland(.compact), using: BoatWidgetAttributes.preview) {
+  BoatWidgetLiveActivity()
+} contentStates: {
+  BoatWidgetAttributes.ContentState.connected
+  BoatWidgetAttributes.ContentState.onTheMove
+}
+
+#Preview("NotificationDynamicIslandExpanded", as: .dynamicIsland(.expanded), using: BoatWidgetAttributes.preview) {
+  BoatWidgetLiveActivity()
+} contentStates: {
+  BoatWidgetAttributes.ContentState.connected
+  BoatWidgetAttributes.ContentState.onTheMove
+}
+
+#Preview("NotificationDynamicIslandMinimal", as: .dynamicIsland(.minimal), using: BoatWidgetAttributes.preview) {
   BoatWidgetLiveActivity()
 } contentStates: {
   BoatWidgetAttributes.ContentState.connected

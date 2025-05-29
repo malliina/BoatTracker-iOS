@@ -15,7 +15,7 @@ public struct Duration: Comparable, CustomStringConvertible, DoubleCodable, Hash
     self.seconds = seconds
   }
 
-  public var description: String { return Formatting.shared.format(duration: self) }
+  public var description: String { Formatting.shared.format(duration: self) }
 
   public static func == (lhs: Duration, rhs: Duration) -> Bool {
     lhs.seconds == rhs.seconds
