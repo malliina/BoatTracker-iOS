@@ -293,7 +293,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		B0D99C842D776BDD000CF3E8 /* Exceptions for "BoatWidget" folder in "BoatWidgetExtension" target */ = {
+		B0D99C842D776BDD000CF3E8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -303,18 +303,7 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		B0D99C742D776BDC000CF3E8 /* BoatWidget */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				B0D99C842D776BDD000CF3E8 /* Exceptions for "BoatWidget" folder in "BoatWidgetExtension" target */,
-			);
-			explicitFileTypes = {
-			};
-			explicitFolders = (
-			);
-			path = BoatWidget;
-			sourceTree = "<group>";
-		};
+		B0D99C742D776BDC000CF3E8 /* BoatWidget */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (B0D99C842D776BDD000CF3E8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = BoatWidget; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1245,6 +1234,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.malliina.BoatTracker.BoatWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = BoatTrackerLiveActivitiesProfile;
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "com.malliina.BoatTracker.BoatWidget App Store";
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1284,6 +1274,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.malliina.BoatTracker.BoatWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = BoatTrackerLiveActivitiesProfile;
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "com.malliina.BoatTracker.BoatWidget App Store";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
