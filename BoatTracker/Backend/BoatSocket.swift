@@ -1,35 +1,6 @@
+import Combine
 import Foundation
 import SwiftUI
-
-protocol BoatSocketDelegate {
-  func onCoords(event: CoordsData) async
-}
-
-protocol VesselDelegate {
-  func on(vessels: [Vessel]) async
-}
-
-extension BoatSocket: WebSocketMessageDelegate {
-  func on(isConnected: Bool) async {
-    await update(isConnected: isConnected)
-  }
-
-  @MainActor
-  private func update(isConnected: Bool) {
-    self.isConnected = isConnected
-  }
-
-  func on(message: String) async {
-    do {
-      guard let json = message.data(using: .utf8) else {
-        throw JsonError.invalid("Not JSON.", message)
-      }
-      await onMessage(json: json)
-    } catch {
-      log.warn("Not JSON: '\(message)'.")
-    }
-  }
-}
 
 class BoatSocket {
   private let log = LoggerFactory.shared.network(BoatSocket.self)
@@ -38,13 +9,20 @@ class BoatSocket {
 
   private var socket: WebSocket? = nil
 
-  // Delegate for the map view
-  var delegate: BoatSocketDelegate? = nil
-  // Delegate for the profile page with a summary view of the current track
-  var statsDelegate: BoatSocketDelegate? = nil
-  var vesselDelegate: VesselDelegate? = nil
-
   @Published var isConnected: Bool = false
+  @Published var coords: CoordsData? = nil
+  @Published var vessels: [Vessel] = []
+
+  var updates: AnyPublisher<CoordsData, Never> {
+    $coords.compactMap { cd in
+      cd
+    }.eraseToAnyPublisher()
+  }
+  var vesselUpdates: AnyPublisher<[Vessel], Never> {
+    $vessels.eraseToAnyPublisher()
+  }
+
+  private var cancellables: [Task<(), Never>] = []
 
   init(_ baseUrl: URL) {
     self.baseUrl = baseUrl
@@ -80,8 +58,20 @@ class BoatSocket {
     let trackQuery = track.map { "?track=\($0.name)" } ?? ""
     let url = URL(string: "/ws/updates\(trackQuery)", relativeTo: baseUrl)!
     //        log.info("Opening socket with \(track?.name ?? "no track") and token \(token?.token ?? "no token")")
-    socket = WebSocket(baseURL: url, headers: headers)
-    socket?.delegate = self
+    let s = WebSocket(baseURL: url, headers: headers)
+    socket = s
+    cancellables = [
+      Task {
+        for await message in s.updates.values {
+          await on(message: message)
+        }
+      },
+      Task {
+        for await isConnected in s.$isConnected.values {
+          await update(isConnected: isConnected)
+        }
+      },
+    ]
   }
 
   func updateToken(token: AccessToken?) {
@@ -98,20 +88,10 @@ class BoatSocket {
         ()
       case "coords":
         let data = try decoder.decode(CoordsBody.self, from: json)
-        if let delegate = delegate {
-          // log.info("Passing \(data.body.coords.count) coords to delegate.")
-          await delegate.onCoords(event: data.body)
-        } else {
-          log.warn("No delegate for coords. This is probably an error.")
-        }
-        if let delegate = statsDelegate {
-          await delegate.onCoords(event: data.body)
-        }
+        await update(coords: data.body)
       case "vessels":
         let data = try decoder.decode(VesselsBody.self, from: json)
-        if let vesselDelegate = vesselDelegate {
-          await vesselDelegate.on(vessels: data.body.vessels)
-        }
+        await update(vessels: data.body.vessels)
       case "loading":
         ()
       case "noData":
@@ -143,11 +123,35 @@ class BoatSocket {
     }
   }
 
-  func send<T: Encodable>(t: T) -> SingleError? {
+  @MainActor private func update(coords: CoordsData) {
+    self.coords = coords
+  }
+
+  @MainActor private func update(vessels: [Vessel]) {
+    self.vessels = vessels
+  }
+
+  @MainActor
+  private func update(isConnected: Bool) {
+    self.isConnected = isConnected
+  }
+
+  func on(message: String) async {
+    do {
+      guard let json = message.data(using: .utf8) else {
+        throw JsonError.invalid("Not JSON.", message)
+      }
+      await onMessage(json: json)
+    } catch {
+      log.warn("Not JSON: '\(message)'.")
+    }
+  }
+
+  func send<T: Encodable>(t: T) async -> SingleError? {
     guard let asString = try? Json.shared.stringify(t) else {
       return failWith("Unable to send data, cannot stringify payload.")
     }
-    let isSuccess = socket?.send(asString) ?? false
+    let isSuccess = await socket?.send(asString) ?? false
     return isSuccess
       ? nil : SingleError(message: "Failed to send message over socket.")
   }
@@ -159,6 +163,10 @@ class BoatSocket {
 
   func close() {
     socket?.disconnect()
+    cancellables.forEach { c in
+      c.cancel()
+    }
+    cancellables = []
   }
 }
 

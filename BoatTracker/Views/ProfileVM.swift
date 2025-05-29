@@ -11,7 +11,7 @@ protocol ProfileProtocol: ObservableObject {
   func deleteMe(from: UIViewController) async -> Bool
 }
 
-class ProfileVM: ProfileProtocol, BoatSocketDelegate {
+class ProfileVM: ProfileProtocol {
   let log = LoggerFactory.shared.vc(ProfileVM.self)
 
   @Published var state: ViewState = .idle
@@ -24,7 +24,7 @@ class ProfileVM: ProfileProtocol, BoatSocketDelegate {
     avgSpeed: 24.knots,
     avgWaterTemp: 14.celsius, avgOutsideTemp: 11.celsius, startDate: "Today",
     sourceType: .boat)
-  
+
   var summary: TrackInfo? = nil
 
   private var summaryFromList: TrackRef? {
@@ -34,18 +34,26 @@ class ProfileVM: ProfileProtocol, BoatSocketDelegate {
   }
 
   private var socket: BoatSocket? = nil
+  private var cancellables: [Task<(), Never>] = []
 
   func connect(track: TrackName) {
-    socket = Backend.shared.openStandalone(track: track, delegate: self)
+    let s = Backend.shared.openStandalone(track: track)
+    socket = s
+    let t = Task {
+      for await coords in s.updates.values {
+        await update(ref: coords.from)
+      }
+    }
+    cancellables = [t]
   }
 
   func disconnect() {
     socket?.close()
     socket = nil
-  }
-
-  func onCoords(event: CoordsData) async {
-    await update(ref: event.from)
+    cancellables.forEach { t in
+      t.cancel()
+    }
+    cancellables = []
   }
 
   func versionText(lang: Lang) -> String? {
@@ -105,9 +113,10 @@ class ProfileVM: ProfileProtocol, BoatSocketDelegate {
     tracks = ts
     current = trackName
     state = ts.isEmpty ? .empty : .content
-    summary = ts.first { ref in
-      ref.trackName == trackName
-    } ?? ts.first
+    summary =
+      ts.first { ref in
+        ref.trackName == trackName
+      } ?? ts.first
   }
 
   @MainActor private func update(err: Error) {

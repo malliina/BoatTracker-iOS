@@ -1,12 +1,6 @@
 import CryptoKit
 import Foundation
 
-extension String {
-  func trim() -> String {
-    return self.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
-  }
-}
-
 class Randoms {
   static let shared = Randoms()
 
@@ -22,8 +16,7 @@ class Randoms {
 
   // Adapted from https://auth0.com/docs/api-auth/tutorials/nonce#generate-a-cryptographically-random-nonce
   func randomNonceString(length: Int = 32) -> String {
-    let charset: [Character] =
-      Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
+    let charset: [Character] = Array("abcdefghijklmnopqrstuvwxyz")
     var result = ""
     var remainingLength = length
 

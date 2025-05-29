@@ -98,9 +98,9 @@ class MicrosoftAuth {
     async throws -> MSALResult
   {
     /**
-
+    
          Acquire a token for an existing account silently
-
+    
          - forScopes:           Permissions you want included in the access token received
          in the result in the completionBlock. Not all scopes are
          guaranteed to be included in the access token returned.
@@ -114,8 +114,7 @@ class MicrosoftAuth {
     do {
       let result = try await applicationContext.acquireTokenSilent(
         with: parameters)
-      if let claims = result.account.accountClaims, let email = claims["email"]
-      {
+      if let claims = result.account.accountClaims, let email = claims["email"] {
         log.info("Email is \(email)")
       }
       return result

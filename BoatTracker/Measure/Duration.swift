@@ -1,11 +1,11 @@
 import Foundation
 
-public struct Duration: Comparable, CustomStringConvertible, DoubleCodable {
+public struct Duration: Comparable, CustomStringConvertible, DoubleCodable, Hashable {
   static let k: Double = 1000.0
   static let zero = Duration(seconds: 0)
 
   let seconds: Double
-  var value: Double { return seconds }
+  var value: Double { seconds }
 
   init(_ seconds: Double) {
     self.init(seconds: seconds)
@@ -15,7 +15,7 @@ public struct Duration: Comparable, CustomStringConvertible, DoubleCodable {
     self.seconds = seconds
   }
 
-  public var description: String { return Formatting.shared.format(duration: self) }
+  public var description: String { Formatting.shared.format(duration: self) }
 
   public static func == (lhs: Duration, rhs: Duration) -> Bool {
     lhs.seconds == rhs.seconds
@@ -23,6 +23,10 @@ public struct Duration: Comparable, CustomStringConvertible, DoubleCodable {
 
   public static func < (lhs: Duration, rhs: Duration) -> Bool {
     lhs.seconds < rhs.seconds
+  }
+
+  public func hash(into hasher: inout Hasher) {
+    hasher.combine(value)
   }
 }
 

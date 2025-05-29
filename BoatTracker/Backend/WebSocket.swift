@@ -1,9 +1,5 @@
+import Combine
 import Foundation
-
-protocol WebSocketMessageDelegate {
-  func on(message: String) async
-  func on(isConnected: Bool) async
-}
 
 class WebSocket: NSObject, URLSessionWebSocketDelegate {
   private let log = LoggerFactory.shared.network(WebSocket.self)
@@ -13,8 +9,14 @@ class WebSocket: NSObject, URLSessionWebSocketDelegate {
   private var session: URLSession? = nil
   fileprivate var request: URLRequest
   private var task: URLSessionWebSocketTask?
-  private var isConnected = false
-  var delegate: WebSocketMessageDelegate? = nil
+
+  @Published var isConnected: Bool = false
+  @Published var messages: String? = nil
+  var updates: AnyPublisher<String, Never> {
+    $messages.compactMap { s in
+      s
+    }.eraseToAnyPublisher()
+  }
 
   init(baseURL: URL, headers: [String: String]) {
     self.baseURL = baseURL
@@ -40,17 +42,16 @@ class WebSocket: NSObject, URLSessionWebSocketDelegate {
     task?.resume()
   }
 
-  func send(_ msg: String) -> Bool {
+  func send(_ msg: String) async -> Bool {
     if let task = task {
-      task.send(
-        .string(msg),
-        completionHandler: { error in
-          if let error = error {
-            self.log.warn(
-              "Failed to send '\(msg)' over socket \(self.baseURL). \(error)")
-          }
-        })
-      return true
+      do {
+        try await task.send(.string(msg))
+        return true
+      } catch {
+        self.log.warn(
+          "Failed to send '\(msg)' over socket \(self.baseURL). \(error)")
+        return false
+      }
     } else {
       return false
     }
@@ -75,11 +76,8 @@ class WebSocket: NSObject, URLSessionWebSocketDelegate {
     didOpenWithProtocol protocol: String?
   ) {
     log.info("Connected to \(urlString).")
-    isConnected = true
     Task {
-      if let delegate = delegate {
-        await delegate.on(isConnected: true)
-      }
+      await update(isConnected: true)
       await receive()
     }
   }
@@ -89,11 +87,8 @@ class WebSocket: NSObject, URLSessionWebSocketDelegate {
     didCloseWith closeCode: URLSessionWebSocketTask.CloseCode, reason: Data?
   ) {
     log.info("Disconnected from \(urlString).")
-    isConnected = false
-    if let delegate = delegate {
-      Task {
-        await delegate.on(isConnected: false)
-      }
+    Task {
+      await update(isConnected: false)
     }
   }
 
@@ -104,7 +99,7 @@ class WebSocket: NSObject, URLSessionWebSocketDelegate {
       case .data(let data):
         self.log.warn("Data received \(data)")
       case .string(let text):
-        await self.delegate?.on(message: text)
+        await update(message: text)
         await self.receive()
       default:
         self.log.info("Received something.")
@@ -112,6 +107,13 @@ class WebSocket: NSObject, URLSessionWebSocketDelegate {
     } catch {
       self.log.error("Error when receiving \(error)")
     }
+  }
+
+  @MainActor private func update(isConnected: Bool) {
+    self.isConnected = isConnected
+  }
+  @MainActor private func update(message: String) {
+    self.messages = message
   }
 
   func disconnect() {

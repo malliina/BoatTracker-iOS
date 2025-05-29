@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Distance: Comparable, CustomStringConvertible, DoubleCodable {
+public struct Distance: Comparable, CustomStringConvertible, DoubleCodable, Hashable {
   static let k: Double = 1000.0
   static let zero = Distance(0.0)
 
