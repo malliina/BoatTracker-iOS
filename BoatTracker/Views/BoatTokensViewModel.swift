@@ -21,7 +21,7 @@ class BoatTokensVM: BoatTokensProtocol {
 
   let boatSettings = BoatPrefs.shared
   var app: UIApplication { UIApplication.shared }
-  static let defaultAppIcon = "AppIcon"
+  static let defaultAppIcon = "BoatIcon"
 
   init() {
     notificationsEnabled = boatSettings.notificationsAllowed
@@ -58,7 +58,8 @@ class BoatTokensVM: BoatTokensProtocol {
 
   @MainActor
   func changeAppIcon(to: String) async {
-    let next = to == BoatTokensVM.defaultAppIcon ? nil : to
+    let appIconName = to == "BoatIcon" ? "PrimaryIcon" : "SecondaryIcon"
+    let next = to == BoatTokensVM.defaultAppIcon ? nil : appIconName
     log.info("Changing app icon to \(to)...")
     guard app.alternateIconName != next else {
       log.info("App icon is already \(to), ignoring change request.")

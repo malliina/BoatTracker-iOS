@@ -25,7 +25,7 @@ struct IconImage: View {
     Label {
       Text(iconName)
     } icon: {
-      Image(uiImage: UIImage(named: iconName) ?? UIImage())
+      Image(iconName)
         .resizable()
         .aspectRatio(contentMode: .fit)
         .frame(minHeight: 64, maxHeight: isSelected ? 96 : 64)
@@ -51,23 +51,11 @@ struct BoatTokensView<T>: View where T: BoatTokensProtocol {
 
   var body: some View {
     ScrollView {
-      Button {
-        Task {
-          do {
-            try await BoatLiveActivities.shared.startLiveActivity()
-            log.info("Started live activity!")
-          } catch {
-            log.error("Failed to start live activity \(error)")
-          }
-        }
-      } label: {
-        Text("Live activity")
-      }
-
       Text(lang.appIcon)
         .padding(.bottom)
-      HStack {
-        ForEach(["AppIcon", "CarMapAppIcon"], id: \.self) { icon in
+      HStack(spacing: 24) {
+        Spacer()
+        ForEach(["CarIcon", "BoatIcon"], id: \.self) { icon in
           Button {
             Task {
               await vm.changeAppIcon(to: icon)
@@ -76,6 +64,7 @@ struct BoatTokensView<T>: View where T: BoatTokensProtocol {
             IconImage(iconName: icon, isSelected: vm.appIcon == icon)
           }
         }
+        Spacer()
       }
       .padding(.vertical)
       Toggle(lang.notifications, isOn: $vm.notificationsEnabled)
