@@ -1,40 +1,20 @@
 import ActivityKit
 
-@MainActor
 final class BoatLiveActivities: ObservableObject {
   static let shared = BoatLiveActivities()
 
   private let log = LoggerFactory.shared.system(BoatLiveActivities.self)
 
-  func startLiveActivity() async throws {
-    if #available(iOS 16.2, *) {
-      if ActivityAuthorizationInfo().areActivitiesEnabled {
-        do {
-          let up = BoatWidgetAttributes(boatName: BoatName("Boatsy"), trackName: TrackName("t1"))
-          let initialState = BoatWidgetAttributes.ContentState(
-            message: "On the move!", distance: 1.meters,
-            duration: 10.seconds, address: "Road 1")
-          let activity = try Activity.request(
-            attributes: up, content: .init(state: initialState, staleDate: nil), pushType: .token)
-          // This is not necessary, since the same push token updates are published in the below setup() function
-          Task {
-            await withTaskGroup(of: Void.self) { group in
-              group.addTask { @MainActor in
-                for await updateTokenData in activity.pushTokenUpdates {
-                  let updateToken = updateTokenData.hexadecimalString
-                  self.log.info("Got update token '\(updateToken)'.")
-                }
-              }
-            }
-          }
-        }
+  func setup() {
+    Task {
+      // Must have token to enable notifications
+      for await _ in Auth.shared.tokens.first().values {
+        setupAuthed()
       }
-    } else {
-      // Fallback on earlier versions
     }
   }
-
-  func setup() {
+  
+  private func setupAuthed() {
     if #available(iOS 17.2, *) {
       let deviceId = BoatPrefs.shared.deviceId
       Task {
@@ -105,6 +85,34 @@ final class BoatLiveActivities: ObservableObject {
       log.info("Live Activities not supported.")
     }
   }
+  
+//  func startLiveActivity() async throws {
+//    if #available(iOS 16.2, *) {
+//      if ActivityAuthorizationInfo().areActivitiesEnabled {
+//        do {
+//          let up = BoatWidgetAttributes(boatName: BoatName("Boatsy"), trackName: TrackName("t1"))
+//          let initialState = BoatWidgetAttributes.ContentState(
+//            message: "On the move!", distance: 1.meters,
+//            duration: 10.seconds, address: "Road 1")
+//          let activity = try Activity.request(
+//            attributes: up, content: .init(state: initialState, staleDate: nil), pushType: .token)
+//          // This is not necessary, since the same push token updates are published in the below setup() function
+//          Task {
+//            await withTaskGroup(of: Void.self) { group in
+//              group.addTask { @MainActor in
+//                for await updateTokenData in activity.pushTokenUpdates {
+//                  let updateToken = updateTokenData.hexadecimalString
+//                  self.log.info("Got update token '\(updateToken)'.")
+//                }
+//              }
+//            }
+//          }
+//        }
+//      }
+//    } else {
+//      // Fallback on earlier versions
+//    }
+//  }
 }
 
 extension Data {
