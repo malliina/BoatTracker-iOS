@@ -4,6 +4,8 @@ final class BoatLiveActivities: ObservableObject {
   static let shared = BoatLiveActivities()
 
   private let log = LoggerFactory.shared.system(BoatLiveActivities.self)
+  
+  private var backend: Backend { Backend.shared }
 
   func setup() {
     Task {
@@ -41,11 +43,12 @@ final class BoatLiveActivities: ObservableObject {
           group.addTask {
             for await activity in Activity<BoatWidgetAttributes>.activityUpdates {
               let activityId = activity.id
-              log.info("Got update of Live Activity \(activityId)...")
+              log.info("Got update of Live Activity '\(activityId)'...")
               Task {
                 for await updateTokenData in activity.pushTokenUpdates {
                   let updateToken = updateTokenData.hexadecimalString
                   do {
+                    let _ = try await self.backend.updateToken()
                     let _ = try await http.enableNotifications(
                       payload: PushPayload(
                         token: PushToken(updateToken), device: .updateLiveActivity,

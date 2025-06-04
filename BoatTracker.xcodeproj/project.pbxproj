@@ -293,7 +293,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		B0D99C842D776BDD000CF3E8 /* Exceptions for "BoatWidget" folder in "BoatWidgetExtension" target */ = {
+		B0D99C842D776BDD000CF3E8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -303,18 +303,7 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		B0D99C742D776BDC000CF3E8 /* BoatWidget */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				B0D99C842D776BDD000CF3E8 /* Exceptions for "BoatWidget" folder in "BoatWidgetExtension" target */,
-			);
-			explicitFileTypes = {
-			};
-			explicitFolders = (
-			);
-			path = BoatWidget;
-			sourceTree = "<group>";
-		};
+		B0D99C742D776BDC000CF3E8 /* BoatWidget */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (B0D99C842D776BDD000CF3E8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = BoatWidget; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -525,12 +514,12 @@
 		61B07C5E20F21DC300D8B7E0 /* BoatTracker */ = {
 			isa = PBXGroup;
 			children = (
-				B09A32B72D7C832A000962EF /* Shared */,
-				61B07C5F20F21DC300D8B7E0 /* BoatApp.swift */,
 				61B07C6620F21DC400D8B7E0 /* Assets.xcassets */,
 				619679EC20F89F6300432672 /* Auth */,
 				61DE7F3D20F29F5800C95B3F /* Backend */,
+				61B07C5F20F21DC300D8B7E0 /* BoatApp.swift */,
 				613669BF217124560043494A /* BoatTracker.entitlements */,
+				1A6A633812206E4A035E56A6 /* Credentials.plist */,
 				610EE3D821724C7C0040FBC6 /* FontAwesome */,
 				61B07C6B20F21DC400D8B7E0 /* Info.plist */,
 				61B07C6820F21DC400D8B7E0 /* LaunchScreen.storyboard */,
@@ -539,11 +528,11 @@
 				612F46B120F64182001A3003 /* Measure */,
 				6199E0EA20F24DAE00A4009A /* Network */,
 				613669BA216FDB320043494A /* Notifications */,
+				B09A32B72D7C832A000962EF /* Shared */,
 				61967A052103CAF200432672 /* Styles */,
 				6199E0ED20F24EB800A4009A /* Util */,
 				6199E0E620F2319700A4009A /* ViewModels */,
 				6199E0E720F2324400A4009A /* Views */,
-				1A6A633812206E4A035E56A6 /* Credentials.plist */,
 			);
 			path = BoatTracker;
 			sourceTree = "<group>";
