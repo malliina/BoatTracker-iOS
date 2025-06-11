@@ -32,8 +32,8 @@ class Backend {
     }
     cancellables = [listener]
   }
-  
-  func updateToken() async throws -> UserToken?  {
+
+  func updateToken() async throws -> UserToken? {
     let token = try await Auth.shared.signInSilently()
     updateToken(new: token)
     return token
