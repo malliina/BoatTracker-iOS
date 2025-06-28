@@ -191,6 +191,11 @@ struct Mmsi: Hashable, CustomStringConvertible, Codable {
   }
 }
 
+struct Coord: Hashable, Codable {
+  let lng: Double
+  let lat: Double
+}
+
 protocol WrappedString: Hashable, CustomStringConvertible, Codable {
 
 }

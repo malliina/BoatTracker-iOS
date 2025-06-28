@@ -293,7 +293,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		B0D99C842D776BDD000CF3E8 /* Exceptions for "BoatWidget" folder in "BoatWidgetExtension" target */ = {
+		B0D99C842D776BDD000CF3E8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -303,18 +303,7 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		B0D99C742D776BDC000CF3E8 /* BoatWidget */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				B0D99C842D776BDD000CF3E8 /* Exceptions for "BoatWidget" folder in "BoatWidgetExtension" target */,
-			);
-			explicitFileTypes = {
-			};
-			explicitFolders = (
-			);
-			path = BoatWidget;
-			sourceTree = "<group>";
-		};
+		B0D99C742D776BDC000CF3E8 /* BoatWidget */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (B0D99C842D776BDD000CF3E8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = BoatWidget; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
