@@ -293,7 +293,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		B0D99C842D776BDD000CF3E8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		B0D99C842D776BDD000CF3E8 /* Exceptions for "BoatWidget" folder in "BoatWidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -303,7 +303,18 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		B0D99C742D776BDC000CF3E8 /* BoatWidget */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (B0D99C842D776BDD000CF3E8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = BoatWidget; sourceTree = "<group>"; };
+		B0D99C742D776BDC000CF3E8 /* BoatWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				B0D99C842D776BDD000CF3E8 /* Exceptions for "BoatWidget" folder in "BoatWidgetExtension" target */,
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = BoatWidget;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1109,7 +1120,7 @@
 				CODE_SIGN_ENTITLEMENTS = BoatTracker/BoatTracker.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 14;
+				CURRENT_PROJECT_VERSION = 15;
 				DEVELOPMENT_TEAM = D2T2QC36Z9;
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = D2T2QC36Z9;
 				INFOPLIST_FILE = BoatTracker/Info.plist;
@@ -1118,7 +1129,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.47.68;
+				MARKETING_VERSION = 1.47.69;
 				PRODUCT_BUNDLE_IDENTIFIER = com.malliina.BoatTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "com.malliina.BoatTracker AppStore";
@@ -1139,7 +1150,7 @@
 				CODE_SIGN_ENTITLEMENTS = BoatTracker/BoatTracker.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 14;
+				CURRENT_PROJECT_VERSION = 15;
 				DEVELOPMENT_TEAM = D2T2QC36Z9;
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = D2T2QC36Z9;
 				INFOPLIST_FILE = BoatTracker/Info.plist;
@@ -1148,7 +1159,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.47.68;
+				MARKETING_VERSION = 1.47.69;
 				PRODUCT_BUNDLE_IDENTIFIER = com.malliina.BoatTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "com.malliina.BoatTracker AppStore";
@@ -1171,7 +1182,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.47.68;
+				MARKETING_VERSION = 1.47.69;
 				PRODUCT_BUNDLE_IDENTIFIER = com.malliina.BoatTrackerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -1193,7 +1204,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.47.68;
+				MARKETING_VERSION = 1.47.69;
 				PRODUCT_BUNDLE_IDENTIFIER = com.malliina.BoatTrackerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -1212,7 +1223,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 14;
+				CURRENT_PROJECT_VERSION = 15;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = D2T2QC36Z9;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -1228,7 +1239,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.47.68;
+				MARKETING_VERSION = 1.47.69;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.malliina.BoatTracker.BoatWidget;
@@ -1252,7 +1263,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 14;
+				CURRENT_PROJECT_VERSION = 15;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = D2T2QC36Z9;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -1268,7 +1279,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.47.68;
+				MARKETING_VERSION = 1.47.69;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.malliina.BoatTracker.BoatWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
