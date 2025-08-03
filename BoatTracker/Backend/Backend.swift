@@ -13,12 +13,15 @@ class Backend {
   
   private var cancellables: [Task<(), Never>] = []
 
+  private var cancellables: [Task<(), Never>] = []
+
   init(_ baseUrl: URL) {
     self.baseUrl = baseUrl
-    self.http = BoatHttpClient(bearerToken: nil, baseUrl: baseUrl, client: HttpClient())
+    self.http = BoatHttpClient(
+      bearerToken: nil, baseUrl: baseUrl, client: HttpClient())
     self.socket = BoatSocket(baseUrl)
   }
-  
+
   func prepare() async {
     let listener = Task {
       for await state in Auth.shared.$authState.values {
@@ -30,6 +33,12 @@ class Backend {
       }
     }
     cancellables = [listener]
+  }
+
+  func updateToken() async throws -> UserToken? {
+    let token = try await Auth.shared.signInSilently()
+    updateToken(new: token)
+    return token
   }
 
   private func updateToken(new token: UserToken?) {
@@ -52,7 +61,9 @@ class Backend {
     socket.reconnect(token: latestToken?.token, track: track)
   }
 
-  func openStandalone(track: TrackName?) -> BoatSocket {
+  func openStandalone(track: TrackName?)
+    -> BoatSocket
+  {
     let s = BoatSocket(baseUrl)
     s.reconnect(token: latestToken?.token, track: track)
     return s

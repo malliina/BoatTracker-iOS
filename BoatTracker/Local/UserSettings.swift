@@ -1,9 +1,5 @@
 import Foundation
 
-protocol LanguageChangedDelegate {
-  func onLanguage(changed: Lang)
-}
-
 enum AuthProvider: String {
   case google = "google"
   case microsoft = "microsoft"
@@ -16,10 +12,10 @@ enum AuthProvider: String {
 
   var name: String {
     switch self {
-    case .google: return "Google"
-    case .microsoft: return "Microsoft"
-    case .apple: return "Apple"
-    case .none: return "Other"
+    case .google: "Google"
+    case .microsoft: "Microsoft"
+    case .apple: "Apple"
+    case .none: "Other"
     }
   }
 }
@@ -60,9 +56,9 @@ class UserSettings {
 
   func selectLanguage(lang: Language, available: Languages) -> Lang {
     switch lang {
-    case .fi: return available.finnish
-    case .se: return available.swedish
-    case .en: return available.english
+    case .fi: available.finnish
+    case .se: available.swedish
+    case .en: available.english
     }
   }
 }

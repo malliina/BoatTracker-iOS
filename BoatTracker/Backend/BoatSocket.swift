@@ -1,17 +1,18 @@
-import Foundation
 import Combine
+import Foundation
+import SwiftUI
 
 class BoatSocket {
   private let log = LoggerFactory.shared.network(BoatSocket.self)
 
   private let baseUrl: URL
-  
+
   private var socket: WebSocket? = nil
-  
+
   @Published var isConnected: Bool = false
   @Published var coords: CoordsData? = nil
   @Published var vessels: [Vessel] = []
-  
+
   var updates: AnyPublisher<CoordsData, Never> {
     $coords.compactMap { cd in
       cd
@@ -20,13 +21,13 @@ class BoatSocket {
   var vesselUpdates: AnyPublisher<[Vessel], Never> {
     $vessels.eraseToAnyPublisher()
   }
-  
+
   private var cancellables: [Task<(), Never>] = []
-  
+
   init(_ baseUrl: URL) {
     self.baseUrl = baseUrl
   }
-  
+
   private func open() {
     if let socket = socket {
       log.info("Opening socket to \(socket.baseURL.absoluteString)...")
@@ -35,13 +36,13 @@ class BoatSocket {
       log.warn("Opening non-existing socket? Seems like a user error.")
     }
   }
-  
+
   func reconnect(token: AccessToken?, track: TrackName?) {
     close()
     prep(token: token, track: track)
     open()
   }
-  
+
   private func prep(token: AccessToken?, track: TrackName?) {
     var headers: [String: String] = [:]
     if let token = token {
@@ -69,7 +70,7 @@ class BoatSocket {
         for await isConnected in s.$isConnected.values {
           await update(isConnected: isConnected)
         }
-      }
+      },
     ]
   }
 
@@ -99,11 +100,16 @@ class BoatSocket {
         log.info("Unknown event: '\(event)'.")
       }
     } catch DecodingError.typeMismatch(let t, let ctx) {
-      log.info("Type mismatch: '\(t) with context \(ctx)'. \(ctx.debugDescription)")
+      log.info(
+        "Type mismatch: '\(t) with context \(ctx)'. \(ctx.debugDescription)")
     } catch DecodingError.keyNotFound(let key, let ctx) {
-      log.info("Key not found: '\(key)' with context '\(ctx)'. \(ctx.debugDescription)")
+      log.info(
+        "Key not found: '\(key)' with context '\(ctx)'. \(ctx.debugDescription)"
+      )
     } catch DecodingError.valueNotFound(let t, let ctx) {
-      log.info("Value not found in type: \(t) with context: '\(ctx)'. \(ctx.debugDescription)")
+      log.info(
+        "Value not found in type: \(t) with context: '\(ctx)'. \(ctx.debugDescription)"
+      )
     } catch DecodingError.dataCorrupted(let ctx) {
       log.info("Data corrupted with context: 'ctx'. \(ctx.debugDescription)")
     } catch {
@@ -121,15 +127,19 @@ class BoatSocket {
     self.coords = coords
   }
 
+  @MainActor private func update(coords: CoordsData) {
+    self.coords = coords
+  }
+
   @MainActor private func update(vessels: [Vessel]) {
     self.vessels = vessels
   }
-  
+
   @MainActor
   private func update(isConnected: Bool) {
     self.isConnected = isConnected
   }
-  
+
   func on(message: String) async {
     do {
       guard let json = message.data(using: .utf8) else {
@@ -140,13 +150,14 @@ class BoatSocket {
       log.warn("Not JSON: '\(message)'.")
     }
   }
-  
+
   func send<T: Encodable>(t: T) async -> SingleError? {
     guard let asString = try? Json.shared.stringify(t) else {
       return failWith("Unable to send data, cannot stringify payload.")
     }
     let isSuccess = await socket?.send(asString) ?? false
-    return isSuccess ? nil : SingleError(message: "Failed to send message over socket.")
+    return isSuccess
+      ? nil : SingleError(message: "Failed to send message over socket.")
   }
 
   func failWith(_ message: String) -> SingleError {

@@ -4,14 +4,18 @@ struct DisablePush: Codable {
   let token: PushToken
 }
 
+enum TokenType: String, Codable {
+  case notification = "ios"
+  case startLiveActivity = "ios-activity-start"
+  case updateLiveActivity = "ios-activity-update"
+}
+
 struct PushPayload: Codable {
   let token: PushToken
-  let device: String
-
-  init(_ token: PushToken) {
-    self.token = token
-    self.device = "ios"
-  }
+  let device: TokenType
+  let deviceId: String?
+  let liveActivityId: String?
+  let trackName: TrackName?
 }
 
 struct ChangeTrackTitle: Codable {

@@ -8,6 +8,18 @@ class BoatPrefs {
   let welcomeKey = "welcome"
   let notificationsAllowedKey = "notificationsAllowed"
   let aisKey = "aisEnabled"
+  private let deviceIdKey = "deviceId"
+
+  // Some random identifier for this device, stable enough
+  var deviceId: String {
+    if let old = prefs.string(forKey: deviceIdKey) {
+      return old
+    } else {
+      let str = Randoms.shared.randomNonceString(length: 12)
+      prefs.set(str, forKey: deviceIdKey)
+      return str
+    }
+  }
 
   var showWelcome: Bool {
     get {
@@ -39,7 +51,9 @@ class BoatPrefs {
 
   var authProvider: AuthProvider {
     get {
-      guard let str = prefs.string(forKey: authProviderKey) else { return .none }
+      guard let str = prefs.string(forKey: authProviderKey) else {
+        return .none
+      }
       return AuthProvider(rawValue: str) ?? .none
     }
     set(newValue) {

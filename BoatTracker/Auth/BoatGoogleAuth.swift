@@ -16,7 +16,9 @@ class BoatGoogleAuth: NSObject {
     try await google.restorePreviousSignIn()
   }
 
-  func obtainUser(from: UIViewController?, restore: Bool) async throws -> GIDGoogleUser {
+  func obtainUser(from: UIViewController?, restore: Bool) async throws
+    -> GIDGoogleUser
+  {
     if let from = from, !restore {
       return try await signIn(from: from)
     } else {
@@ -24,7 +26,9 @@ class BoatGoogleAuth: NSObject {
     }
   }
 
-  func obtainToken(from: UIViewController?, restore: Bool) async throws -> UserToken {
+  func obtainToken(from: UIViewController?, restore: Bool) async throws
+    -> UserToken
+  {
     let user = try await obtainUser(from: from, restore: restore)
     guard let idToken = user.idToken else {
       throw AppError.simple("No ID token in Google sign in response.")

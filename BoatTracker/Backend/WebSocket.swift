@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import Combine
 
@@ -9,7 +10,7 @@ class WebSocket: NSObject, URLSessionWebSocketDelegate {
   private var session: URLSession? = nil
   fileprivate var request: URLRequest
   private var task: URLSessionWebSocketTask?
-  
+
   @Published var isConnected: Bool = false
   @Published var messages: String? = nil
   var updates: AnyPublisher<String, Never> {
@@ -32,7 +33,8 @@ class WebSocket: NSObject, URLSessionWebSocketDelegate {
 
   private func prepTask() {
     session = URLSession(
-      configuration: sessionConfiguration, delegate: self, delegateQueue: OperationQueue())
+      configuration: sessionConfiguration, delegate: self,
+      delegateQueue: OperationQueue())
     task = session?.webSocketTask(with: request)
   }
 
@@ -47,7 +49,8 @@ class WebSocket: NSObject, URLSessionWebSocketDelegate {
         try await task.send(.string(msg))
         return true
       } catch {
-        self.log.warn("Failed to send '\(msg)' over socket \(self.baseURL). \(error)")
+        self.log.warn(
+          "Failed to send '\(msg)' over socket \(self.baseURL). \(error)")
         return false
       }
     } else {
@@ -60,7 +63,9 @@ class WebSocket: NSObject, URLSessionWebSocketDelegate {
   func updateAuthHeader(newValue: String?) {
     request.setValue(newValue, forHTTPHeaderField: Headers.authorization)
     if let value = newValue {
-      sessionConfiguration.httpAdditionalHeaders = [Headers.authorization: value]
+      sessionConfiguration.httpAdditionalHeaders = [
+        Headers.authorization: value
+      ]
     } else {
       sessionConfiguration.httpAdditionalHeaders = [:]
     }
@@ -105,6 +110,13 @@ class WebSocket: NSObject, URLSessionWebSocketDelegate {
     }
   }
   
+  @MainActor private func update(isConnected: Bool) {
+    self.isConnected = isConnected
+  }
+  @MainActor private func update(message: String) {
+    self.messages = message
+  }
+
   @MainActor private func update(isConnected: Bool) {
     self.isConnected = isConnected
   }

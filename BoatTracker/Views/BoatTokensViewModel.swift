@@ -21,7 +21,7 @@ class BoatTokensVM: BoatTokensProtocol {
 
   let boatSettings = BoatPrefs.shared
   var app: UIApplication { UIApplication.shared }
-  static let defaultAppIcon = "AppIcon"
+  static let defaultAppIcon = "BoatIcon"
 
   init() {
     notificationsEnabled = boatSettings.notificationsAllowed
@@ -58,7 +58,8 @@ class BoatTokensVM: BoatTokensProtocol {
 
   @MainActor
   func changeAppIcon(to: String) async {
-    let next = to == BoatTokensVM.defaultAppIcon ? nil : to
+    let appIconName = to == "BoatIcon" ? "PrimaryIcon" : "SecondaryIcon"
+    let next = to == BoatTokensVM.defaultAppIcon ? nil : appIconName
     log.info("Changing app icon to \(to)...")
     guard app.alternateIconName != next else {
       log.info("App icon is already \(to), ignoring change request.")
@@ -88,7 +89,7 @@ class BoatTokensVM: BoatTokensProtocol {
       if isEnabled {
         try await registerNotifications()
       } else {
-        
+
       }
     } catch {
       let word = isEnabled ? "enable" : "disable"
@@ -105,7 +106,7 @@ class BoatTokensVM: BoatTokensProtocol {
       await openNotificationSettings()
     }
   }
-  
+
   @MainActor
   func openNotificationSettings() {
     if let url = URL(string: appNotificationSettingsUrl) {
@@ -128,8 +129,12 @@ extension BoatTokensVM: NotificationPermissionDelegate {
   func didRegister(_ token: PushToken) async {
     if boatSettings.notificationsAllowed {
       do {
-        _ = try await http.enableNotifications(token: token)
-        log.info("Enabled notifications with backend.")
+        let deviceId = BoatPrefs.shared.deviceId
+        _ = try await http.enableNotifications(
+          payload: PushPayload(
+            token: token, device: .notification, deviceId: deviceId, liveActivityId: nil,
+            trackName: nil))
+        log.info("Enabled notifications for device \(deviceId) with backend.")
       } catch AppError.responseFailure(let details) {
         log.info("APNS registration failed. \(details.message ?? "Status \(details.code)")")
       } catch {

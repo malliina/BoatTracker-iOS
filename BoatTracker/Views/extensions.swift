@@ -1,9 +1,19 @@
 import Foundation
-import SwiftUI
 import MapboxMaps
+import SwiftUI
+
+extension Image {
+  init?(base64String: String) {
+    guard let data = Data(base64Encoded: base64String) else { return nil }
+    guard let uiImage = UIImage(data: data) else { return nil }
+    self = Image(uiImage: uiImage)
+  }
+}
 
 extension Map {
-  func onLayersTapGesture(_ layerIds: [String], perform action: @escaping MapLayerGestureHandler) -> Self {
+  func onLayersTapGesture(_ layerIds: [String], perform action: @escaping MapLayerGestureHandler)
+    -> Self
+  {
     layerIds.foldLeft(self) { m, layerId in
       m.onLayerTapGesture(layerId, perform: action)
     }
@@ -12,7 +22,9 @@ extension Map {
 
 extension GeometryProxy {
   var realSize: CGSize {
-    return CGSize(width: size.width + safeAreaInsets.leading + safeAreaInsets.trailing, height: size.height + safeAreaInsets.top + safeAreaInsets.bottom)
+    return CGSize(
+      width: size.width + safeAreaInsets.leading + safeAreaInsets.trailing,
+      height: size.height + safeAreaInsets.top + safeAreaInsets.bottom)
   }
 }
 
@@ -32,7 +44,7 @@ extension MapboxMap {
       }
     }
   }
-  
+
   func queryVisibleFeatureProps<T: Decodable>(_ point: CGPoint, layers: [String], t: T.Type) async
     -> T?
   {

@@ -1,4 +1,5 @@
 import Foundation
+import MapboxMaps
 import SwiftUI
 
 struct ProfileInfo: Identifiable {
@@ -27,35 +28,41 @@ struct ProfileView<T>: View where T: ProfileProtocol {
   var body: some View {
     BoatList {
       BoatSection {
-        if let summary = vm.summary, vm.state == .content {
+        if vm.state == .loading {
+          ZStack {
+            TrackSummaryView(track: ProfileVM.emptySummary, lang: summaryLang)
+              .frame(maxWidth: .infinity, alignment: .center)
+              .opacity(0)
+            LoadingView()
+          }
+        } else if let summary = vm.summary, vm.state == .content {
           TrackSummaryView(track: summary, lang: summaryLang)
             .frame(maxWidth: .infinity, alignment: .center)
         } else if vm.state == .empty {
-          Text(info.lang.messages.noSavedTracks)
+          Text(lang.messages.noSavedTracks)
             .foregroundColor(color.secondaryText)
-        } else if vm.state == .loading {
-          HStack {
-            Spacer()
-            ProgressView()
-            Spacer()
-          }.frame(height: 228)
         } else if vm.state == .failed {
-          Text("Failed to load tracks.")
+          Text(lang.messages.failedToLoadProfile)
         } else {
-          EmptyView()
+          Text("")
         }
       }
       BoatSection {
-        if let summary = vm.summary {
-          NavigationLink {
+        NavigationLink {
+          if let summary = vm.summary {
             ChartsView(
               lang: ChartLang.build(lang),
               title: summary.trackTitle?.description ?? summary.startDate,
               trackName: summary.trackName)
-          } label: {
-            Text(lang.track.graph)
+          } else {
+            ChartsView(
+              lang: ChartLang.build(lang),
+              title: "",
+              trackName: TrackName(""))
           }
-        }
+        } label: {
+          Text(lang.track.graph)
+        }.disabled(vm.summary == nil)
         NavigationLink {
           TracksView<TracksViewModel>(lang: summaryLang, activeTrack: activeTrack) {
             dismiss()
@@ -164,11 +171,16 @@ struct ProfileView<T>: View where T: ProfileProtocol {
   }
 }
 
-struct ProfilePreviews: BoatPreviewProvider, PreviewProvider {
+struct ProfilePreviews: PreviewProvider {
+  static let previewTrack = ProfileVM.emptySummary
   class PreviewsVM: ProfileProtocol {
-    var state: ViewState { .content }
+    let state: ViewState
+    let summary: TrackInfo?
 
-    var summary: TrackRef? { nil }
+    init(state: ViewState, summary: TrackInfo?) {
+      self.state = state
+      self.summary = summary
+    }
 
     func versionText(lang: Lang) -> String? {
       "Version preview"
@@ -179,7 +191,7 @@ struct ProfilePreviews: BoatPreviewProvider, PreviewProvider {
 
     func disconnect() {
     }
-    
+
     func signOut(from: UIViewController) async {
     }
 
@@ -187,12 +199,25 @@ struct ProfilePreviews: BoatPreviewProvider, PreviewProvider {
       false
     }
   }
-  static var preview: some View {
-    ProfileView<PreviewsVM>(
-      info: ProfileInfo(
-        user: UserToken(email: "a@b.com", token: AccessToken("abc")), current: nil, lang: lang)
-    )
-    .environmentObject(PreviewsVM())
-    .environmentObject(ActiveTrack())
+
+  static var previews: some View {
+    ForEach(BoatPreviews.shared.devices, id: \.self) { deviceName in
+      Group {
+        ProfileView<PreviewsVM>(
+          info: ProfileInfo(
+            user: UserToken(email: "a@b.com", token: AccessToken("abc")), current: nil, lang: lang)
+        )
+        .environmentObject(PreviewsVM(state: .content, summary: previewTrack))
+        .environmentObject(ActiveTrack())
+        ProfileView<PreviewsVM>(
+          info: ProfileInfo(
+            user: UserToken(email: "a@b.com", token: AccessToken("abc")), current: nil, lang: lang)
+        )
+        .environmentObject(PreviewsVM(state: .loading, summary: nil))
+        .environmentObject(ActiveTrack())
+      }
+      .previewDevice(PreviewDevice(rawValue: deviceName))
+      .previewDisplayName(deviceName)
+    }
   }
 }

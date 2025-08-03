@@ -73,16 +73,21 @@ class BoatHttpClient {
   }
 
   func tracks(limit: Int, offset: Int) async throws -> [TrackRef] {
-    try await get("/tracks?limit=\(limit)&offset=\(offset)").to(TracksResponse.self).tracks
+    try await get("/tracks?limit=\(limit)&offset=\(offset)").to(
+      TracksResponse.self
+    ).tracks
   }
 
   func stats() async throws -> StatsResponse {
     try await get("/stats?order=desc").to(StatsResponse.self)
   }
 
-  func changeTrackTitle(name: TrackName, title: TrackTitle) async throws -> TrackResponse {
+  func changeTrackTitle(name: TrackName, title: TrackTitle) async throws
+    -> TrackResponse
+  {
     try await execute(
-      "/tracks/\(name)", method: HttpClient.put, body: ChangeTrackTitle(title: title)
+      "/tracks/\(name)", method: HttpClient.put,
+      body: ChangeTrackTitle(title: title)
     )
     .to(TrackResponse.self)
   }
@@ -91,29 +96,35 @@ class BoatHttpClient {
     try await get("/conf").to(ClientConf.self)
   }
 
-  func enableNotifications(token: PushToken) async throws -> SimpleMessage {
-    try await execute("/users/notifications", method: HttpClient.post, body: PushPayload(token))
-      .to(SimpleMessage.self)
+  func enableNotifications(payload: PushPayload) async throws -> SimpleMessage {
+    try await execute(
+      "/users/notifications", method: HttpClient.post, body: payload
+    )
+    .to(SimpleMessage.self)
   }
 
   func disableNotifications(token: PushToken) async throws -> SimpleMessage {
     try await execute(
-      "/users/notifications/disable", method: HttpClient.post, body: DisablePush(token: token)
+      "/users/notifications/disable", method: HttpClient.post,
+      body: DisablePush(token: token)
     )
     .to(SimpleMessage.self)
   }
 
   func renameBoat(boat: Int, newName: BoatName) async throws -> Boat {
     try await execute(
-      "/boats/\(boat)", method: HttpClient.patch, body: ChangeBoatName(boatName: newName)
+      "/boats/\(boat)", method: HttpClient.patch,
+      body: ChangeBoatName(boatName: newName)
     )
     .to(BoatResponse.self)
     .boat
   }
 
   func changeLanguage(to: Language) async throws -> SimpleMessage {
-    try await execute("/users/me", method: HttpClient.put, body: ChangeLanguage(language: to))
-      .to(SimpleMessage.self)
+    try await execute(
+      "/users/me", method: HttpClient.put, body: ChangeLanguage(language: to)
+    )
+    .to(SimpleMessage.self)
   }
 
   func deleteMe() async throws -> SimpleMessage {
@@ -121,23 +132,29 @@ class BoatHttpClient {
       .to(SimpleMessage.self)
   }
 
-  func shortestRoute(from: CLLocationCoordinate2D, to: CLLocationCoordinate2D) async throws
+  func shortestRoute(from: CLLocationCoordinate2D, to: CLLocationCoordinate2D)
+    async throws
     -> RouteResult
   {
-    try await get("/routes/\(from.latitude)/\(from.longitude)/\(to.latitude)/\(to.longitude)")
-      .to(RouteResult.self)
+    try await get(
+      "/routes/\(from.latitude)/\(from.longitude)/\(to.latitude)/\(to.longitude)"
+    )
+    .to(RouteResult.self)
   }
 
   func get(_ path: String) async throws -> HttpResponse {
     try await executeNoBody(path, method: HttpClient.get)
   }
 
-  func executeNoBody(_ path: String, method: String) async throws -> HttpResponse {
+  func executeNoBody(_ path: String, method: String) async throws
+    -> HttpResponse
+  {
     let dummy: String? = nil
     return try await execute(path, method: method, body: dummy)
   }
 
-  func execute<T: Encodable>(_ path: String, method: String, body: T? = nil) async throws
+  func execute<T: Encodable>(_ path: String, method: String, body: T? = nil)
+    async throws
     -> HttpResponse
   {
     try await make(request: build(path: path, method: method, body: body))
@@ -161,19 +178,25 @@ class BoatHttpClient {
         return try await make(request: retry, attempt: 2)
       } else {
         let decoder = JSONDecoder()
-        let errors = (try? decoder.decode(Errors.self, from: response.data))?.errors ?? []
+        let errors =
+          (try? decoder.decode(Errors.self, from: response.data))?.errors ?? []
         if let url = request.url {
           throw AppError.responseFailure(
-            ResponseDetails(url: url, code: response.statusCode, errors: errors))
+            ResponseDetails(url: url, code: response.statusCode, errors: errors)
+          )
         } else {
-          let err = errors.headOption() ?? SingleError(message: "Failed to handle request.")
+          let err =
+            errors.headOption()
+            ?? SingleError(message: "Failed to handle request.")
           throw AppError.simpleError(err)
         }
       }
     }
   }
 
-  func build<T: Encodable>(path: String, method: String, body: T? = nil) -> URLRequest {
+  func build<T: Encodable>(path: String, method: String, body: T? = nil)
+    -> URLRequest
+  {
     let headers = method == HttpClient.get ? defaultHeaders : postHeaders
     return client.buildRequestWithBody(
       url: fullUrl(to: path), httpMethod: method, headers: headers, body: body)
@@ -183,7 +206,9 @@ class BoatHttpClient {
     URL(string: to, relativeTo: baseUrl)!
   }
 
-  private func parseAs<T: Decodable>(_ t: T.Type, response: HttpResponse) throws -> T {
+  private func parseAs<T: Decodable>(_ t: T.Type, response: HttpResponse) throws
+    -> T
+  {
     do {
       let decoder = JSONDecoder()
       return try decoder.decode(t, from: response.data)

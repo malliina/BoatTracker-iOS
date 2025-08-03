@@ -35,7 +35,8 @@ open class Keychain {
   func update(token: AccessToken) throws {
     let encodedToken = token.token.data(using: String.Encoding.utf8)!
     let attributes: [String: Any] = [kSecValueData as String: encodedToken]
-    let status = SecItemUpdate(query as CFDictionary, attributes as CFDictionary)
+    let status = SecItemUpdate(
+      query as CFDictionary, attributes as CFDictionary)
     guard status != errSecItemNotFound else {
       throw KeychainError.notFound
     }

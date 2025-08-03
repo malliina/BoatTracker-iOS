@@ -13,8 +13,10 @@ struct StatView: View {
   var color: BoatColor { BoatColor.shared }
   var sizing: StatSizing {
     switch style {
-    case .small: return StatSizing(labelSize: 12, valueSize: 15, verticalSpace: 6)
-    case .large: return StatSizing(labelSize: 14, valueSize: 17, verticalSpace: 12)
+    case .small:
+      return StatSizing(labelSize: 12, valueSize: 15, verticalSpace: 6)
+    case .large:
+      return StatSizing(labelSize: 14, valueSize: 17, verticalSpace: 12)
     }
   }
 
@@ -32,7 +34,8 @@ struct StatView: View {
 }
 
 struct SummaryLang {
-  let tracks, duration, distance, topSpeed, avgSpeed, temperature, waterTemp, date, notAvailable,
+  let tracks, duration, distance, topSpeed, avgSpeed, temperature, waterTemp,
+    date, notAvailable,
     edit, rename, newName, cancel: String
 
   static func build(_ lang: Lang) -> SummaryLang {
@@ -40,14 +43,18 @@ struct SummaryLang {
     let settings = lang.settings
     return SummaryLang(
       tracks: track.tracks, duration: track.duration, distance: track.distance,
-      topSpeed: track.topSpeed, avgSpeed: track.avgSpeed, temperature: track.temperature,
-      waterTemp: track.waterTemp, date: track.date, notAvailable: lang.messages.notAvailable,
+      topSpeed: track.topSpeed, avgSpeed: track.avgSpeed,
+      temperature: track.temperature,
+      waterTemp: track.waterTemp, date: track.date,
+      notAvailable: lang.messages.notAvailable,
       edit: settings.edit, rename: settings.rename, newName: settings.newName,
       cancel: settings.cancel)
   }
 }
 
 protocol TrackInfo {
+  var trackName: TrackName { get }
+  var trackTitle: TrackTitle? { get }
   var duration: Duration { get }
   var distanceMeters: Distance { get }
   var topSpeed: Speed? { get }
@@ -59,6 +66,8 @@ protocol TrackInfo {
 }
 
 struct TrackInfo2: TrackInfo {
+  let trackName: TrackName
+  let trackTitle: TrackTitle?
   let duration: Duration
   let distanceMeters: Distance
   let topSpeed: Speed?
@@ -86,16 +95,24 @@ struct TrackSummaryView: View {
       }
       .padding(.vertical, verticalSpacing)
       HStack {
-        Stat(lang.topSpeed, track.topSpeed?.formatted(isBoat: isBoat) ?? lang.notAvailable)
+        Stat(
+          lang.topSpeed,
+          track.topSpeed?.formatted(isBoat: isBoat) ?? lang.notAvailable)
         Spacer().frame(width: spacingBig)
-        Stat(lang.avgSpeed, track.avgSpeed?.formatted(isBoat: isBoat) ?? lang.notAvailable)
+        Stat(
+          lang.avgSpeed,
+          track.avgSpeed?.formatted(isBoat: isBoat) ?? lang.notAvailable)
       }
       .padding(.vertical, verticalSpacing)
       HStack {
         if isBoat {
-          Stat(lang.waterTemp, track.avgWaterTemp?.description ?? lang.notAvailable)
+          Stat(
+            lang.waterTemp, track.avgWaterTemp?.description ?? lang.notAvailable
+          )
         } else {
-          Stat(lang.temperature, track.avgOutsideTemp?.description ?? lang.notAvailable)
+          Stat(
+            lang.temperature,
+            track.avgOutsideTemp?.description ?? lang.notAvailable)
         }
         Spacer().frame(width: spacingBig)
         Stat(lang.date, track.startDate)
@@ -113,8 +130,11 @@ struct TrackSummaryView: View {
 struct TrackSummaryPreviews: BoatPreviewProvider, PreviewProvider {
   static var preview: some View {
     let info = TrackInfo2(
-      duration: 1200.seconds, distanceMeters: 2000.meters, topSpeed: 40.knots, avgSpeed: 32.knots,
-      avgWaterTemp: 14.celsius, avgOutsideTemp: 11.celsius, startDate: "Today", sourceType: .boat)
+      trackName: TrackName("Track"), trackTitle: nil,
+      duration: 1200.seconds, distanceMeters: 2000.meters, topSpeed: 40.knots,
+      avgSpeed: 32.knots,
+      avgWaterTemp: 14.celsius, avgOutsideTemp: 11.celsius, startDate: "Today",
+      sourceType: .boat)
     return TrackSummaryView(track: info, lang: SummaryLang.build(lang))
   }
 }

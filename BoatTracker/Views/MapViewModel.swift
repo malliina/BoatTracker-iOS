@@ -1,7 +1,7 @@
+import Algorithms
 import Combine
 import Foundation
 import MapboxMaps
-import Algorithms
 
 protocol MapViewModelLike: ObservableObject {
   var vessels: [Vessel] { get }
@@ -21,7 +21,7 @@ protocol MapViewModelLike: ObservableObject {
   var activeTrack: ActiveTrack { get }
   // result from shortest path goes here
   var routeResult: RouteResult? { get set }
-  
+
   func shortest(from: CLLocationCoordinate2D, to: CLLocationCoordinate2D)
   func toggleFollow() async
   func vesselInfo(_ mmsi: Mmsi) -> Vessel?
@@ -52,11 +52,13 @@ class MapViewModel: MapViewModelLike {
   var commands: Published<MapCommand?>.Publisher { $command }
   @Published var welcomeInfo: WelcomeInfo? = nil
   @Published var activeTrack = ActiveTrack()
-  
+
   @Published var tracks: [CoordsData] = []
-  var latestTrackPoints: [SingleTrackPoint] { 
+  var latestTrackPoints: [SingleTrackPoint] {
     tracks.compactMap { cd in
-      if let last = cd.coords.last, let bearing = MapViewModel.adjustedBearing(data: cd) {
+      if let last = cd.coords.last,
+        let bearing = MapViewModel.adjustedBearing(data: cd)
+      {
         SingleTrackPoint(from: cd.from, point: last, bearing: bearing)
       } else {
         nil
@@ -66,20 +68,24 @@ class MapViewModel: MapViewModelLike {
     }
   }
   @Published var routeResult: RouteResult? = nil
-  
-  static let defaultCenter = CLLocationCoordinate2D(latitude: 60.14, longitude: 24.9)
-  
+
+  static let defaultCenter = CLLocationCoordinate2D(
+    latitude: 60.14, longitude: 24.9)
+
   private var cancellables: [Task<(), Never>] = []
-  
+
   static func adjustedBearing(data: CoordsData) -> CLLocationDirection? {
     let lastTwo = Array(data.coords.suffix(2)).map { $0.coord }
-    let bearing = lastTwo.count == 2 ? Geo.shared.bearing(from: lastTwo[0], to: lastTwo[1]) : nil
+    let bearing =
+      lastTwo.count == 2
+      ? Geo.shared.bearing(from: lastTwo[0], to: lastTwo[1]) : nil
     if let bearing = bearing {
-      return data.from.sourceType.isBoat ? bearing : (bearing + 90).truncatingRemainder(dividingBy: 360)
+      return data.from.sourceType.isBoat
+        ? bearing : (bearing + 90).truncatingRemainder(dividingBy: 360)
     }
     return nil
   }
-  
+
   func prepare() async {
     do {
       let token = try Credentials.read(key: "MapboxAccessToken")
@@ -102,13 +108,17 @@ class MapViewModel: MapViewModelLike {
       }
     }
     Task {
-      for await track in activeTrack.$selectedTrack.map({ $0?.track }).removeDuplicates().values {
+      for await track in activeTrack.$selectedTrack.map({ $0?.track })
+        .removeDuplicates().values
+      {
         log.info("Changed to \(track?.name ?? "no track").")
         await change(to: track)
       }
     }
     Task {
-      for await isConnected in backend.socket.$isConnected.removeDuplicates().values {
+      for await isConnected in backend.socket.$isConnected.removeDuplicates()
+        .values
+      {
         await update(isConnected: isConnected)
       }
     }
@@ -123,7 +133,7 @@ class MapViewModel: MapViewModelLike {
       log.error("Failed to load conf and style: '\(error.describe)'.")
     }
   }
-  
+
   func shortest(from: CLLocationCoordinate2D, to: CLLocationCoordinate2D) {
     log.info("Loading shortest route from \(from) to \(to)...")
     Task {
@@ -132,9 +142,15 @@ class MapViewModel: MapViewModelLike {
         log.info("Loaded shortest route from \(from) to \(to).")
         await update(route: route)
       } catch {
-        log.error("Failed to load shortest route from \(from) to \(to). \(error.describe)")
+        log.error(
+          "Failed to load shortest route from \(from) to \(to). \(error.describe)"
+        )
       }
     }
+  }
+
+  @MainActor private func update(route: RouteResult) {
+    routeResult = route
   }
 
   func reload(token: UserToken?) async {
@@ -153,9 +169,9 @@ class MapViewModel: MapViewModelLike {
         for await vs in socket.vesselUpdates.values {
           await update(vessels: vs)
         }
-      }
+      },
     ]
-    socket.reconnect(token: token?.token, track: nil) // is nil correct?
+    socket.reconnect(token: token?.token, track: nil)  // is nil correct?
     await setupUser(token: token?.token)
   }
 
@@ -197,14 +213,17 @@ class MapViewModel: MapViewModelLike {
       data.from.trackName == coordsData.from.trackName
     }
     if let idx = idx {
-      modified[idx] = CoordsData(coords: modified[idx].coords + coordsData.coords, from: coordsData.from)
+      modified[idx] = CoordsData(
+        coords: modified[idx].coords + coordsData.coords, from: coordsData.from)
     } else {
       modified.append(coordsData)
     }
     tracks = modified
-    log.info("Got \(coordsData.coords.count) coords, tracks now has \(tracks.count) elements")
+    log.info(
+      "Got \(coordsData.coords.count) coords, tracks now has \(tracks.count) elements"
+    )
   }
-  
+
   @MainActor private func update(vessels: [Vessel]) {
     AISState.shared.update(vessels: vessels)
     self.vessels = vessels
@@ -242,7 +261,10 @@ class MapViewModel: MapViewModelLike {
   @MainActor private func update(isConnected: Bool) {
     isFollowButtonHidden = !isConnected
   }
-  
+  @MainActor func toggleFollow() {
+    command = .toggleFollow
+  }
+
   func vesselInfo(_ mmsi: Mmsi) -> Vessel? {
     AISState.shared.info(mmsi)
   }

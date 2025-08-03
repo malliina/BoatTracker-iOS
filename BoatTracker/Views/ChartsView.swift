@@ -138,6 +138,10 @@ class ChartVM: ObservableObject {
     cancellables = []
   }
 
+  func onCoords(event: CoordsData) async {
+    await update(data: event)
+  }
+
   @MainActor private func update(data: CoordsData) {
     self.data = data
   }
