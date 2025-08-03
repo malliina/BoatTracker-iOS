@@ -117,13 +117,6 @@ class WebSocket: NSObject, URLSessionWebSocketDelegate {
     self.messages = message
   }
 
-  @MainActor private func update(isConnected: Bool) {
-    self.isConnected = isConnected
-  }
-  @MainActor private func update(message: String) {
-    self.messages = message
-  }
-
   func disconnect() {
     let reason = "Closing connection".data(using: .utf8)
     task?.cancel(with: .goingAway, reason: reason)

@@ -127,10 +127,6 @@ class BoatSocket {
     self.coords = coords
   }
 
-  @MainActor private func update(coords: CoordsData) {
-    self.coords = coords
-  }
-
   @MainActor private func update(vessels: [Vessel]) {
     self.vessels = vessels
   }

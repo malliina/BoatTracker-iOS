@@ -13,8 +13,6 @@ class Backend {
   
   private var cancellables: [Task<(), Never>] = []
 
-  private var cancellables: [Task<(), Never>] = []
-
   init(_ baseUrl: URL) {
     self.baseUrl = baseUrl
     self.http = BoatHttpClient(
