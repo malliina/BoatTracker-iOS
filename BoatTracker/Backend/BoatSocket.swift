@@ -137,6 +137,7 @@ class BoatSocket {
   }
 
   func on(message: String) async {
+    log.info("Got \(message)")
     do {
       guard let json = message.data(using: .utf8) else {
         throw JsonError.invalid("Not JSON.", message)
