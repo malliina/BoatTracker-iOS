@@ -17,6 +17,7 @@ protocol MapViewModelLike: ObservableObject {
   var isProfileButtonHidden: Bool { get }
   var isFollowButtonHidden: Bool { get }
   var mapMode: MapMode { get set }
+  var fitCamera: Bool { get set }
   var styleUri: StyleURI? { get set }
   var activeTrack: ActiveTrack { get }
   // result from shortest path goes here
@@ -38,6 +39,7 @@ class MapViewModel: MapViewModelLike {
   @Published var isProfileButtonHidden: Bool = true
   @Published var isFollowButtonHidden: Bool = false
   @Published var mapMode: MapMode = .fit
+  @Published var fitCamera: Bool = true
   @Published var styleUri: StyleURI? = nil
   @Published var coords: CoordsData? = nil
   @Published var selectedTrack: TrackName? = nil
@@ -73,6 +75,7 @@ class MapViewModel: MapViewModelLike {
     latitude: 60.14, longitude: 24.9)
 
   private var cancellables: [Task<(), Never>] = []
+  private var persistentTasks: [Task<(), Never>] = []
 
   static func adjustedBearing(data: CoordsData) -> CLLocationDirection? {
     let lastTwo = Array(data.coords.suffix(2)).map { $0.coord }
@@ -132,6 +135,18 @@ class MapViewModel: MapViewModelLike {
     } catch {
       log.error("Failed to load conf and style: '\(error.describe)'.")
     }
+    persistentTasks = [
+      Task {
+        for await cd in socket.updates.values {
+          await update(coordsData: cd)
+        }
+      },
+      Task {
+        for await vs in socket.vesselUpdates.values {
+          await update(vessels: vs)
+        }
+      }
+    ]
   }
 
   func shortest(from: CLLocationCoordinate2D, to: CLLocationCoordinate2D) {
@@ -159,18 +174,7 @@ class MapViewModel: MapViewModelLike {
     await disconnect()
     await update(allVessels: [])
     socket.updateToken(token: token?.token)
-    cancellables = [
-      Task {
-        for await cd in socket.updates.values {
-          await update(coordsData: cd)
-        }
-      },
-      Task {
-        for await vs in socket.vesselUpdates.values {
-          await update(vessels: vs)
-        }
-      },
-    ]
+    cancellables = []
     socket.reconnect(token: token?.token, track: nil)  // is nil correct?
     await setupUser(token: token?.token)
   }
@@ -191,10 +195,12 @@ class MapViewModel: MapViewModelLike {
 
   private func change(to track: TrackName?) async {
     await disconnect()
+    await update(fit: mapMode == .fit)
     backend.open(track: track)
   }
 
   private func disconnect() async {
+    log.info("Disconnecting...")
     cancellables.forEach { c in
       c.cancel()
     }
@@ -206,6 +212,10 @@ class MapViewModel: MapViewModelLike {
     await update(route: nil)
   }
 
+  @MainActor private func update(fit: Bool) {
+    self.fitCamera = fit
+  }
+  
   @MainActor private func update(coordsData: CoordsData) {
     coords = coordsData
     var modified = tracks
@@ -219,7 +229,7 @@ class MapViewModel: MapViewModelLike {
       modified.append(coordsData)
     }
     tracks = modified
-    log.info(
+    log.debug(
       "Got \(coordsData.coords.count) coords, tracks now has \(tracks.count) elements"
     )
   }
@@ -284,6 +294,7 @@ class PreviewMapViewModel: MapViewModelLike {
   var settings: UserSettings = UserSettings.shared
   var latestToken: UserToken? = nil
   var mapMode: MapMode = .fit
+  var fitCamera: Bool = false
   var isProfileButtonHidden: Bool = false
   var isFollowButtonHidden: Bool = false
   var styleUri: StyleURI? = nil

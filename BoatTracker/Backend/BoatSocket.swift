@@ -124,6 +124,7 @@ class BoatSocket {
   }
   
   @MainActor private func update(coords: CoordsData) {
+    log.info("Setting \(coords.coords.count) coords for \(coords.from.trackName)...")
     self.coords = coords
   }
 
@@ -137,7 +138,6 @@ class BoatSocket {
   }
 
   func on(message: String) async {
-    log.info("Got \(message)")
     do {
       guard let json = message.data(using: .utf8) else {
         throw JsonError.invalid("Not JSON.", message)

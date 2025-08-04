@@ -46,7 +46,6 @@ struct MainMapView<T>: View where T: MapViewModelLike {
   @State var viewport: Viewport = .overview(
     geometry: Polygon(
       center: MapViewModel.defaultCenter, radius: 10000, vertices: 30))
-  @State var cameraFitted = false
   @State var hasBeenFollowing = false
   @State var routeState: RouteState = RouteState(start: nil, end: nil)
 
@@ -326,13 +325,13 @@ struct MainMapView<T>: View where T: MapViewModelLike {
                 )
                 .first()
               ) { coords in
-                if !cameraFitted {
+                if viewModel.fitCamera {
                   let coords = viewModel.tracks.flatMap { cd in
                     cd.coords
                   }
                   if coords.count > 1 {
                     log.info("Camera not fitted, fitting")
-                    cameraFitted = true
+                    viewModel.fitCamera = false
                     withViewportAnimation {
                       viewport = .overview(
                         geometry: LineString(coords.map { $0.coord }),
