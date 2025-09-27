@@ -1,5 +1,5 @@
 {
-  "originHash" : "1881d429a216c9ae3c57a10d94def297ad54bc8759402b550a978c68b4082443",
+  "originHash" : "bd242eeac8fb3124584c8a3adbd8eaf82eb85a8029c9730bdc7633e77b8acf1a",
   "pins" : [
     {
       "identity" : "app-check",
@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/openid/AppAuth-iOS.git",
       "state" : {
-        "revision" : "c89ed571ae140f8eb1142735e6e23d7bb8c34cb2",
-        "version" : "1.7.5"
+        "revision" : "145104f5ea9d58ae21b60add007c33c1cc0c948e",
+        "version" : "2.0.0"
       }
     },
     {
@@ -33,8 +33,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/google/GoogleSignIn-iOS",
       "state" : {
-        "revision" : "65fb3f1aa6ffbfdc79c4e22178a55cd91561f5e9",
-        "version" : "8.0.0"
+        "revision" : "3996d908c7b3ce8a87d39c808f9a6b2a08fbe043",
+        "version" : "9.0.0"
       }
     },
     {
@@ -60,8 +60,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/google/GTMAppAuth.git",
       "state" : {
-        "revision" : "5d7d66f647400952b1758b230e019b07c0b4b22a",
-        "version" : "4.1.1"
+        "revision" : "56e0ccf09a6dd29dc7e68bdf729598240ca8aa16",
+        "version" : "5.0.0"
       }
     },
     {
@@ -69,8 +69,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/mapbox/mapbox-common-ios.git",
       "state" : {
-        "revision" : "480f648b20b87a3a55f30bb6d76d6dc7d8412ec4",
-        "version" : "24.9.0"
+        "revision" : "72b91a2d529eeb530bac9d4f9188a0f7dac45f6d",
+        "version" : "24.15.1"
       }
     },
     {
@@ -78,8 +78,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/mapbox/mapbox-core-maps-ios.git",
       "state" : {
-        "revision" : "af17fef6d11338c64b296d9374ce0c3479695532",
-        "version" : "11.9.2"
+        "revision" : "4ee72ff64a3eeb81b1596e9d1d2e7965c313913e",
+        "version" : "11.15.1"
       }
     },
     {
@@ -87,8 +87,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/mapbox/mapbox-maps-ios.git",
       "state" : {
-        "revision" : "4793b133def738fef8d2ed0bd7c0b240640a8f40",
-        "version" : "11.9.1"
+        "revision" : "793d02df47d65d65d42ed9211130fc388b7a7dc0",
+        "version" : "11.15.1"
       }
     },
     {
@@ -96,8 +96,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/AzureAD/microsoft-authentication-library-for-objc",
       "state" : {
-        "revision" : "fa998300c84760c501c32af820e880da7226a8a3",
-        "version" : "1.6.3"
+        "revision" : "8d4b948242ab2b9a4ad035a0a0005a4200ccec7a",
+        "version" : "2.4.1"
       }
     },
     {
@@ -114,8 +114,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-algorithms.git",
       "state" : {
-        "revision" : "f6919dfc309e7f1b56224378b11e28bab5bccc42",
-        "version" : "1.2.0"
+        "revision" : "87e50f483c54e6efd60e885f7f5aa946cee68023",
+        "version" : "1.2.1"
       }
     },
     {

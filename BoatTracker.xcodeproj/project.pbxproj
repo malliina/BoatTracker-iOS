@@ -293,7 +293,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		B0D99C842D776BDD000CF3E8 /* Exceptions for "BoatWidget" folder in "BoatWidgetExtension" target */ = {
+		B0D99C842D776BDD000CF3E8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -303,18 +303,7 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		B0D99C742D776BDC000CF3E8 /* BoatWidget */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				B0D99C842D776BDD000CF3E8 /* Exceptions for "BoatWidget" folder in "BoatWidgetExtension" target */,
-			);
-			explicitFileTypes = {
-			};
-			explicitFolders = (
-			);
-			path = BoatWidget;
-			sourceTree = "<group>";
-		};
+		B0D99C742D776BDC000CF3E8 /* BoatWidget */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (B0D99C842D776BDD000CF3E8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = BoatWidget; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1338,7 +1327,7 @@
 			repositoryURL = "https://github.com/AzureAD/microsoft-authentication-library-for-objc";
 			requirement = {
 				kind = exactVersion;
-				version = 1.6.3;
+				version = 2.4.1;
 			};
 		};
 		7D175C4E27BD87110050E29B /* XCRemoteSwiftPackageReference "Charts" */ = {
@@ -1354,7 +1343,7 @@
 			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
 			requirement = {
 				kind = exactVersion;
-				version = 8.0.0;
+				version = 9.0.0;
 			};
 		};
 		7DAE8A7F2C8C392600FB797E /* XCRemoteSwiftPackageReference "swift-algorithms" */ = {
@@ -1362,7 +1351,7 @@
 			repositoryURL = "https://github.com/apple/swift-algorithms.git";
 			requirement = {
 				kind = exactVersion;
-				version = 1.2.0;
+				version = 1.2.1;
 			};
 		};
 		B01E79352D4AAED3009EC1CF /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */ = {
@@ -1370,7 +1359,7 @@
 			repositoryURL = "https://github.com/mapbox/mapbox-maps-ios.git";
 			requirement = {
 				kind = exactVersion;
-				version = 11.9.1;
+				version = 11.15.1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
