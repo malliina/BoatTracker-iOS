@@ -1,6 +1,5 @@
 import Combine
 import Foundation
-import Combine
 
 class WebSocket: NSObject, URLSessionWebSocketDelegate {
   private let log = LoggerFactory.shared.network(WebSocket.self)
@@ -109,7 +108,7 @@ class WebSocket: NSObject, URLSessionWebSocketDelegate {
       self.log.error("Error when receiving \(error)")
     }
   }
-  
+
   @MainActor private func update(isConnected: Bool) {
     self.isConnected = isConnected
   }

@@ -145,7 +145,7 @@ class MapViewModel: MapViewModelLike {
         for await vs in socket.vesselUpdates.values {
           await update(vessels: vs)
         }
-      }
+      },
     ]
   }
 
@@ -215,7 +215,7 @@ class MapViewModel: MapViewModelLike {
   @MainActor private func update(fit: Bool) {
     self.fitCamera = fit
   }
-  
+
   @MainActor private func update(coordsData: CoordsData) {
     coords = coordsData
     var modified = tracks
