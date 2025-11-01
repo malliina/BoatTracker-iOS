@@ -11,6 +11,7 @@ struct BoatApp: App {
   @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
   @Environment(\.scenePhase) private var scenePhase
 
+  // Dummy comment
   @StateObject private var viewModel = MapViewModel()
   @StateObject private var profileVm = ProfileVM()
   @StateObject private var tracksVm = TracksViewModel()
