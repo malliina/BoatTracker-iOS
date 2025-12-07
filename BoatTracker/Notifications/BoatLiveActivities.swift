@@ -20,10 +20,11 @@ final class BoatLiveActivities: ObservableObject {
         let log = self.log
         let http = self.http
         group.addTask {
+          log.info("Listening to push to start token updates...")
           for await startTokenData in Activity<BoatWidgetAttributes>.pushToStartTokenUpdates {
             let startToken = startTokenData.hexadecimalString
             do {
-              if let userToken = try await self.backend.updateToken() {
+              if (try await self.backend.updateToken()) != nil {
                 let _ = try await http.enableNotifications(
                   payload: PushPayload(
                     token: PushToken(startToken), device: .startLiveActivity, deviceId: deviceId,
