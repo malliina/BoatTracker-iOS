@@ -69,8 +69,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/mapbox/mapbox-common-ios.git",
       "state" : {
-        "revision" : "72b91a2d529eeb530bac9d4f9188a0f7dac45f6d",
-        "version" : "24.15.1"
+        "revision" : "bd0fb79b3f3b9270c37e20c0514b8f197e5727fb",
+        "version" : "24.17.1"
       }
     },
     {
@@ -78,8 +78,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/mapbox/mapbox-core-maps-ios.git",
       "state" : {
-        "revision" : "4ee72ff64a3eeb81b1596e9d1d2e7965c313913e",
-        "version" : "11.15.1"
+        "revision" : "c5f1370ad5f19fab97067ec0464b9aeac1ec910d",
+        "version" : "11.17.1"
       }
     },
     {
@@ -87,8 +87,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/mapbox/mapbox-maps-ios.git",
       "state" : {
-        "revision" : "793d02df47d65d65d42ed9211130fc388b7a7dc0",
-        "version" : "11.15.1"
+        "revision" : "ee4ce10df85ba26d5a537825b667b5a2b88b6a62",
+        "version" : "11.17.1"
       }
     },
     {
@@ -96,8 +96,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/AzureAD/microsoft-authentication-library-for-objc",
       "state" : {
-        "revision" : "8d4b948242ab2b9a4ad035a0a0005a4200ccec7a",
-        "version" : "2.4.1"
+        "revision" : "09c275ada2236a834b981f6a4d5ecb491b576d6c",
+        "version" : "2.7.0"
       }
     },
     {

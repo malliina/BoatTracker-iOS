@@ -293,7 +293,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		B0D99C842D776BDD000CF3E8 /* Exceptions for "BoatWidget" folder in "BoatWidgetExtension" target */ = {
+		B0D99C842D776BDD000CF3E8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -303,18 +303,7 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		B0D99C742D776BDC000CF3E8 /* BoatWidget */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				B0D99C842D776BDD000CF3E8 /* Exceptions for "BoatWidget" folder in "BoatWidgetExtension" target */,
-			);
-			explicitFileTypes = {
-			};
-			explicitFolders = (
-			);
-			path = BoatWidget;
-			sourceTree = "<group>";
-		};
+		B0D99C742D776BDC000CF3E8 /* BoatWidget */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (B0D99C842D776BDD000CF3E8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = BoatWidget; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1118,11 +1107,10 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = BoatTracker/BoatTracker.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 20;
 				DEVELOPMENT_TEAM = D2T2QC36Z9;
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = D2T2QC36Z9;
 				INFOPLIST_FILE = BoatTracker/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1132,7 +1120,7 @@
 				MARKETING_VERSION = 1.47.74;
 				PRODUCT_BUNDLE_IDENTIFIER = com.malliina.BoatTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "com.malliina.BoatTracker AppStore";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "BoatTracker/FontAwesome/BoatTracker-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -1221,11 +1209,9 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 20;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = D2T2QC36Z9;
+				DEVELOPMENT_TEAM = D2T2QC36Z9;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -1244,8 +1230,7 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.malliina.BoatTracker.BoatWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = BoatTrackerLiveActivitiesProfile;
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "com.malliina.BoatTracker.BoatWidget AppStore";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1340,7 +1325,7 @@
 			repositoryURL = "https://github.com/AzureAD/microsoft-authentication-library-for-objc";
 			requirement = {
 				kind = exactVersion;
-				version = 2.4.1;
+				version = 2.7.0;
 			};
 		};
 		7D175C4E27BD87110050E29B /* XCRemoteSwiftPackageReference "Charts" */ = {
@@ -1372,7 +1357,7 @@
 			repositoryURL = "https://github.com/mapbox/mapbox-maps-ios.git";
 			requirement = {
 				kind = exactVersion;
-				version = 11.15.1;
+				version = 11.17.1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

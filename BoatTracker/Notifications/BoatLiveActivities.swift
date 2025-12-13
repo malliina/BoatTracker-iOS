@@ -13,7 +13,9 @@ final class BoatLiveActivities: ObservableObject {
     }
   }
 
-  private func setupAuthed() async {
+  func setupAuthed() async {
+    let launches = BoatPrefs.shared.launch().joined(separator: ", ")
+    log.info("Last five launches: \(launches)")
     if #available(iOS 17.2, *) {
       let deviceId = BoatPrefs.shared.deviceId
       await withTaskGroup(of: Void.self) { group in

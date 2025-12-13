@@ -97,33 +97,7 @@ class MapViewModel: MapViewModelLike {
       log.info("Failed to read Mapbox token from credentials file. \(error)")
     }
     Task {
-      for await state in Auth.shared.$authState.values {
-        switch state {
-        case .authenticated(let token):
-          self.log.info("Got user '\(token.email)'.")
-          await self.reload(token: token)
-        case .unauthenticated:
-          self.log.info("Got no user.")
-          await self.reload(token: nil)
-        case .unknown:
-          self.log.info("Waiting for proper auth state...")
-        }
-      }
-    }
-    Task {
-      for await track in activeTrack.$selectedTrack.map({ $0?.track })
-        .removeDuplicates().values
-      {
-        log.info("Changed to \(track?.name ?? "no track").")
-        await change(to: track)
-      }
-    }
-    Task {
-      for await isConnected in backend.socket.$isConnected.removeDuplicates()
-        .values
-      {
-        await update(isConnected: isConnected)
-      }
+      await listeners()
     }
     do {
       let conf = try await http.conf()
@@ -137,16 +111,54 @@ class MapViewModel: MapViewModelLike {
     }
     persistentTasks = [
       Task {
-        for await cd in socket.updates.values {
-          await update(coordsData: cd)
+        await withTaskGroup { group in
+          group.addTask {
+            for await cd in self.socket.updates.values {
+              await self.update(coordsData: cd)
+            }
+          }
+          group.addTask {
+            for await vs in self.socket.vesselUpdates.values {
+              await self.update(vessels: vs)
+            }
+          }
         }
-      },
-      Task {
-        for await vs in socket.vesselUpdates.values {
-          await update(vessels: vs)
-        }
-      },
+      }
     ]
+  }
+  
+  private func listeners() async {
+    await withTaskGroup { group in
+      group.addTask {
+        for await state in Auth.shared.$authState.values {
+          switch state {
+          case .authenticated(let token):
+            self.log.info("Got user '\(token.email)'.")
+            await self.reload(token: token)
+          case .unauthenticated:
+            self.log.info("Got no user.")
+            await self.reload(token: nil)
+          case .unknown:
+            self.log.info("Waiting for proper auth state...")
+          }
+        }
+      }
+      group.addTask {
+        for await track in self.activeTrack.$selectedTrack.map({ $0?.track })
+          .removeDuplicates().values
+        {
+          self.log.info("Changed to \(track?.name ?? "no track").")
+          await self.change(to: track)
+        }
+      }
+      group.addTask {
+        for await isConnected in self.backend.socket.$isConnected.removeDuplicates()
+          .values
+        {
+          await self.update(isConnected: isConnected)
+        }
+      }
+    }
   }
 
   func shortest(from: CLLocationCoordinate2D, to: CLLocationCoordinate2D) {

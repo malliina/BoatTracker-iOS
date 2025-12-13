@@ -9,7 +9,17 @@ class BoatPrefs {
   let notificationsAllowedKey = "notificationsAllowed"
   let aisKey = "aisEnabled"
   private let deviceIdKey = "deviceId"
-
+  private let launchesKey = "launches"
+  
+  func launches() -> [String] {
+    prefs.stringArray(forKey: launchesKey) ?? []
+  }
+  func launch() -> [String] {
+    let list = [Date.now.ISO8601Format()] + launches()
+    prefs.set(list.take(5), forKey: launchesKey)
+    return launches()
+  }
+  
   // Some random identifier for this device, stable enough
   var deviceId: String {
     if let old = prefs.string(forKey: deviceIdKey) {
