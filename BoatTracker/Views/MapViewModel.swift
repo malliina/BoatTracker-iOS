@@ -74,7 +74,6 @@ class MapViewModel: MapViewModelLike {
   static let defaultCenter = CLLocationCoordinate2D(
     latitude: 60.14, longitude: 24.9)
 
-  private var cancellables: [Task<(), Never>] = []
   private var persistentTasks: [Task<(), Never>] = []
 
   static func adjustedBearing(data: CoordsData) -> CLLocationDirection? {
@@ -96,9 +95,6 @@ class MapViewModel: MapViewModelLike {
     } catch {
       log.info("Failed to read Mapbox token from credentials file. \(error)")
     }
-    Task {
-      await listeners()
-    }
     do {
       let conf = try await http.conf()
       settings.conf = conf
@@ -111,18 +107,7 @@ class MapViewModel: MapViewModelLike {
     }
     persistentTasks = [
       Task {
-        await withTaskGroup { group in
-          group.addTask {
-            for await cd in self.socket.updates.values {
-              await self.update(coordsData: cd)
-            }
-          }
-          group.addTask {
-            for await vs in self.socket.vesselUpdates.values {
-              await self.update(vessels: vs)
-            }
-          }
-        }
+        await listeners()
       }
     ]
   }
@@ -158,6 +143,16 @@ class MapViewModel: MapViewModelLike {
           await self.update(isConnected: isConnected)
         }
       }
+      group.addTask {
+        for await cd in self.socket.updates.values {
+          await self.update(coordsData: cd)
+        }
+      }
+      group.addTask {
+        for await vs in self.socket.vesselUpdates.values {
+          await self.update(vessels: vs)
+        }
+      }
     }
   }
 
@@ -186,7 +181,6 @@ class MapViewModel: MapViewModelLike {
     await disconnect()
     await update(allVessels: [])
     socket.updateToken(token: token?.token)
-    cancellables = []
     socket.reconnect(token: token?.token, track: nil)  // is nil correct?
     await setupUser(token: token?.token)
   }
@@ -212,11 +206,6 @@ class MapViewModel: MapViewModelLike {
   }
 
   private func disconnect() async {
-    log.info("Disconnecting...")
-    cancellables.forEach { c in
-      c.cancel()
-    }
-    cancellables = []
     socket.close()
     await update(command: .clearAll)
     await update(tracks: [])
@@ -242,7 +231,7 @@ class MapViewModel: MapViewModelLike {
     }
     tracks = modified
     log.debug(
-      "Got \(coordsData.coords.count) coords, tracks now has \(tracks.count) elements"
+      "Got \(coordsData.coords.count) new coords, collected \(tracks.count) tracks"
     )
   }
 

@@ -2,6 +2,12 @@ import Combine
 import Foundation
 import SwiftUI
 
+struct ReconnectRequest {
+  static let empty = ReconnectRequest(token: nil, track: nil)
+  let token: AccessToken?
+  let track: TrackName?
+}
+
 class BoatSocket {
   private let log = LoggerFactory.shared.network(BoatSocket.self)
 
@@ -13,6 +19,7 @@ class BoatSocket {
   @Published var coords: CoordsData? = nil
   @Published var vessels: [Vessel] = []
 
+  @Published var reconnects: ReconnectRequest? = nil
   var updates: AnyPublisher<CoordsData, Never> {
     $coords.compactMap { cd in
       cd
@@ -22,10 +29,23 @@ class BoatSocket {
     $vessels.eraseToAnyPublisher()
   }
 
+  private var persistents: [Task<(), Never>] = []
   private var cancellables: [Task<(), Never>] = []
 
   init(_ baseUrl: URL) {
     self.baseUrl = baseUrl
+  }
+  
+  func start() {
+    persistents = [
+      Task {
+        for await req in $reconnects.values {
+          if let req = req {
+            reconnectNow(token: req.token, track: req.track)
+          }
+        }
+      }
+    ]
   }
 
   private func open() {
@@ -38,6 +58,10 @@ class BoatSocket {
   }
 
   func reconnect(token: AccessToken?, track: TrackName?) {
+    reconnects = ReconnectRequest(token: token, track: track)
+  }
+  
+  private func reconnectNow(token: AccessToken?, track: TrackName?) {
     close()
     prep(token: token, track: track)
     open()
@@ -62,13 +86,17 @@ class BoatSocket {
     socket = s
     cancellables = [
       Task {
-        for await message in s.updates.values {
-          await on(message: message)
-        }
-      },
-      Task {
-        for await isConnected in s.$isConnected.values {
-          await update(isConnected: isConnected)
+        await withTaskGroup { group in
+          group.addTask {
+            for await message in s.updates.values {
+              await self.on(message: message)
+            }
+          }
+          group.addTask {
+            for await isConnected in s.$isConnected.values {
+              await self.update(isConnected: isConnected)
+            }
+          }
         }
       },
     ]
@@ -124,7 +152,6 @@ class BoatSocket {
   }
 
   @MainActor private func update(coords: CoordsData) {
-    log.info("Setting \(coords.coords.count) coords for \(coords.from.trackName)...")
     self.coords = coords
   }
 

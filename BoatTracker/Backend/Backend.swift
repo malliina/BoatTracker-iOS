@@ -21,6 +21,7 @@ class Backend {
   }
 
   func prepare() async {
+    socket.start()
     let listener = Task {
       for await state in Auth.shared.$authState.values {
         switch state {
