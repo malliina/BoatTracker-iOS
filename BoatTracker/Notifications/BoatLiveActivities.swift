@@ -83,7 +83,9 @@ final class BoatLiveActivities: ObservableObject {
                 log.info(
                   "Sent push to start token '\(startToken)' to backend for device '\(deviceId)'.")
               } else {
-                log.info("Not sending push to start token '\(startToken)' to backend as there is no valid user token.")
+                log.info(
+                  "Not sending push to start token '\(startToken)' to backend as there is no valid user token."
+                )
               }
             } catch {
               log.error("Failed to save push to start token '\(startToken)' to backend \(error).")

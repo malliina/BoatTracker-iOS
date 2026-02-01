@@ -35,7 +35,7 @@ class BoatSocket {
   init(_ baseUrl: URL) {
     self.baseUrl = baseUrl
   }
-  
+
   func start() {
     persistents = [
       Task {
@@ -60,7 +60,7 @@ class BoatSocket {
   func reconnect(token: AccessToken?, track: TrackName?) {
     reconnects = ReconnectRequest(token: token, track: track)
   }
-  
+
   private func reconnectNow(token: AccessToken?, track: TrackName?) {
     close()
     prep(token: token, track: track)
@@ -98,7 +98,7 @@ class BoatSocket {
             }
           }
         }
-      },
+      }
     ]
   }
 

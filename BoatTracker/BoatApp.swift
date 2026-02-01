@@ -119,10 +119,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
       .LaunchOptionsKey: Any]? = nil
   ) -> Bool {
     // BoatTokensVM.init() is initialized on app startup and calls registerForRemoteNotifications if enabled, so we don't need to do it here
-//    BoatLiveActivities.shared.setup()
-//    let launches = BoatPrefs.shared.launch()
-//    let ls = launches.joined(separator: ", ")
-//    log.info("Launches: \(ls)")
+    //    BoatLiveActivities.shared.setup()
+    //    let launches = BoatPrefs.shared.launch()
+    //    let ls = launches.joined(separator: ", ")
+    //    log.info("Launches: \(ls)")
     return true
   }
 

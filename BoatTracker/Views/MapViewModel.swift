@@ -111,7 +111,7 @@ class MapViewModel: MapViewModelLike {
       }
     ]
   }
-  
+
   private func listeners() async {
     await withTaskGroup { group in
       group.addTask {
