@@ -13,8 +13,8 @@ platform :ios do
 
   desc "Prepare for release"
   lane :prepare do
-    xcversion(version: "16.3")
-    increment_version_number_in_xcodeproj
+    xcversion(version: "26.2")
+    increment_version_number
     version = get_version_number(target: "BoatTracker")
     increment_build_number
     commit_version_bump
