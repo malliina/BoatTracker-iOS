@@ -33,7 +33,6 @@ struct BoatApp: App {
         .task {
           await Backend.shared.prepare()
           await viewModel.prepare()
-          BoatLiveActivities.shared.setup()
         }
     }
     .onChange(of: scenePhase) { phase in
@@ -118,6 +117,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     didFinishLaunchingWithOptions launchOptions: [UIApplication
       .LaunchOptionsKey: Any]? = nil
   ) -> Bool {
+    BoatLiveActivities.shared.setup()
     // BoatTokensVM.init() is initialized on app startup and calls registerForRemoteNotifications if enabled, so we don't need to do it here
     //    BoatLiveActivities.shared.setup()
     //    let launches = BoatPrefs.shared.launch()
