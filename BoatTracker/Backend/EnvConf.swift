@@ -8,4 +8,5 @@ class EnvConf {
   private var prodBaseUrl: URL { URL(string: "https://\(server)")! }
   //    var baseUrl: URL { devBaseUrl }
   var baseUrl: URL { prodBaseUrl }
+  var logsUrl: URL { URL(string: "https://logs.malliina.com")! }
 }

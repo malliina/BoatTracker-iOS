@@ -25,6 +25,10 @@ class HttpClient {
     unencoded.data(using: String.Encoding.utf8)!.base64EncodedString(
       options: NSData.Base64EncodingOptions())
   }
+  
+  static func authValue(for token: AccessToken) -> String {
+    "bearer \(token.token)"
+  }
 
   let session: URLSession
 
@@ -32,6 +36,11 @@ class HttpClient {
     session = URLSession.shared
   }
 
+  func post<T: Encodable>(url: URL, headers: [String: String], body: T) async throws -> HttpResponse {
+    let req = try postRequest(url: url, headers: headers, body: body)
+    return try await executeHttp(req)
+  }
+  
   func executeHttp(_ req: URLRequest) async throws -> HttpResponse {
     let (data, response) = try await session.data(for: req)
     if let response = response as? HTTPURLResponse {
@@ -42,6 +51,14 @@ class HttpClient {
     }
   }
 
+  func postRequest<T: Encodable>(url: URL, headers: [String: String], body: T) throws -> URLRequest {
+    var req = buildRequest(url: url, httpMethod: HttpClient.post, headers: headers)
+    let encoder = JSONEncoder()
+    encoder.dateEncodingStrategy = .iso8601
+    req.httpBody = try encoder.encode(body)
+    return req
+  }
+  
   func buildRequestWithBody<T: Encodable>(
     url: URL, httpMethod: String, headers: [String: String], body: T?
   ) -> URLRequest {

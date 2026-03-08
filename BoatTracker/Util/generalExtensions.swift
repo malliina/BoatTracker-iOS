@@ -13,3 +13,15 @@ extension Data {
     return hexBytes.joined(separator: "")
   }
 }
+
+extension Thread {
+  var threadName: String {
+    if isMainThread {
+      return "main"
+    } else if let name = name, !name.isEmpty {
+      return name
+    } else {
+      return "thread-priority-\(threadPriority)"
+    }
+  }
+}

@@ -68,6 +68,8 @@
 		7D175C5327BD876F0050E29B /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 7D175C5227BD876F0050E29B /* GoogleSignIn */; };
 		7D2CC0F3264D6EBD0091E05C /* MicrosoftAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D2CC0F2264D6EBD0091E05C /* MicrosoftAuth.swift */; };
 		7D528E6227B9682F00C55F06 /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D528E6127B9682F00C55F06 /* WebSocket.swift */; };
+		7D8B5EB02F5DBEBC00B10C0E /* logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D8B5EAF2F5DBEB900B10C0E /* logging.swift */; };
+		7D8B5EB32F5DD65500B10C0E /* AsyncAlgorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 7D8B5EB22F5DD65500B10C0E /* AsyncAlgorithms */; };
 		7DAE8A812C8C392600FB797E /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 7DAE8A802C8C392600FB797E /* Algorithms */; };
 		7DDBA9A727773D3900108B24 /* AppleAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DDBA9A627773D3900108B24 /* AppleAuth.swift */; };
 		B01251A72A4582C600A267C9 /* conf.json in Resources */ = {isa = PBXBuildFile; fileRef = B01251A62A4582C600A267C9 /* conf.json */; };
@@ -259,6 +261,7 @@
 		7D15B71D2AE5761400C47F76 /* primary_category.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = primary_category.txt; sourceTree = "<group>"; };
 		7D2CC0F2264D6EBD0091E05C /* MicrosoftAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrosoftAuth.swift; sourceTree = "<group>"; };
 		7D528E6127B9682F00C55F06 /* WebSocket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocket.swift; sourceTree = "<group>"; };
+		7D8B5EAF2F5DBEB900B10C0E /* logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = logging.swift; sourceTree = "<group>"; };
 		7DDBA9A627773D3900108B24 /* AppleAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleAuth.swift; sourceTree = "<group>"; };
 		B01251A62A4582C600A267C9 /* conf.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = conf.json; path = BoatTracker/conf.json; sourceTree = "<group>"; };
 		B01E79332D4AAC68009EC1CF /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
@@ -316,6 +319,7 @@
 				B05A708A2AF6498300D0BAF1 /* DGCharts in Frameworks */,
 				7D175C5327BD876F0050E29B /* GoogleSignIn in Frameworks */,
 				B01E79372D4AAED3009EC1CF /* MapboxMaps in Frameworks */,
+				7D8B5EB32F5DD65500B10C0E /* AsyncAlgorithms in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -549,6 +553,7 @@
 		61DE7F3D20F29F5800C95B3F /* Backend */ = {
 			isa = PBXGroup;
 			children = (
+				7D8B5EAF2F5DBEB900B10C0E /* logging.swift */,
 				B0E232BE2DA98F62005FC113 /* primitives.swift */,
 				612F46A520F4AB70001A3003 /* Backend.swift */,
 				612F46A120F4A5CF001A3003 /* BoatHttpClient.swift */,
@@ -710,6 +715,7 @@
 				B05A70892AF6498300D0BAF1 /* DGCharts */,
 				7DAE8A802C8C392600FB797E /* Algorithms */,
 				B01E79362D4AAED3009EC1CF /* MapboxMaps */,
+				7D8B5EB22F5DD65500B10C0E /* AsyncAlgorithms */,
 			);
 			productName = BoatTracker;
 			productReference = 61B07C5C20F21DC300D8B7E0 /* BoatTracker.app */;
@@ -800,6 +806,7 @@
 				7D175C5127BD876F0050E29B /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 				7DAE8A7F2C8C392600FB797E /* XCRemoteSwiftPackageReference "swift-algorithms" */,
 				B01E79352D4AAED3009EC1CF /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */,
+				7D8B5EB12F5DD65500B10C0E /* XCRemoteSwiftPackageReference "swift-async-algorithms" */,
 			);
 			productRefGroup = 61B07C5D20F21DC300D8B7E0 /* Products */;
 			projectDirPath = "";
@@ -866,6 +873,7 @@
 				B0799D652A363CF100925784 /* extensions.swift in Sources */,
 				610EE3E421724CE10040FBC6 /* UIImage+FontAwesome.m in Sources */,
 				B0799D672A3640AE00925784 /* BoatTokensViewModel.swift in Sources */,
+				7D8B5EB02F5DBEBC00B10C0E /* logging.swift in Sources */,
 				B052E837292A360F00C09B89 /* EditDialog.swift in Sources */,
 				B0485D60292414AE005A1FC5 /* BoatTokensView.swift in Sources */,
 				61999FFD22A3286F003BD037 /* seaModels.swift in Sources */,
@@ -1032,7 +1040,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -1090,7 +1098,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -1112,7 +1120,7 @@
 				CURRENT_PROJECT_VERSION = 22;
 				DEVELOPMENT_TEAM = D2T2QC36Z9;
 				INFOPLIST_FILE = BoatTracker/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1142,7 +1150,7 @@
 				DEVELOPMENT_TEAM = D2T2QC36Z9;
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = D2T2QC36Z9;
 				INFOPLIST_FILE = BoatTracker/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1344,6 +1352,14 @@
 				version = 9.1.0;
 			};
 		};
+		7D8B5EB12F5DD65500B10C0E /* XCRemoteSwiftPackageReference "swift-async-algorithms" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-async-algorithms.git";
+			requirement = {
+				kind = exactVersion;
+				version = 1.1.3;
+			};
+		};
 		7DAE8A7F2C8C392600FB797E /* XCRemoteSwiftPackageReference "swift-algorithms" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-algorithms.git";
@@ -1372,6 +1388,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 7D175C5127BD876F0050E29B /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
 			productName = GoogleSignIn;
+		};
+		7D8B5EB22F5DD65500B10C0E /* AsyncAlgorithms */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7D8B5EB12F5DD65500B10C0E /* XCRemoteSwiftPackageReference "swift-async-algorithms" */;
+			productName = AsyncAlgorithms;
 		};
 		7DAE8A802C8C392600FB797E /* Algorithms */ = {
 			isa = XCSwiftPackageProductDependency;

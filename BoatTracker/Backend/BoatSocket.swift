@@ -103,7 +103,7 @@ class BoatSocket {
   }
 
   func updateToken(token: AccessToken?) {
-    socket?.updateAuthHeader(newValue: token.map(BoatHttpClient.authValue))
+    socket?.updateAuthHeader(newValue: token.map(HttpClient.authValue))
   }
 
   func onMessage(json: Data) async {

@@ -10,17 +10,23 @@ class Backend {
 
   var http: BoatHttpClient
   let socket: BoatSocket
+  let logs: LogsHttpClient
 
   private var cancellables: [Task<(), Never>] = []
 
   init(_ baseUrl: URL) {
     self.baseUrl = baseUrl
+    let client = HttpClient()
     self.http = BoatHttpClient(
-      bearerToken: nil, baseUrl: baseUrl, client: HttpClient())
+      bearerToken: nil, baseUrl: baseUrl, client: client)
     self.socket = BoatSocket(baseUrl)
+    self.logs = LogsHttpClient(baseUrl: EnvConf.shared.logsUrl, client: client)
   }
 
   func prepare() async {
+    let logsListener = Task {
+      await logs.listen()
+    }
     socket.start()
     let listener = Task {
       for await state in Auth.shared.$authState.values {
@@ -31,7 +37,7 @@ class Backend {
         }
       }
     }
-    cancellables = [listener]
+    cancellables = [listener, logsListener]
   }
 
   func updateToken() async throws -> UserToken? {

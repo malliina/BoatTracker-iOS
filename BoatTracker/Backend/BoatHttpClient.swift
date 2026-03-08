@@ -25,7 +25,7 @@ class BoatHttpClient {
     self.client = client
     if let token = bearerToken {
       self.defaultHeaders = [
-        Headers.authorization: BoatHttpClient.authValue(for: token),
+        Headers.authorization: HttpClient.authValue(for: token),
         Headers.accept: BoatHttpClient.BoatVersion,
       ]
     } else {
@@ -41,14 +41,10 @@ class BoatHttpClient {
   func updateToken(token: AccessToken?) {
     if let token = token {
       self.defaultHeaders.updateValue(
-        BoatHttpClient.authValue(for: token), forKey: Headers.authorization)
+        HttpClient.authValue(for: token), forKey: Headers.authorization)
     } else {
       self.defaultHeaders.removeValue(forKey: Headers.authorization)
     }
-  }
-
-  static func authValue(for token: AccessToken) -> String {
-    "bearer \(token.token)"
   }
 
   func pingAuth() async throws -> BackendInfo {
@@ -173,7 +169,7 @@ class BoatHttpClient {
         self.updateToken(token: token?.token)
         var retry = request
         retry.setValue(
-          token.map { t in BoatHttpClient.authValue(for: t.token) },
+          token.map { t in HttpClient.authValue(for: t.token) },
           forHTTPHeaderField: Headers.authorization)
         return try await make(request: retry, attempt: 2)
       } else {
