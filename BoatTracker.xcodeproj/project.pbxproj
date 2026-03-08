@@ -1325,7 +1325,7 @@
 			repositoryURL = "https://github.com/AzureAD/microsoft-authentication-library-for-objc";
 			requirement = {
 				kind = exactVersion;
-				version = 2.7.0;
+				version = 2.9.0;
 			};
 		};
 		7D175C4E27BD87110050E29B /* XCRemoteSwiftPackageReference "Charts" */ = {
@@ -1341,7 +1341,7 @@
 			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
 			requirement = {
 				kind = exactVersion;
-				version = 9.0.0;
+				version = 9.1.0;
 			};
 		};
 		7DAE8A7F2C8C392600FB797E /* XCRemoteSwiftPackageReference "swift-algorithms" */ = {
@@ -1357,7 +1357,7 @@
 			repositoryURL = "https://github.com/mapbox/mapbox-maps-ios.git";
 			requirement = {
 				kind = exactVersion;
-				version = 11.17.1;
+				version = 11.19.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
