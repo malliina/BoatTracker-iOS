@@ -841,10 +841,6 @@ enum Language: String, Codable {
   case fi = "fi-FI"
   case se = "sv-SE"
   case en = "en-US"
-
-  static func parse(s: String) -> Language {
-    Language(rawValue: s) ?? en
-  }
 }
 
 struct UserContainer: Codable {

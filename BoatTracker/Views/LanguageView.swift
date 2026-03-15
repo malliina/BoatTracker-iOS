@@ -56,14 +56,23 @@ protocol LanguageProtocol: ObservableObject {
 }
 
 class LanguageVM: LanguageProtocol {
-  static let shared = LanguageVM()
   let log = LoggerFactory.shared.vc(LanguageVM.self)
   private var current: Language { settings.currentLanguage }
 
-  @Published var currentLanguage: Language
+  @Published var currentLanguage: Language = Language.en
 
+  private var persistentTasks: [Task<(), Never>] = []
+  
   init() {
     currentLanguage = UserSettings.shared.currentLanguage
+    //log.info("Current language is \(currentLanguage)")
+    persistentTasks = [
+      Task {
+        for await lang in settings.$languageChanges.values {
+          await update(language: lang?.language ?? Language.en)
+        }
+      }
+    ]
   }
 
   func changeLanguage(to language: Language) async {
@@ -71,7 +80,7 @@ class LanguageVM: LanguageProtocol {
       let msg = try await http.changeLanguage(to: language)
       settings.userLanguage = language
       log.info(msg.message)
-      await update(language: language)
+      //await update(language: language)
     } catch {
       log.error("Failed to change language to \(language). \(error.describe)")
     }
