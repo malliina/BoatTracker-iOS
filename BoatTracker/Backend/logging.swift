@@ -95,10 +95,23 @@ class LogsHttpClient {
     }
   }
   
-  func send(logs: [LogEvent]) async throws -> LogsSentResponse {
+  func send(logs: [LogEvent], attempt: Int = 1) async throws -> LogsSentResponse {
     let token = try await fetchToken()
-    let allHeaders = LogsHttpClient.headers.merging([Headers.authorization: "Bearer \(token.token)"]) { (current, _) in current }
-    return try await client.post(url: fullUrl(to: "/sources/logs"), headers: allHeaders, body: LogEvents(events: logs)).to(LogsSentResponse.self)
+    let allHeaders = LogsHttpClient.headers.merging([Headers.authorization: "Bearer \(token.token)"]) { (_, newVal) in newVal }
+    let url = fullUrl(to: "/sources/logs")
+    let response = try await client.post(url: url, headers: allHeaders, body: LogEvents(events: logs))
+    if response.isStatusOK {
+      return try response.to(LogsSentResponse.self)
+    } else {
+      if attempt == 1 && response.isTokenExpired {
+        let newToken = try await tokens.fetchToken()
+        cachedToken = newToken
+        return try await send(logs: logs, attempt: 2)
+      } else {
+        let error = SingleError(message: "Failed to handle \(response.statusCode) response from \(url) after \(attempt) attempts.")
+        throw AppError.simpleError(error)
+      }
+    }
   }
   
   func fullUrl(to: String) -> URL {
