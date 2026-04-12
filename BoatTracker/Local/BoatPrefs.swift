@@ -10,6 +10,16 @@ class BoatPrefs {
   let aisKey = "aisEnabled"
   private let deviceIdKey = "deviceId"
   private let launchesKey = "launches"
+  private let isTrackingKey = "isTracking"
+  
+  var isTracking: Bool {
+    get {
+      prefs.bool(forKey: isTrackingKey)
+    }
+    set(newValue) {
+      prefs.set(newValue, forKey: isTrackingKey)
+    }
+  }
 
   func launches() -> [String] {
     prefs.stringArray(forKey: launchesKey) ?? []

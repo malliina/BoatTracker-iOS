@@ -384,7 +384,7 @@ struct MainMapView<T>: View where T: MapViewModelLike {
             }
           }
           if !viewModel.isProfileButtonHidden {
-            MapButtonView(imageResource: "SettingsSlider") {
+            MapButtonView(imageResource: "gearshape.fill") {
               guard let lang = settings.lang else { return }
               if let user = viewModel.latestToken {
                 profileInfo = ProfileInfo(
@@ -397,7 +397,7 @@ struct MainMapView<T>: View where T: MapViewModelLike {
             .opacity(0.6)
           }
           if !viewModel.isFollowButtonHidden {
-            MapButtonView(imageResource: "LocationArrow") {
+            MapButtonView(imageResource: "location") {
               if viewModel.mapMode != .follow {
                 viewModel.mapMode = .follow
                 if let latestTrack = viewModel.latestTrack,
@@ -415,6 +415,14 @@ struct MainMapView<T>: View where T: MapViewModelLike {
             }
             .offset(x: 16, y: 60)
             .opacity(viewModel.mapMode == .follow ? 0.3 : 0.6)
+          }
+          if !viewModel.isTrackButtonHidden {
+            MapButtonView(imageResource: viewModel.isTracking ? "stop.circle" : "record.circle") {
+              Task {
+                await viewModel.toggleTracking()
+              }
+            }
+            .offset(x: 16, y: 104)
           }
         }
       }

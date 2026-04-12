@@ -2,10 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>GIDServerClientID</key>
-	<string>497623115973-c6v1e9khup8bqj41vf228o2urnv86muh.apps.googleusercontent.com</string>
-	<key>GIDClientID</key>
-	<string>497623115973-qut66ppubk4f9mpigckfkoqqoi060bge.apps.googleusercontent.com</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
@@ -34,6 +30,12 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>25</string>
+	<key>GIDClientID</key>
+	<string>497623115973-qut66ppubk4f9mpigckfkoqqoi060bge.apps.googleusercontent.com</string>
+	<key>GIDServerClientID</key>
+	<string>497623115973-c6v1e9khup8bqj41vf228o2urnv86muh.apps.googleusercontent.com</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>msauthv2</string>
@@ -50,9 +52,17 @@
 	<string>Shows your location on the map.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Shows your location on the map.</string>
+	<key>NSSupportsLiveActivities</key>
+	<true/>
+	<key>NSSupportsLiveActivitiesFrequentUpdates</key>
+	<true/>
 	<key>UIAppFonts</key>
 	<array>
 		<string>FontAwesome.ttf</string>
+	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>location</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
@@ -76,11 +86,5 @@
 	</array>
 	<key>UIUserInterfaceStyle</key>
 	<string>Light</string>
-	<key>ITSAppUsesNonExemptEncryption</key>
-	<false/>
-	<key>NSSupportsLiveActivities</key>
-	<true/>
-	<key>NSSupportsLiveActivitiesFrequentUpdates</key>
-	<true/>
 </dict>
 </plist>

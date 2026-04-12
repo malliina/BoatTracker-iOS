@@ -9,7 +9,7 @@ struct MapButtonView: View {
     Button {
       action()
     } label: {
-      Image(uiImage: #imageLiteral(resourceName: imageResource))
+      Image(systemName: imageResource)
         .resizable()
         .scaledToFit()
         .frame(width: 22, height: 22)

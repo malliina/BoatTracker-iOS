@@ -16,6 +16,8 @@ protocol MapViewModelLike: ObservableObject {
   var latestToken: UserToken? { get set }
   var isProfileButtonHidden: Bool { get }
   var isFollowButtonHidden: Bool { get }
+  var isTrackButtonHidden: Bool { get }
+  var isTracking: Bool { get }
   var mapMode: MapMode { get set }
   var fitCamera: Bool { get set }
   var styleUri: StyleURI? { get set }
@@ -25,12 +27,14 @@ protocol MapViewModelLike: ObservableObject {
 
   func shortest(from: CLLocationCoordinate2D, to: CLLocationCoordinate2D)
   func toggleFollow() async
+  func toggleTracking() async
   func vesselInfo(_ mmsi: Mmsi) -> Vessel?
 }
 
 class MapViewModel: MapViewModelLike {
   let log = LoggerFactory.shared.vc(MapViewModel.self)
 
+  private let locations = Locations.shared
   private var socket: BoatSocket { backend.socket }
   private var clientConf: ClientConf? { settings.conf }
 
@@ -38,6 +42,8 @@ class MapViewModel: MapViewModelLike {
   private var isSignedIn: Bool { latestToken != nil }
   @Published var isProfileButtonHidden: Bool = true
   @Published var isFollowButtonHidden: Bool = false
+  @Published var isTrackButtonHidden: Bool = false
+  @Published var isTracking: Bool = false
   @Published var mapMode: MapMode = .fit
   @Published var fitCamera: Bool = true
   @Published var styleUri: StyleURI? = nil
@@ -153,6 +159,11 @@ class MapViewModel: MapViewModelLike {
           await self.update(vessels: vs)
         }
       }
+      group.addTask {
+        for await tracking in self.locations.$isTracking.removeDuplicates().values {
+          await self.update(isTracking: tracking)
+        }
+      }
     }
   }
 
@@ -260,11 +271,21 @@ class MapViewModel: MapViewModelLike {
   @MainActor private func update(profileHidden: Bool) {
     isProfileButtonHidden = profileHidden
   }
+  @MainActor private func update(isTracking: Bool) {
+    self.isTracking = isTracking
+  }
   @MainActor func update(token: UserToken?) {
     self.latestToken = token
   }
   @MainActor func toggleFollow() async {
     update(command: .toggleFollow)
+  }
+  @MainActor func toggleTracking() async {
+    if !isTracking {
+      locations.start()
+    } else {
+      locations.stop()
+    }
   }
   @MainActor private func update(route: RouteResult?) {
     routeResult = route
@@ -298,11 +319,14 @@ class PreviewMapViewModel: MapViewModelLike {
   var fitCamera: Bool = false
   var isProfileButtonHidden: Bool = false
   var isFollowButtonHidden: Bool = false
+  var isTrackButtonHidden: Bool = false
+  var isTracking: Bool = false
   var styleUri: StyleURI? = nil
   var activeTrack: ActiveTrack = ActiveTrack()
   var routeResult: RouteResult? = nil
   func shortest(from: CLLocationCoordinate2D, to: CLLocationCoordinate2D) {}
-  func toggleFollow() {}
+  func toggleFollow() async {}
+  func toggleTracking() async {}
   func onTrack(_ track: TrackName) {}
   func vesselInfo(_ mmsi: Mmsi) -> Vessel? { nil }
 }

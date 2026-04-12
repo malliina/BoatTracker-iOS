@@ -19,6 +19,8 @@ struct BoatApp: App {
   @StateObject private var chartVm = ChartVM()
   @StateObject private var languageVm = LanguageVM()
   @StateObject private var tokensVm = BoatTokensVM()
+  
+  private let locations = Locations.shared
 
   var body: some Scene {
     WindowGroup {
@@ -118,11 +120,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
       .LaunchOptionsKey: Any]? = nil
   ) -> Bool {
     BoatLiveActivities.shared.setup()
-    // BoatTokensVM.init() is initialized on app startup and calls registerForRemoteNotifications if enabled, so we don't need to do it here
-    //    BoatLiveActivities.shared.setup()
-    //    let launches = BoatPrefs.shared.launch()
-    //    let ls = launches.joined(separator: ", ")
-    //    log.info("Launches: \(ls)")
+    Locations.shared.appLaunched()
     return true
   }
 
