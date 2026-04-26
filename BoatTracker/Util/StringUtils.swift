@@ -15,7 +15,7 @@ class Randoms {
   }
 
   // Adapted from https://auth0.com/docs/api-auth/tutorials/nonce#generate-a-cryptographically-random-nonce
-  func randomNonceString(length: Int = 32) -> String {
+  func randomString(length: Int = 32) -> String {
     let charset: [Character] = Array("abcdefghijklmnopqrstuvwxyz")
     var result = ""
     var remainingLength = length

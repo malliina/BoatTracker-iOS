@@ -6,11 +6,12 @@ class Locations {
   let log = LoggerFactory.shared.system(Locations.self)
 
   var manager: CLLocationManager?
+  let http = Backend.shared.http
   let prefs = BoatPrefs.shared
   private var delegate: LocationsDelegate?
   private var backgroundSession: CLBackgroundActivitySession?
   private var updates: AsyncThrowingStream<[CLLocation], Error>?
-  private var cancellables: [Task<(), any Error>] = []
+  private var cancellables: [Task<(), Never>] = []
   
   @Published var isTracking: Bool = false
   
@@ -32,7 +33,7 @@ class Locations {
   func start() {
     setup()
     let task = Task {
-      try await listen()
+      await listen()
     }
     cancellables = [task]
   }
@@ -49,13 +50,33 @@ class Locations {
     }
   }
   
-  func listen() async throws {
-    for try await locs in locations {
-      log.info("Got \(locs.count) locations")
-      let coords = locs.map { loc in
-        Coord(lng: loc.coordinate.longitude, lat: loc.coordinate.latitude)
+  func listen() async {
+    do {
+      if let deviceToken = prefs.deviceToken {
+        log.info("Listening for location updates...")
+        try await sendLocations(boatToken: deviceToken)
+      } else {
+        let device = try await http.createDevice()
+        log.info("Created device \(device.name); listening for location updates...")
+        prefs.deviceToken = device.token
+        try await sendLocations(boatToken: device.token)
       }
-      // TODO send coords to backend
+    } catch {
+      log.warn("Stopped listening to background location updates \(error).")
+      stop()
+    }
+  }
+  
+  private func sendLocations(boatToken: String) async throws {
+    for try await locs in locations {
+      if locs.count > 0 {
+        let updates = locs.map { loc in
+          let coord = loc.coordinate
+          return LocationUpdate(longitude: coord.longitude, latitude: coord.latitude, date: Date.now)
+        }
+        let _ = try await http.sendLocations(locs: updates, boatToken: boatToken)
+      }
+      
     }
   }
 

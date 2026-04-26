@@ -40,7 +40,7 @@ class AppleAuth: NSObject {
     self.from = from
     let appleIDProvider = ASAuthorizationAppleIDProvider()
     let request = appleIDProvider.createRequest()
-    let nonce = Randoms.shared.randomNonceString()
+    let nonce = Randoms.shared.randomString()
     currentNonce = nonce
     request.nonce = Randoms.shared.sha256(nonce)
     request.requestedScopes = [.fullName, .email]

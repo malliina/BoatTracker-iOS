@@ -4,12 +4,14 @@ import MapboxMaps
 enum SourceType: Codable, Equatable {
   case vehicle
   case boat
+  case mobile
   case other(name: String)
 
   var stringify: String {
     switch self {
     case .boat: SourceType.boatKey
     case .vehicle: SourceType.vehicleKey
+    case .mobile: SourceType.mobileKey
     case .other(let name): name
     }
   }
@@ -27,10 +29,12 @@ enum SourceType: Codable, Equatable {
 
   static let boatKey = "boat"
   static let vehicleKey = "vehicle"
+  static let mobileKey = "mobile"
   static func parse(s: String) throws -> SourceType {
     switch s {
     case SourceType.vehicleKey: return .vehicle
     case SourceType.boatKey: return .boat
+    case SourceType.mobileKey: return .mobile
     default: return .other(name: s)
     }
   }
@@ -931,4 +935,21 @@ struct TokenResponse: Codable {
 struct RegisterCode: Codable {
   let code: AuthorizationCode
   let nonce: String
+}
+
+struct AddSource: Codable {
+  let boatName: BoatName?
+  let sourceType: SourceType
+  
+  static let mobile = AddSource(boatName: nil, sourceType: .mobile)
+}
+
+struct LocationUpdate: Codable {
+  let longitude: Double
+  let latitude: Double
+  let date: Date
+}
+
+struct SourceLocations: Codable {
+  let updates: [LocationUpdate]
 }

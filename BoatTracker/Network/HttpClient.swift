@@ -2,7 +2,7 @@ import Foundation
 
 struct Headers {
   static let accept = "Accept", acceptLanguage = "Accept-Language", authorization = "Authorization",
-    contentType = "Content-Type"
+    contentType = "Content-Type", boatToken = "X-Token"
 }
 
 class HttpClient {
@@ -65,6 +65,7 @@ class HttpClient {
     var req = buildRequest(url: url, httpMethod: httpMethod, headers: headers)
     if let body = body {
       let encoder = JSONEncoder()
+      encoder.dateEncodingStrategy = .iso8601
       req.httpBody = try? encoder.encode(body)
     }
     return req

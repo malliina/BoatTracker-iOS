@@ -107,6 +107,24 @@ class BoatHttpClient {
     .to(SimpleMessage.self)
   }
 
+  func createDevice() async throws -> Boat {
+    try await execute(
+      "/boats", method: HttpClient.post,
+      body: AddSource.mobile
+    )
+    .to(BoatResponse.self)
+    .boat
+  }
+  
+  func sendLocations(locs: [LocationUpdate], boatToken: String) async throws -> SimpleMessage {
+    try await execute(
+      "/locations", method: HttpClient.post,
+      body: SourceLocations(updates: locs),
+      extraHeaders: [Headers.boatToken: boatToken]
+    )
+    .to(SimpleMessage.self)
+  }
+  
   func renameBoat(boat: Int, newName: BoatName) async throws -> Boat {
     try await execute(
       "/boats/\(boat)", method: HttpClient.patch,
@@ -149,11 +167,11 @@ class BoatHttpClient {
     return try await execute(path, method: method, body: dummy)
   }
 
-  func execute<T: Encodable>(_ path: String, method: String, body: T? = nil)
+  func execute<T: Encodable>(_ path: String, method: String, body: T? = nil, extraHeaders: [String: String] = [:])
     async throws
     -> HttpResponse
   {
-    try await make(request: build(path: path, method: method, body: body))
+    try await make(request: build(path: path, method: method, body: body, extraHeaders: extraHeaders))
   }
 
   func make(request: URLRequest, attempt: Int = 1) async throws -> HttpResponse {
@@ -190,12 +208,15 @@ class BoatHttpClient {
     }
   }
 
-  func build<T: Encodable>(path: String, method: String, body: T? = nil)
+  func build<T: Encodable>(path: String, method: String, body: T? = nil, extraHeaders: [String: String] = [:])
     -> URLRequest
   {
     let headers = method == HttpClient.get ? defaultHeaders : postHeaders
+    let allHeaders = headers.merging(extraHeaders) { _, new in
+      new
+    }
     return client.buildRequestWithBody(
-      url: fullUrl(to: path), httpMethod: method, headers: headers, body: body)
+      url: fullUrl(to: path), httpMethod: method, headers: allHeaders, body: body)
   }
 
   func fullUrl(to: String) -> URL {

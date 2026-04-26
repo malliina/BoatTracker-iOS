@@ -11,6 +11,16 @@ class BoatPrefs {
   private let deviceIdKey = "deviceId"
   private let launchesKey = "launches"
   private let isTrackingKey = "isTracking"
+  private let deviceTokenKey = "deviceToken"
+  
+  var deviceToken: String? {
+    get {
+      prefs.string(forKey: deviceTokenKey)
+    }
+    set(newValue) {
+      prefs.set(newValue, forKey: deviceTokenKey)
+    }
+  }
   
   var isTracking: Bool {
     get {
@@ -35,7 +45,7 @@ class BoatPrefs {
     if let old = prefs.string(forKey: deviceIdKey) {
       return old
     } else {
-      let str = Randoms.shared.randomNonceString(length: 12)
+      let str = Randoms.shared.randomString(length: 12)
       prefs.set(str, forKey: deviceIdKey)
       return str
     }

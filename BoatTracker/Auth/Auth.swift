@@ -69,6 +69,7 @@ class Auth {
       log.info("Nothing to sign out from.")
     }
     prefs.authProvider = .none
+    prefs.deviceToken = nil
     authState = .unauthenticated
   }
 
