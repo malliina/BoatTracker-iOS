@@ -96,15 +96,37 @@ struct MainMapView<T>: View where T: MapViewModelLike {
 
   private func makeBoatPoint(track: SingleTrackPoint) -> PointAnnotation {
     let from = track.from
-    let isBoat = from.sourceType.isBoat
     var pa = PointAnnotation(coordinate: track.point.coord)
-      .iconImage(isBoat ? Layers.boatIcon : Layers.carIcon)
-      .iconSize(isBoat ? 0.7 : 0.5)
-      .iconRotate(track.bearing ?? 0)
+      .iconImage(sourceIcon(from.sourceType))
+      .iconSize(sourceIconSize(from.sourceType))
+      .iconRotate(sourceIconRotation(from.sourceType) + (track.bearing ?? 0))
     pa.customData = (try? Json.shared.write(from: track)) ?? [:]
     return pa
   }
 
+  private func sourceIcon(_ st: SourceType) -> String {
+    switch st {
+    case .boat: return Layers.boatIcon
+    case .vehicle: return Layers.carIcon
+    case .mobile: return Layers.mobileIcon
+    case .other(name: _): return Layers.boatIcon
+    }
+  }
+  
+  private func sourceIconSize(_ st: SourceType) -> Double {
+    switch st {
+    case .vehicle: return 0.5
+    default: return 0.7
+    }
+  }
+  
+  private func sourceIconRotation(_ st: SourceType) -> Double {
+    switch st {
+    case .mobile: return 270
+    default: return 0
+    }
+  }
+  
   private func makeTrophy(point: TrophyPoint) -> PointAnnotation {
     var pa = PointAnnotation(coordinate: point.top.coord)
       .iconImage(Layers.trophyIcon)
@@ -394,7 +416,7 @@ struct MainMapView<T>: View where T: MapViewModelLike {
               }
             }
             .offset(x: 16, y: 16)
-            .opacity(0.6)
+            .opacity(1)
           }
           if !viewModel.isFollowButtonHidden {
             MapButtonView(imageResource: "location") {
@@ -414,7 +436,7 @@ struct MainMapView<T>: View where T: MapViewModelLike {
               }
             }
             .offset(x: 16, y: 60)
-            .opacity(viewModel.mapMode == .follow ? 0.3 : 0.6)
+            .opacity(viewModel.mapMode == .follow ? 0.3 : 1)
           }
           if !viewModel.isTrackButtonHidden {
             MapButtonView(imageResource: viewModel.isTracking ? "stop.circle" : "record.circle") {

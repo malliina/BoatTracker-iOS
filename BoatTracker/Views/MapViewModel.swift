@@ -42,7 +42,7 @@ class MapViewModel: MapViewModelLike {
   private var isSignedIn: Bool { latestToken != nil }
   @Published var isProfileButtonHidden: Bool = true
   @Published var isFollowButtonHidden: Bool = false
-  @Published var isTrackButtonHidden: Bool = false
+  @Published var isTrackButtonHidden: Bool = true
   @Published var isTracking: Bool = false
   @Published var mapMode: MapMode = .fit
   @Published var fitCamera: Bool = true
@@ -194,6 +194,7 @@ class MapViewModel: MapViewModelLike {
     socket.updateToken(token: token?.token)
     socket.reconnect(token: token?.token, track: nil)  // is nil correct?
     await setupUser(token: token?.token)
+    await update(isTrackUserAvailable: token != nil)
   }
 
   func setupUser(token: AccessToken?) async {
@@ -292,6 +293,9 @@ class MapViewModel: MapViewModelLike {
   }
   @MainActor private func update(isConnected: Bool) {
     isFollowButtonHidden = !isConnected
+  }
+  @MainActor private func update(isTrackUserAvailable: Bool) {
+    isTrackButtonHidden = !isTrackUserAvailable
   }
   @MainActor func toggleFollow() {
     command = .toggleFollow

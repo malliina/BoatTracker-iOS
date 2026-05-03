@@ -5,6 +5,7 @@ class Layers {
   static let log = LoggerFactory.shared.boat(Layers.self)
   static let boatIcon: String = "boat-resized-opt-30"
   static let carIcon: String = "car4"
+  static let mobileIcon: String = "location.north"
   static let trophyIcon: String = "trophy-gold-path"
   static let routeStartIcon: String = "flag"
   static let routeEndIcon: String = "flag-checkered"
