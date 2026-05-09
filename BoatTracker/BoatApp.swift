@@ -7,6 +7,8 @@ import UIKit
 struct BoatApp: App {
   static let logger = LoggerFactory.shared.system(BoatApp.self)
   var log: Logger { BoatApp.logger }
+  var locations: Locations { Locations.shared }
+  var mapEvents: MapEvents { MapEvents.shared }
 
   @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
   @Environment(\.scenePhase) private var scenePhase
@@ -19,8 +21,6 @@ struct BoatApp: App {
   @StateObject private var chartVm = ChartVM()
   @StateObject private var languageVm = LanguageVM()
   @StateObject private var tokensVm = BoatTokensVM()
-  
-  private let locations = Locations.shared
 
   var body: some Scene {
     WindowGroup {
@@ -39,17 +39,19 @@ struct BoatApp: App {
     }
     .onChange(of: scenePhase) { phase in
       if phase == .background {
-        MapEvents.shared.onBackground()
+        mapEvents.onBackground()
+        locations.onBackground()
       }
       if phase == .active {
         // App comes to foreground
-        let reconnect = MapEvents.shared.onForeground()
+        let reconnect = mapEvents.onForeground()
         if reconnect {
           Task {
             await Auth.shared.signInSilentlyNow()
           }
         }
         viewModel.activeTrack.clearIfOld()
+        locations.onForeground()
       }
     }
   }
@@ -60,7 +62,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
   var log: Logger { AppDelegate.log }
   let notifications = BoatNotifications.shared
-
+  let locations = Locations.shared
+  
   var window: UIWindow?
 
   /// https://developer.apple.com/documentation/uikit/core_app/allowing_apps_and_websites_to_link_to_your_content/handling_universal_links
@@ -100,6 +103,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   func applicationDidEnterBackground(_ application: UIApplication) {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+//    locations.appEnteredBackground()
   }
 
   func applicationWillEnterForeground(_ application: UIApplication) {
@@ -108,6 +112,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
   func applicationDidBecomeActive(_ application: UIApplication) {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+//    locations.appEnteredForeground()
   }
 
   func applicationWillTerminate(_ application: UIApplication) {
@@ -120,7 +125,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
       .LaunchOptionsKey: Any]? = nil
   ) -> Bool {
     BoatLiveActivities.shared.setup()
-    Locations.shared.appLaunched()
+    locations.appLaunched()
     return true
   }
 

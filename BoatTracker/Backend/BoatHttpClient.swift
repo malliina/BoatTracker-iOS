@@ -116,10 +116,10 @@ class BoatHttpClient {
     .boat
   }
   
-  func sendLocations(locs: [LocationUpdate], boatToken: String) async throws -> SimpleMessage {
+  func sendLocations(locs: SourceLocations, boatToken: String) async throws -> SimpleMessage {
     try await execute(
       "/locations", method: HttpClient.post,
-      body: SourceLocations(updates: locs),
+      body: locs,
       extraHeaders: [Headers.boatToken: boatToken]
     )
     .to(SimpleMessage.self)

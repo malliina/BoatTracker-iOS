@@ -1,9 +1,10 @@
 import Foundation
 
 class Files {
+  static let shared = Files()
   let documentsUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
 
-  func save<T: Encodable>(t: T, to: String) throws {
+  func save<T: Encodable>(_ t: T, to: String) throws {
     let destFile = documentsUrl.appendingPathComponent(to)
     let data = try Json.shared.encoder.encode(t)
     try data.write(to: destFile)

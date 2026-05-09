@@ -12,6 +12,9 @@ class Locations {
   private var backgroundSession: CLBackgroundActivitySession?
   private var updates: AsyncThrowingStream<[CLLocation], Error>?
   private var cancellables: [Task<(), Never>] = []
+  private var syncTask: Task<(), Never>? = nil
+  private var isInForeground = false
+  private let queueFile = "locations.json"
   
   @Published var isTracking: Bool = false
   
@@ -28,6 +31,17 @@ class Locations {
     if prefs.isTracking {
       start()
     }
+  }
+  
+  func onForeground() {
+    isInForeground = true
+    syncTask = Task {
+      await sendAnyLocations()
+    }
+  }
+  
+  func onBackground() {
+    isInForeground = false
   }
   
   func start() {
@@ -54,12 +68,12 @@ class Locations {
     do {
       if let deviceToken = prefs.deviceToken {
         log.info("Listening for location updates...")
-        try await sendLocations(boatToken: deviceToken)
+        try await handleLocations(boatToken: deviceToken)
       } else {
         let device = try await http.createDevice()
         log.info("Created device \(device.name); listening for location updates...")
         prefs.deviceToken = device.token
-        try await sendLocations(boatToken: device.token)
+        try await handleLocations(boatToken: device.token)
       }
     } catch {
       log.warn("Stopped listening to background location updates \(error).")
@@ -67,16 +81,54 @@ class Locations {
     }
   }
   
-  private func sendLocations(boatToken: String) async throws {
-    for try await locs in locations {
+  private func handleLocations(boatToken: String) async throws {
+    // At most one location per second, emitted in chunks every 5 seconds
+    let chunkedLocations = locations.chunked(by: .repeating(every: .seconds(1)))
+      .compactMap { arrays in arrays.joined().last }
+      .chunked(by: .repeating(every: .seconds(3)))
+    for try await locs in chunkedLocations {
       if locs.count > 0 {
         let updates = locs.map { loc in
           let coord = loc.coordinate
           return LocationUpdate(longitude: coord.longitude, latitude: coord.latitude, date: Date.now)
         }
-        let _ = try await http.sendLocations(locs: updates, boatToken: boatToken)
+        let old = readFromFileOrEmpty()
+        let payload = SourceLocations(updates: old.updates + updates)
+        try saveToFile(locations: payload)
+        if isInForeground {
+          await sendAnyLocations()
+        }
       }
-      
+    }
+  }
+  
+  private func sendAnyLocations() async {
+    if let deviceToken = prefs.deviceToken {
+      let locs = readFromFileOrEmpty()
+      let count = locs.updates.count
+      if locs.updates.count > 0 {
+        do {
+          let _ = try await http.sendLocations(locs: locs, boatToken: deviceToken)
+          log.info("Sent \(count) locations to the server.")
+          try saveToFile(locations: SourceLocations(updates: []))
+        } catch {
+          log.warn("Failed to send \(count) locations to the server. Discarding payload. \(error)")
+        }
+      } else {
+        log.info("No location updates, nothing to send.")
+      }
+    }
+  }
+  
+  private func saveToFile(locations: SourceLocations) throws {
+    try Files.shared.save(locations, to: queueFile)
+  }
+  
+  private func readFromFileOrEmpty() -> SourceLocations {
+    do {
+      return try Files.shared.read(SourceLocations.self, from: queueFile)
+    } catch {
+      return SourceLocations(updates: [])
     }
   }
 
