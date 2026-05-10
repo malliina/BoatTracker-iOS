@@ -2,6 +2,7 @@ import Foundation
 
 class Files {
   static let shared = Files()
+  
   let documentsUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
 
   func save<T: Encodable>(_ t: T, to: String) throws {
@@ -14,5 +15,15 @@ class Files {
     let fromFile = documentsUrl.appendingPathComponent(from)
     let data = try Data(contentsOf: fromFile)
     return try Json.shared.decoder.decode(t, from: data)
+  }
+}
+
+class SyncFiles {
+  let lockQueue: DispatchQueue
+  
+  static let locations = SyncFiles("locations")
+  
+  init(_ name: String) {
+    lockQueue = DispatchQueue(label: "com.skogberglabs.boat.\(name)", attributes: [])
   }
 }

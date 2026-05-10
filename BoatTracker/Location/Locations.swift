@@ -15,6 +15,7 @@ class Locations {
   private var syncTask: Task<(), Never>? = nil
   private var isInForeground = false
   private let queueFile = "locations.json"
+  private let maxAttempts = 100
   
   @Published var isTracking: Bool = false
   
@@ -25,6 +26,12 @@ class Locations {
       })
   }
 
+  let lockQueue: DispatchQueue
+  
+  init() {
+    lockQueue = DispatchQueue(label: "com.skogberglabs.boat.locations", attributes: [])
+  }
+  
   func appLaunched() {
     log.info("App launched, is tracking locations: \(prefs.isTracking).")
     isTracking = prefs.isTracking
@@ -36,7 +43,7 @@ class Locations {
   func onForeground() {
     isInForeground = true
     syncTask = Task {
-      await sendAnyLocations()
+      await sendAnyLocations(checkRetry: true)
     }
   }
   
@@ -55,6 +62,8 @@ class Locations {
   private func setup() {
     backgroundSession = CLBackgroundActivitySession()
     manager = CLLocationManager()
+    manager?.allowsBackgroundLocationUpdates = true
+    manager?.activityType = .fitness
     updates = AsyncThrowingStream(bufferingPolicy: .bufferingNewest(1)) { cont in
       self.delegate = LocationsDelegate(cont: cont, locations: self)
       manager?.delegate = self.delegate
@@ -82,41 +91,107 @@ class Locations {
   }
   
   private func handleLocations(boatToken: String) async throws {
-    // At most one location per second, emitted in chunks every 5 seconds
+    // At most one location per second, emitted in chunks every 3 seconds
     let chunkedLocations = locations.chunked(by: .repeating(every: .seconds(1)))
-      .compactMap { arrays in arrays.joined().last }
+      .compactMap { arrays in
+        if let latest = arrays.joined().last {
+          return Locations.toValidLocation(loc: latest)
+        }
+        return nil
+      }
       .chunked(by: .repeating(every: .seconds(3)))
     for try await locs in chunkedLocations {
       if locs.count > 0 {
-        let updates = locs.map { loc in
-          let coord = loc.coordinate
-          return LocationUpdate(longitude: coord.longitude, latitude: coord.latitude, date: Date.now)
-        }
-        let old = readFromFileOrEmpty()
-        let payload = SourceLocations(updates: old.updates + updates)
-        try saveToFile(locations: payload)
+        let _ = try append(locs: SourceLocations(updates: locs))
         if isInForeground {
-          await sendAnyLocations()
+          await sendAnyLocations(checkRetry: false)
         }
       }
     }
   }
   
-  private func sendAnyLocations() async {
+  private static func toValidLocation(loc: CLLocation) -> LocationUpdate? {
+    // horizontalAccuracy: "A negative value indicates that the latitude and longitude are invalid."
+    if loc.horizontalAccuracy >= 0 {
+      let coord = loc.coordinate
+      return LocationUpdate(
+        longitude: coord.longitude,
+        latitude: coord.latitude,
+        accuracyMeters: loc.horizontalAccuracy.meters,
+        altitude: loc.verticalAccuracy >= 0 ? loc.altitude.meters : nil,
+        verticalAccuracy: loc.verticalAccuracy >= 0 ? loc.verticalAccuracy.meters : nil,
+        speed: loc.speedAccuracy >= 0 ? loc.speed.metersPerSecond : nil,
+        speedAccuracy: loc.speedAccuracy >= 0 ? loc.speedAccuracy.metersPerSecond : nil,
+        bearing: loc.courseAccuracy >= 0 ? loc.course : nil,
+        bearingAccuracyDegrees: loc.courseAccuracy >= 0 ? loc.courseAccuracy : nil,
+        date: loc.timestamp
+      )
+    } else {
+      return nil
+    }
+  }
+  
+  private func sendAnyLocations(checkRetry: Bool) async {
     if let deviceToken = prefs.deviceToken {
-      let locs = readFromFileOrEmpty()
-      let count = locs.updates.count
-      if locs.updates.count > 0 {
-        do {
-          let _ = try await http.sendLocations(locs: locs, boatToken: deviceToken)
-          log.info("Sent \(count) locations to the server.")
-          try saveToFile(locations: SourceLocations(updates: []))
-        } catch {
-          log.warn("Failed to send \(count) locations to the server. Discarding payload. \(error)")
+      do {
+        let locs = try pop()
+        let count = locs.updates.count
+        if locs.updates.count > 0 {
+          do {
+            let _ = try await http.sendLocations(locs: locs, boatToken: deviceToken)
+            log.info("Sent \(count) locations to the server.")
+            prefs.locationSuccess()
+          } catch {
+            let failureCount = prefs.locationFailure()
+            if checkRetry && failureCount >= maxAttempts {
+              log.error("Failed to send \(count) locations to the server. Encountered \(failureCount) consecutive failures, discarding data.")
+            } else {
+              log.warn("Failed to send \(count) locations to the server. Trying again later. \(error)")
+              let _ = try prepend(locs: locs)
+            }
+          }
+        } else {
+          log.info("No location updates, nothing to send.")
         }
-      } else {
-        log.info("No location updates, nothing to send.")
+      } catch {
+        log.warn("Failed to read locations cache. \(error)")
       }
+    }
+  }
+
+  private func append(locs: SourceLocations) throws -> SourceLocations {
+    return try synchronized {
+      let old = try self.popInternal()
+      let all = SourceLocations(updates: old.updates + locs.updates)
+      try self.saveToFile(locations: all)
+      return all
+    }
+  }
+  
+  private func pop() throws -> SourceLocations {
+    return try synchronized {
+      return try self.popInternal()
+    }
+  }
+  
+  private func prepend(locs: SourceLocations) throws -> SourceLocations {
+    return try synchronized {
+      let saved = try self.popInternal()
+      let all = SourceLocations(updates: locs.updates + saved.updates)
+      try self.saveToFile(locations: all)
+      return all
+    }
+  }
+  
+  private func popInternal() throws -> SourceLocations {
+      let locs = readFromFileOrEmpty()
+      try saveToFile(locations: SourceLocations.empty)
+      return locs
+  }
+  
+  private func synchronized<T>(_ f: @escaping () throws -> T) throws -> T {
+    try self.lockQueue.asyncAndWait {
+      try f()
     }
   }
   
@@ -131,7 +206,7 @@ class Locations {
       return SourceLocations(updates: [])
     }
   }
-
+  
   func stop() {
     backgroundSession?.invalidate()
     manager?.stopUpdatingLocation()

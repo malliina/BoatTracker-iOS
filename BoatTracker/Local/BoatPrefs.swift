@@ -12,6 +12,7 @@ class BoatPrefs {
   private let launchesKey = "launches"
   private let isTrackingKey = "isTracking"
   private let deviceTokenKey = "deviceToken"
+  private let consecutiveLocationFailuresKey = "consecutiveLocationFailures"
   
   var deviceToken: String? {
     get {
@@ -29,6 +30,22 @@ class BoatPrefs {
     set(newValue) {
       prefs.set(newValue, forKey: isTrackingKey)
     }
+  }
+  
+  var consecutiveLocationFailures: Int {
+    get {
+      prefs.integer(forKey: consecutiveLocationFailuresKey)
+    }
+    set(newValue) {
+      prefs.set(newValue, forKey: consecutiveLocationFailuresKey)
+    }
+  }
+  func locationSuccess() {
+    consecutiveLocationFailures = 0
+  }
+  func locationFailure() -> Int {
+    consecutiveLocationFailures += 1
+    return consecutiveLocationFailures
   }
 
   func launches() -> [String] {

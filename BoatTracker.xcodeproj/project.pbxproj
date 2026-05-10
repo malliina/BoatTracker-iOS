@@ -72,6 +72,9 @@
 		7D8B5EB02F5DBEBC00B10C0E /* logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D8B5EAF2F5DBEB900B10C0E /* logging.swift */; };
 		7D8B5EB32F5DD65500B10C0E /* AsyncAlgorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 7D8B5EB22F5DD65500B10C0E /* AsyncAlgorithms */; };
 		7DAE8A812C8C392600FB797E /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 7DAE8A802C8C392600FB797E /* Algorithms */; };
+		7DCFBD3F2FB071D00080116C /* SpeedM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCFBD3E2FB071D00080116C /* SpeedM.swift */; };
+		7DCFBD402FB071D00080116C /* SpeedM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCFBD3E2FB071D00080116C /* SpeedM.swift */; };
+		7DCFBD422FB087930080116C /* BackgroundTransfers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCFBD412FB0878E0080116C /* BackgroundTransfers.swift */; };
 		7DDBA9A727773D3900108B24 /* AppleAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DDBA9A627773D3900108B24 /* AppleAuth.swift */; };
 		B01251A72A4582C600A267C9 /* conf.json in Resources */ = {isa = PBXBuildFile; fileRef = B01251A62A4582C600A267C9 /* conf.json */; };
 		B01E79342D4AAC68009EC1CF /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = B01E79332D4AAC68009EC1CF /* LICENSE */; };
@@ -264,6 +267,8 @@
 		7D528E6127B9682F00C55F06 /* WebSocket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocket.swift; sourceTree = "<group>"; };
 		7D873A532F8A3CB500A5585F /* Locations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Locations.swift; sourceTree = "<group>"; };
 		7D8B5EAF2F5DBEB900B10C0E /* logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = logging.swift; sourceTree = "<group>"; };
+		7DCFBD3E2FB071D00080116C /* SpeedM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeedM.swift; sourceTree = "<group>"; };
+		7DCFBD412FB0878E0080116C /* BackgroundTransfers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTransfers.swift; sourceTree = "<group>"; };
 		7DDBA9A627773D3900108B24 /* AppleAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleAuth.swift; sourceTree = "<group>"; };
 		B01251A62A4582C600A267C9 /* conf.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = conf.json; path = BoatTracker/conf.json; sourceTree = "<group>"; };
 		B01E79332D4AAC68009EC1CF /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
@@ -380,6 +385,7 @@
 				61967A082103CF3E00432672 /* Formatting.swift */,
 				612F46B820F66854001A3003 /* Geo.swift */,
 				612F46B220F6418B001A3003 /* Speed.swift */,
+				7DCFBD3E2FB071D00080116C /* SpeedM.swift */,
 				612F46B620F646A0001A3003 /* Temperature.swift */,
 			);
 			path = Measure;
@@ -672,6 +678,7 @@
 		7D873A502F8A3AB800A5585F /* Location */ = {
 			isa = PBXGroup;
 			children = (
+				7DCFBD412FB0878E0080116C /* BackgroundTransfers.swift */,
 				7D873A532F8A3CB500A5585F /* Locations.swift */,
 			);
 			path = Location;
@@ -894,6 +901,7 @@
 				B01EE5982B13466500BBB8DA /* views.swift in Sources */,
 				6199E0F120F24F1800A4009A /* HttpResponse.swift in Sources */,
 				61832AAE220B69D400413FD0 /* TapListener.swift in Sources */,
+				7DCFBD3F2FB071D00080116C /* SpeedM.swift in Sources */,
 				7D528E6227B9682F00C55F06 /* WebSocket.swift in Sources */,
 				61967A072103CAFD00432672 /* BoatColors.swift in Sources */,
 				7D2CC0F3264D6EBD0091E05C /* MicrosoftAuth.swift in Sources */,
@@ -922,6 +930,7 @@
 				613669BC216FDB3E0043494A /* notificationModels.swift in Sources */,
 				B052E839292AA5FE00C09B89 /* ChartsView.swift in Sources */,
 				610EE3E221724CE10040FBC6 /* UIFont+FontAwesome.m in Sources */,
+				7DCFBD422FB087930080116C /* BackgroundTransfers.swift in Sources */,
 				612F46B320F6418B001A3003 /* Speed.swift in Sources */,
 				B0E232BF2DA98F65005FC113 /* primitives.swift in Sources */,
 				612F46A420F4A99E001A3003 /* EnvConf.swift in Sources */,
@@ -967,6 +976,7 @@
 				B0E232BC2DA98F2F005FC113 /* Duration.swift in Sources */,
 				B0E232BD2DA98F2F005FC113 /* Speed.swift in Sources */,
 				B09A32BA2D7C839E000962EF /* BoatWidgetAttributes.swift in Sources */,
+				7DCFBD402FB071D00080116C /* SpeedM.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

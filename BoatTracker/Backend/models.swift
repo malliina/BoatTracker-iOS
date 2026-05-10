@@ -947,9 +947,17 @@ struct AddSource: Codable {
 struct LocationUpdate: Codable {
   let longitude: Double
   let latitude: Double
+  let accuracyMeters: Distance?
+  let altitude: Distance?
+  let verticalAccuracy: Distance?
+  let speed: SpeedM?
+  let speedAccuracy: SpeedM?
+  let bearing: Double?
+  let bearingAccuracyDegrees: Double?
   let date: Date
 }
 
 struct SourceLocations: Codable {
+  static let empty = SourceLocations(updates: [])
   let updates: [LocationUpdate]
 }
