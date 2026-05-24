@@ -6,8 +6,14 @@ class Json {
 
   let log = LoggerFactory.shared.system(Json.self)
 
-  let encoder = JSONEncoder()
+  lazy var encoder = setupEncoder()
   let decoder = JSONDecoder()
+  
+  private func setupEncoder() -> JSONEncoder {
+    let enc = JSONEncoder()
+    enc.dateEncodingStrategy = .iso8601
+    return enc
+  }
 
   func asData(dict: [String: Any]) throws -> Data {
     try JSONSerialization.data(withJSONObject: dict, options: .prettyPrinted)

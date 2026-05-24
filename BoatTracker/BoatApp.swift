@@ -155,4 +155,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     notifications.handleNotification(
       application, window: window, data: userInfo)
   }
+  
+  func application(_ application: UIApplication, handleEventsForBackgroundURLSession identifier: String, completionHandler: @escaping () -> Void) {
+    BackgroundTransfers.shared.transferCompletionHandlers[identifier] = completionHandler
+  }
 }

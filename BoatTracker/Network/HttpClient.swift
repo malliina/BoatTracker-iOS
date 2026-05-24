@@ -53,9 +53,7 @@ class HttpClient {
 
   func postRequest<T: Encodable>(url: URL, headers: [String: String], body: T) throws -> URLRequest {
     var req = buildRequest(url: url, httpMethod: HttpClient.post, headers: headers)
-    let encoder = JSONEncoder()
-    encoder.dateEncodingStrategy = .iso8601
-    req.httpBody = try encoder.encode(body)
+    req.httpBody = try Json.shared.encoder.encode(body)
     return req
   }
   
@@ -64,9 +62,7 @@ class HttpClient {
   ) -> URLRequest {
     var req = buildRequest(url: url, httpMethod: httpMethod, headers: headers)
     if let body = body {
-      let encoder = JSONEncoder()
-      encoder.dateEncodingStrategy = .iso8601
-      req.httpBody = try? encoder.encode(body)
+      req.httpBody = try? Json.shared.encoder.encode(body)
     }
     return req
   }
