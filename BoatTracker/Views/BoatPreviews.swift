@@ -5,7 +5,7 @@ class BoatPreviews {
   static let shared = BoatPreviews()
   static let conf = try! BoatPreviews.shared.readLocalConf()
 
-  let devices = ["iPhone 13 mini", "iPad Pro (11-inch) (4th generation)"]
+  let devices = ["iPhone Air"]
 
   let decoder = JSONDecoder()
 

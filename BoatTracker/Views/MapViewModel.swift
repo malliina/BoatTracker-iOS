@@ -7,6 +7,7 @@ protocol MapViewModelLike: ObservableObject {
   var vessels: [Vessel] { get }
   var allVessels: [Vessel] { get }
   var tracks: [CoordsData] { get }
+  var battery: Battery? { get }
   var latestTrackPoints: [SingleTrackPoint] { get }
   var coordsPublisher: Published<CoordsData?>.Publisher { get }
   var latestTrack: TrackName? { get }
@@ -62,6 +63,8 @@ class MapViewModel: MapViewModelLike {
   @Published var activeTrack = ActiveTrack()
 
   @Published var tracks: [CoordsData] = []
+  @Published var battery: Battery? = nil
+  
   var latestTrackPoints: [SingleTrackPoint] {
     tracks.compactMap { cd in
       if let last = cd.coords.last,
@@ -195,6 +198,17 @@ class MapViewModel: MapViewModelLike {
     socket.reconnect(token: token?.token, track: nil)  // is nil correct?
     await setupUser(token: token?.token)
     await update(isTrackUserAvailable: token != nil)
+    if token != nil {
+      do {
+        let cars = try await http.boats()
+        //let b = Battery(chargeLevelPercentage: 72, chargingStatus: .charging, chargingTimeToFull: 111.seconds, chargingPower: 1800.watts)
+        //await update(battery: b)
+        await update(battery: cars.headOption()?.battery)
+      } catch {
+        log.error("Unable to load cars, no battery will be shown on map.")
+        await update(battery: nil)
+      }
+    }
   }
 
   func setupUser(token: AccessToken?) async {
@@ -295,7 +309,10 @@ class MapViewModel: MapViewModelLike {
     isFollowButtonHidden = !isConnected
   }
   @MainActor private func update(isTrackUserAvailable: Bool) {
-    isTrackButtonHidden = !isTrackUserAvailable
+    self.isTrackButtonHidden = !isTrackUserAvailable
+  }
+  @MainActor private func update(battery: Battery?) {
+    self.battery = battery
   }
   @MainActor func toggleFollow() {
     command = .toggleFollow
@@ -312,6 +329,7 @@ class PreviewMapViewModel: MapViewModelLike {
   @Published var vessels: [Vessel] = []
   var allVessels: [Vessel] = []
   var tracks: [CoordsData] = []
+  var battery: Battery? = nil
   var latestTrackPoints: [SingleTrackPoint] = []
   var coordsPublisher: Published<CoordsData?>.Publisher { $coords }
   var vesselsPublisher: Published<[Vessel]>.Publisher { $vessels }

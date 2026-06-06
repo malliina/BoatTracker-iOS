@@ -176,279 +176,285 @@ struct MainMapView<T>: View where T: MapViewModelLike {
   var body: some View {
     VStack {
       if let styleUri = viewModel.styleUri, let conf = settings.conf {
-        ZStack(alignment: .topLeading) {
-          GeometryReader { reader in
-            MapReader { proxy in
-              Map(viewport: $viewport) {
-                PointAnnotationGroup(viewModel.allVessels, id: \.mmsi.mmsi) {
-                  vessel in
-                  makeVesselPoint(
-                    vessel: vessel, icon: conf.layers.ais.vesselIcon)
-                }
-                .layerId(vesselIconsLayerId)
-                .iconRotationAlignment(.map)
-                // Visible
-                PolylineAnnotationGroup(viewModel.tracks) { track in
-                  let isLatest =
+        VStack {
+          ZStack(alignment: .topLeading) {
+            GeometryReader { reader in
+              MapReader { proxy in
+                Map(viewport: $viewport) {
+                  PointAnnotationGroup(viewModel.allVessels, id: \.mmsi.mmsi) {
+                    vessel in
+                    makeVesselPoint(
+                      vessel: vessel, icon: conf.layers.ais.vesselIcon)
+                  }
+                  .layerId(vesselIconsLayerId)
+                  .iconRotationAlignment(.map)
+                  // Visible
+                  PolylineAnnotationGroup(viewModel.tracks) { track in
+                    let isLatest =
                     viewModel.latestTrackPoints.find { stp in
                       stp.from.trackName == track.from.trackName
                     } != nil
-                  return makePolyline(track: track)
-                    .lineOpacity(isLatest ? 1.0 : 0.4)
-                }
-                // Tappable, invisible
-                PolylineAnnotationGroup(viewModel.tracks) { track in
-                  makePolyline(track: track)
-                    .lineWidth(10)
-                    .lineOpacity(0.01)
-                }
-                .layerId(trackLayerId)
-                PointAnnotationGroup(
-                  viewModel.latestTrackPoints, id: \.from.trackName
-                ) { track in
-                  makeBoatPoint(track: track)
-                }
-                .layerId(boatIconsId)
-                .iconRotationAlignment(.map)
-                if let latest = viewModel.tracks.last {
-                  let point = TrophyPoint(from: latest.from)
-                  makeTrophy(point: point)
-                    .onTapGesture { ctx in
-                      updatePopup(
-                        tap: .trophy(
-                          info: TrophyInfo.fromPoint(trophyPoint: point),
-                          at: point.top.coord),
-                        point: ctx.point, size: reader.realSize)
-                      return true
-                    }
-                }
-                if let route = viewModel.routeResult {
-                  let fairwayPath = route.route.links.map { $0.to }
-                  PolylineAnnotation(lineCoordinates: fairwayPath)
-                  PolylineAnnotationGroup {
-                    PolylineAnnotation(lineCoordinates: [
-                      route.from, fairwayPath.first ?? route.from,
-                    ])
-                    PolylineAnnotation(lineCoordinates: [
-                      fairwayPath.last ?? route.from, route.to,
-                    ])
-                  }.lineDasharray([2, 4])
-                }
-              }
-              .mapStyle(.init(uri: styleUri))
-              .onLayersTapGesture(conf.layers.marks) { qf, ctx in
-                if let result = Tapped.markResult(qf.feature, point: ctx.point) {
-                  updatePopup(
-                    tap: result, point: ctx.point, size: reader.realSize)
-                  return true
-                } else {
-                  return false
-                }
-              }
-              .onLayersTapGesture(conf.layers.fairwayAreas) { qf, ctx in
-                if let result = parseProps(FairwayArea.self, from: qf.feature) {
-                  Task {
-                    if let map = proxy.map {
-                      let limits = await queryLimits(at: ctx.point, map: map)
-                      let area: TapResult = .area(info: result, limit: limits)
-                      updatePopup(
-                        tap: area, point: ctx.point, size: reader.realSize)
-                    }
+                    return makePolyline(track: track)
+                      .lineOpacity(isLatest ? 1.0 : 0.4)
                   }
-                  return true
-                } else {
-                  return false
-                }
-              }
-              .onLayersTapGesture(conf.layers.limits) { qf, ctx in
-                if let raw = parseProps(RawLimitArea.self, from: qf.feature),
-                  let limits = try? raw.validate()
-                {
-                  updatePopup(
-                    tap: .limit(area: limits, at: ctx.coordinate),
-                    point: ctx.point,
-                    size: reader.realSize)
-                  return true
-                } else {
-                  return false
-                }
-              }
-              .onLayerTapGesture(vesselIconsLayerId) { (qf, ctx) in
-                if let meta = parseCustom(VesselMeta.self, from: qf.feature),
-                  let vessel = viewModel.vesselInfo(meta.mmsi)
-                {
-                  updatePopup(
-                    tap: .vessel(info: vessel), point: ctx.point,
-                    size: reader.realSize)
-                  return true
-                } else {
-                  return false
-                }
-              }
-              .onLayerTapGesture(trackLayerId) { qf, ctx in
-                if let from = parseCustom(TrackRef.self, from: qf.feature) {
-                  let trail = viewModel.tracks.find { t in
-                    t.from.trackName == from.trackName
+                  // Tappable, invisible
+                  PolylineAnnotationGroup(viewModel.tracks) { track in
+                    makePolyline(track: track)
+                      .lineWidth(10)
+                      .lineOpacity(0.01)
                   }
-                  let tapCoord = ctx.coordinate
-                  let closest: CoordBody? = trail?.coords.min { c1, c2 in
-                    tapCoord.distance(to: c1.coord)
-                      < tapCoord.distance(to: c2.coord)
+                  .layerId(trackLayerId)
+                  PointAnnotationGroup(
+                    viewModel.latestTrackPoints, id: \.from.trackName
+                  ) { track in
+                    makeBoatPoint(track: track)
                   }
-                  if let closest = closest {
-                    let result: TapResult = .trailPoint(
-                      info: SingleTrackPoint(
-                        from: from, point: closest, bearing: nil))
+                  .layerId(boatIconsId)
+                  .iconRotationAlignment(.map)
+                  if let latest = viewModel.tracks.last {
+                    let point = TrophyPoint(from: latest.from)
+                    makeTrophy(point: point)
+                      .onTapGesture { ctx in
+                        updatePopup(
+                          tap: .trophy(
+                            info: TrophyInfo.fromPoint(trophyPoint: point),
+                            at: point.top.coord),
+                          point: ctx.point, size: reader.realSize)
+                        return true
+                      }
+                  }
+                  if let route = viewModel.routeResult {
+                    let fairwayPath = route.route.links.map { $0.to }
+                    PolylineAnnotation(lineCoordinates: fairwayPath)
+                    PolylineAnnotationGroup {
+                      PolylineAnnotation(lineCoordinates: [
+                        route.from, fairwayPath.first ?? route.from,
+                      ])
+                      PolylineAnnotation(lineCoordinates: [
+                        fairwayPath.last ?? route.from, route.to,
+                      ])
+                    }.lineDasharray([2, 4])
+                  }
+                }
+                .mapStyle(.init(uri: styleUri))
+                .onLayersTapGesture(conf.layers.marks) { qf, ctx in
+                  if let result = Tapped.markResult(qf.feature, point: ctx.point) {
                     updatePopup(
                       tap: result, point: ctx.point, size: reader.realSize)
                     return true
                   } else {
                     return false
                   }
-                } else {
-                  return false
                 }
-              }
-              .onLayerTapGesture(boatIconsId) { qf, ctx in
-                if let track = parseCustom(
-                  SingleTrackPoint.self, from: qf.feature)
-                {
-                  let bp = BoatPoint(from: track.from, coord: track.point)
-                  updatePopup(
-                    tap: .boat(info: bp), point: ctx.point,
-                    size: reader.realSize)
-                  return true
-                } else {
-                  return false
-                }
-              }
-              .gestureHandlers(
-                .init(onBegin: { gestureType in
-                  if gestureType == .pan {
-                    viewModel.mapMode = .stay
+                .onLayersTapGesture(conf.layers.fairwayAreas) { qf, ctx in
+                  if let result = parseProps(FairwayArea.self, from: qf.feature) {
+                    Task {
+                      if let map = proxy.map {
+                        let limits = await queryLimits(at: ctx.point, map: map)
+                        let area: TapResult = .area(info: result, limit: limits)
+                        updatePopup(
+                          tap: area, point: ctx.point, size: reader.realSize)
+                      }
+                    }
+                    return true
+                  } else {
+                    return false
                   }
-                })
-              )
-              .onMapLongPressGesture { ctx in
-                let coord = ctx.coordinate
-                if routeState.start != nil, let end = routeState.end {
-                  routeState = RouteState(start: end, end: coord)
-                  viewModel.shortest(from: end, to: coord)
-                } else if let start = routeState.start {
-                  routeState = RouteState(start: start, end: coord)
-                  viewModel.shortest(from: start, to: coord)
-                } else {
-                  routeState = RouteState(start: coord, end: nil)
                 }
-              }
-              .onReceive(
-                viewModel.coordsPublisher.debounce(
-                  for: .seconds(1), scheduler: RunLoop.main
+                .onLayersTapGesture(conf.layers.limits) { qf, ctx in
+                  if let raw = parseProps(RawLimitArea.self, from: qf.feature),
+                     let limits = try? raw.validate()
+                  {
+                    updatePopup(
+                      tap: .limit(area: limits, at: ctx.coordinate),
+                      point: ctx.point,
+                      size: reader.realSize)
+                    return true
+                  } else {
+                    return false
+                  }
+                }
+                .onLayerTapGesture(vesselIconsLayerId) { (qf, ctx) in
+                  if let meta = parseCustom(VesselMeta.self, from: qf.feature),
+                     let vessel = viewModel.vesselInfo(meta.mmsi)
+                  {
+                    updatePopup(
+                      tap: .vessel(info: vessel), point: ctx.point,
+                      size: reader.realSize)
+                    return true
+                  } else {
+                    return false
+                  }
+                }
+                .onLayerTapGesture(trackLayerId) { qf, ctx in
+                  if let from = parseCustom(TrackRef.self, from: qf.feature) {
+                    let trail = viewModel.tracks.find { t in
+                      t.from.trackName == from.trackName
+                    }
+                    let tapCoord = ctx.coordinate
+                    let closest: CoordBody? = trail?.coords.min { c1, c2 in
+                      tapCoord.distance(to: c1.coord)
+                      < tapCoord.distance(to: c2.coord)
+                    }
+                    if let closest = closest {
+                      let result: TapResult = .trailPoint(
+                        info: SingleTrackPoint(
+                          from: from, point: closest, bearing: nil))
+                      updatePopup(
+                        tap: result, point: ctx.point, size: reader.realSize)
+                      return true
+                    } else {
+                      return false
+                    }
+                  } else {
+                    return false
+                  }
+                }
+                .onLayerTapGesture(boatIconsId) { qf, ctx in
+                  if let track = parseCustom(
+                    SingleTrackPoint.self, from: qf.feature)
+                  {
+                    let bp = BoatPoint(from: track.from, coord: track.point)
+                    updatePopup(
+                      tap: .boat(info: bp), point: ctx.point,
+                      size: reader.realSize)
+                    return true
+                  } else {
+                    return false
+                  }
+                }
+                .gestureHandlers(
+                  .init(onBegin: { gestureType in
+                    if gestureType == .pan {
+                      viewModel.mapMode = .stay
+                    }
+                  })
                 )
-                .first()
-              ) { coords in
-                if viewModel.fitCamera {
-                  let coords = viewModel.tracks.flatMap { cd in
-                    cd.coords
+                .onMapLongPressGesture { ctx in
+                  let coord = ctx.coordinate
+                  if routeState.start != nil, let end = routeState.end {
+                    routeState = RouteState(start: end, end: coord)
+                    viewModel.shortest(from: end, to: coord)
+                  } else if let start = routeState.start {
+                    routeState = RouteState(start: start, end: coord)
+                    viewModel.shortest(from: start, to: coord)
+                  } else {
+                    routeState = RouteState(start: coord, end: nil)
                   }
-                  if coords.count > 1 {
-                    log.info("Camera not fitted, fitting")
-                    viewModel.fitCamera = false
-                    withViewportAnimation {
-                      viewport = .overview(
-                        geometry: LineString(coords.map { $0.coord }),
-                        geometryPadding: .init(
-                          top: 30, leading: 20, bottom: 30, trailing: 20))
+                }
+                .onReceive(
+                  viewModel.coordsPublisher.debounce(
+                    for: .seconds(1), scheduler: RunLoop.main
+                  )
+                  .first()
+                ) { coords in
+                  if viewModel.fitCamera {
+                    let coords = viewModel.tracks.flatMap { cd in
+                      cd.coords
+                    }
+                    if coords.count > 1 {
+                      log.info("Camera not fitted, fitting")
+                      viewModel.fitCamera = false
+                      withViewportAnimation {
+                        viewport = .overview(
+                          geometry: LineString(coords.map { $0.coord }),
+                          geometryPadding: .init(
+                            top: 30, leading: 20, bottom: 30, trailing: 20))
+                      }
                     }
                   }
                 }
-              }
-              .onReceive(viewModel.coordsPublisher) { coords in
-                if let coords = coords, let latest = coords.coords.last,
-                  viewModel.mapMode == .follow
-                {
-                  let defaultPitch: CGFloat = 60
-                  let pitch =
+                .onReceive(viewModel.coordsPublisher) { coords in
+                  if let coords = coords, let latest = coords.coords.last,
+                     viewModel.mapMode == .follow
+                  {
+                    let defaultPitch: CGFloat = 60
+                    let pitch =
                     hasBeenFollowing
                     ? viewport.camera?.pitch ?? viewport.overview?.pitch
-                      ?? defaultPitch
+                    ?? defaultPitch
                     : defaultPitch
-                  hasBeenFollowing = true
-                  if let bearing = MapViewModel.adjustedBearing(data: coords) {
-                    withViewportAnimation {
-                      viewport = .camera(
-                        center: latest.coord, bearing: bearing, pitch: pitch)
+                    hasBeenFollowing = true
+                    if let bearing = MapViewModel.adjustedBearing(data: coords) {
+                      withViewportAnimation {
+                        viewport = .camera(
+                          center: latest.coord, bearing: bearing, pitch: pitch)
+                      }
+                    } else {
+                      viewport = .camera(center: latest.coord)
+                    }
+                  }
+                }
+                .popover(
+                  item: $tapInfo,
+                  attachmentAnchor: .point(
+                    .init(x: tapPosition.x, y: tapPosition.y))
+                ) { info in
+                  if let lang = settings.lang,
+                     let specials = settings.languages?.finnish.specialWords
+                  {
+                    if #available(iOS 16.4, *) {
+                      makePopup(tap: info.result, lang: lang, specials: specials)
+                        .presentationCompactAdaptation(.popover)
+                    } else {
+                      makePopup(tap: info.result, lang: lang, specials: specials)
                     }
                   } else {
-                    viewport = .camera(center: latest.coord)
+                    EmptyView()
                   }
                 }
+                .ignoresSafeArea()
               }
-              .popover(
-                item: $tapInfo,
-                attachmentAnchor: .point(
-                  .init(x: tapPosition.x, y: tapPosition.y))
-              ) { info in
-                if let lang = settings.lang,
-                  let specials = settings.languages?.finnish.specialWords
-                {
-                  if #available(iOS 16.4, *) {
-                    makePopup(tap: info.result, lang: lang, specials: specials)
-                      .presentationCompactAdaptation(.popover)
-                  } else {
-                    makePopup(tap: info.result, lang: lang, specials: specials)
+            }
+            if !viewModel.isProfileButtonHidden {
+              MapButtonView(imageResource: "gearshape.fill") {
+                guard let lang = settings.lang else { return }
+                if let user = viewModel.latestToken {
+                  profileInfo = ProfileInfo(
+                    user: user, current: viewModel.latestTrack, lang: lang)
+                } else {
+                  authInfo = lang
+                }
+              }
+              .offset(x: 16, y: 16)
+              .opacity(1)
+            }
+            if !viewModel.isFollowButtonHidden {
+              MapButtonView(imageResource: "location") {
+                if viewModel.mapMode != .follow {
+                  viewModel.mapMode = .follow
+                  if let latestTrack = viewModel.latestTrack,
+                     let latest = viewModel.tracks.find({ cd in
+                       cd.from.trackName == latestTrack
+                     }), let last = latest.coords.last
+                  {
+                    withViewportAnimation {
+                      viewport = .camera(center: last.coord)
+                    }
                   }
                 } else {
-                  EmptyView()
+                  viewModel.mapMode = .stay
                 }
               }
-              .ignoresSafeArea()
+              .offset(x: 16, y: 60)
+              .opacity(viewModel.mapMode == .follow ? 0.3 : 1)
             }
-          }
-          if !viewModel.isProfileButtonHidden {
-            MapButtonView(imageResource: "gearshape.fill") {
-              guard let lang = settings.lang else { return }
-              if let user = viewModel.latestToken {
-                profileInfo = ProfileInfo(
-                  user: user, current: viewModel.latestTrack, lang: lang)
-              } else {
-                authInfo = lang
-              }
-            }
-            .offset(x: 16, y: 16)
-            .opacity(1)
-          }
-          if !viewModel.isFollowButtonHidden {
-            MapButtonView(imageResource: "location") {
-              if viewModel.mapMode != .follow {
-                viewModel.mapMode = .follow
-                if let latestTrack = viewModel.latestTrack,
-                  let latest = viewModel.tracks.find({ cd in
-                    cd.from.trackName == latestTrack
-                  }), let last = latest.coords.last
-                {
-                  withViewportAnimation {
-                    viewport = .camera(center: last.coord)
-                  }
+            if !viewModel.isTrackButtonHidden {
+              MapButtonView(imageResource: viewModel.isTracking ? "stop.circle" : "record.circle") {
+                Task {
+                  await viewModel.toggleTracking()
                 }
-              } else {
-                viewModel.mapMode = .stay
               }
+              .offset(x: 16, y: 104)
             }
-            .offset(x: 16, y: 60)
-            .opacity(viewModel.mapMode == .follow ? 0.3 : 1)
-          }
-          if !viewModel.isTrackButtonHidden {
-            MapButtonView(imageResource: viewModel.isTracking ? "stop.circle" : "record.circle") {
-              Task {
-                await viewModel.toggleTracking()
-              }
-            }
-            .offset(x: 16, y: 104)
           }
         }
+        if let battery = viewModel.battery, let lang = settings.lang, battery.chargingPower != nil {
+          ChargingView(battery: battery, lang: lang.settings.polestar.info.times)
+            .transition(.move(edge: .bottom).combined(with: .opacity))
+        }
       }
-    }
+    }.animation(.easeInOut, value: viewModel.battery?.chargingPower != nil)
     .sheet(item: $welcomeInfo) { info in
       NavigationView {
         WelcomeView(lang: info.lang, token: info.boatToken)

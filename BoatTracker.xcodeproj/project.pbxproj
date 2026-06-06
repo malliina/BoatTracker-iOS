@@ -66,6 +66,9 @@
 		7D15B6E22AE5760100C47F76 /* .github in Resources */ = {isa = PBXBuildFile; fileRef = 7D15B6E12AE5760100C47F76 /* .github */; };
 		7D175C4D27BD85AE0050E29B /* MSAL in Frameworks */ = {isa = PBXBuildFile; productRef = 7D175C4C27BD85AE0050E29B /* MSAL */; };
 		7D175C5327BD876F0050E29B /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 7D175C5227BD876F0050E29B /* GoogleSignIn */; };
+		7D2204822FCDFF2A002AFEC0 /* Power.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D2204812FCDFF28002AFEC0 /* Power.swift */; };
+		7D2204832FCDFF2A002AFEC0 /* Power.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D2204812FCDFF28002AFEC0 /* Power.swift */; };
+		7D2204852FD41810002AFEC0 /* ChargingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D2204842FD4180C002AFEC0 /* ChargingView.swift */; };
 		7D2CC0F3264D6EBD0091E05C /* MicrosoftAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D2CC0F2264D6EBD0091E05C /* MicrosoftAuth.swift */; };
 		7D528E6227B9682F00C55F06 /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D528E6127B9682F00C55F06 /* WebSocket.swift */; };
 		7D873A542F8A3CB700A5585F /* Locations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D873A532F8A3CB500A5585F /* Locations.swift */; };
@@ -264,6 +267,8 @@
 		7D15B71B2AE5761400C47F76 /* marketing_url.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = marketing_url.txt; sourceTree = "<group>"; };
 		7D15B71C2AE5761400C47F76 /* description.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = description.txt; sourceTree = "<group>"; };
 		7D15B71D2AE5761400C47F76 /* primary_category.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = primary_category.txt; sourceTree = "<group>"; };
+		7D2204812FCDFF28002AFEC0 /* Power.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Power.swift; sourceTree = "<group>"; };
+		7D2204842FD4180C002AFEC0 /* ChargingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChargingView.swift; sourceTree = "<group>"; };
 		7D2CC0F2264D6EBD0091E05C /* MicrosoftAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrosoftAuth.swift; sourceTree = "<group>"; };
 		7D528E6127B9682F00C55F06 /* WebSocket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocket.swift; sourceTree = "<group>"; };
 		7D873A532F8A3CB500A5585F /* Locations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Locations.swift; sourceTree = "<group>"; };
@@ -382,6 +387,7 @@
 		612F46B120F64182001A3003 /* Measure */ = {
 			isa = PBXGroup;
 			children = (
+				7D2204812FCDFF28002AFEC0 /* Power.swift */,
 				612F46B420F644B7001A3003 /* Distance.swift */,
 				619679FB20FBCF2F00432672 /* Duration.swift */,
 				61967A082103CF3E00432672 /* Formatting.swift */,
@@ -454,6 +460,7 @@
 				B0799D622A3636E200925784 /* BoatPreviews.swift */,
 				B0485D5F292414AE005A1FC5 /* BoatTokensView.swift */,
 				B0799D662A3640AE00925784 /* BoatTokensViewModel.swift */,
+				7D2204842FD4180C002AFEC0 /* ChargingView.swift */,
 				B052E838292AA5FE00C09B89 /* ChartsView.swift */,
 				B052E836292A360F00C09B89 /* EditDialog.swift */,
 				B0799D642A363CF100925784 /* extensions.swift */,
@@ -936,6 +943,7 @@
 				610EE3E221724CE10040FBC6 /* UIFont+FontAwesome.m in Sources */,
 				7DCFBD422FB087930080116C /* BackgroundTransfers.swift in Sources */,
 				612F46B320F6418B001A3003 /* Speed.swift in Sources */,
+				7D2204852FD41810002AFEC0 /* ChargingView.swift in Sources */,
 				B0E232BF2DA98F65005FC113 /* primitives.swift in Sources */,
 				612F46A420F4A99E001A3003 /* EnvConf.swift in Sources */,
 				6199E0EC20F24DC700A4009A /* HttpClient.swift in Sources */,
@@ -953,6 +961,7 @@
 				B052E835292A2BEB00C09B89 /* TrackView.swift in Sources */,
 				614221B6222C10A700FD1FF3 /* UserSettings.swift in Sources */,
 				61F4199321206C4C00B1ED7D /* AttributionsView.swift in Sources */,
+				7D2204822FCDFF2A002AFEC0 /* Power.swift in Sources */,
 				612F46AC20F52776001A3003 /* Keychain.swift in Sources */,
 				6173F247228CB10E00A1E9B9 /* routeModels.swift in Sources */,
 				612F46B920F66854001A3003 /* Geo.swift in Sources */,
@@ -975,6 +984,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B0E232C12DA9902D005FC113 /* Formatting.swift in Sources */,
+				7D2204832FCDFF2A002AFEC0 /* Power.swift in Sources */,
 				B0E232C02DA9900B005FC113 /* primitives.swift in Sources */,
 				B0E232BB2DA98F2F005FC113 /* Distance.swift in Sources */,
 				B0E232BC2DA98F2F005FC113 /* Duration.swift in Sources */,

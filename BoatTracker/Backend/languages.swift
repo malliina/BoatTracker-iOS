@@ -87,7 +87,24 @@ struct MessagesLang: Codable {
 }
 
 struct FormatsLang: Codable, Hashable {
-  let date, time, timeShort: String, dateTime: String
+  let date, time, timeShort, dateTime: String
+}
+
+struct ChargingStateLang: Codable, Hashable {
+  let idle, charging, done, fault, scheduled, discharging, error, smartCharging, notAvailable: String
+}
+
+struct ChargingTimesLang: Codable, Hashable {
+  let minutesShort: String
+}
+
+struct PolestarInfoLang: Codable, Hashable {
+  let chargingState: ChargingStateLang
+  let times: ChargingTimesLang
+}
+
+struct PolestarLang: Codable, Hashable {
+  let info: PolestarInfoLang
 }
 
 struct SettingsLang: Codable {
@@ -95,6 +112,7 @@ struct SettingsLang: Codable {
     signIn, signInText, signInWith, boat, token, tokenText, tokenTextLong, rename, renameBoat,
     newName, edit, cancel, done, back, noTracksHelp: String
   let formats: FormatsLang
+  let polestar: PolestarLang
 }
 
 struct LimitTypes: Codable {

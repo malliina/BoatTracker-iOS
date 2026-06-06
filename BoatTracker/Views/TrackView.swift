@@ -23,11 +23,12 @@ struct TrackView: View {
       }
       .padding(.bottom, 8)
       HStack(spacing: 30) {
-        StatView(label: lang.distance, value: track.distanceMeters, style: .small)
+        StatView(icon: nil, label: lang.distance, value: track.distanceMeters, style: .small)
           .frame(maxWidth: .infinity)
-        StatView(label: lang.duration, value: track.duration, style: .small)
+        StatView(icon: nil, label: lang.duration, value: track.duration, style: .small)
           .frame(maxWidth: .infinity)
         StatView(
+          icon: "hare.circle",
           label: lang.topSpeed,
           value: track.topSpeed?.formatted(isBoat: track.sourceType.isBoat) ?? lang.notAvailable,
           style: .small

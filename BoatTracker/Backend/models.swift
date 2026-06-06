@@ -961,3 +961,59 @@ struct SourceLocations: Codable {
   static let empty = SourceLocations(updates: [])
   let updates: [LocationUpdate]
 }
+
+enum ChargingStatus: Codable, Equatable {
+  case idle
+  case charging
+  case smartCharging
+  case other(name: String)
+
+  var stringify: String {
+    switch self {
+    case .idle: ChargingStatus.idleKey
+    case .charging: ChargingStatus.chargingKey
+    case .smartCharging: ChargingStatus.smartChargingKey
+    case .other(let name): name
+    }
+  }
+  var isCharging: Bool { self == .charging || self == .smartCharging }
+
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.singleValueContainer()
+    let s = try container.decode(String.self)
+    self = try ChargingStatus.parse(s: s)
+  }
+  func encode(to encoder: Encoder) throws {
+    var container = encoder.singleValueContainer()
+    try container.encode(stringify)
+  }
+
+  static let idleKey = "idle"
+  static let chargingKey = "charging"
+  static let smartChargingKey = "smartCharging"
+  
+  static func parse(s: String) throws -> ChargingStatus {
+    switch s {
+    case ChargingStatus.idleKey: return .idle
+    case ChargingStatus.chargingKey: return .charging
+    case ChargingStatus.smartChargingKey: return .smartCharging
+    default: return .other(name: s)
+    }
+  }
+}
+
+struct Battery: Codable {
+  let chargeLevelPercentage: Double
+  let chargingStatus: ChargingStatus
+  let chargingTimeToFull: Duration?
+  let chargingPower: Power?
+  let distanceToEmpty: Distance
+}
+
+struct Car: Codable {
+  let battery: Battery
+}
+
+struct Cars: Codable {
+  let cars: [Car]
+}

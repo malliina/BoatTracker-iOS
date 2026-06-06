@@ -36,8 +36,17 @@ struct ProfileView<T>: View where T: ProfileProtocol {
             LoadingView()
           }
         } else if let summary = vm.summary, vm.state == .content {
-          TrackSummaryView(track: summary, lang: summaryLang)
-            .frame(maxWidth: .infinity, alignment: .center)
+          if let battery = vm.battery {
+            VStack {
+              ChargingView(battery: battery, lang: lang.settings.polestar.info.times)
+              Divider()
+              TrackSummaryView(track: summary, lang: summaryLang)
+                .frame(maxWidth: .infinity, alignment: .center)
+            }
+          } else {
+            TrackSummaryView(track: summary, lang: summaryLang)
+              .frame(maxWidth: .infinity, alignment: .center)
+          }
         } else if vm.state == .empty {
           Text(lang.messages.noSavedTracks)
             .foregroundColor(color.secondaryText)
@@ -176,10 +185,12 @@ struct ProfilePreviews: PreviewProvider {
   class PreviewsVM: ProfileProtocol {
     let state: ViewState
     let summary: TrackInfo?
+    let battery: Battery?
 
-    init(state: ViewState, summary: TrackInfo?) {
+    init(state: ViewState, summary: TrackInfo?, battery: Battery?) {
       self.state = state
       self.summary = summary
+      self.battery = battery
     }
 
     func versionText(lang: Lang) -> String? {
@@ -207,13 +218,13 @@ struct ProfilePreviews: PreviewProvider {
           info: ProfileInfo(
             user: UserToken(email: "a@b.com", token: AccessToken("abc")), current: nil, lang: lang)
         )
-        .environmentObject(PreviewsVM(state: .content, summary: previewTrack))
+        .environmentObject(PreviewsVM(state: .content, summary: previewTrack, battery: ProfileVM.chargingPreview))
         .environmentObject(ActiveTrack())
         ProfileView<PreviewsVM>(
           info: ProfileInfo(
             user: UserToken(email: "a@b.com", token: AccessToken("abc")), current: nil, lang: lang)
         )
-        .environmentObject(PreviewsVM(state: .loading, summary: nil))
+        .environmentObject(PreviewsVM(state: .loading, summary: nil, battery: ProfileVM.chargingPreview))
         .environmentObject(ActiveTrack())
       }
       .previewDevice(PreviewDevice(rawValue: deviceName))

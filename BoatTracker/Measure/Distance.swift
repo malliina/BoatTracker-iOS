@@ -20,6 +20,7 @@ public struct Distance: Comparable, CustomStringConvertible, DoubleCodable, Hash
   var rounded: String { String(format: "%.2f", kilometers) }
 
   var formatKilometers: String { String(format: "%.2f km", kilometers) }
+  var formatKilometersInt: String { String(format: "%.0f km", kilometers) }
 
   var formatMeters: String { String(format: "%.1f m", meters) }
 

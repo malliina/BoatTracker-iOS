@@ -4,6 +4,7 @@ import MapboxMaps
 protocol ProfileProtocol: ObservableObject {
   var state: ViewState { get }
   var summary: TrackInfo? { get }
+  var battery: Battery? { get }
   func versionText(lang: Lang) -> String?
   func loadTracks(latest: TrackName?) async
   func disconnect()
@@ -17,6 +18,7 @@ class ProfileVM: ProfileProtocol {
   @Published var state: ViewState = .idle
   @Published var tracks: [TrackRef] = []
   @Published var current: TrackName? = nil
+  @Published var battery: Battery? = nil
 
   static let emptySummary = TrackInfo2(
     trackName: TrackName("Track"), trackTitle: nil,
@@ -25,6 +27,7 @@ class ProfileVM: ProfileProtocol {
     avgWaterTemp: 14.celsius, avgOutsideTemp: 11.celsius, startDate: "Today",
     sourceType: .boat)
 
+  static let chargingPreview = Battery(chargeLevelPercentage: 74, chargingStatus: .charging, chargingTimeToFull: 1212.seconds, chargingPower: 130000.watts, distanceToEmpty: 360.kilometers)
   var summary: TrackInfo? = nil
 
   private var summaryFromList: TrackRef? {
@@ -72,7 +75,9 @@ class ProfileVM: ProfileProtocol {
     do {
       let ts = try await http.tracks(limit: 10, offset: 0)
       log.info("Got \(ts.count) tracks.")
-      await update(ts: ts, trackName: latest)
+      let bs = try await http.boats()
+      await update(ts: ts, trackName: latest, battery: bs.headOption()?.battery)
+      
       if let latest = latest {
         connect(track: latest)
       }
@@ -97,7 +102,6 @@ class ProfileVM: ProfileProtocol {
       log.error("Failed to delete user. \(error)")
       return false
     }
-
   }
 
   @MainActor private func update(ref: TrackRef) {
@@ -109,8 +113,9 @@ class ProfileVM: ProfileProtocol {
     state = viewState
   }
 
-  @MainActor private func update(ts: [TrackRef], trackName: TrackName?) {
+  @MainActor private func update(ts: [TrackRef], trackName: TrackName?, battery: Battery?) {
     tracks = ts
+    self.battery = battery
     current = trackName
     state = ts.isEmpty ? .empty : .content
     summary =

@@ -82,9 +82,9 @@ struct BoatTokensView<T>: View where T: BoatTokensProtocol {
             rename = boat
           } label: {
             HStack(spacing: 30) {
-              StatView(label: lang.boat, value: boat.name, style: .large)
+              StatView(icon: "sailboat", label: lang.boat, value: boat.name, style: .large)
                 .frame(maxWidth: .infinity)
-              StatView(label: lang.token, value: boat.token, style: .large)
+              StatView(icon: "key", label: lang.token, value: boat.token, style: .large)
                 .frame(maxWidth: .infinity)
             }.frame(maxWidth: 600)
               .padding(.bottom)

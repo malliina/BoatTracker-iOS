@@ -6,6 +6,7 @@ struct StatSizing {
 }
 
 struct StatView: View {
+  let icon: String?
   let label: String
   let value: CustomStringConvertible
   let style: StatBoxStyle
@@ -22,9 +23,17 @@ struct StatView: View {
 
   var body: some View {
     VStack {
-      Text(label)
-        .font(.system(size: sizing.labelSize))
-        .foregroundColor(color.secondaryText)
+      HStack {
+        if let icon = icon {
+          Image(systemName: icon)
+            .resizable()
+            .scaledToFit()
+            .frame(width: 18, height: 18)
+        }
+        Text(label)
+          .font(.system(size: sizing.labelSize))
+          .foregroundColor(color.secondaryText)
+      }
       Spacer()
         .frame(height: sizing.verticalSpace)
       Text(value.description)
@@ -80,26 +89,34 @@ struct TrackInfo2: TrackInfo {
 
 extension TrackRef: TrackInfo {}
 
+struct Charging {
+  let levelPercentage: Double
+  let power: Power
+  let timeToFull: Duration
+}
+
 struct TrackSummaryView: View {
   let track: TrackInfo
   let lang: SummaryLang
-  let spacingBig: CGFloat = 36
+  static let spacingBig: CGFloat = 36
   let verticalSpacing: CGFloat = 12
   var isBoat: Bool { track.sourceType.isBoat }
   var body: some View {
     VStack {
       HStack {
-        Stat(lang.duration, track.duration)
-        Spacer().frame(width: spacingBig)
-        Stat(lang.distance, track.distanceMeters)
+        Stat("clock", lang.duration, track.duration)
+        Spacer().frame(width: TrackSummaryView.spacingBig)
+        Stat("road.lanes", lang.distance, track.distanceMeters)
       }
       .padding(.vertical, verticalSpacing)
       HStack {
         Stat(
+          "hare",
           lang.topSpeed,
           track.topSpeed?.formatted(isBoat: isBoat) ?? lang.notAvailable)
-        Spacer().frame(width: spacingBig)
+        Spacer().frame(width: TrackSummaryView.spacingBig)
         Stat(
+          "figure.run",
           lang.avgSpeed,
           track.avgSpeed?.formatted(isBoat: isBoat) ?? lang.notAvailable)
       }
@@ -107,22 +124,24 @@ struct TrackSummaryView: View {
       HStack {
         if isBoat {
           Stat(
+            "thermometer.and.liquid.waves",
             lang.waterTemp, track.avgWaterTemp?.description ?? lang.notAvailable
           )
         } else {
           Stat(
+            "thermometer.sun",
             lang.temperature,
             track.avgOutsideTemp?.description ?? lang.notAvailable)
         }
-        Spacer().frame(width: spacingBig)
-        Stat(lang.date, track.startDate)
+        Spacer().frame(width: TrackSummaryView.spacingBig)
+        Stat("calendar", lang.date, track.startDate)
       }
       .padding(.vertical, verticalSpacing)
     }
   }
 
-  func Stat(_ label: String, _ value: CustomStringConvertible) -> some View {
-    StatView(label: label, value: value, style: .large)
+  func Stat(_ icon: String?, _ label: String, _ value: CustomStringConvertible) -> some View {
+    StatView(icon: icon, label: label, value: value, style: .large)
       .frame(minWidth: 120)
   }
 }

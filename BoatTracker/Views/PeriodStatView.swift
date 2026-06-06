@@ -39,11 +39,11 @@ struct PeriodStatView: View {
       }
       HStack {
         Spacer()
-        StatView(label: lang.distance, value: stat.distance, style: .small)
+        StatView(icon: nil, label: lang.distance, value: stat.distance, style: .small)
         Spacer()
-        StatView(label: lang.duration, value: stat.duration, style: .small)
+        StatView(icon: nil, label: lang.duration, value: stat.duration, style: .small)
         Spacer()
-        StatView(label: lang.days, value: stat.days, style: .small)
+        StatView(icon: nil, label: lang.days, value: stat.days, style: .small)
         Spacer()
       }
     }
