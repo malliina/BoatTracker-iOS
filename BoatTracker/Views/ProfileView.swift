@@ -39,6 +39,7 @@ struct ProfileView<T>: View where T: ProfileProtocol {
           if let battery = vm.battery {
             VStack {
               ChargingView(battery: battery, lang: lang.settings.polestar.info.times)
+                .transition(.move(edge: .top).combined(with: .opacity))
               Divider()
               TrackSummaryView(track: summary, lang: summaryLang)
                 .frame(maxWidth: .infinity, alignment: .center)
@@ -159,6 +160,7 @@ struct ProfileView<T>: View where T: ProfileProtocol {
         }
       }
     }
+    .animation(.easeInOut, value: vm.battery != nil)
     .background {
       ControllerRepresentable(vc: $vc)
     }

@@ -39,15 +39,26 @@ class ProfileVM: ProfileProtocol {
   private var socket: BoatSocket? = nil
   private var cancellables: [Task<(), Never>] = []
 
-  func connect(track: TrackName) {
-    let s = Backend.shared.openStandalone(track: track)
-    socket = s
-    let t = Task {
-      for await coords in s.updates.values {
-        await update(ref: coords.from)
+  func connect(track: TrackName?) {
+    socket = Backend.shared.openStandalone(track: track)
+    if let socket = socket {
+      let t = Task {
+        await withTaskGroup { group in
+          group.addTask {
+            for await coords in socket.updates.values {
+              await self.update(ref: coords.from)
+            }
+          }
+          group.addTask {
+            for await battery in socket.batteryUpdates.values {
+              await self.update(battery: battery)
+            }
+          }
+        }
       }
+      cancellables = [t]
+      socket.start()
     }
-    cancellables = [t]
   }
 
   func disconnect() {
@@ -75,12 +86,8 @@ class ProfileVM: ProfileProtocol {
     do {
       let ts = try await http.tracks(limit: 10, offset: 0)
       log.info("Got \(ts.count) tracks.")
-      let bs = try await http.boats()
-      await update(ts: ts, trackName: latest, battery: bs.headOption()?.battery)
-      
-      if let latest = latest {
-        connect(track: latest)
-      }
+      await update(ts: ts, trackName: latest)
+      connect(track: latest)
     } catch {
       log.error("Unable to load tracks. \(error.describe)")
       await update(viewState: .failed)
@@ -109,19 +116,22 @@ class ProfileVM: ProfileProtocol {
   }
 
   @MainActor private func update(viewState: ViewState) {
-    log.info("State to \(viewState)...")
+    //log.info("State to \(viewState)...")
     state = viewState
   }
 
-  @MainActor private func update(ts: [TrackRef], trackName: TrackName?, battery: Battery?) {
+  @MainActor private func update(ts: [TrackRef], trackName: TrackName?) {
     tracks = ts
-    self.battery = battery
     current = trackName
     state = ts.isEmpty ? .empty : .content
     summary =
       ts.first { ref in
         ref.trackName == trackName
       } ?? ts.first
+  }
+  
+  @MainActor private func update(battery: Battery?) {
+    self.battery = battery
   }
 
   @MainActor private func update(err: Error) {

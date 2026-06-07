@@ -67,10 +67,6 @@ class BoatHttpClient {
   func profile() async throws -> UserProfile {
     try await get("/users/me").to(UserContainer.self).user
   }
-  
-  func boats() async throws -> [Car] {
-    try await get("/boats").to(Cars.self).cars
-  }
 
   func tracks(limit: Int, offset: Int) async throws -> [TrackRef] {
     try await get("/tracks?limit=\(limit)&offset=\(offset)").to(

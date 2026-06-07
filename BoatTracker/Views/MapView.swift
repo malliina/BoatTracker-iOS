@@ -450,6 +450,7 @@ struct MainMapView<T>: View where T: MapViewModelLike {
           }
         }
         if let battery = viewModel.battery, let lang = settings.lang, battery.chargingPower != nil {
+        //if let battery = viewModel.battery, let lang = settings.lang {
           ChargingView(battery: battery, lang: lang.settings.polestar.info.times)
             .transition(.move(edge: .bottom).combined(with: .opacity))
         }

@@ -18,8 +18,10 @@ class BoatSocket {
   @Published var isConnected: Bool = false
   @Published var coords: CoordsData? = nil
   @Published var vessels: [Vessel] = []
+  @Published var battery: Battery? = nil
 
   @Published var reconnects: ReconnectRequest? = nil
+  
   var updates: AnyPublisher<CoordsData, Never> {
     $coords.compactMap { cd in
       cd
@@ -28,7 +30,12 @@ class BoatSocket {
   var vesselUpdates: AnyPublisher<[Vessel], Never> {
     $vessels.eraseToAnyPublisher()
   }
-
+  var batteryUpdates: AnyPublisher<Battery, Never> {
+    $battery.compactMap { b in
+      return b
+    }.eraseToAnyPublisher()
+  }
+  
   private var persistents: [Task<(), Never>] = []
   private var cancellables: [Task<(), Never>] = []
 
@@ -120,6 +127,9 @@ class BoatSocket {
       case "vessels":
         let data = try decoder.decode(VesselsBody.self, from: json)
         await update(vessels: data.body.vessels)
+      case "battery":
+        let data = try decoder.decode(BatteryBody.self, from: json)
+        await update(battery: data.body.battery)
       case "loading":
         ()
       case "noData":
@@ -157,6 +167,10 @@ class BoatSocket {
 
   @MainActor private func update(vessels: [Vessel]) {
     self.vessels = vessels
+  }
+  
+  @MainActor private func update(battery: Battery) {
+    self.battery = battery
   }
 
   @MainActor

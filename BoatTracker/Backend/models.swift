@@ -627,6 +627,10 @@ extension KeyedDecodingContainer {
   }
 }
 
+struct BatteryBody: Codable {
+  let body: BatteryWrapper
+}
+
 struct VesselsBody: Codable {
   let body: Vessels
 }
@@ -1010,10 +1014,6 @@ struct Battery: Codable {
   let distanceToEmpty: Distance
 }
 
-struct Car: Codable {
+struct BatteryWrapper: Codable {
   let battery: Battery
-}
-
-struct Cars: Codable {
-  let cars: [Car]
 }

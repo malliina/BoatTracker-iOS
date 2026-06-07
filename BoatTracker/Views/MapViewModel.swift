@@ -163,6 +163,11 @@ class MapViewModel: MapViewModelLike {
         }
       }
       group.addTask {
+        for await battery in self.socket.batteryUpdates.values {
+          await self.update(battery: battery)
+        }
+      }
+      group.addTask {
         for await tracking in self.locations.$isTracking.removeDuplicates().values {
           await self.update(isTracking: tracking)
         }
@@ -198,17 +203,6 @@ class MapViewModel: MapViewModelLike {
     socket.reconnect(token: token?.token, track: nil)  // is nil correct?
     await setupUser(token: token?.token)
     await update(isTrackUserAvailable: token != nil)
-    if token != nil {
-      do {
-        let cars = try await http.boats()
-        //let b = Battery(chargeLevelPercentage: 72, chargingStatus: .charging, chargingTimeToFull: 111.seconds, chargingPower: 1800.watts)
-        //await update(battery: b)
-        await update(battery: cars.headOption()?.battery)
-      } catch {
-        log.error("Unable to load cars, no battery will be shown on map.")
-        await update(battery: nil)
-      }
-    }
   }
 
   func setupUser(token: AccessToken?) async {

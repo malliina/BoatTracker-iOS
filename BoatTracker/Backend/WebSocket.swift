@@ -105,7 +105,7 @@ class WebSocket: NSObject, URLSessionWebSocketDelegate {
         self.log.info("Received something.")
       }
     } catch {
-      self.log.error("Error when receiving \(error)")
+      self.log.error("Error at \(urlString) when receiving \(error)")
     }
   }
 
